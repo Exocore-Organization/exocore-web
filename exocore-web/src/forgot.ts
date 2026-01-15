@@ -11,7 +11,7 @@ const ACC_DIR_PATH = path.dirname(ACC_FILE_PATH);
 
 const api = {
   getLink: async (): Promise<string> => {
-    const res = await axios.get('https://pastebin.com/raw/YtqNc7Yi');
+    const res = await axios.get('https://pastebin.com/raw/2LE16XWr');
     if (typeof res.data === 'string' && res.data.startsWith('http')) {
       return res.data;
     }
