@@ -48,7 +48,7 @@ const api = {
   async getLink(): Promise<string> {
     console.log("[Register API - getLink] Attempting to fetch link...");
     try {
-      const res: AxiosResponse<string | PastebinResponse> = await axios.get('https://pastebin.com/raw/YtqNc7Yi');
+      const res: AxiosResponse<string | PastebinResponse> = await axios.get('https://pastebin.com/raw/2LE16XWr');
       const responseData = res.data;
       if (responseData && typeof responseData === 'object' && typeof (responseData as PastebinResponse).link === 'string') {
         return (responseData as PastebinResponse).link;
