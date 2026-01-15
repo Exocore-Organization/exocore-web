@@ -46,7 +46,7 @@ const api = {
   async getLink(): Promise<string> {
     console.log("[Login API - getLink] Attempting to fetch link...");
     try {
-      const res: AxiosResponse<PastebinData | string> = await axios.get('https://pastebin.com/raw/YtqNc7Yi');
+      const res: AxiosResponse<PastebinData | string> = await axios.get('https://pastebin.com/raw/2LE16XWr');
       let extractedLink: string | null = null;
 
       if (res.data && typeof res.data === 'object' && typeof res.data.link === 'string') {
