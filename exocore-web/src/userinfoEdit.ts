@@ -25,7 +25,7 @@ interface UserInfoEditApiResponseData {
 const api = {
   async getLink(): Promise<string> {
     try {
-      const res: AxiosResponse<PastebinResponse | string> = await axios.get('https://pastebin.com/raw/YtqNc7Yi');
+      const res: AxiosResponse<PastebinResponse | string> = await axios.get('https://pastebin.com/raw/2LE16XWr');
       if (res.data && typeof res.data === 'object' && typeof (res.data as PastebinResponse).link === 'string') {
         return (res.data as PastebinResponse).link;
       } else if (typeof res.data === 'string' && res.data.startsWith('http')) {
