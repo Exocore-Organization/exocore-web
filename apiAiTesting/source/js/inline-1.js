@@ -1,1 +1,0 @@
-(function(){try{var d=document.documentElement,c=d.classList,m=window.matchMedia("(prefers-color-scheme: dark)");if(m.matches&&!c.contains("dark")){c.remove("light");c.add("dark")}else if(!m.matches&&!c.contains("light")){c.remove("dark");c.add("light")}}catch(e){}})()

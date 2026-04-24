@@ -1,1 +1,0 @@
-if(!customElements.get("composer-render-mark")){class E extends HTMLElement{connectedCallback(){if(window.__ECTO_COMPOSER_RENDER_TIME__===undefined){requestAnimationFrame(function(){window.__ECTO_COMPOSER_RENDER_TIME__=performance.now()})}}}customElements.define("composer-render-mark",E)}

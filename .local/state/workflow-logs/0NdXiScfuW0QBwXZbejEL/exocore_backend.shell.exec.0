@@ -1,0 +1,101 @@
+
+> exocore-backend@2.0.0 start
+> tsx src/index.ts
+
+[1G[0K🚀 Exocore Backend running on http://localhost:8081
+🛰️  Bridge WS attached at /ws/bridge
+[cache] loaded 13 users from encrypted local snapshot
+[cache] restoring from Drive…
+[req] GET / ← 127.0.0.1
+[res] GET / → 200 (3ms)
+[cache] restored 13 users in 26608ms
+[sync] background sync started (every 60000ms)
+[startup-dedupe] scanned 13 users, no duplicates
+[req] GET / ← 127.0.0.1
+[res] GET / → 200 (2ms)
+[req] GET /exocore/ ← 131.226.110.22, 10.84.4.136, 127.0.0.1
+[res] GET /exocore/ → 404 (2ms)
+[req] GET /exocore/ ← 131.226.110.22, 10.84.4.136, 127.0.0.1
+[res] GET /exocore/ → 404 (1ms)
+[req] GET / ← 131.226.110.22, 10.84.5.20, 127.0.0.1
+[res] GET / → 200 (1ms)
+[req] GET /favicon.ico ← 131.226.110.22, 10.84.5.20, 127.0.0.1
+[res] GET /favicon.ico → 404 (1ms)
+[req] GET / ← 131.226.110.22, 10.84.5.20, 127.0.0.1
+[res] GET / → 304 (1ms)
+[req] POST /exocore/api/auth/login ← 127.0.0.1
+[res] POST /exocore/api/auth/login → 200 (14ms)
+[req] GET /exocore/api/auth/userinfo?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f&source=pv ← 127.0.0.1
+[res] GET /exocore/api/auth/userinfo?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f&source=pv → 200 (1953ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (1ms)
+[req] GET /exocore/api/social/avatar?username=%40choruyt ← 127.0.0.1
+[res] GET /exocore/api/social/avatar?username=%40choruyt → 200 (396ms)
+[req] GET /exocore/api/social/avatar?username=%40exocore ← 127.0.0.1
+[req] GET /exocore/api/social/avatar?username=%40skibide ← 127.0.0.1
+[req] GET /exocore/api/social/friends?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/social/friends?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (1ms)
+[req] GET /exocore/api/social/avatar?username=%40exocore ← 127.0.0.1
+[req] GET /exocore/api/social/avatar?username=%40skibide ← 127.0.0.1
+[req] GET /exocore/api/social/avatar?username=%40samir ← 127.0.0.1
+[res] GET /exocore/api/social/avatar?username=%40skibide → 200 (416ms)
+[res] GET /exocore/api/social/avatar?username=%40samir → 200 (418ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (0ms)
+[req] GET /exocore/api/social/avatar?username=%40exocore ← 127.0.0.1
+[req] POST /exocore/api/social/pubkey ← 127.0.0.1
+[res] POST /exocore/api/social/pubkey → 200 (1946ms)
+[req] GET /exocore/api/social/friends?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/social/friends?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (1ms)
+[res] GET /exocore/api/social/avatar?username=%40exocore → 200 (2431ms)
+[req] GET /exocore/api/social/avatar?username=%40exocore ← 127.0.0.1
+[res] GET /exocore/api/social/avatar?username=%40exocore → 200 (0ms)
+[res] GET /exocore/api/social/avatar?username=%40skibide → 200 (2444ms)
+[res] GET /exocore/api/social/avatar?username=%40exocore → 200 (1965ms)
+[res] GET /exocore/api/social/avatar?username=%40exocore → 200 (2448ms)
+[req] GET /exocore/api/social/friends?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/social/friends?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (1ms)
+[req] GET /exocore/api/social/avatars?usernames=%40samir ← 127.0.0.1
+[res] GET /exocore/api/social/avatars?usernames=%40samir → 200 (1ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (0ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (0ms)
+[sync] flushing 1 dirty user(s) → Drive
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (1ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (1ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (1ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (1ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (0ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (1ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (1ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (0ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (1ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (1ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (0ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (0ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (0ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (0ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (1ms)
+[req] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f ← 127.0.0.1
+[res] GET /exocore/api/auth/token-verify?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f → 200 (1ms)
+[req] GET /exocore/port/3000/ ← 131.226.110.22, 10.84.3.23, 127.0.0.1
+[res] GET /exocore/port/3000/ → 404 (1ms)
+[req] GET /exocore/port/3000/ ← 131.226.110.22, 10.84.10.119, 127.0.0.1
+[res] GET /exocore/port/3000/ → 404 (1ms)
+[1G[0K⠙[1G[0K

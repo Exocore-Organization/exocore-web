@@ -1,0 +1,215 @@
+
+> exocore-web@4.0.0 start
+> tsx exocore-web/index.ts
+
+[1G[0K[ROUTES] Loaded: /auth/audit
+[ROUTES] Loaded: /auth/delete
+[ROUTES] Loaded: /auth/plans
+[ROUTES] Loaded: /auth/userinfo
+[ROUTES] Loaded: /auth/verify
+[ROUTES] Loaded: /editor/ai
+[ROUTES] Loaded: /editor/coding
+[ROUTES] Loaded: /editor/deps
+[ROUTES] Loaded: /editor/gdrive
+[ROUTES] Loaded: /editor/github
+[ROUTES] Loaded: /editor/npm
+[ROUTES] Loaded: /editor/projects
+[ROUTES] Loaded: /editor/pylib
+[ROUTES] Loaded: /editor/runtime
+[ROUTES] Loaded: /editor/shell
+[ROUTES] Loaded: /editor/templates
+[ROUTES] Loaded: /social
+📦 [auto-build] running vite build (client)...
+[1G[0K⠙[1G[0K[36mvite v8.0.10 [32mbuilding client environment for production...[36m[39m
+[2Ktransforming (103) [2mstyles/shared.css[0m[2Ktransforming (170) [2m../../node_modules/lucide-react/dist/esm/icons/panel-righ[2Ktransforming (1019) [2m../../node_modules/lucide-react/dist/esm/icons/disc-3.mj[2Ktransforming (1020) [2m../../node_modules/lucide-react/dist/esm/icons/carrot.mj[2Ktransforming (1946) [2m../../node_modules/axios/lib/cancel/isCancel.js[0m[2Ktransforming (2217) [2m../../node_modules/typescript/lib/typescript.js[0m[2Ktransforming (2219) [2m../../__vite-browser-external[0m[2K[32m✓[39m 2219 modules transformed.
+[2Krendering chunks (1)...[2Krendering chunks (2)...[2Krendering chunks (3)...[2Krendering chunks (4)...[2Krendering chunks (5)...[2Krendering chunks (6)...[2Krendering chunks (7)...[2Krendering chunks (8)...[2Krendering chunks (9)...[2Krendering chunks (10)...[2Krendering chunks (11)...[2Krendering chunks (12)...[2Krendering chunks (13)...[2Krendering chunks (14)...[2Krendering chunks (15)...[2Krendering chunks (16)...[2Krendering chunks (17)...[2Krendering chunks (18)...[2Krendering chunks (19)...[2Krendering chunks (20)...[2Krendering chunks (21)...[2Krendering chunks (22)...[2Krendering chunks (23)...[2Krendering chunks (24)...[2Krendering chunks (25)...[2Krendering chunks (26)...[2Krendering chunks (27)...[2Krendering chunks (28)...[2Krendering chunks (29)...[2Krendering chunks (30)...[2Krendering chunks (31)...[2Krendering chunks (32)...[2Krendering chunks (33)...[2Krendering chunks (34)...[2Krendering chunks (35)...[2Krendering chunks (36)...[2Krendering chunks (37)...[2Krendering chunks (38)...[2Krendering chunks (39)...[2Krendering chunks (40)...[2Krendering chunks (41)...[2Krendering chunks (42)...[2Krendering chunks (43)...[2Krendering chunks (44)...[2Krendering chunks (45)...[2Krendering chunks (46)...[2Krendering chunks (47)...[2Krendering chunks (48)...[2Krendering chunks (49)...[2Krendering chunks (50)...[2Krendering chunks (51)...[2Krendering chunks (52)...[2Krendering chunks (53)...[2Krendering chunks (54)...[2Krendering chunks (55)...[2Krendering chunks (56)...[2Krendering chunks (57)...[2Krendering chunks (58)...[2Krendering chunks (59)...[2Krendering chunks (60)...[2Krendering chunks (61)...[2Krendering chunks (62)...[2Krendering chunks (63)...[2Krendering chunks (64)...[2Krendering chunks (65)...[2Krendering chunks (66)...[2Krendering chunks (67)...[2Krendering chunks (68)...[2Krendering chunks (69)...[2Krendering chunks (70)...[2Krendering chunks (71)...[2Krendering chunks (72)...[2Krendering chunks (73)...[2Krendering chunks (74)...[2Krendering chunks (75)...[2Krendering chunks (76)...[2Krendering chunks (77)...[2Krendering chunks (78)...[2Krendering chunks (79)...[2Krendering chunks (80)...[2Krendering chunks (81)...[2Krendering chunks (82)...[2Krendering chunks (83)...[2Krendering chunks (84)...[2Krendering chunks (85)...[2Krendering chunks (86)...[2Krendering chunks (87)...[2Krendering chunks (88)...[2Krendering chunks (89)...[2Krendering chunks (90)...[2Krendering chunks (91)...[2Krendering chunks (92)...[2Krendering chunks (93)...[2Krendering chunks (94)...[2Krendering chunks (95)...[2Krendering chunks (96)...[2Krendering chunks (97)...[2Krendering chunks (98)...[2Krendering chunks (99)...[2Krendering chunks (100)...[2Krendering chunks (101)...[2Krendering chunks (102)...[2Krendering chunks (103)...[2Krendering chunks (104)...[2Krendering chunks (105)...[2Krendering chunks (106)...[2Krendering chunks (107)...[2Krendering chunks (108)...[2Krendering chunks (109)...[2Krendering chunks (110)...[2Krendering chunks (111)...[2Krendering chunks (112)...[2Krendering chunks (113)...[2Krendering chunks (114)...[2Krendering chunks (115)...[2Krendering chunks (116)...[2Krendering chunks (117)...[2Krendering chunks (118)...[2Krendering chunks (119)...[2Krendering chunks (120)...[2Krendering chunks (121)...[2Krendering chunks (122)...[2Krendering chunks (123)...[2Krendering chunks (124)...[2Krendering chunks (125)...[2Krendering chunks (126)...[2Krendering chunks (127)...[2Krendering chunks (128)...[2Krendering chunks (129)...[2Kcomputing gzip size...
+[2K[2mexocore-web/dist/[0m[32mindex.html                                        [39m[2m[1m    1.53 kB[0m[0m[2m │ gzip:   0.61 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[35mxterm-TdnZ7DQy.css                         [39m[2m[1m    2.68 kB[0m[0m[2m │ gzip:   0.73 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[35mcoding-NFZFER2R.css                        [39m[2m[1m    6.22 kB[0m[0m[2m │ gzip:   1.41 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[35mDashboard-BDVEAb3Z.css                     [39m[2m[1m   50.46 kB[0m[0m[2m │ gzip:   9.84 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[35mindex-CphNBf8H.css                         [39m[2m[1m   60.00 kB[0m[0m[2m │ gzip:  11.77 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mAuthLayout-8lJ3r7r2.js                     [39m[2m[1m    0.69 kB[0m[0m[2m │ gzip:   0.31 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2023.collection.d-C-LTX-kj.js        [39m[2m[1m    0.95 kB[0m[0m[2m │ gzip:   0.55 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mpanelAuth-dWcq_D42.js                      [39m[2m[1m    0.96 kB[0m[0m[2m │ gzip:   0.53 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.arraybuffer.d-5ofQWGNt.js       [39m[2m[1m    0.97 kB[0m[0m[2m │ gzip:   0.56 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.date.d-DlfvihiU.js              [39m[2m[1m    1.01 kB[0m[0m[2m │ gzip:   0.58 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2019.intl.d-BLxbi873.js              [39m[2m[1m    1.01 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2016.d-BIQxsPin.js                   [39m[2m[1m    1.02 kB[0m[0m[2m │ gzip:   0.57 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.dom.asynciterable.d-KgoO8J8G.js        [39m[2m[1m    1.02 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.dom.iterable.d-CmuAgV9X.js             [39m[2m[1m    1.02 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.webworker.asynciterable.d-HW2tcOkV.js  [39m[2m[1m    1.02 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.webworker.iterable.d-Ce6aUG7b.js       [39m[2m[1m    1.02 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2023.d-BJn9a03c.js                   [39m[2m[1m    1.05 kB[0m[0m[2m │ gzip:   0.57 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2019.symbol.d-C0Ahh6Q_.js            [39m[2m[1m    1.06 kB[0m[0m[2m │ gzip:   0.61 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.error.d-BAGt6SGd.js             [39m[2m[1m    1.08 kB[0m[0m[2m │ gzip:   0.62 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2016.full.d-BUwuRK5P.js              [39m[2m[1m    1.08 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.full.d-wn-8Pw44.js              [39m[2m[1m    1.08 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es6.d-IfFHWKiA.js                      [39m[2m[1m    1.08 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2021.d-D9xc9oLO.js                   [39m[2m[1m    1.09 kB[0m[0m[2m │ gzip:   0.57 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.webworker.importscripts.d-C9qOcJhH.js  [39m[2m[1m    1.09 kB[0m[0m[2m │ gzip:   0.61 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.sharedmemory.d-BF8OD7Ks.js      [39m[2m[1m    1.12 kB[0m[0m[2m │ gzip:   0.65 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.decorators.d-BKi8Fnsg.js        [39m[2m[1m    1.12 kB[0m[0m[2m │ gzip:   0.64 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2019.d-D5Yvg9yq.js                   [39m[2m[1m    1.12 kB[0m[0m[2m │ gzip:   0.58 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.regexp.d-DIk6QjBx.js            [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.64 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2018.full.d-uXedOqt0.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2019.full.d-vL8-qh8g.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.full.d-CIQUB57K.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2021.full.d-DGxBD97H.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.full.d-DiEE0lEf.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2023.full.d-DhK7_cMS.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.full.d-qy95Azwv.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.full.d-D22dg4Br.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.full.d-DIGYbtuE.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.object.d-DGkcRRuX.js            [39m[2m[1m    1.14 kB[0m[0m[2m │ gzip:   0.64 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2018.d-bYnqhbUF.js                   [39m[2m[1m    1.14 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.d-C0t9GpT6.js                   [39m[2m[1m    1.16 kB[0m[0m[2m │ gzip:   0.58 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.d-UNTZDoIs.js                   [39m[2m[1m    1.17 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.string.d-CQpWIDZk.js            [39m[2m[1m    1.21 kB[0m[0m[2m │ gzip:   0.69 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mrolldown-runtime-BM3Ffeng.js               [39m[2m[1m    1.21 kB[0m[0m[2m │ gzip:   0.67 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.d-eQFT2UZf.js                   [39m[2m[1m    1.21 kB[0m[0m[2m │ gzip:   0.60 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.d-DsYCVgCa.js                   [39m[2m[1m    1.22 kB[0m[0m[2m │ gzip:   0.60 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mPasswordInput-DDUlY4zd.js                  [39m[2m[1m    1.24 kB[0m[0m[2m │ gzip:   0.62 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.string.d-Y9qVE1yW.js            [39m[2m[1m    1.25 kB[0m[0m[2m │ gzip:   0.69 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.d-CsFSt5zv.js                   [39m[2m[1m    1.25 kB[0m[0m[2m │ gzip:   0.61 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mAuthCallback-u4MfzDHi.js                   [39m[2m[1m    1.28 kB[0m[0m[2m │ gzip:   0.69 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.collection.d-B6it8Cvg.js        [39m[2m[1m    1.28 kB[0m[0m[2m │ gzip:   0.72 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2018.regexp.d-BKQV_aBp.js            [39m[2m[1m    1.28 kB[0m[0m[2m │ gzip:   0.69 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.d-C-cGycbo.js                   [39m[2m[1m    1.29 kB[0m[0m[2m │ gzip:   0.61 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.object.d-DK4wODKu.js            [39m[2m[1m    1.31 kB[0m[0m[2m │ gzip:   0.75 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.d-Bz5cMr0Q.js                   [39m[2m[1m    1.34 kB[0m[0m[2m │ gzip:   0.62 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.regexp.d-DyMMN4JO.js            [39m[2m[1m    1.35 kB[0m[0m[2m │ gzip:   0.73 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.decorators.legacy.d-SDGTqy9n.js        [39m[2m[1m    1.38 kB[0m[0m[2m │ gzip:   0.69 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.regexp.d--mfTX91h.js            [39m[2m[1m    1.40 kB[0m[0m[2m │ gzip:   0.73 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2018.promise.d-BhahrUCz.js           [39m[2m[1m    1.41 kB[0m[0m[2m │ gzip:   0.76 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.promise.d-BkKVO74u.js           [39m[2m[1m    1.45 kB[0m[0m[2m │ gzip:   0.76 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.intl.d-B99AvYUd.js              [39m[2m[1m    1.50 kB[0m[0m[2m │ gzip:   0.72 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2019.object.d-DVpISvQC.js            [39m[2m[1m    1.53 kB[0m[0m[2m │ gzip:   0.73 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2016.intl.d-C36iCUvS.js              [39m[2m[1m    1.54 kB[0m[0m[2m │ gzip:   0.83 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2019.string.d-CILYrWbK.js            [39m[2m[1m    1.58 kB[0m[0m[2m │ gzip:   0.70 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.typedarrays.d-D21FaWPK.js       [39m[2m[1m    1.59 kB[0m[0m[2m │ gzip:   0.64 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.number.d-D6dxtyK6.js            [39m[2m[1m    1.64 kB[0m[0m[2m │ gzip:   0.86 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2021.string.d-BSs1H8S0.js            [39m[2m[1m    1.64 kB[0m[0m[2m │ gzip:   0.75 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.symbol.wellknown.d-ByX-aObM.js  [39m[2m[1m    1.66 kB[0m[0m[2m │ gzip:   0.85 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.symbol.d-CqV9fvS_.js            [39m[2m[1m    1.70 kB[0m[0m[2m │ gzip:   0.82 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.promise.d-QmwYGPwN.js           [39m[2m[1m    1.71 kB[0m[0m[2m │ gzip:   0.87 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.array.d-CpCgcWcn.js             [39m[2m[1m    1.84 kB[0m[0m[2m │ gzip:   0.85 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.promise.d-Co9dzvi5.js           [39m[2m[1m    1.86 kB[0m[0m[2m │ gzip:   0.83 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.date.d-D-H5P1Qt.js              [39m[2m[1m    1.97 kB[0m[0m[2m │ gzip:   0.92 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mHome-D5hEcC1G.js                           [39m[2m[1m    2.11 kB[0m[0m[2m │ gzip:   0.94 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2018.asynciterable.d-MWIez3z3.js     [39m[2m[1m    2.31 kB[0m[0m[2m │ gzip:   1.02 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2021.promise.d-Dss_rBrl.js           [39m[2m[1m    2.31 kB[0m[0m[2m │ gzip:   0.95 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.string.d-Bylw5tiP.js            [39m[2m[1m    2.43 kB[0m[0m[2m │ gzip:   0.86 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.error.d-CVIY8nnE.js             [39m[2m[1m    2.43 kB[0m[0m[2m │ gzip:   0.77 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.object.d-xxWFqKk_.js            [39m[2m[1m    2.53 kB[0m[0m[2m │ gzip:   0.85 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.string.d-DRPEHXKB.js            [39m[2m[1m    2.54 kB[0m[0m[2m │ gzip:   1.18 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.generator.d-CWD7w3R4.js         [39m[2m[1m    2.61 kB[0m[0m[2m │ gzip:   0.97 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.arraybuffer.d-BGU2uprq.js       [39m[2m[1m    2.69 kB[0m[0m[2m │ gzip:   0.96 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.collection.d-BRtSJTqC.js        [39m[2m[1m    2.70 kB[0m[0m[2m │ gzip:   0.86 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2018.asyncgenerator.d-2McPdXoF.js    [39m[2m[1m    2.74 kB[0m[0m[2m │ gzip:   1.00 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mLogin-D4mGAcmL.js                          [39m[2m[1m    2.93 kB[0m[0m[2m │ gzip:   1.43 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2023.intl.d-BwkRuhpy.js              [39m[2m[1m    2.95 kB[0m[0m[2m │ gzip:   1.05 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.date.d-Dvcg8qWc.js              [39m[2m[1m    3.01 kB[0m[0m[2m │ gzip:   0.90 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2018.intl.d-CbQDOL_m.js              [39m[2m[1m    3.07 kB[0m[0m[2m │ gzip:   1.10 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.sharedmemory.d-BdUYdv5Z.js      [39m[2m[1m    3.13 kB[0m[0m[2m │ gzip:   1.14 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mVerifyPending-ZpCe2JeI.js                  [39m[2m[1m    3.18 kB[0m[0m[2m │ gzip:   1.48 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2019.array.d-Cwe-tYBo.js             [39m[2m[1m    3.22 kB[0m[0m[2m │ gzip:   1.15 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2021.weakref.d-DLByqMg-.js           [39m[2m[1m    3.22 kB[0m[0m[2m │ gzip:   1.19 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.promise.d-DDEeP1Xk.js           [39m[2m[1m    3.25 kB[0m[0m[2m │ gzip:   1.16 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.typedarrays.d-BLpjIg4n.js       [39m[2m[1m    3.46 kB[0m[0m[2m │ gzip:   1.07 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mrpcClient-C-cnQX1S.js                      [39m[2m[1m    3.61 kB[0m[0m[2m │ gzip:   1.40 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.collection.d-fvCPGcKw.js        [39m[2m[1m    3.93 kB[0m[0m[2m │ gzip:   0.99 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.array.d-B-PXGLdD.js             [39m[2m[1m    4.73 kB[0m[0m[2m │ gzip:   0.80 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mLeaderboard-CutG_AG5.js                    [39m[2m[1m    5.03 kB[0m[0m[2m │ gzip:   1.85 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mForgot-wDXa5xVe.js                         [39m[2m[1m    5.17 kB[0m[0m[2m │ gzip:   1.86 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.sharedmemory.d-BwzjML3H.js      [39m[2m[1m    5.19 kB[0m[0m[2m │ gzip:   1.28 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2016.array.include.d-BC0XG6G0.js     [39m[2m[1m    5.26 kB[0m[0m[2m │ gzip:   0.82 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.proxy.d-DI5em7Uc.js             [39m[2m[1m    5.34 kB[0m[0m[2m │ gzip:   1.55 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.collection.d-WpMH7FC1.js        [39m[2m[1m    5.40 kB[0m[0m[2m │ gzip:   1.53 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.intl.d-B0OaEpL9.js              [39m[2m[1m    5.40 kB[0m[0m[2m │ gzip:   1.45 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.reflect.d-C4nxMgwP.js           [39m[2m[1m    6.57 kB[0m[0m[2m │ gzip:   1.88 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.disposable.d-Bf8wHHxh.js        [39m[2m[1m    6.91 kB[0m[0m[2m │ gzip:   1.72 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.sharedmemory.d-DTnYkRpE.js      [39m[2m[1m    7.27 kB[0m[0m[2m │ gzip:   1.61 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.intl.d-ChYI_J64.js              [39m[2m[1m    7.78 kB[0m[0m[2m │ gzip:   2.23 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2021.intl.d-DwJrNRGN.js              [39m[2m[1m    8.32 kB[0m[0m[2m │ gzip:   2.11 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.iterator.d-CfRhHFKM.js          [39m[2m[1m    8.76 kB[0m[0m[2m │ gzip:   2.28 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.intl.d-BrPiclD1.js              [39m[2m[1m    9.49 kB[0m[0m[2m │ gzip:   2.10 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.scripthost.d-DPiRoMvc.js               [39m[2m[1m    9.50 kB[0m[0m[2m │ gzip:   2.85 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mProfile-DtT3rF84.js                        [39m[2m[1m   10.31 kB[0m[0m[2m │ gzip:   3.27 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.symbol.wellknown.d-CKCg9tWv.js  [39m[2m[1m   11.06 kB[0m[0m[2m │ gzip:   2.73 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.decorators.d-zva8Xcyv.js               [39m[2m[1m   13.31 kB[0m[0m[2m │ gzip:   2.29 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mRegister-H5rDbXBo.js                       [39m[2m[1m   18.30 kB[0m[0m[2m │ gzip:   6.18 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.iterable.d-ChVNPErG.js          [39m[2m[1m   18.30 kB[0m[0m[2m │ gzip:   2.31 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.float16.d-DL3ad3Ep.js           [39m[2m[1m   20.60 kB[0m[0m[2m │ gzip:   4.15 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.temporal.d-VmXlDoQm.js          [39m[2m[1m   22.10 kB[0m[0m[2m │ gzip:   3.44 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.intl.d-B0i5IAYV.js              [39m[2m[1m   22.57 kB[0m[0m[2m │ gzip:   4.60 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.core.d-BTi6uqhi.js              [39m[2m[1m   22.95 kB[0m[0m[2m │ gzip:   5.07 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.bigint.d-DUPjzQB_.js            [39m[2m[1m   38.36 kB[0m[0m[2m │ gzip:   5.34 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2023.array.d-iJ0deruD.js             [39m[2m[1m   40.37 kB[0m[0m[2m │ gzip:   2.53 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mindex-vH4BohGu.js                          [39m[2m[1m   43.69 kB[0m[0m[2m │ gzip:  13.81 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mvendor-8aMWTBsg.js                         [39m[2m[1m   81.83 kB[0m[0m[2m │ gzip:  30.15 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mmarkdown-BlDUWnIe.js                       [39m[2m[1m  126.84 kB[0m[0m[2m │ gzip:  39.04 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mreact-dom-Ca-XCrQV.js                      [39m[2m[1m  181.79 kB[0m[0m[2m │ gzip:  57.19 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mDashboard-C3hdvxR9.js                      [39m[2m[1m  211.31 kB[0m[0m[2m │ gzip:  64.51 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es5.d-NByiQnm_.js                      [39m[2m[1m  219.22 kB[0m[0m[2m │ gzip:  20.04 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mfa-DW9y2La9.js                             [39m[2m[1m  245.95 kB[0m[0m[2m │ gzip:  82.11 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mxterm-CQVfnTIP.js                          [39m[2m[1m  282.65 kB[0m[0m[2m │ gzip:  66.66 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.webworker.d-CDdzqASj.js                [39m[2m[1m  789.87 kB[0m[0m[2m │ gzip: 128.98 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mcoding-CXDvBu_H.js                         [39m[2m[1m  886.87 kB[0m[0m[2m │ gzip: 248.99 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.dom.d-B9_D2Bn4.js                      [39m[33m[1m2,358.19 kB[0m[39m[2m │ gzip: 358.56 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mtypescript-C_8dpBJZ.js                     [39m[33m[1m3,470.48 kB[0m[39m[2m │ gzip: 975.22 kB[0m
+
+[32m✓ built in 2.80s[39m
+[2K[1G[33m[plugin builtin:vite-reporter] [33m[1m
+(!) Some chunks are larger than 1500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[0m[33m[39m
+[1G[0K⠙[1G[0K📦 [auto-build] running tsc (server)...
+[1G[0K⠙[1G[0K[1G[0K⠙[1G[0K✅ [auto-build] dist/index.html ready.
+[RPC] handler 'runtime.start' is being overwritten
+[RPC] handler 'runtime.stop' is being overwritten
+[RPC] handler 'runtime.kill' is being overwritten
+[RPC] handler 'runtime.restart' is being overwritten
+[RPC] handler 'runtime.status' is being overwritten
+[RPC] handler 'runtime.list' is being overwritten
+[RPC] hub ready with 113 handler(s) + 3 stream(s)
+🔀 WSS mux ready (channels: social, rpc, terminal, lsp) [raw framing]
+[1;1H[0J[32m-----------------------------------------[0m
+🚀 EXOCORE SYSTEM IS NOW LIVE
+📡 REAL-TIME FS WATCHER ENABLED
+🔗 URL: http://localhost:5000/exocore
+[32m-----------------------------------------[0m
+[0mGET / [36m302[0m 3.447 ms - 37[0m
+[0mGET /exocore [36m301[0m 1.538 ms - 157[0m
+[0mGET /exocore/ [32m200[0m 2.341 ms - -[0m
+[0mGET /exocore/assets/rolldown-runtime-BM3Ffeng.js [32m200[0m 7.172 ms - -[0m
+[0mGET /exocore/assets/rpcClient-C-cnQX1S.js [32m200[0m 5.438 ms - -[0m
+[0mGET /exocore/assets/index-vH4BohGu.js [32m200[0m 5.230 ms - -[0m
+[0mGET /exocore/assets/index-CphNBf8H.css [32m200[0m 10.521 ms - -[0m
+[0mGET /exocore/assets/vendor-8aMWTBsg.js [32m200[0m 5.626 ms - -[0m
+[0mGET /exocore/assets/markdown-BlDUWnIe.js [32m200[0m 7.709 ms - -[0m
+[0mGET /exocore/assets/panelAuth-dWcq_D42.js [32m200[0m 12.341 ms - 969[0m
+[0mGET /exocore/assets/react-dom-Ca-XCrQV.js [32m200[0m 5.212 ms - -[0m
+[0mGET /exocore/exo-icon.png [32m200[0m 6.273 ms - 836225[0m
+[0mGET / [36m302[0m 0.520 ms - 37[0m
+[0mGET /exocore [36m301[0m 0.431 ms - 157[0m
+[0mGET /exocore/ [32m200[0m 0.865 ms - -[0m
+[0mGET /exocore/assets/index-CphNBf8H.css [32m200[0m 0.948 ms - -[0m
+[0mGET /exocore/assets/index-vH4BohGu.js [32m200[0m 1.407 ms - -[0m
+[0mGET /exocore/assets/rolldown-runtime-BM3Ffeng.js [32m200[0m 0.779 ms - -[0m
+[0mGET /exocore/assets/markdown-BlDUWnIe.js [32m200[0m 0.726 ms - -[0m
+[0mGET /exocore/assets/vendor-8aMWTBsg.js [32m200[0m 0.829 ms - -[0m
+[0mGET /exocore/assets/rpcClient-C-cnQX1S.js [32m200[0m 0.943 ms - -[0m
+[0mGET /exocore/assets/react-dom-Ca-XCrQV.js [32m200[0m 0.846 ms - -[0m
+[0mGET /exocore/assets/panelAuth-dWcq_D42.js [32m200[0m 1.231 ms - 969[0m
+[0mGET /exocore/ [36m304[0m 0.856 ms - -[0m
+[0mGET /exocore/assets/index-vH4BohGu.js [36m304[0m 1.379 ms - -[0m
+[0mGET /exocore/assets/rolldown-runtime-BM3Ffeng.js [36m304[0m 1.548 ms - -[0m
+[0mGET /exocore/assets/markdown-BlDUWnIe.js [36m304[0m 1.370 ms - -[0m
+[0mGET /exocore/assets/vendor-8aMWTBsg.js [36m304[0m 2.128 ms - -[0m
+[0mGET /exocore/assets/rpcClient-C-cnQX1S.js [36m304[0m 0.781 ms - -[0m
+[0mGET /exocore/assets/react-dom-Ca-XCrQV.js [36m304[0m 0.702 ms - -[0m
+[0mGET /exocore/assets/index-CphNBf8H.css [36m304[0m 0.593 ms - -[0m
+[0mGET /exocore/assets/panelAuth-dWcq_D42.js [36m304[0m 1.005 ms - -[0m
+[0mGET /exocore/exo-icon.png [36m304[0m 0.788 ms - -[0m
+[1G[0K⠙[1G[0K

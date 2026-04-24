@@ -1,0 +1,731 @@
+
+> exocore-web@4.0.0 start
+> tsx exocore-web/index.ts
+
+[1G[0K[ROUTES] Loaded: /auth/audit
+[ROUTES] Loaded: /auth/delete
+[ROUTES] Loaded: /auth/plans
+[ROUTES] Loaded: /auth/userinfo
+[ROUTES] Loaded: /auth/verify
+[ROUTES] Loaded: /editor/ai
+[ROUTES] Loaded: /editor/coding
+[ROUTES] Loaded: /editor/deps
+[ROUTES] Loaded: /editor/gdrive
+[ROUTES] Loaded: /editor/github
+[ROUTES] Loaded: /editor/npm
+[ROUTES] Loaded: /editor/projects
+[ROUTES] Loaded: /editor/pylib
+[ROUTES] Loaded: /editor/runtime
+[ROUTES] Loaded: /editor/shell
+[ROUTES] Loaded: /editor/templates
+[ROUTES] Loaded: /social
+📦 [auto-build] running vite build (client)...
+[1G[0K⠙[1G[0K[36mvite v8.0.10 [32mbuilding client environment for production...[36m[39m
+[2Ktransforming (128) [2m../../node_modules/axios/lib/helpers/buildURL.js[0m[2Ktransforming (234) [2m../../node_modules/@noble/curves/abstract/edwards.js[0m[2Ktransforming (680) [2m../../node_modules/lucide-react/dist/esm/icons/dumbbell.m[2Ktransforming (681) [2m../../node_modules/lucide-react/dist/esm/icons/drumstick.[2Ktransforming (1811) [2m../../node_modules/lucide-react/dist/esm/icons/webcam.mj[2Ktransforming (2088) [2m../../node_modules/vfile/lib/minproc.browser.js[0m[2Ktransforming (2219) [2m../../__vite-browser-external[0m[2K[32m✓[39m 2219 modules transformed.
+[2Krendering chunks (1)...[2Krendering chunks (2)...[2Krendering chunks (3)...[2Krendering chunks (4)...[2Krendering chunks (5)...[2Krendering chunks (6)...[2Krendering chunks (7)...[2Krendering chunks (8)...[2Krendering chunks (9)...[2Krendering chunks (10)...[2Krendering chunks (11)...[2Krendering chunks (12)...[2Krendering chunks (13)...[2Krendering chunks (14)...[2Krendering chunks (15)...[2Krendering chunks (16)...[2Krendering chunks (17)...[2Krendering chunks (18)...[2Krendering chunks (19)...[2Krendering chunks (20)...[2Krendering chunks (21)...[2Krendering chunks (22)...[2Krendering chunks (23)...[2Krendering chunks (24)...[2Krendering chunks (25)...[2Krendering chunks (26)...[2Krendering chunks (27)...[2Krendering chunks (28)...[2Krendering chunks (29)...[2Krendering chunks (30)...[2Krendering chunks (31)...[2Krendering chunks (32)...[2Krendering chunks (33)...[2Krendering chunks (34)...[2Krendering chunks (35)...[2Krendering chunks (36)...[2Krendering chunks (37)...[2Krendering chunks (38)...[2Krendering chunks (39)...[2Krendering chunks (40)...[2Krendering chunks (41)...[2Krendering chunks (42)...[2Krendering chunks (43)...[2Krendering chunks (44)...[2Krendering chunks (45)...[2Krendering chunks (46)...[2Krendering chunks (47)...[2Krendering chunks (48)...[2Krendering chunks (49)...[2Krendering chunks (50)...[2Krendering chunks (51)...[2Krendering chunks (52)...[2Krendering chunks (53)...[2Krendering chunks (54)...[2Krendering chunks (55)...[2Krendering chunks (56)...[2Krendering chunks (57)...[2Krendering chunks (58)...[2Krendering chunks (59)...[2Krendering chunks (60)...[2Krendering chunks (61)...[2Krendering chunks (62)...[2Krendering chunks (63)...[2Krendering chunks (64)...[2Krendering chunks (65)...[2Krendering chunks (66)...[2Krendering chunks (67)...[2Krendering chunks (68)...[2Krendering chunks (69)...[2Krendering chunks (70)...[2Krendering chunks (71)...[2Krendering chunks (72)...[2Krendering chunks (73)...[2Krendering chunks (74)...[2Krendering chunks (75)...[2Krendering chunks (76)...[2Krendering chunks (77)...[2Krendering chunks (78)...[2Krendering chunks (79)...[2Krendering chunks (80)...[2Krendering chunks (81)...[2Krendering chunks (82)...[2Krendering chunks (83)...[2Krendering chunks (84)...[2Krendering chunks (85)...[2Krendering chunks (86)...[2Krendering chunks (87)...[2Krendering chunks (88)...[2Krendering chunks (89)...[2Krendering chunks (90)...[2Krendering chunks (91)...[2Krendering chunks (92)...[2Krendering chunks (93)...[2Krendering chunks (94)...[2Krendering chunks (95)...[2Krendering chunks (96)...[2Krendering chunks (97)...[2Krendering chunks (98)...[2Krendering chunks (99)...[2Krendering chunks (100)...[2Krendering chunks (101)...[2Krendering chunks (102)...[2Krendering chunks (103)...[2Krendering chunks (104)...[2Krendering chunks (105)...[2Krendering chunks (106)...[2Krendering chunks (107)...[2Krendering chunks (108)...[2Krendering chunks (109)...[2Krendering chunks (110)...[2Krendering chunks (111)...[2Krendering chunks (112)...[2Krendering chunks (113)...[2Krendering chunks (114)...[2Krendering chunks (115)...[2Krendering chunks (116)...[2Krendering chunks (117)...[2Krendering chunks (118)...[2Krendering chunks (119)...[2Krendering chunks (120)...[2Krendering chunks (121)...[2Krendering chunks (122)...[2Krendering chunks (123)...[2Krendering chunks (124)...[2Krendering chunks (125)...[2Krendering chunks (126)...[2Krendering chunks (127)...[2Krendering chunks (128)...[2Krendering chunks (129)...[2Kcomputing gzip size...
+[2K[2mexocore-web/dist/[0m[32mindex.html                                        [39m[2m[1m    1.53 kB[0m[0m[2m │ gzip:   0.61 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[35mxterm-TdnZ7DQy.css                         [39m[2m[1m    2.68 kB[0m[0m[2m │ gzip:   0.73 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[35mcoding-NFZFER2R.css                        [39m[2m[1m    6.22 kB[0m[0m[2m │ gzip:   1.41 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[35mDashboard-BDVEAb3Z.css                     [39m[2m[1m   50.46 kB[0m[0m[2m │ gzip:   9.84 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[35mindex-CphNBf8H.css                         [39m[2m[1m   60.00 kB[0m[0m[2m │ gzip:  11.77 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mAuthLayout-8lJ3r7r2.js                     [39m[2m[1m    0.69 kB[0m[0m[2m │ gzip:   0.31 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2023.collection.d-C-LTX-kj.js        [39m[2m[1m    0.95 kB[0m[0m[2m │ gzip:   0.55 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mpanelAuth-C6qle6rO.js                      [39m[2m[1m    0.96 kB[0m[0m[2m │ gzip:   0.53 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.arraybuffer.d-5ofQWGNt.js       [39m[2m[1m    0.97 kB[0m[0m[2m │ gzip:   0.56 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.date.d-DlfvihiU.js              [39m[2m[1m    1.01 kB[0m[0m[2m │ gzip:   0.58 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2019.intl.d-BLxbi873.js              [39m[2m[1m    1.01 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2016.d-BIQxsPin.js                   [39m[2m[1m    1.02 kB[0m[0m[2m │ gzip:   0.57 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.dom.asynciterable.d-KgoO8J8G.js        [39m[2m[1m    1.02 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.dom.iterable.d-CmuAgV9X.js             [39m[2m[1m    1.02 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.webworker.asynciterable.d-HW2tcOkV.js  [39m[2m[1m    1.02 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.webworker.iterable.d-Ce6aUG7b.js       [39m[2m[1m    1.02 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2023.d-BJn9a03c.js                   [39m[2m[1m    1.05 kB[0m[0m[2m │ gzip:   0.57 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2019.symbol.d-C0Ahh6Q_.js            [39m[2m[1m    1.06 kB[0m[0m[2m │ gzip:   0.61 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.error.d-BAGt6SGd.js             [39m[2m[1m    1.08 kB[0m[0m[2m │ gzip:   0.62 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2016.full.d-BUwuRK5P.js              [39m[2m[1m    1.08 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.full.d-wn-8Pw44.js              [39m[2m[1m    1.08 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es6.d-IfFHWKiA.js                      [39m[2m[1m    1.08 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2021.d-D9xc9oLO.js                   [39m[2m[1m    1.09 kB[0m[0m[2m │ gzip:   0.57 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.webworker.importscripts.d-C9qOcJhH.js  [39m[2m[1m    1.09 kB[0m[0m[2m │ gzip:   0.61 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.sharedmemory.d-BF8OD7Ks.js      [39m[2m[1m    1.12 kB[0m[0m[2m │ gzip:   0.65 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.decorators.d-BKi8Fnsg.js        [39m[2m[1m    1.12 kB[0m[0m[2m │ gzip:   0.64 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2019.d-D5Yvg9yq.js                   [39m[2m[1m    1.12 kB[0m[0m[2m │ gzip:   0.58 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.regexp.d-DIk6QjBx.js            [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.64 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2018.full.d-uXedOqt0.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2019.full.d-vL8-qh8g.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.full.d-CIQUB57K.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2021.full.d-DGxBD97H.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.full.d-DiEE0lEf.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2023.full.d-DhK7_cMS.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.full.d-qy95Azwv.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.full.d-D22dg4Br.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.full.d-DIGYbtuE.js              [39m[2m[1m    1.13 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.object.d-DGkcRRuX.js            [39m[2m[1m    1.14 kB[0m[0m[2m │ gzip:   0.64 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2018.d-bYnqhbUF.js                   [39m[2m[1m    1.14 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.d-C0t9GpT6.js                   [39m[2m[1m    1.16 kB[0m[0m[2m │ gzip:   0.58 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.d-UNTZDoIs.js                   [39m[2m[1m    1.17 kB[0m[0m[2m │ gzip:   0.59 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.string.d-CQpWIDZk.js            [39m[2m[1m    1.21 kB[0m[0m[2m │ gzip:   0.69 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mrolldown-runtime-BM3Ffeng.js               [39m[2m[1m    1.21 kB[0m[0m[2m │ gzip:   0.67 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.d-eQFT2UZf.js                   [39m[2m[1m    1.21 kB[0m[0m[2m │ gzip:   0.60 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.d-DsYCVgCa.js                   [39m[2m[1m    1.22 kB[0m[0m[2m │ gzip:   0.60 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mPasswordInput-DDUlY4zd.js                  [39m[2m[1m    1.24 kB[0m[0m[2m │ gzip:   0.62 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.string.d-Y9qVE1yW.js            [39m[2m[1m    1.25 kB[0m[0m[2m │ gzip:   0.69 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.d-CsFSt5zv.js                   [39m[2m[1m    1.25 kB[0m[0m[2m │ gzip:   0.61 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mAuthCallback-u4MfzDHi.js                   [39m[2m[1m    1.28 kB[0m[0m[2m │ gzip:   0.69 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.collection.d-B6it8Cvg.js        [39m[2m[1m    1.28 kB[0m[0m[2m │ gzip:   0.72 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2018.regexp.d-BKQV_aBp.js            [39m[2m[1m    1.28 kB[0m[0m[2m │ gzip:   0.69 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.d-C-cGycbo.js                   [39m[2m[1m    1.29 kB[0m[0m[2m │ gzip:   0.61 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.object.d-DK4wODKu.js            [39m[2m[1m    1.31 kB[0m[0m[2m │ gzip:   0.75 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.d-Bz5cMr0Q.js                   [39m[2m[1m    1.34 kB[0m[0m[2m │ gzip:   0.62 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.regexp.d-DyMMN4JO.js            [39m[2m[1m    1.35 kB[0m[0m[2m │ gzip:   0.73 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.decorators.legacy.d-SDGTqy9n.js        [39m[2m[1m    1.38 kB[0m[0m[2m │ gzip:   0.69 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.regexp.d--mfTX91h.js            [39m[2m[1m    1.40 kB[0m[0m[2m │ gzip:   0.73 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2018.promise.d-BhahrUCz.js           [39m[2m[1m    1.41 kB[0m[0m[2m │ gzip:   0.76 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.promise.d-BkKVO74u.js           [39m[2m[1m    1.45 kB[0m[0m[2m │ gzip:   0.76 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.intl.d-B99AvYUd.js              [39m[2m[1m    1.50 kB[0m[0m[2m │ gzip:   0.72 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2019.object.d-DVpISvQC.js            [39m[2m[1m    1.53 kB[0m[0m[2m │ gzip:   0.73 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2016.intl.d-C36iCUvS.js              [39m[2m[1m    1.54 kB[0m[0m[2m │ gzip:   0.83 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2019.string.d-CILYrWbK.js            [39m[2m[1m    1.58 kB[0m[0m[2m │ gzip:   0.70 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.typedarrays.d-D21FaWPK.js       [39m[2m[1m    1.59 kB[0m[0m[2m │ gzip:   0.64 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.number.d-D6dxtyK6.js            [39m[2m[1m    1.64 kB[0m[0m[2m │ gzip:   0.86 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2021.string.d-BSs1H8S0.js            [39m[2m[1m    1.64 kB[0m[0m[2m │ gzip:   0.75 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.symbol.wellknown.d-ByX-aObM.js  [39m[2m[1m    1.66 kB[0m[0m[2m │ gzip:   0.85 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.symbol.d-CqV9fvS_.js            [39m[2m[1m    1.70 kB[0m[0m[2m │ gzip:   0.82 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.promise.d-QmwYGPwN.js           [39m[2m[1m    1.71 kB[0m[0m[2m │ gzip:   0.87 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.array.d-CpCgcWcn.js             [39m[2m[1m    1.84 kB[0m[0m[2m │ gzip:   0.85 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.promise.d-Co9dzvi5.js           [39m[2m[1m    1.86 kB[0m[0m[2m │ gzip:   0.83 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.date.d-D-H5P1Qt.js              [39m[2m[1m    1.97 kB[0m[0m[2m │ gzip:   0.92 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mHome-D5hEcC1G.js                           [39m[2m[1m    2.11 kB[0m[0m[2m │ gzip:   0.94 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2018.asynciterable.d-MWIez3z3.js     [39m[2m[1m    2.31 kB[0m[0m[2m │ gzip:   1.02 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2021.promise.d-Dss_rBrl.js           [39m[2m[1m    2.31 kB[0m[0m[2m │ gzip:   0.95 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.string.d-Bylw5tiP.js            [39m[2m[1m    2.43 kB[0m[0m[2m │ gzip:   0.86 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.error.d-CVIY8nnE.js             [39m[2m[1m    2.43 kB[0m[0m[2m │ gzip:   0.77 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.object.d-xxWFqKk_.js            [39m[2m[1m    2.53 kB[0m[0m[2m │ gzip:   0.85 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.string.d-DRPEHXKB.js            [39m[2m[1m    2.54 kB[0m[0m[2m │ gzip:   1.18 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.generator.d-CWD7w3R4.js         [39m[2m[1m    2.61 kB[0m[0m[2m │ gzip:   0.97 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.arraybuffer.d-BGU2uprq.js       [39m[2m[1m    2.69 kB[0m[0m[2m │ gzip:   0.96 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.collection.d-BRtSJTqC.js        [39m[2m[1m    2.70 kB[0m[0m[2m │ gzip:   0.86 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2018.asyncgenerator.d-2McPdXoF.js    [39m[2m[1m    2.74 kB[0m[0m[2m │ gzip:   1.00 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mLogin-YsZQhDjc.js                          [39m[2m[1m    2.93 kB[0m[0m[2m │ gzip:   1.43 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2023.intl.d-BwkRuhpy.js              [39m[2m[1m    2.95 kB[0m[0m[2m │ gzip:   1.05 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.date.d-Dvcg8qWc.js              [39m[2m[1m    3.01 kB[0m[0m[2m │ gzip:   0.90 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2018.intl.d-CbQDOL_m.js              [39m[2m[1m    3.07 kB[0m[0m[2m │ gzip:   1.10 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2024.sharedmemory.d-BdUYdv5Z.js      [39m[2m[1m    3.13 kB[0m[0m[2m │ gzip:   1.14 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mVerifyPending-C8T7fox0.js                  [39m[2m[1m    3.18 kB[0m[0m[2m │ gzip:   1.48 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2019.array.d-Cwe-tYBo.js             [39m[2m[1m    3.22 kB[0m[0m[2m │ gzip:   1.15 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2021.weakref.d-DLByqMg-.js           [39m[2m[1m    3.22 kB[0m[0m[2m │ gzip:   1.19 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.promise.d-DDEeP1Xk.js           [39m[2m[1m    3.25 kB[0m[0m[2m │ gzip:   1.16 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.typedarrays.d-BLpjIg4n.js       [39m[2m[1m    3.46 kB[0m[0m[2m │ gzip:   1.07 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mrpcClient-lHNc-e1L.js                      [39m[2m[1m    3.61 kB[0m[0m[2m │ gzip:   1.40 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.collection.d-fvCPGcKw.js        [39m[2m[1m    3.93 kB[0m[0m[2m │ gzip:   0.99 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.array.d-B-PXGLdD.js             [39m[2m[1m    4.73 kB[0m[0m[2m │ gzip:   0.80 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mLeaderboard-Bb6VZy2-.js                    [39m[2m[1m    5.03 kB[0m[0m[2m │ gzip:   1.85 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mForgot-D8K3Ehfy.js                         [39m[2m[1m    5.17 kB[0m[0m[2m │ gzip:   1.86 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.sharedmemory.d-BwzjML3H.js      [39m[2m[1m    5.19 kB[0m[0m[2m │ gzip:   1.28 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2016.array.include.d-BC0XG6G0.js     [39m[2m[1m    5.26 kB[0m[0m[2m │ gzip:   0.82 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.proxy.d-DI5em7Uc.js             [39m[2m[1m    5.34 kB[0m[0m[2m │ gzip:   1.55 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.collection.d-WpMH7FC1.js        [39m[2m[1m    5.40 kB[0m[0m[2m │ gzip:   1.53 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.intl.d-B0OaEpL9.js              [39m[2m[1m    5.40 kB[0m[0m[2m │ gzip:   1.45 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.reflect.d-C4nxMgwP.js           [39m[2m[1m    6.57 kB[0m[0m[2m │ gzip:   1.88 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.disposable.d-Bf8wHHxh.js        [39m[2m[1m    6.91 kB[0m[0m[2m │ gzip:   1.72 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2017.sharedmemory.d-DTnYkRpE.js      [39m[2m[1m    7.27 kB[0m[0m[2m │ gzip:   1.61 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2022.intl.d-ChYI_J64.js              [39m[2m[1m    7.78 kB[0m[0m[2m │ gzip:   2.23 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2021.intl.d-DwJrNRGN.js              [39m[2m[1m    8.32 kB[0m[0m[2m │ gzip:   2.11 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.iterator.d-CfRhHFKM.js          [39m[2m[1m    8.76 kB[0m[0m[2m │ gzip:   2.28 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.intl.d-BrPiclD1.js              [39m[2m[1m    9.49 kB[0m[0m[2m │ gzip:   2.10 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.scripthost.d-DPiRoMvc.js               [39m[2m[1m    9.50 kB[0m[0m[2m │ gzip:   2.85 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mProfile-CXsaZ6xQ.js                        [39m[2m[1m   10.31 kB[0m[0m[2m │ gzip:   3.27 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.symbol.wellknown.d-CKCg9tWv.js  [39m[2m[1m   11.06 kB[0m[0m[2m │ gzip:   2.73 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.decorators.d-zva8Xcyv.js               [39m[2m[1m   13.31 kB[0m[0m[2m │ gzip:   2.29 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mRegister-D_IR221Q.js                       [39m[2m[1m   18.30 kB[0m[0m[2m │ gzip:   6.18 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.iterable.d-ChVNPErG.js          [39m[2m[1m   18.30 kB[0m[0m[2m │ gzip:   2.31 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2025.float16.d-DL3ad3Ep.js           [39m[2m[1m   20.60 kB[0m[0m[2m │ gzip:   4.15 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.esnext.temporal.d-VmXlDoQm.js          [39m[2m[1m   22.10 kB[0m[0m[2m │ gzip:   3.44 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.intl.d-B0i5IAYV.js              [39m[2m[1m   22.57 kB[0m[0m[2m │ gzip:   4.60 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2015.core.d-BTi6uqhi.js              [39m[2m[1m   22.95 kB[0m[0m[2m │ gzip:   5.07 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2020.bigint.d-DUPjzQB_.js            [39m[2m[1m   38.36 kB[0m[0m[2m │ gzip:   5.34 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es2023.array.d-iJ0deruD.js             [39m[2m[1m   40.37 kB[0m[0m[2m │ gzip:   2.53 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mindex-DIRz5pH2.js                          [39m[2m[1m   43.69 kB[0m[0m[2m │ gzip:  13.81 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mvendor-8aMWTBsg.js                         [39m[2m[1m   81.83 kB[0m[0m[2m │ gzip:  30.15 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mmarkdown-BlDUWnIe.js                       [39m[2m[1m  126.84 kB[0m[0m[2m │ gzip:  39.04 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mreact-dom-Ca-XCrQV.js                      [39m[2m[1m  181.79 kB[0m[0m[2m │ gzip:  57.19 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mDashboard-CMcQjE4G.js                      [39m[2m[1m  211.42 kB[0m[0m[2m │ gzip:  64.54 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.es5.d-NByiQnm_.js                      [39m[2m[1m  219.22 kB[0m[0m[2m │ gzip:  20.04 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mfa-DW9y2La9.js                             [39m[2m[1m  245.95 kB[0m[0m[2m │ gzip:  82.11 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mxterm-CQVfnTIP.js                          [39m[2m[1m  282.65 kB[0m[0m[2m │ gzip:  66.66 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.webworker.d-CDdzqASj.js                [39m[2m[1m  789.87 kB[0m[0m[2m │ gzip: 128.98 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mcoding-X8vTK2Mw.js                         [39m[2m[1m  886.97 kB[0m[0m[2m │ gzip: 249.01 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mlib.dom.d-B9_D2Bn4.js                      [39m[33m[1m2,358.19 kB[0m[39m[2m │ gzip: 358.56 kB[0m
+[2mexocore-web/dist/[0m[2massets/[0m[36mtypescript-C_8dpBJZ.js                     [39m[33m[1m3,470.48 kB[0m[39m[2m │ gzip: 975.22 kB[0m
+
+[32m✓ built in 4.20s[39m
+[2K[1G[33m[plugin builtin:vite-reporter] [33m[1m
+(!) Some chunks are larger than 1500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[0m[33m[39m
+[1G[0K⠙[1G[0K📦 [auto-build] running tsc (server)...
+[1G[0K⠙[1G[0K[1G[0K⠙[1G[0K✅ [auto-build] dist/index.html ready.
+[RPC] handler 'runtime.start' is being overwritten
+[RPC] handler 'runtime.stop' is being overwritten
+[RPC] handler 'runtime.kill' is being overwritten
+[RPC] handler 'runtime.restart' is being overwritten
+[RPC] handler 'runtime.status' is being overwritten
+[RPC] handler 'runtime.list' is being overwritten
+[RPC] hub ready with 113 handler(s) + 3 stream(s)
+🔀 WSS mux ready (channels: social, rpc, terminal, lsp) [raw framing]
+[1;1H[0J[32m-----------------------------------------[0m
+🚀 EXOCORE SYSTEM IS NOW LIVE
+📡 REAL-TIME FS WATCHER ENABLED
+🔗 URL: http://localhost:5000/exocore
+[32m-----------------------------------------[0m
+[0mGET / [36m302[0m 3.275 ms - 37[0m
+[0mGET /exocore/ [32m200[0m 3.247 ms - -[0m
+[0mGET /exocore/assets/index-CphNBf8H.css [32m200[0m 1.174 ms - -[0m
+[0mGET /exocore/assets/index-DIRz5pH2.js [32m200[0m 0.809 ms - -[0m
+[0mGET /exocore/assets/rpcClient-lHNc-e1L.js [32m200[0m 0.977 ms - -[0m
+[0mGET /exocore/assets/panelAuth-C6qle6rO.js [32m200[0m 1.227 ms - 969[0m
+[0mGET /exocore/assets/rolldown-runtime-BM3Ffeng.js [32m200[0m 0.652 ms - -[0m
+[0mGET /exocore/assets/markdown-BlDUWnIe.js [32m200[0m 0.832 ms - -[0m
+[0mGET /exocore/assets/vendor-8aMWTBsg.js [32m200[0m 2.999 ms - -[0m
+[0mGET /exocore/assets/react-dom-Ca-XCrQV.js [32m200[0m 1.005 ms - -[0m
+[0mGET / [36m302[0m 0.525 ms - 37[0m
+[0mGET /exocore/ [36m304[0m 0.705 ms - -[0m
+[0mGET /exocore/assets/index-DIRz5pH2.js [36m304[0m 0.640 ms - -[0m
+[0mGET /exocore/assets/rolldown-runtime-BM3Ffeng.js [36m304[0m 0.544 ms - -[0m
+[0mGET /exocore/assets/vendor-8aMWTBsg.js [36m304[0m 0.573 ms - -[0m
+[0mGET /exocore/assets/rpcClient-lHNc-e1L.js [36m304[0m 0.776 ms - -[0m
+[0mGET /exocore/assets/markdown-BlDUWnIe.js [36m304[0m 0.539 ms - -[0m
+[0mGET /exocore/assets/index-CphNBf8H.css [36m304[0m 0.746 ms - -[0m
+[0mGET /exocore/assets/react-dom-Ca-XCrQV.js [36m304[0m 1.019 ms - -[0m
+[0mGET /exocore/assets/panelAuth-C6qle6rO.js [36m304[0m 1.105 ms - -[0m
+[0mGET / [36m302[0m 0.502 ms - 37[0m
+[0mGET /exocore/ [36m304[0m 0.732 ms - -[0m
+[0mGET /exocore/assets/index-CphNBf8H.css [36m304[0m 2.117 ms - -[0m
+[0mGET /exocore/assets/index-DIRz5pH2.js [36m304[0m 1.093 ms - -[0m
+[0mGET /exocore/assets/rolldown-runtime-BM3Ffeng.js [36m304[0m 0.809 ms - -[0m
+[0mGET /exocore/assets/markdown-BlDUWnIe.js [36m304[0m 0.446 ms - -[0m
+[0mGET /exocore/assets/vendor-8aMWTBsg.js [36m304[0m 0.431 ms - -[0m
+[0mGET /exocore/assets/rpcClient-lHNc-e1L.js [36m304[0m 1.656 ms - -[0m
+[0mGET /exocore/assets/react-dom-Ca-XCrQV.js [36m304[0m 0.660 ms - -[0m
+[0mGET /exocore/assets/panelAuth-C6qle6rO.js [36m304[0m 0.483 ms - -[0m
+[0mGET / [36m302[0m 99.673 ms - 37[0m
+[0mGET /exocore/ [36m304[0m 0.462 ms - -[0m
+[0mGET /exocore/assets/index-CphNBf8H.css [36m304[0m 0.565 ms - -[0m
+[0mGET /exocore/assets/index-DIRz5pH2.js [36m304[0m 0.408 ms - -[0m
+[0mGET /exocore/assets/rolldown-runtime-BM3Ffeng.js [36m304[0m 0.524 ms - -[0m
+[0mGET /exocore/assets/vendor-8aMWTBsg.js [36m304[0m 0.444 ms - -[0m
+[0mGET /exocore/assets/markdown-BlDUWnIe.js [36m304[0m 0.312 ms - -[0m
+[0mGET /exocore/assets/rpcClient-lHNc-e1L.js [36m304[0m 0.495 ms - -[0m
+[0mGET /exocore/assets/react-dom-Ca-XCrQV.js [36m304[0m 0.463 ms - -[0m
+[0mGET /exocore/assets/panelAuth-C6qle6rO.js [36m304[0m 1.233 ms - -[0m
+[0mGET /exocore/dashboard [32m200[0m 57.107 ms - -[0m
+[0mGET /exocore/assets/markdown-BlDUWnIe.js [36m304[0m 0.405 ms - -[0m
+[0mGET /exocore/assets/index-DIRz5pH2.js [36m304[0m 0.308 ms - -[0m
+[0mGET /exocore/assets/rolldown-runtime-BM3Ffeng.js [36m304[0m 0.287 ms - -[0m
+[0mGET /exocore/assets/index-CphNBf8H.css [36m304[0m 0.661 ms - -[0m
+[0mGET /exocore/assets/vendor-8aMWTBsg.js [36m304[0m 0.277 ms - -[0m
+[0mGET /exocore/assets/react-dom-Ca-XCrQV.js [36m304[0m 1.079 ms - -[0m
+[0mGET /exocore/assets/rpcClient-lHNc-e1L.js [36m304[0m 0.876 ms - -[0m
+[0mGET /exocore/assets/panelAuth-C6qle6rO.js [36m304[0m 0.389 ms - -[0m
+[0mGET /exocore/assets/Dashboard-BDVEAb3Z.css [32m200[0m 2.811 ms - -[0m
+[0mGET /exocore/assets/Dashboard-CMcQjE4G.js [32m200[0m 6.641 ms - -[0m
+[0mGET /exocore/assets/fa-DW9y2La9.js [32m200[0m 3.829 ms - -[0m
+[0mGET /exocore/assets/PasswordInput-DDUlY4zd.js [32m200[0m 0.710 ms - -[0m
+[0mGET /exocore/assets/Login-YsZQhDjc.js [32m200[0m 2.636 ms - -[0m
+[0mGET /exocore/assets/AuthLayout-8lJ3r7r2.js [32m200[0m 1.900 ms - 699[0m
+[0mGET /exocore/api/auth/userinfo?source=pv&token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [32m200[0m 1969.301 ms - 903[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [32m200[0m 369.046 ms - 886[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.512 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.128 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.902 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.262 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.653 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.906 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.046 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.789 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.480 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.752 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.124 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.694 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.279 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.701 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.781 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.845 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.821 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.759 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.470 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.956 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.876 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.300 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.032 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.752 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.459 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.675 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.030 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.651 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.713 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.401 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.809 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.760 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.631 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.493 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.215 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.983 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.747 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.963 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.562 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 5.781 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 5.171 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 5.737 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.490 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.954 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.842 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.695 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 4.447 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.152 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.740 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.952 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.825 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.949 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.482 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.798 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.537 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.088 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.855 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.640 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.639 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.794 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.802 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 4.259 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.896 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.739 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.522 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.620 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.645 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.700 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.893 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.471 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.572 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.956 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.778 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.559 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.777 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.761 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 5.544 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.543 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.209 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.322 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.031 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 5.005 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.893 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.589 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.946 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.507 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.754 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.806 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.700 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.673 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.984 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.838 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 7.999 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.827 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.977 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.656 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.682 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.478 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.504 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.914 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.569 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.362 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.960 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.713 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.881 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.727 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.297 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.834 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.554 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.640 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.701 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.328 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.586 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.746 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.868 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 5.684 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.514 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.707 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.634 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.923 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.589 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.315 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.723 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.915 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.418 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.337 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.773 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.465 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.582 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.592 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.415 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.508 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.845 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.740 ms - -[0m
+[0mGET /exocore/api/editor/templates/list [32m200[0m 4.129 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.641 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.961 ms - -[0m
+[0mGET /exocore/assets/coding-X8vTK2Mw.js [32m200[0m 7.430 ms - -[0m
+[0mGET /exocore/assets/xterm-TdnZ7DQy.css [32m200[0m 3.981 ms - -[0m
+[0mGET /exocore/assets/coding-NFZFER2R.css [32m200[0m 2.356 ms - -[0m
+[0mGET /exocore/assets/xterm-CQVfnTIP.js [32m200[0m 5.038 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.446 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.518 ms - -[0m
+[0mGET /exocore/api/editor/coding/files?projectId=exorepo-demo [32m200[0m 1.128 ms - 491[0m
+[0mGET /exocore/api/editor/projects/list [32m200[0m 5.429 ms - 886[0m
+[0mPOST /exocore/api/settings [32m200[0m 0.918 ms - 116[0m
+[0mGET /exocore/exo-icon.png [32m200[0m 5.547 ms - 836225[0m
+[0mGET /exocore/api/editor/coding/read?projectId=exorepo-demo&filePath=index.js [32m200[0m 0.991 ms - 303[0m
+[0mGET /exocore/assets/lib.decorators.d-zva8Xcyv.js [32m200[0m 2.191 ms - -[0m
+[0mGET /exocore/assets/lib.decorators.legacy.d-SDGTqy9n.js [32m200[0m 1.942 ms - -[0m
+[0mGET /exocore/assets/lib.dom.asynciterable.d-KgoO8J8G.js [32m200[0m 0.593 ms - -[0m
+[0mGET /exocore/api/editor/coding/read?projectId=exorepo-demo&filePath=tsconfig.json [33m404[0m 1.004 ms - 28[0m
+[0mGET /exocore/assets/typescript-C_8dpBJZ.js [32m200[0m 5.816 ms - -[0m
+[0mGET /exocore/assets/lib.dom.iterable.d-CmuAgV9X.js [32m200[0m 1.418 ms - -[0m
+[0mGET /exocore/assets/lib.es2015.collection.d-WpMH7FC1.js [32m200[0m 2.008 ms - -[0m
+[0mGET /exocore/assets/lib.dom.d-B9_D2Bn4.js [32m200[0m 3.517 ms - -[0m
+[0mGET /exocore/api/editor/coding/read?projectId=exorepo-demo&filePath=jsconfig.json [33m404[0m 0.586 ms - 28[0m
+[0mGET /exocore/assets/lib.es2015.d-C-cGycbo.js [32m200[0m 1.869 ms - -[0m
+[0mGET /exocore/assets/lib.es2015.core.d-BTi6uqhi.js [32m200[0m 3.452 ms - -[0m
+[0mGET /exocore/assets/lib.es2015.generator.d-CWD7w3R4.js [32m200[0m 2.872 ms - -[0m
+[0mGET /exocore/assets/lib.es2015.iterable.d-ChVNPErG.js [32m200[0m 2.508 ms - -[0m
+[0mGET /exocore/assets/lib.es2015.promise.d-DDEeP1Xk.js [32m200[0m 1.853 ms - -[0m
+[0mGET /exocore/assets/lib.es2015.proxy.d-DI5em7Uc.js [32m200[0m 1.557 ms - -[0m
+[0mGET /exocore/assets/lib.es2015.reflect.d-C4nxMgwP.js [32m200[0m 1.618 ms - -[0m
+[0mGET /exocore/assets/lib.es2015.symbol.d-CqV9fvS_.js [32m200[0m 1.308 ms - -[0m
+[0mGET /exocore/assets/lib.es2015.symbol.wellknown.d-CKCg9tWv.js [32m200[0m 1.628 ms - -[0m
+[0mGET /exocore/assets/lib.es2016.d-BIQxsPin.js [32m200[0m 0.728 ms - 1022[0m
+[0mGET /exocore/assets/lib.es2016.array.include.d-BC0XG6G0.js [32m200[0m 1.355 ms - -[0m
+[0mGET /exocore/assets/lib.es2016.full.d-BUwuRK5P.js [32m200[0m 1.839 ms - -[0m
+[0mGET /exocore/assets/lib.es2016.intl.d-C36iCUvS.js [32m200[0m 0.689 ms - -[0m
+[0mGET /exocore/assets/lib.es2017.arraybuffer.d-5ofQWGNt.js [32m200[0m 0.628 ms - 972[0m
+[0mGET /exocore/assets/lib.es2017.d-eQFT2UZf.js [32m200[0m 0.766 ms - -[0m
+[0mGET /exocore/assets/lib.es2017.date.d-D-H5P1Qt.js [32m200[0m 0.711 ms - -[0m
+[0mGET /exocore/assets/lib.es2017.full.d-wn-8Pw44.js [32m200[0m 1.298 ms - -[0m
+[0mGET /exocore/assets/lib.es2017.intl.d-B99AvYUd.js [32m200[0m 0.778 ms - -[0m
+[0mGET /exocore/assets/lib.es2017.object.d-xxWFqKk_.js [32m200[0m 2.199 ms - -[0m
+[0mGET /exocore/assets/lib.es2017.sharedmemory.d-DTnYkRpE.js [32m200[0m 1.630 ms - -[0m
+[0mGET /exocore/assets/lib.es2017.string.d-Bylw5tiP.js [32m200[0m 1.647 ms - -[0m
+[0mGET /exocore/assets/lib.es2017.typedarrays.d-D21FaWPK.js [32m200[0m 0.783 ms - -[0m
+[0mGET /exocore/assets/lib.es2018.asyncgenerator.d-2McPdXoF.js [32m200[0m 1.575 ms - -[0m
+[0mGET /exocore/assets/lib.es2018.asynciterable.d-MWIez3z3.js [32m200[0m 1.545 ms - -[0m
+[0mGET /exocore/assets/lib.es2018.d-bYnqhbUF.js [32m200[0m 0.627 ms - -[0m
+[0mGET /exocore/assets/lib.es2018.full.d-uXedOqt0.js [32m200[0m 0.628 ms - -[0m
+[0mGET /exocore/assets/lib.es2018.intl.d-CbQDOL_m.js [32m200[0m 1.607 ms - -[0m
+[0mGET /exocore/assets/lib.es2018.promise.d-BhahrUCz.js [32m200[0m 0.577 ms - -[0m
+[0mGET /exocore/assets/lib.es2018.regexp.d-BKQV_aBp.js [32m200[0m 0.556 ms - -[0m
+[0mGET /exocore/assets/lib.es2019.array.d-Cwe-tYBo.js [32m200[0m 2.391 ms - -[0m
+[0mGET /exocore/assets/lib.es2019.d-D5Yvg9yq.js [32m200[0m 0.774 ms - -[0m
+[0mGET /exocore/assets/lib.es2019.full.d-vL8-qh8g.js [32m200[0m 0.709 ms - -[0m
+[0mGET /exocore/assets/lib.es2019.intl.d-BLxbi873.js [32m200[0m 0.769 ms - 1015[0m
+[0mGET /exocore/assets/lib.es2019.object.d-DVpISvQC.js [32m200[0m 0.634 ms - -[0m
+[0mGET /exocore/assets/lib.es2019.string.d-CILYrWbK.js [32m200[0m 0.753 ms - -[0m
+[0mGET /exocore/assets/lib.es2019.symbol.d-C0Ahh6Q_.js [32m200[0m 1.013 ms - -[0m
+[0mGET /exocore/assets/lib.es2020.bigint.d-DUPjzQB_.js [32m200[0m 2.283 ms - -[0m
+[0mGET /exocore/assets/lib.es2020.d-CsFSt5zv.js [32m200[0m 0.647 ms - -[0m
+[0mGET /exocore/assets/lib.es2020.date.d-Dvcg8qWc.js [32m200[0m 1.608 ms - -[0m
+[0mGET /exocore/assets/lib.es2020.full.d-CIQUB57K.js [32m200[0m 0.614 ms - -[0m
+[0mGET /exocore/assets/lib.es2020.intl.d-B0i5IAYV.js [32m200[0m 1.504 ms - -[0m
+[0mGET /exocore/assets/lib.es2020.number.d-D6dxtyK6.js [32m200[0m 1.395 ms - -[0m
+[0mGET /exocore/assets/lib.es2020.promise.d-Co9dzvi5.js [32m200[0m 0.684 ms - -[0m
+[0mGET /exocore/assets/lib.es2020.sharedmemory.d-BwzjML3H.js [32m200[0m 1.364 ms - -[0m
+[0mGET /exocore/assets/lib.es2020.string.d-DRPEHXKB.js [32m200[0m 1.682 ms - -[0m
+[0mGET /exocore/assets/lib.es2020.symbol.wellknown.d-ByX-aObM.js [32m200[0m 0.635 ms - -[0m
+[0mGET /exocore/assets/lib.es2021.d-D9xc9oLO.js [32m200[0m 0.625 ms - -[0m
+[0mGET /exocore/assets/lib.es2021.full.d-DGxBD97H.js [32m200[0m 0.595 ms - -[0m
+[0mGET /exocore/assets/lib.es2021.intl.d-DwJrNRGN.js [32m200[0m 1.627 ms - -[0m
+[0mGET /exocore/assets/lib.es2021.promise.d-Dss_rBrl.js [32m200[0m 1.660 ms - -[0m
+[0mGET /exocore/assets/lib.es2021.string.d-BSs1H8S0.js [32m200[0m 0.672 ms - -[0m
+[0mGET /exocore/assets/lib.es2021.weakref.d-DLByqMg-.js [32m200[0m 1.789 ms - -[0m
+[0mGET /exocore/assets/lib.es2022.array.d-B-PXGLdD.js [32m200[0m 1.549 ms - -[0m
+[0mGET /exocore/assets/lib.es2022.d-C0t9GpT6.js [32m200[0m 0.537 ms - -[0m
+[0mGET /exocore/assets/lib.es2022.error.d-CVIY8nnE.js [32m200[0m 1.517 ms - -[0m
+[0mGET /exocore/assets/lib.es2022.full.d-DiEE0lEf.js [32m200[0m 1.892 ms - -[0m
+[0mGET /exocore/assets/lib.es2022.object.d-DGkcRRuX.js [32m200[0m 0.716 ms - -[0m
+[0mGET /exocore/assets/lib.es2022.intl.d-ChYI_J64.js [32m200[0m 1.801 ms - -[0m
+[0mGET /exocore/assets/lib.es2022.regexp.d--mfTX91h.js [32m200[0m 0.597 ms - -[0m
+[0mGET /exocore/assets/lib.es2022.string.d-CQpWIDZk.js [32m200[0m 0.556 ms - -[0m
+[0mGET /exocore/assets/lib.es2023.array.d-iJ0deruD.js [32m200[0m 1.673 ms - -[0m
+[0mGET /exocore/assets/lib.es2023.collection.d-C-LTX-kj.js [32m200[0m 0.864 ms - 957[0m
+[0mGET /exocore/assets/lib.es2023.d-BJn9a03c.js [32m200[0m 1.044 ms - -[0m
+[0mGET /exocore/assets/lib.es2023.full.d-DhK7_cMS.js [32m200[0m 0.842 ms - -[0m
+[0mGET /exocore/assets/lib.es2023.intl.d-BwkRuhpy.js [32m200[0m 1.715 ms - -[0m
+[0mGET /exocore/assets/lib.es2024.arraybuffer.d-BGU2uprq.js [32m200[0m 1.965 ms - -[0m
+[0mGET /exocore/assets/lib.es2024.d-DsYCVgCa.js [32m200[0m 0.940 ms - -[0m
+[0mGET /exocore/assets/lib.es2024.collection.d-B6it8Cvg.js [32m200[0m 1.675 ms - -[0m
+[0mGET /exocore/assets/lib.es2024.full.d-qy95Azwv.js [32m200[0m 0.694 ms - -[0m
+[0mGET /exocore/assets/lib.es2024.object.d-DK4wODKu.js [32m200[0m 0.475 ms - -[0m
+[0mGET /exocore/assets/lib.es2024.promise.d-BkKVO74u.js [32m200[0m 0.813 ms - -[0m
+[0mGET /exocore/assets/lib.es2024.regexp.d-DIk6QjBx.js [32m200[0m 0.568 ms - -[0m
+[0mGET /exocore/assets/lib.es2024.sharedmemory.d-BdUYdv5Z.js [32m200[0m 2.798 ms - -[0m
+[0mGET /exocore/assets/lib.es2024.string.d-Y9qVE1yW.js [32m200[0m 0.472 ms - -[0m
+[0mGET /exocore/assets/lib.es2025.collection.d-fvCPGcKw.js [32m200[0m 1.741 ms - -[0m
+[0mGET /exocore/assets/lib.es2025.d-UNTZDoIs.js [32m200[0m 0.695 ms - -[0m
+[0mGET /exocore/assets/lib.es2025.float16.d-DL3ad3Ep.js [32m200[0m 1.662 ms - -[0m
+[0mGET /exocore/assets/lib.es2025.full.d-D22dg4Br.js [32m200[0m 0.640 ms - -[0m
+[0mGET /exocore/assets/lib.es2025.intl.d-BrPiclD1.js [32m200[0m 1.785 ms - -[0m
+[0mGET /exocore/assets/lib.es2025.iterator.d-CfRhHFKM.js [32m200[0m 1.463 ms - -[0m
+[0mGET /exocore/assets/lib.es2025.promise.d-QmwYGPwN.js [32m200[0m 1.592 ms - -[0m
+[0mGET /exocore/assets/lib.es2025.regexp.d-DyMMN4JO.js [32m200[0m 1.565 ms - -[0m
+[0mGET /exocore/assets/lib.es5.d-NByiQnm_.js [32m200[0m 3.138 ms - -[0m
+[0mGET /exocore/assets/lib.es6.d-IfFHWKiA.js [32m200[0m 0.698 ms - -[0m
+[0mGET /exocore/api/editor/coding/history?projectId=exorepo-demo&filePath=index.js [32m200[0m 0.998 ms - 19[0m
+[0mGET /exocore/assets/lib.esnext.array.d-CpCgcWcn.js [32m200[0m 0.635 ms - -[0m
+[0mGET /exocore/assets/lib.esnext.collection.d-BRtSJTqC.js [32m200[0m 1.524 ms - -[0m
+[0mGET /exocore/assets/lib.esnext.d-Bz5cMr0Q.js [32m200[0m 0.578 ms - -[0m
+[0mGET /exocore/assets/lib.esnext.date.d-DlfvihiU.js [32m200[0m 0.718 ms - 1013[0m
+[0mGET /exocore/assets/lib.esnext.decorators.d-BKi8Fnsg.js [32m200[0m 0.586 ms - -[0m
+[0mGET /exocore/assets/lib.esnext.disposable.d-Bf8wHHxh.js [32m200[0m 1.613 ms - -[0m
+[0mGET /exocore/assets/lib.esnext.error.d-BAGt6SGd.js [32m200[0m 1.029 ms - -[0m
+[0mGET /exocore/assets/lib.esnext.full.d-DIGYbtuE.js [32m200[0m 0.687 ms - -[0m
+[0mGET /exocore/assets/lib.esnext.sharedmemory.d-BF8OD7Ks.js [32m200[0m 0.675 ms - -[0m
+[0mGET /exocore/assets/lib.esnext.intl.d-B0OaEpL9.js [32m200[0m 1.586 ms - -[0m
+[0mGET /exocore/assets/lib.esnext.temporal.d-VmXlDoQm.js [32m200[0m 1.721 ms - -[0m
+[0mGET /exocore/assets/lib.esnext.typedarrays.d-BLpjIg4n.js [32m200[0m 5.049 ms - -[0m
+[0mGET /exocore/assets/lib.scripthost.d-DPiRoMvc.js [32m200[0m 1.684 ms - -[0m
+[0mGET /exocore/assets/lib.webworker.asynciterable.d-HW2tcOkV.js [32m200[0m 0.689 ms - -[0m
+[0mGET /exocore/assets/lib.webworker.d-CDdzqASj.js [32m200[0m 3.430 ms - -[0m
+[0mGET /exocore/assets/lib.webworker.importscripts.d-C9qOcJhH.js [32m200[0m 2.394 ms - -[0m
+[0mGET /exocore/assets/lib.webworker.iterable.d-Ce6aUG7b.js [32m200[0m 0.820 ms - -[0m
+[0mGET /exocore/api/editor/npm/info/chalk [32m200[0m 65.418 ms - 742[0m
+[0mPOST /exocore/api/editor/npm/install [32m200[0m 812.021 ms - 21[0m
+[0mGET /exocore/exo-icon.png [36m304[0m 0.390 ms - -[0m
+[0mGET /exocore/api/editor/npm/files?projectId=exorepo-demo [32m200[0m 0.971 ms - 135[0m
+[0mGET /exocore/api/editor/npm/list?projectId=exorepo-demo [32m200[0m 1.676 ms - 148[0m
+[0mGET /exocore/api/editor/github/status?projectId=exorepo-demo [32m200[0m 0.902 ms - 39[0m
+[0mGET /exocore/api/editor/github/files?projectId=exorepo-demo [32m200[0m 1.759 ms - 350[0m
+[0mGET /exocore/api/editor/ai/meta/session [32m200[0m 0.607 ms - 60[0m
+[0mPOST /exocore/api/editor/ai/meta/agent [31m503[0m 1.023 ms - 42[0m
+[0mGET /exocore/api/editor/ai/meta/session [32m200[0m 0.477 ms - 60[0m
+[0mGET /exocore/api/editor/ai/meta/session [32m200[0m 0.433 ms - 60[0m
+[0mPOST /exocore/api/editor/ai/meta/cookies [32m200[0m 7143.598 ms - -[0m
+[0mGET /exocore/api/editor/ai/meta/session [32m200[0m 0.286 ms - 60[0m
+[0mPOST /exocore/api/editor/ai/meta/agent [32m200[0m 13610.616 ms - -[0m
+[0mGET /exocore/api/editor/ai/meta/session [32m200[0m 0.390 ms - 94[0m
+[0mGET /exocore/api/editor/ai/meta/session [32m200[0m 0.387 ms - 94[0m
+[0mPOST /exocore/api/editor/coding/create [32m200[0m 3.556 ms - 21[0m
+[0mPOST /exocore/api/editor/coding/create [32m200[0m 2.057 ms - 21[0m
+[0mPOST /exocore/api/editor/coding/create [32m200[0m 1.975 ms - 21[0m
+[0mPOST /exocore/api/editor/coding/save [32m200[0m 4.673 ms - 40[0m
+[0mPOST /exocore/api/editor/coding/save [32m200[0m 1.989 ms - 39[0m
+[0mPOST /exocore/api/editor/coding/save [32m200[0m 3.284 ms - 40[0m
+[0mGET /exocore/api/editor/coding/files?projectId=exorepo-demo [32m200[0m 4.019 ms - -[0m
+[0mGET /exocore/api/editor/coding/files?projectId=exorepo-demo [32m200[0m 3.638 ms - -[0m
+[0mGET /exocore/api/editor/coding/files?projectId=exorepo-demo [32m200[0m 4.604 ms - -[0m
+[0mGET /exocore/api/editor/ai/meta/session [32m200[0m 0.344 ms - 94[0m
+[0mGET /exocore/api/editor/ai/meta/session [32m200[0m 0.408 ms - 94[0m
+[0mGET /exocore/api/editor/ai/meta/session [32m200[0m 0.419 ms - 94[0m
+[0mGET /exocore/api/editor/ai/meta/session [32m200[0m 0.410 ms - 94[0m
+[0mGET /exocore/api/editor/coding/read?projectId=exorepo-demo&filePath=index.js [32m200[0m 0.806 ms - 423[0m
+[0mGET /exocore/api/editor/coding/read?projectId=exorepo-demo&filePath=tsconfig.json [33m404[0m 1.072 ms - 28[0m
+[0mGET /exocore/api/editor/coding/read?projectId=exorepo-demo&filePath=jsconfig.json [33m404[0m 0.544 ms - 28[0m
+[0mPOST /exocore/api/editor/coding/save [32m200[0m 0.986 ms - 40[0m
+[0mPOST /exocore/api/editor/coding/history/push [32m200[0m 1.191 ms - 35[0m
+[0mGET /exocore/api/editor/ai/meta/session [32m200[0m 0.563 ms - 94[0m
+[0mGET /exocore/api/editor/ai/meta/session [32m200[0m 1.297 ms - 94[0m
+[0mGET /exocore/api/editor/coding/read?projectId=exorepo-demo&filePath=tsconfig.json [33m404[0m 0.481 ms - 28[0m
+[0mGET /exocore/api/editor/coding/read?projectId=exorepo-demo&filePath=jsconfig.json [33m404[0m 0.607 ms - 28[0m
+[0mPOST /exocore/api/editor/coding/save [32m200[0m 0.764 ms - 40[0m
+[0mPOST /exocore/api/editor/coding/history/push [32m200[0m 1.370 ms - 35[0m
+[0mGET / [36m302[0m 1.131 ms - 37[0m
+[0mGET /exocore/ [36m304[0m 0.824 ms - -[0m
+[0mGET /exocore/assets/index-CphNBf8H.css [36m304[0m 0.396 ms - -[0m
+[0mGET /exocore/assets/index-DIRz5pH2.js [36m304[0m 0.416 ms - -[0m
+[0mGET /exocore/assets/rolldown-runtime-BM3Ffeng.js [36m304[0m 0.497 ms - -[0m
+[0mGET /exocore/assets/markdown-BlDUWnIe.js [36m304[0m 0.531 ms - -[0m
+[0mGET /exocore/assets/vendor-8aMWTBsg.js [36m304[0m 0.461 ms - -[0m
+[0mGET /exocore/assets/rpcClient-lHNc-e1L.js [36m304[0m 0.286 ms - -[0m
+[0mGET /exocore/assets/react-dom-Ca-XCrQV.js [36m304[0m 0.463 ms - -[0m
+[0mGET /exocore/assets/panelAuth-C6qle6rO.js [36m304[0m 0.315 ms - -[0m
+[0mGET /exocore/assets/Home-D5hEcC1G.js [32m200[0m 2.283 ms - -[0m
+[0mGET /exocore/assets/Dashboard-CMcQjE4G.js [36m304[0m 0.375 ms - -[0m
+[0mGET /exocore/assets/fa-DW9y2La9.js [36m304[0m 0.350 ms - -[0m
+[0mGET /exocore/assets/Dashboard-BDVEAb3Z.css [36m304[0m 0.372 ms - -[0m
+[0mGET /exocore/api/auth/userinfo?source=pv&token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [32m200[0m 510.977 ms - 903[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [32m200[0m 1.985 ms - 948[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.860 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.738 ms - -[0m
+[0mGET /exocore/assets/coding-X8vTK2Mw.js [36m304[0m 0.390 ms - -[0m
+[0mGET /exocore/assets/xterm-TdnZ7DQy.css [36m304[0m 0.439 ms - -[0m
+[0mGET /exocore/assets/xterm-CQVfnTIP.js [36m304[0m 0.488 ms - -[0m
+[0mGET /exocore/assets/coding-NFZFER2R.css [36m304[0m 0.436 ms - -[0m
+[0mGET /exocore/api/editor/projects/list [32m200[0m 2.230 ms - 948[0m
+[0mGET /exocore/api/editor/coding/files?projectId=exorepo-demo [32m200[0m 1.224 ms - -[0m
+[0mPOST /exocore/api/settings [32m200[0m 0.726 ms - 116[0m
+[0mGET /exocore/exo-icon.png [36m304[0m 0.386 ms - -[0m
+[0mGET /exocore/api/auth/userinfo?source=pv&token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1743.772 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.681 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.378 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.623 ms - -[0m
+[0mGET /exocore/api/editor/templates/list [36m304[0m 2.121 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.828 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.592 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.059 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.779 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.439 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.757 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.750 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.808 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.246 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 4.130 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.589 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.998 ms - -[0m
+[0mPOST /exocore/api/editor/templates/create-from-template [32m200[0m 0.809 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [32m200[0m 3.313 ms - -[0m
+[0mGET /exocore/exo-icon.png [36m304[0m 0.444 ms - -[0m
+[0mGET /exocore/api/editor/coding/files?projectId=dg [32m200[0m 0.543 ms - 485[0m
+[0mGET /exocore/api/editor/projects/list [32m200[0m 5.630 ms - -[0m
+[0mPOST /exocore/api/settings [32m200[0m 0.614 ms - 116[0m
+[0mGET /exocore/api/editor/coding/read?projectId=dg&filePath=main.rs [32m200[0m 0.754 ms - 1011[0m
+[0mGET /exocore/api/auth/userinfo?source=pv&token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 399.160 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.367 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.912 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.873 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.267 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.891 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.686 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.350 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.803 ms - -[0m
+[0mGET / [36m302[0m 0.299 ms - 37[0m
+[0mGET /exocore/ [36m304[0m 0.597 ms - -[0m
+[0mGET /exocore/assets/markdown-BlDUWnIe.js [36m304[0m 0.477 ms - -[0m
+[0mGET /exocore/assets/index-DIRz5pH2.js [36m304[0m 0.504 ms - -[0m
+[0mGET /exocore/assets/vendor-8aMWTBsg.js [36m304[0m 0.446 ms - -[0m
+[0mGET /exocore/assets/index-CphNBf8H.css [36m304[0m 0.747 ms - -[0m
+[0mGET /exocore/assets/rolldown-runtime-BM3Ffeng.js [36m304[0m 0.495 ms - -[0m
+[0mGET /exocore/assets/rpcClient-lHNc-e1L.js [36m304[0m 0.368 ms - -[0m
+[0mGET /exocore/assets/react-dom-Ca-XCrQV.js [36m304[0m 0.493 ms - -[0m
+[0mGET /exocore/assets/panelAuth-C6qle6rO.js [36m304[0m 0.355 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.895 ms - -[0m
+[0mGET /exocore/assets/Home-D5hEcC1G.js [36m304[0m 0.540 ms - -[0m
+[0mGET /exocore/assets/Dashboard-CMcQjE4G.js [36m304[0m 0.397 ms - -[0m
+[0mGET /exocore/assets/Dashboard-BDVEAb3Z.css [36m304[0m 0.358 ms - -[0m
+[0mGET /exocore/assets/fa-DW9y2La9.js [36m304[0m 1.399 ms - -[0m
+[0mGET /exocore/api/auth/userinfo?source=pv&token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 402.680 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.975 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.819 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.067 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.720 ms - -[0m
+[0mGET / [36m302[0m 0.361 ms - 37[0m
+[0mGET /exocore/ [36m304[0m 0.418 ms - -[0m
+[0mGET /exocore/assets/index-DIRz5pH2.js [36m304[0m 0.492 ms - -[0m
+[0mGET /exocore/assets/rolldown-runtime-BM3Ffeng.js [36m304[0m 1.821 ms - -[0m
+[0mGET /exocore/assets/markdown-BlDUWnIe.js [36m304[0m 1.057 ms - -[0m
+[0mGET /exocore/assets/rpcClient-lHNc-e1L.js [36m304[0m 1.180 ms - -[0m
+[0mGET /exocore/assets/vendor-8aMWTBsg.js [36m304[0m 1.195 ms - -[0m
+[0mGET /exocore/assets/index-CphNBf8H.css [36m304[0m 0.461 ms - -[0m
+[0mGET /exocore/assets/react-dom-Ca-XCrQV.js [36m304[0m 0.536 ms - -[0m
+[0mGET /exocore/assets/panelAuth-C6qle6rO.js [36m304[0m 0.343 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.998 ms - -[0m
+[0mGET /exocore/assets/Home-D5hEcC1G.js [36m304[0m 0.403 ms - -[0m
+[0mGET /exocore/assets/Dashboard-CMcQjE4G.js [36m304[0m 0.498 ms - -[0m
+[0mGET /exocore/assets/fa-DW9y2La9.js [36m304[0m 0.552 ms - -[0m
+[0mGET /exocore/assets/Dashboard-BDVEAb3Z.css [36m304[0m 0.317 ms - -[0m
+[0mGET /exocore/api/auth/userinfo?source=pv&token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 439.599 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.507 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.751 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.726 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.105 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.171 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.825 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.865 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.923 ms - -[0m
+[0mGET / [36m302[0m 0.296 ms - 37[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.857 ms - -[0m
+[0mGET /exocore/ [36m304[0m 0.483 ms - -[0m
+[0mGET /exocore/assets/rolldown-runtime-BM3Ffeng.js [36m304[0m 0.427 ms - -[0m
+[0mGET /exocore/assets/rpcClient-lHNc-e1L.js [36m304[0m 0.295 ms - -[0m
+[0mGET /exocore/assets/index-DIRz5pH2.js [36m304[0m 0.558 ms - -[0m
+[0mGET /exocore/assets/markdown-BlDUWnIe.js [36m304[0m 0.685 ms - -[0m
+[0mGET /exocore/assets/vendor-8aMWTBsg.js [36m304[0m 0.259 ms - -[0m
+[0mGET /exocore/assets/index-CphNBf8H.css [36m304[0m 0.268 ms - -[0m
+[0mGET /exocore/assets/react-dom-Ca-XCrQV.js [36m304[0m 0.478 ms - -[0m
+[0mGET /exocore/assets/panelAuth-C6qle6rO.js [36m304[0m 0.507 ms - -[0m
+[0mGET /exocore/assets/Home-D5hEcC1G.js [36m304[0m 0.358 ms - -[0m
+[0mGET /exocore/assets/fa-DW9y2La9.js [36m304[0m 0.543 ms - -[0m
+[0mGET /exocore/assets/Dashboard-CMcQjE4G.js [36m304[0m 0.254 ms - -[0m
+[0mGET /exocore/assets/Dashboard-BDVEAb3Z.css [36m304[0m 0.386 ms - -[0m
+[0mGET /exocore/api/auth/userinfo?source=pv&token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 423.535 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.987 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.566 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.851 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.625 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.894 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.022 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.965 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.960 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.643 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.566 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.550 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.893 ms - -[0m
+[0mGET /exocore/assets/coding-X8vTK2Mw.js [36m304[0m 0.643 ms - -[0m
+[0mGET /exocore/assets/xterm-TdnZ7DQy.css [36m304[0m 0.616 ms - -[0m
+[0mGET /exocore/assets/xterm-CQVfnTIP.js [36m304[0m 0.283 ms - -[0m
+[0mGET /exocore/assets/coding-NFZFER2R.css [36m304[0m 0.422 ms - -[0m
+[0mGET /exocore/api/editor/coding/files?projectId=exorepo-demo [32m200[0m 2.307 ms - -[0m
+[0mGET /exocore/api/editor/projects/list [32m200[0m 4.580 ms - -[0m
+[0mPOST /exocore/api/settings [32m200[0m 0.689 ms - 116[0m
+[0mGET /exocore/exo-icon.png [36m304[0m 0.519 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.765 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.738 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.123 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.527 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.080 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 5.607 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.637 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.802 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.871 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.303 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.861 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.936 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.291 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.957 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.882 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.634 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.766 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.108 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.108 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.754 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.814 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.963 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.022 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.299 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.052 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.707 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.206 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.892 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.755 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.793 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.796 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.809 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.071 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.495 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.876 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.077 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.013 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.849 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.291 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.539 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.101 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.960 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.022 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.103 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.853 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.851 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.566 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.408 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 1.771 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.178 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.129 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.176 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.056 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 3.202 ms - -[0m
+[0mGET /exocore/api/editor/projects/list?token=6328e0a0af464e2710d51d90e380c0445001564723a750287150002aad5aba9f [36m304[0m 2.447 ms - -[0m

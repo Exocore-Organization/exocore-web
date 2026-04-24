@@ -1,1 +1,0 @@
-requestAnimationFrame(function(){$RT=performance.now()});

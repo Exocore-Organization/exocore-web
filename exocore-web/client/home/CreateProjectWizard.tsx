@@ -23,13 +23,16 @@ const LANG_DESCRIPTIONS: Record<string, string> = {
     python: 'Great for scripting, data science, bots, and backends.',
     html: 'Build and preview websites with vanilla HTML, CSS & JS.',
     php: 'Classic server-side scripting for web applications.',
+    react: 'A JavaScript library for building user interfaces.',
+    vue: 'The Progressive JavaScript Framework.',
+    svelte: 'Cybernetically enhanced web apps.',
 };
 
-// Languages the editor / runtime currently support end-to-end.
-// Anything not listed here is rendered with a 🔒 badge and is not
-// selectable. Re-enable a language by adding its `system.json` id below
-// once the matching template + runtime support are wired in.
-const ENABLED_LANGUAGES = new Set<string>(['nodejs', 'python']);
+// UNLOCKED: Added web languages (html, react, vue, svelte, tsx, jsx, vite) 
+// so the Web Application category and individual language cards become clickable.
+const ENABLED_LANGUAGES = new Set<string>([
+    'nodejs', 'python', 'html', 'react', 'vue', 'svelte', 'tsx', 'jsx', 'vite'
+]);
 
 const TOTAL_STEPS = 4;
 
@@ -66,7 +69,7 @@ export const CreateProjectWizard: React.FC<CreateProjectWizardProps> = ({
     // This complements the language-card lock and keeps the user from
     // selecting a PHP/HTML/etc template via the category route.
     const enabledTemplates = useMemo(
-        () => availableTemplates.filter(t => ENABLED_LANGUAGES.has(t.meta.language)),
+        () => availableTemplates.filter(t => ENABLED_LANGUAGES.has(t.meta.language.toLowerCase())),
         [availableTemplates],
     );
 
@@ -162,11 +165,11 @@ export const CreateProjectWizard: React.FC<CreateProjectWizardProps> = ({
             <div className="wizard-step-label">Step 2 of {TOTAL_STEPS} — Choose your environment</div>
             <p className="wizard-hint">
                 Pick a language for your project. Locked languages are
-                coming soon — Node.js and Python are fully supported today.
+                coming soon — Node.js, Python, and Web are fully supported today.
             </p>
             <div className="wizard-lang-grid">
             {systemData.languages.map(l => {
-                const isEnabled = ENABLED_LANGUAGES.has(l.id);
+                const isEnabled = ENABLED_LANGUAGES.has(l.id.toLowerCase());
                 const isSelected = !useTemplate && createForm.language === l.id;
                 return (
                     <button
