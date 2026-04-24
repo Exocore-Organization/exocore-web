@@ -14,5 +14,5 @@ runtime {
 }
 
 state {
-  status = running
+  status = stopped
 }

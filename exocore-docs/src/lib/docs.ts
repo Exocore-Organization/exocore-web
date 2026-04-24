@@ -1,13 +1,17 @@
 /**
  * Build-time docs index.
  *
- * `import.meta.glob` pulls every Markdown file under `../exocore-web/docs/`
- * into the bundle as a raw string. We then turn each path into a routable
- * doc record with a slug, title, section, breadcrumb, and full body — all
- * available synchronously to the search box on the home page (no extra
- * network round-trip on a static host).
+ * `import.meta.glob` pulls every Markdown file under `../../docs/` (this
+ * project's own copy of the Exocore documentation tree) into the bundle as
+ * a raw string. We then turn each path into a routable doc record with a
+ * slug, title, section, breadcrumb, and full body — all available
+ * synchronously to the search box on the home page (no extra network
+ * round-trip on a static host).
+ *
+ * The docs tree is now fully self-contained inside `exocore-docs/docs/` so
+ * this site can be deployed independently of the `exocore-web` workspace.
  */
-const RAW = import.meta.glob("../../../exocore-web/docs/**/*.md", {
+const RAW = import.meta.glob("../../docs/**/*.md", {
     query:  "?raw",
     import: "default",
     eager:  true,

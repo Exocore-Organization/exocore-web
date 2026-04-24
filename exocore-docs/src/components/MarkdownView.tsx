@@ -12,6 +12,22 @@ interface Props {
 }
 
 /**
+ * Resolve a relative path against a doc slug, returning the dot-free
+ * `a/b/c` form. Used as the foundation for both link and image rewriting.
+ */
+function resolveAgainstSlug(href: string, baseSlug: string): string {
+    const baseParts = baseSlug.split("/").filter(Boolean);
+    if (!baseSlug.endsWith("/")) baseParts.pop();        // drop the file segment
+    const parts = baseParts.slice();
+    for (const seg of href.split("/")) {
+        if (seg === "" || seg === ".") continue;
+        if (seg === "..") { parts.pop(); continue; }
+        parts.push(seg);
+    }
+    return parts.join("/");
+}
+
+/**
  * Rewrite a relative href found inside a markdown file so it resolves
  * against the doc's slug *inside* the SPA. Anchors and absolute URLs are
  * passed through untouched.
@@ -22,22 +38,35 @@ function rewriteHref(href: string, baseSlug: string): string {
     if (href.startsWith("#"))   return href;
     if (href.startsWith("/"))   return href;            // absolute SPA path
 
-    // Resolve `..` and `./` segments against the base slug.
-    const baseParts = baseSlug.split("/").filter(Boolean);
-    if (!baseSlug.endsWith("/")) baseParts.pop();        // drop the file segment
-    const parts = baseParts.slice();
-    for (const seg of href.split("/")) {
-        if (seg === "" || seg === ".") continue;
-        if (seg === "..") { parts.pop(); continue; }
-        parts.push(seg);
-    }
-    let resolved = parts.join("/");
+    let resolved = resolveAgainstSlug(href, baseSlug);
 
     // Markdown links commonly point at README.md or sibling .md files.
     // Map them onto our slug shape (folder/ for README, folder/page for
     // anything else).
     resolved = resolved.replace(/\/?README\.md$/i, "/").replace(/\.md$/i, "");
     return `#/docs/${resolved}`;
+}
+
+/**
+ * Rewrite a relative image src so it points at the bundled copy in
+ * `public/screenshots/` (or wherever in the docs tree it sits). The docs
+ * markdown references images like `../screenshots/editor/00-panel-gate.png`
+ * — we resolve those against the doc slug, strip the leading `screenshots/`
+ * prefix, and re-anchor onto `./screenshots/...` which the static host
+ * serves verbatim from `public/`.
+ *
+ * Returns `null` if the path cannot be mapped onto the screenshots folder
+ * (so the caller can fall back to the original src).
+ */
+function rewriteImg(src: string, baseSlug: string): string | null {
+    if (!src) return null;
+    if (/^[a-z]+:/i.test(src)) return src;              // http(s):, data:, …
+    if (src.startsWith("/"))   return src;              // absolute path — host already handles it
+
+    const resolved = resolveAgainstSlug(src, baseSlug);
+    const m = resolved.match(/(?:^|\/)screenshots\/(.+)$/i);
+    if (!m) return null;
+    return `./screenshots/${m[1]}`;
 }
 
 export function MarkdownView({ body, baseSlug }: Props) {
@@ -62,23 +91,22 @@ export function MarkdownView({ body, baseSlug }: Props) {
                         );
                     },
                     img({ src, alt, ...rest }) {
-                        // Resolve relative image paths the same way as links — they
-                        // typically point at /screenshots/... inside the docs tree.
-                        if (src && !/^[a-z]+:/i.test(src) && !src.startsWith("/")) {
-                            const rewritten = rewriteHref(src, baseSlug);
-                            // rewriteHref returns `#/docs/...` for markdown — strip
-                            // the leading `#/docs/` and surface as a real asset URL.
-                            const asset = rewritten.replace(/^#\/docs\//, "");
-                            // We can't reach the original PNG from here at runtime
-                            // (it lives outside the bundle), so just show a friendly
-                            // placeholder describing what the image was.
-                            return (
-                                <span className="md-img-stub" title={`Bundled image: ${asset}`}>
-                                    🖼 <em>{alt || asset}</em>
-                                </span>
-                            );
-                        }
-                        return <img src={src} alt={alt} {...rest} />;
+                        // Resolve relative image paths against the doc's slug.
+                        // Anything inside `screenshots/` is served verbatim by the
+                        // static host out of `public/screenshots/`, so re-anchor
+                        // those onto `./screenshots/...`. Other relative paths
+                        // (none currently exist) fall through to the original src.
+                        const finalSrc = typeof src === "string"
+                            ? (rewriteImg(src, baseSlug) ?? src)
+                            : src;
+                        return (
+                            <img
+                                src={finalSrc}
+                                alt={alt}
+                                loading="lazy"
+                                {...rest}
+                            />
+                        );
                     },
                 }}
             >

@@ -16,6 +16,7 @@
 | --- | --- | --- |
 | **Start application** | `5000` (webview) | `exocore-web` — React/Vite SPA + Express gateway, mounted under `/exocore`. |
 | **Exocore Backend** | `3000` (console) | TypeScript auth + user backend, persisted to Google Drive. |
+| **Exocore Docs**     | `5173` (console) | `exocore-docs` — standalone Vite + React docs site. Reads its own self-contained `exocore-docs/docs/` tree. |
 
 | Account | Username | Notes |
 | --- | --- | --- |
@@ -26,7 +27,10 @@
 | Install root deps | `npm install --legacy-peer-deps` |
 | Run app (auto-builds client) | workflow **Start application** |
 | Run backend | workflow **Exocore Backend** |
-| Recapture docs screenshots | `EXOCORE_CAPTURE=1 npx tsx exocore-web/scripts/capture-docs.ts` |
+| Run docs site (dev) | workflow **Exocore Docs** |
+| Recapture panel screenshots (desktop + mobile) | `EXOCORE_CAPTURE=1 npx tsx exocore-web/scripts/capture-docs.ts` |
+| Recapture editor screenshots (desktop + mobile) | `EXOCORE_CAPTURE=1 npx tsx exocore-web/scripts/capture-editor.ts` |
+| Resync docs site after editing in `exocore-web/docs/` | `cp -R exocore-web/docs/. exocore-docs/docs/ && cp -R exocore-web/docs/screenshots/. exocore-docs/public/screenshots/` |
 
 ---
 
@@ -1376,3 +1380,48 @@ A multi-piece pass focused on shippable, leak-resistant artifacts:
 - **Top-level `exocore-web/README.md`** added with credentials matrix,
   capture instructions, mobile capture caveats, and a link to the new
   `exocore-docs/` deploy guide.
+
+### Docs site is now self-contained (Apr 24, 2026)
+
+`exocore-docs/` previously read the markdown corpus from
+`../exocore-web/docs/` via a vite alias. That coupled the two projects
+together — the docs site couldn't build on its own and couldn't be split
+into a separate repo without breaking the glob.
+
+Mirror layout (in `exocore-docs/`):
+
+```
+docs/                  ← full markdown tree, copied from exocore-web/docs/
+public/screenshots/    ← desktop + mobile + editor PNGs, served as static assets
+```
+
+Loader change: `src/lib/docs.ts` now globs `../../docs/**/*.md` (its own
+local tree). Vite config no longer carries the `@docs-content` alias.
+`MarkdownView.tsx` renders real `<img>` tags by re-anchoring any
+`*screenshots/...` reference onto `./screenshots/...` (served from
+`public/`). Old "🖼 stub" placeholders are gone — the screenshots show up
+inline in every doc page.
+
+Running all three workflows in parallel via the **Project** parent
+workflow (`Exocore Backend` + `Start application` + `Exocore Docs`) is
+now the standard local-dev setup. Resync the docs site after editing
+markdown in `exocore-web/docs/` with the one-liner in the Quick reference
+table at the top of this file.
+
+Mobile capture status (Apr 24, 2026):
+
+- `exocore-web/scripts/capture-docs.ts` — produces 11 frames each for
+  desktop (1440×900) and mobile (414×896) under
+  `exocore-web/docs/screenshots/{desktop,mobile}/01..11-*.png`.
+- `exocore-web/scripts/capture-editor.ts` — produces 14 desktop frames
+  and 14 mobile frames under `screenshots/editor/` and
+  `screenshots/editor/mobile/` respectively (frame 05 / webview is
+  desktop-only; mobile collapses the webview into the bottom drawer
+  which is captured as part of frames 03 / 04).
+
+Both PNG sets are mirrored into `exocore-docs/public/screenshots/` so
+the docs site renders them inline. To re-mirror after a fresh capture:
+
+```
+cp -R exocore-web/docs/screenshots/. exocore-docs/public/screenshots/
+```

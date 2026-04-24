@@ -1,11 +1,14 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "path";
 
 // Hugging Face Spaces (Static) serves the build artifact from the Space root,
 // so leaving `base: "./"` keeps every asset URL relative — that way the site
 // also works when previewed locally, hosted on GitHub Pages under a subpath,
 // or dropped behind any other static host without rewriting paths.
+//
+// The docs corpus and screenshots now live inside this project (under
+// `./docs/` and `./public/screenshots/` respectively), so there is no longer
+// any cross-workspace alias — `exocore-docs/` builds standalone.
 export default defineConfig({
     plugins: [react()],
     base:    "./",
@@ -20,11 +23,6 @@ export default defineConfig({
         host: "0.0.0.0",
         port: 4173,
         allowedHosts: true,
-    },
-    resolve: {
-        alias: {
-            "@docs-content": path.resolve(__dirname, "../exocore-web/docs"),
-        },
     },
     build: {
         outDir: "dist",

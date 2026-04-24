@@ -21,6 +21,10 @@ args = "Exocore Backend"
 task = "workflow.run"
 args = "Start application"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Exocore Docs"
+
 [[workflows.workflow]]
 name = "Exocore Backend"
 author = "agent"
@@ -44,6 +48,18 @@ task = "shell.exec"
 args = "EXOCORE_CAPTURE=1 PORT=5000 npm run start"
 waitForPort = 5000
 
+[[workflows.workflow]]
+name = "Exocore Docs"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd exocore-docs && npm run dev"
+waitForPort = 5173
+
+[workflows.workflow.metadata]
+outputType = "console"
+
 [[ports]]
 localPort = 3000
 externalPort = 3003
@@ -63,6 +79,10 @@ externalPort = 5000
 [[ports]]
 localPort = 5055
 externalPort = 3000
+
+[[ports]]
+localPort = 5173
+externalPort = 5173
 
 [[ports]]
 localPort = 8081
