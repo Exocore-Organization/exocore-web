@@ -331,16 +331,40 @@ async function openMobileBottom(page: Page, label: RegExp) {
 }
 
 async function openMobileSidebar(page: Page, tab: string) {
-    // Open the hamburger first.
-    const opened = await page.evaluate(() => {
-        const btn = document.querySelector(
-            "[aria-label='Open sidebar'], [aria-label='Menu'], .mobile-hamburger, .editor-hamburger",
-        ) as HTMLElement | null;
-        if (btn) { btn.click(); return true; }
-        return false;
+    // The mobile drawer is toggled by the bottom-nav "Files" m-nav-btn.
+    // Only click if the drawer is currently closed (button without `.active`),
+    // otherwise re-clicking would CLOSE the drawer we just opened.
+    await page.evaluate(() => {
+        const btns = Array.from(document.querySelectorAll(".m-nav-btn, .mobile-nav button")) as HTMLElement[];
+        const filesBtn = btns.find(b => /files/i.test(b.textContent || ""));
+        if (filesBtn && !filesBtn.classList.contains("active")) filesBtn.click();
     });
-    if (opened) await new Promise(r => setTimeout(r, 800));
+    await new Promise(r => setTimeout(r, 1200));
     await clickSidebarTab(page, tab);
+}
+
+async function closeMobileSidebar(page: Page) {
+    // Tap the dedicated close button if present, else toggle Files off.
+    await page.evaluate(() => {
+        const close = document.querySelector(".sidebar-close-btn") as HTMLElement | null;
+        if (close && close.offsetParent !== null) { close.click(); return; }
+        const btns = Array.from(document.querySelectorAll(".m-nav-btn, .mobile-nav button")) as HTMLElement[];
+        const filesBtn = btns.find(b => /files/i.test(b.textContent || ""));
+        if (filesBtn && filesBtn.classList.contains("active")) filesBtn.click();
+    });
+    await new Promise(r => setTimeout(r, 800));
+}
+
+async function stopRunningServer(page: Page) {
+    // After the Console "Start" click, the dev server keeps streaming output
+    // into the page which can starve subsequent screenshots on mobile. Click
+    // the matching Stop / Kill button if it's visible.
+    await page.evaluate(() => {
+        const btns = Array.from(document.querySelectorAll("button")) as HTMLElement[];
+        const stop = btns.find(b => /^(stop|kill|■|\u25A0)$/i.test((b.textContent || "").trim()) && b.offsetParent !== null);
+        if (stop) stop.click();
+    });
+    await new Promise(r => setTimeout(r, 1500));
 }
 
 async function closeTopModal(page: Page) {
@@ -411,16 +435,24 @@ async function capturePass(
     if (viewport.isMobile) await openMobileBottom(page, /terminal/i);
     await snap(page, "03-editor-terminal", outDir);
 
-    // 5) Console pane → start the server to get live logs.
+    // 5) Console pane → on desktop start the server for live logs; on mobile
+    //    skip the actual Run click because the dev server output stream
+    //    floods the chromium tab and detaches the page session for every
+    //    later step.
     if (viewport.isMobile) await openMobileBottom(page, /console/i);
     else                   await clickStatusBtn(page, /console/i);
-    await page.evaluate(() => {
-        const btns = Array.from(document.querySelectorAll("button")) as HTMLElement[];
-        const run = btns.find(b => /^(start|run|▶)$/i.test((b.textContent || "").trim()) && b.offsetParent !== null);
-        if (run) run.click();
-    });
-    await new Promise(r => setTimeout(r, 7000));
+    if (!viewport.isMobile) {
+        await page.evaluate(() => {
+            const btns = Array.from(document.querySelectorAll("button")) as HTMLElement[];
+            const run = btns.find(b => /^(start|run|▶)$/i.test((b.textContent || "").trim()) && b.offsetParent !== null);
+            if (run) run.click();
+        });
+        await new Promise(r => setTimeout(r, 7000));
+    } else {
+        await new Promise(r => setTimeout(r, 2500));
+    }
     await snap(page, "04-editor-console", outDir);
+    if (!viewport.isMobile) await stopRunningServer(page);
 
     // 6) Webview pane — on mobile, the embedded preview iframe consistently
     //    crashes the headless chromium target (the page session detaches and

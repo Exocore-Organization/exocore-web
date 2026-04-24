@@ -45,6 +45,10 @@ args = "EXOCORE_CAPTURE=1 PORT=5000 npm run start"
 waitForPort = 5000
 
 [[ports]]
+localPort = 3000
+externalPort = 3003
+
+[[ports]]
 localPort = 3001
 externalPort = 3002
 
