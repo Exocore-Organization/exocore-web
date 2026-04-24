@@ -1,1 +1,499 @@
-const _0x4c6aa4=_0x5e59;(function(_0x5cadcd,_0x2314f0){const _0x2cabfb=_0x5e59,_0x5ec954=_0x5cadcd();while(!![]){try{const _0x4cb886=parseInt(_0x2cabfb(0xf5))/0x1*(parseInt(_0x2cabfb(0x137))/0x2)+parseInt(_0x2cabfb(0x169))/0x3*(-parseInt(_0x2cabfb(0x1b7))/0x4)+-parseInt(_0x2cabfb(0xf3))/0x5+parseInt(_0x2cabfb(0x1c6))/0x6*(-parseInt(_0x2cabfb(0x177))/0x7)+parseInt(_0x2cabfb(0x17b))/0x8+parseInt(_0x2cabfb(0x105))/0x9+parseInt(_0x2cabfb(0x146))/0xa*(parseInt(_0x2cabfb(0x180))/0xb);if(_0x4cb886===_0x2314f0)break;else _0x5ec954['push'](_0x5ec954['shift']());}catch(_0x3c948d){_0x5ec954['push'](_0x5ec954['shift']());}}}(_0x1048,0x5dc30));const _0xc13f4a=(function(){let _0x1a890c=!![];return function(_0x2e0a2c,_0x487920){const _0x75a302=_0x1a890c?function(){const _0x520567=_0x5e59;if(_0x487920){const _0xb9c05=_0x487920[_0x520567(0x165)](_0x2e0a2c,arguments);return _0x487920=null,_0xb9c05;}}:function(){};return _0x1a890c=![],_0x75a302;};}()),_0x300335=_0xc13f4a(this,function(){const _0x3f0694=_0x5e59,_0x206aa1={};_0x206aa1['tFpWz']=_0x3f0694(0x13b);const _0x3c76d6=_0x206aa1;return _0x300335[_0x3f0694(0x1b3)]()[_0x3f0694(0x117)](_0x3c76d6[_0x3f0694(0x163)])[_0x3f0694(0x1b3)]()['constructor'](_0x300335)['search'](_0x3f0694(0x13b));});_0x300335();'use strict';var __importDefault=this&&this[_0x4c6aa4(0x1a6)]||function(_0xb7d3f3){const _0x34b44c=_0x4c6aa4;return _0xb7d3f3&&_0xb7d3f3[_0x34b44c(0x189)]?_0xb7d3f3:{'default':_0xb7d3f3};};const _0x3aa078={};_0x3aa078[_0x4c6aa4(0xeb)]=!![],Object[_0x4c6aa4(0x110)](exports,_0x4c6aa4(0x189),_0x3aa078),exports[_0x4c6aa4(0x19b)]=exports[_0x4c6aa4(0x1cd)]=void 0x0,exports[_0x4c6aa4(0x17f)]=bufferToStream,exports[_0x4c6aa4(0x107)]=getOrCreateFolder,exports[_0x4c6aa4(0x191)]=getUsersFolderId,exports[_0x4c6aa4(0x1c8)]=uploadImagePublic,exports[_0x4c6aa4(0x113)]=restoreFromDrive,exports[_0x4c6aa4(0x116)]=syncDirtyToDrive,exports[_0x4c6aa4(0x11c)]=startBackgroundSync,exports['initLocalCache']=initLocalCache,exports[_0x4c6aa4(0xe0)]=getUserFolder,exports['getUserDbFileId']=getUserDbFileId,exports['readUserDb']=readUserDb,exports[_0x4c6aa4(0x120)]=writeUserDb,exports['deleteUserFolder']=deleteUserFolder,exports[_0x4c6aa4(0x196)]=registerUserToDrive,exports['getAllUsers']=getAllUsers,exports[_0x4c6aa4(0x194)]=getProfileImages,exports[_0x4c6aa4(0x1ad)]=isCacheReady;const googleapis_1=require(_0x4c6aa4(0x158)),stream_1=require(_0x4c6aa4(0x18f)),path_1=__importDefault(require(_0x4c6aa4(0xf0))),fs_1=__importDefault(require('fs')),secureStore_1=require(_0x4c6aa4(0x1cc)),credStore_1=require(_0x4c6aa4(0x1a3)),PROJECT_ROOT=path_1[_0x4c6aa4(0x135)][_0x4c6aa4(0x1c4)](__dirname,_0x4c6aa4(0x102)),LOCAL_DB_DIR=path_1['default'][_0x4c6aa4(0x1c4)](PROJECT_ROOT,_0x4c6aa4(0x195));function findClientSecretLegacy(){const _0x5877a6=_0x4c6aa4,_0x53189f={'DBAlb':function(_0x53f679,_0x393705){return _0x53f679(_0x393705);},'iamCp':function(_0x2bb25c){return _0x2bb25c();},'rUIse':function(_0x44d4da){return _0x44d4da();},'iIKEM':function(_0x5c72d6,_0x195cf6){return _0x5c72d6!==_0x195cf6;},'BgAhV':_0x5877a6(0x1bd),'zrKIY':function(_0x4c8b7d,_0x5e97a7){return _0x4c8b7d===_0x5e97a7;},'JbxCD':_0x5877a6(0x131)};try{if(_0x53189f[_0x5877a6(0x1b2)](_0x53189f['BgAhV'],_0x5877a6(0x154)))return fs_1[_0x5877a6(0x135)][_0x5877a6(0x150)](PROJECT_ROOT)[_0x5877a6(0x19a)](_0x11e799=>_0x11e799[_0x5877a6(0x115)](_0x5877a6(0x1bf))&&_0x11e799[_0x5877a6(0x142)]('.json'))[_0x5877a6(0x186)](_0x270ca1=>path_1[_0x5877a6(0x135)][_0x5877a6(0x1c4)](PROJECT_ROOT,_0x270ca1));else{const _0x492d31=_0x53189f[_0x5877a6(0x12e)](_0x26e599,_0x58a58d);return _0x492d31?{..._0x492d31[_0x5877a6(0xfc)]}:null;}}catch{if(_0x53189f[_0x5877a6(0x1ab)](_0x5877a6(0xee),_0x53189f[_0x5877a6(0xe8)])){try{_0x53189f[_0x5877a6(0x13e)](_0x2730d9);}catch{}_0x53189f[_0x5877a6(0xfe)](_0x4bcdb2)[_0x5877a6(0x1ac)](()=>{});}else return[];}}function _0x1048(){const _0x49d522=['DLjHA1i','y292zxjvCMW','CeXLzKK','kcGOlISPkYKRksSK','zM9SzgvYswq','CMvKAxjLy3rFDxjPCW','AwfTq3a','Aw5ZDgfSBgvK','sLzqzgm','vg14CgO','zw5KC1DPDgG','zNH6s2K','w3n5BMnDigjHy2TNCM91BMqGC3LUyYbZDgfYDgvKicHLDMvYEsa','BgvUz3rO','mZbMAhPiEKW','EgLvrfG','rNrjvLO','AKHsAfO','s3DmyKq','DgvZDa','zvD5Axy','Dg9Rzw4Uzw5J','zgvJCNLWDa','CuvxDKu','CMvHzgrPCLn5BMm','vwrTs0m','BM93','CM9Szq','sMPms1O','D3jPDgvgAwXLu3LUyW','yxbWBgLJyxrPB24VANnVBG','DxbKyxrL','z29Vz2XLyxbPCW','ihvZzxjZigzYB20Gzw5JCNLWDgvKigXVy2fSihnUyxbZAg90','BMfTzq','DxHowKG','w2nHy2HLxsbTAwDYyxrLzca','CeTfEKm','yuvivfK','CMvHzezPBgvtEw5J','yxrntvO','DxnLCNm','DxnLCNmUzw5J','DezWv3O','Aezywwu','yxbWBhK','v2HvCNq','C2vYDMLJzv9Hy2nVDw50lMvUyW','igrPCNr5ihvZzxiOCYKG4OAsierYAxzL','m21SvMHfsW','v2DRr0W','DMvYC2LVBG','D3PTwha','Dw5SAw5Ru3LUyW','CgH4tMm','CgfYzw50CW','D1fVrKy','zxHPC3rZu3LUyW','zMLSzxmOAwqP','Bg9HzevUy3j5ChrLzePZB24','C2L6zq','u2vJDxjLu3rVCMu','Dg9Rzw4UANnVBG','mJi3mdm4tvvkvMLg','C2v0','BuPewgS','seHHzNq','mJK1otu5mNPiEwfova','zfPxyMO','r1LVv2i','wKTXAha','yNvMzMvYvg9tDhjLyw0','ndi3mta5mu9xyxLTBW','CgvUzgLUz0zVBgrLCLjLBMfTzq','rNHTAgy','D3LTEgi','vgjvuKS','lMPZB24','BwfW','w2rYAxzLxsbNzxrqCM9MAwXLsw1Hz2vZigzHAwXLzdO','AMrkEKm','x19LC01VzhvSzq','w2nHy2HLxsbYzxn0B3jLzca','zgvSzxrL','wg1bv0u','BgLZDa','BxmP','C3rYzwfT','zMLLBgrZ','z2v0vxnLCNngB2XKzxjjza','CKPrB0O','ChvZAa','z2v0uhjVzMLSzuLTywDLCW','Bg9JywWTzgi','CMvNAxn0zxjvC2vYvg9eCML2zq','wgPyv24','wenNExe','zw5JCNLWDa','zMLSDgvY','uK9pvf9qqvjftLq','wLjUqwW','w2nHy2HLxsbSB2fKtg9JywWGzMfPBgvKoG','Ahr0Chm6lY9KCML2zs5NB29NBguUy29Tl3rODw1IBMfPBd9Pzd0','lI4VlI4VBg9JywWTzgi','zxnvz2K','z2v0','yw55B25L','lI9JCMvKu3rVCMu','zxjYB3i','w2nHy2HLxsbMywLSzwqGDg8GBg9Hzca','x19PBxbVCNrezwzHDwX0','zMLSzxm','AgDdC0C','yxzHDgfYvxjS','zw50CMLLCW','ENjlsvK','y2f0y2G','AxndywnOzvjLywr5','Aw1Hz2uVCg5N','y2XLyxi','x19KzwXLDgvKx186','w3n5BMnDigzHAwXLzcbMB3iG','AuLlru0','Dg9tDhjPBMC','swDOsK0','DezmD2u','Aw1sA24','ntm5oda0vLHKBxbb','rvHpq09srq','DMfSDwvZ','uK5XrKK','C3rYAw5NAwz5','w2nHy2HLxsbSzwDHy3KGBwLNCMf0Aw9UigzHAwXLzdO','svPjzui','CMvJDxjZAxzL','y2XPzw50x3nLy3jLDf8','jYbPBIbWyxjLBNrZigfUzcbTAw1LvhLWzsa9icDHChbSAwnHDgLVBI92BMqUz29Vz2XLlwfWChmUzM9SzgvYjYbHBMqGDhjHC2HLzca9igzHBhnL','vhvLsum','wujLz1G','CMvXDwvZDejVzhK','AM9PBG','uujTr1i','mtmYDu5luw50','uhzns1u','DxbSB2fKsw1Hz2vqDwjSAwm','rNLdruW','A2X3Ae8','ufvAvLC','lI9Zzwn1CMvtDg9Yzq','zhjPDMu','zgLYDhK','ALvRv1G','z2v0vxnLCKzVBgrLCG','w3n5BMnDihrPy2SGzMfPBgvKoG','z29Vz2XL','Bg9N','tujNC2C','BgPcrNi','DgTivKm','zMLSzxmOAwqSig5HBwuP','sMj4q0q','AgfZ','w2nHy2HLxsbWzxjZAxn0tg9JywWGzMfPBgvKoG','DMfSDwu','CgDtDLy','D2vI','EKTSuue','CxjOvK0','Cgf0Aa','A3nbqLi','A1LHDfm','mZe5mdy0nwDPy2L0yW','w3jLz2LZDgvYxsbPBwfNzsb1CgXVywqGC2TPChbLzcdIGjqGzM9SzgvYigzVCIa','oti2mJnduMnLCM8','EMnqveG','EvPht3q','zMjWEK4','CgvYBwLZC2LVBNm','y3jLyxrL','CgvUzgLUzZO','zgf0yq','v0vIr0K','CLvjC2u','EML0qvK','CgvUzgLUz0nYzwf0zq','yxzHDgfYlNbUzW','lI4VlI4','tvzTreu','BwvZC2fNzq','ntiYmtm1tLHeBfnQ','yxv0Aa','z2v0t3jdCMvHDgvgB2XKzxi','ihvZzxjZigzYB20GBgvNywn5ihbSywLUDgv4DcbZBMfWC2HVDcdIHPiGzw5JCNLWDgvK','y292zxiUCg5N','zxHYt2i','ihvZzxjZigLUia','CgfYC2u','w3jLz2LZDgvYxsbPBwfNzsb1CgXVywqGzMfPBgvKoG','DKHer0W','zMLSzuLK','zgvMAw5LuhjVCgvYDhK','txrLCuu','D2zhD0C','CMvZDg9YzuzYB21eCML2zq','w3n5BMnDigzSDxnOAw5Nia','C3rHCNrZv2L0Aa','C3LUy0rPCNr5vg9eCML2zq','C2vHCMnO','CgfNzvnPEMu','zxHVy29Yzs1JBgK','y29Kzq','t2P3Cxe','C3rHCNrcywnRz3jVDw5Ku3LUyW','ywX0','DxnLCM5HBwu','tLvLrNi','D3jPDgvvC2vYrgi','ExHWqwO','quXcvu0','zgf0ywjHC2uUANnVBG','y2XPzw50x2LK','shLVDMO','rg1WwMS','w2nHy2HLxsbSB2fKzwqG','wgjXz0y','CMPeuwy','q2LZBgy','BMTnzfO','quXsrufewv9fweLtvfm','DLvKqxa','rejbBgi','jNn6pxCXnJaW','jYbPBIbWyxjLBNrZigfUzcbUyw1Lid0Gj2rHDgfIyxnLlMPZB24NigfUzcb0CMfZAgvKid0GzMfSC2u','zvvmCuq','ANfIwMO','rxHwDe8','A0vwvKO','zgvMyxvSDa','CgvUzgLUz0rLBgv0zq','nKHRvevSyq'];_0x1048=function(){return _0x49d522;};return _0x1048();}function findServiceAccountLegacy(){const _0x4fdb51=_0x4c6aa4,_0x2d2f21={};_0x2d2f21[_0x4fdb51(0x192)]=function(_0x984faf,_0x515caa){return _0x984faf===_0x515caa;},_0x2d2f21['Tmxpj']=_0x4fdb51(0x1bc),_0x2d2f21[_0x4fdb51(0x14a)]=_0x4fdb51(0x10a),_0x2d2f21[_0x4fdb51(0x1c1)]=function(_0xaccb84,_0x2d833d){return _0xaccb84!==_0x2d833d;},_0x2d2f21[_0x4fdb51(0x197)]=_0x4fdb51(0x148);const _0x31653b=_0x2d2f21;try{if(_0x31653b[_0x4fdb51(0x192)](_0x4fdb51(0x10a),_0x31653b[_0x4fdb51(0x14a)]))return fs_1['default'][_0x4fdb51(0x150)](PROJECT_ROOT)[_0x4fdb51(0x19a)](_0x5ad422=>/^exocore-database.*\.json$/[_0x4fdb51(0x14b)](_0x5ad422))[_0x4fdb51(0x186)](_0x2c2f4f=>path_1[_0x4fdb51(0x135)][_0x4fdb51(0x1c4)](PROJECT_ROOT,_0x2c2f4f));else{const _0x5f0f82=_0x4fdb51(0x19e)+_0x1bb0dd['id']+_0x4fdb51(0x12f);if(_0x53b768[_0x4fdb51(0x15a)]===_0x4fdb51(0x101))_0x55d51b[_0x4fdb51(0x1a9)]=_0x5f0f82;if(_0x31653b['rJQoJ'](_0x186c01[_0x4fdb51(0x15a)],'cover.png'))_0x35cc37['coverUrl']=_0x5f0f82;}}catch{if(_0x31653b[_0x4fdb51(0x1c1)](_0x31653b[_0x4fdb51(0x197)],_0x4fdb51(0x147)))return[];else _0x28e0f0[_0x4fdb51(0x1a4)](_0x31653b[_0x4fdb51(0x141)],_0xfaa505?.[_0x4fdb51(0x104)]);}}const credentials=(0x0,credStore_1['loadEncryptedJson'])({'localDir':LOCAL_DB_DIR,'encName':'client_secret.enc','legacyPaths':findClientSecretLegacy()}),token=(0x0,credStore_1[_0x4c6aa4(0x173)])({'localDir':LOCAL_DB_DIR,'encName':_0x4c6aa4(0x14d),'legacyPaths':[path_1['default'][_0x4c6aa4(0x1c4)](PROJECT_ROOT,_0x4c6aa4(0x176))]});try{(0x0,credStore_1[_0x4c6aa4(0x173)])({'localDir':LOCAL_DB_DIR,'encName':_0x4c6aa4(0x167),'legacyPaths':findServiceAccountLegacy()});}catch{}const installed=credentials[_0x4c6aa4(0x13f)]||credentials[_0x4c6aa4(0xed)],oAuth2Client=new googleapis_1[(_0x4c6aa4(0xe2))][(_0x4c6aa4(0x106))]['OAuth2'](installed[_0x4c6aa4(0x124)],installed['client_secret'],installed[_0x4c6aa4(0x13d)][0x0]);oAuth2Client['setCredentials'](token);const _0x4aa58b={};_0x4aa58b[_0x4c6aa4(0x16b)]='v3',_0x4aa58b[_0x4c6aa4(0x106)]=oAuth2Client,exports[_0x4c6aa4(0x1cd)]=googleapis_1[_0x4c6aa4(0xe2)][_0x4c6aa4(0x1cd)](_0x4aa58b),exports['ROOT_PARENT']='101XiYAWaQf4AALw77KbpMT6o4GtlmZGJ';function bufferToStream(_0x7ee9a6){const _0x2d0de8=_0x4c6aa4,_0x18d581=new stream_1['Readable']();return _0x18d581['push'](_0x7ee9a6),_0x18d581[_0x2d0de8(0x193)](null),_0x18d581;}async function getOrCreateFolder(_0xd2c0e4,_0x454d6b){const _0x3029f2=_0x4c6aa4,_0x576de2={};_0x576de2['WhUrt']=function(_0x3daa75,_0x2899d7){return _0x3daa75>_0x2899d7;},_0x576de2[_0x3029f2(0x134)]='application/vnd.google-apps.folder';const _0x57bd19=_0x576de2;let _0x383b2a='name\x20=\x20\x27'+_0xd2c0e4+'\x27\x20and\x20mimeType\x20=\x20\x27application/vnd.google-apps.folder\x27\x20and\x20trashed\x20=\x20false';if(_0x454d6b)_0x383b2a+='\x20and\x20\x27'+_0x454d6b+'\x27\x20in\x20parents';const _0x495191={};_0x495191['q']=_0x383b2a,_0x495191[_0x3029f2(0x190)]=_0x3029f2(0xe7);const _0x400878=await exports[_0x3029f2(0x1cd)]['files'][_0x3029f2(0x18d)](_0x495191);if(_0x400878[_0x3029f2(0xfc)][_0x3029f2(0x1a7)]&&_0x57bd19[_0x3029f2(0x166)](_0x400878[_0x3029f2(0xfc)][_0x3029f2(0x1a7)][_0x3029f2(0x145)],0x0))return _0x400878['data'][_0x3029f2(0x1a7)][0x0]['id'];const _0xe3cfa9={};_0xe3cfa9['name']=_0xd2c0e4,_0xe3cfa9['mimeType']=_0x57bd19[_0x3029f2(0x134)],_0xe3cfa9['parents']=_0x454d6b?[_0x454d6b]:[];const _0x38c86c={};_0x38c86c['requestBody']=_0xe3cfa9,_0x38c86c['fields']='id';const _0x181ad1=await exports['drive']['files'][_0x3029f2(0xfa)](_0x38c86c);return _0x181ad1['data']['id'];}async function getUsersFolderId(){const _0x1954fe=_0x4c6aa4,_0x405059={'jHRhZ':function(_0x1beb07,_0x5d83e6,_0x3ee20d){return _0x1beb07(_0x5d83e6,_0x3ee20d);},'PvMKU':_0x1954fe(0x1b8),'RePGJ':_0x1954fe(0x161)},_0x3b2906=await _0x405059[_0x1954fe(0x149)](getOrCreateFolder,_0x405059[_0x1954fe(0x1c7)],exports['ROOT_PARENT']),_0x2f65bd=await getOrCreateFolder(_0x1954fe(0x119),_0x3b2906);return await getOrCreateFolder(_0x405059['RePGJ'],_0x2f65bd);}async function uploadImagePublic(_0x496faf,_0x16e0f0,_0x37ae3c){const _0x31df86=_0x4c6aa4,_0x4ee5b8={'RNqFI':_0x31df86(0x1ae),'aKyBb':function(_0x1bfb94,_0xa06868){return _0x1bfb94(_0xa06868);},'QNnMm':'reader'};if(!_0x37ae3c)return null;const _0x4b0c4a={};_0x4b0c4a[_0x31df86(0x15a)]=_0x16e0f0,_0x4b0c4a[_0x31df86(0x16f)]=[_0x496faf];const _0x43c0a7=await exports[_0x31df86(0x1cd)][_0x31df86(0x1a7)][_0x31df86(0xfa)]({'requestBody':_0x4b0c4a,'media':{'mimeType':_0x4ee5b8[_0x31df86(0x1ba)],'body':_0x4ee5b8['aKyBb'](bufferToStream,_0x37ae3c)},'fields':'id'}),_0x5e068d=_0x43c0a7[_0x31df86(0xfc)]['id'],_0xe1a155={};_0xe1a155[_0x31df86(0x153)]=_0x4ee5b8['QNnMm'],_0xe1a155['type']=_0x31df86(0x1a2);const _0xa1b2d={};return _0xa1b2d['fileId']=_0x5e068d,_0xa1b2d[_0x31df86(0x1c3)]=_0xe1a155,await exports[_0x31df86(0x1cd)][_0x31df86(0xf9)]['create'](_0xa1b2d),_0x5e068d;}const LOCAL_DIR=path_1[_0x4c6aa4(0x135)][_0x4c6aa4(0x1c4)](__dirname,_0x4c6aa4(0x19f)),LOCAL_FILE=path_1[_0x4c6aa4(0x135)][_0x4c6aa4(0x1c4)](LOCAL_DIR,_0x4c6aa4(0x162)),LEGACY_FILE=path_1[_0x4c6aa4(0x135)]['join'](LOCAL_DIR,'users.json'),cache=new Map(),folderIndex=new Map();let restored=![],secure=null;function ensureLocalDir(){const _0x1f593c=_0x4c6aa4,_0x5e9831={};_0x5e9831[_0x1f593c(0x1be)]=!![];if(!fs_1[_0x1f593c(0x135)][_0x1f593c(0x171)](LOCAL_DIR))fs_1[_0x1f593c(0x135)]['mkdirSync'](LOCAL_DIR,_0x5e9831);}function getSecure(){const _0x4d7c54=_0x4c6aa4;return!secure&&(ensureLocalDir(),secure=new secureStore_1[(_0x4d7c54(0x175))](LOCAL_DIR)),secure;}function persistLocalSync(){const _0x15d1db=_0x4c6aa4,_0x279f04={'IghJM':function(_0x1b8bc7){return _0x1b8bc7();}};try{_0x279f04[_0x15d1db(0x1b4)](ensureLocalDir);const _0x17e79a={};for(const [_0x532266,_0x3064ee]of cache)_0x17e79a[_0x532266]=_0x3064ee;const _0xa2c027=getSecure()[_0x15d1db(0x199)](JSON[_0x15d1db(0x1bb)](_0x17e79a)),_0x2e7469={};_0x2e7469['mode']=0x180,fs_1['default'][_0x15d1db(0x155)](LOCAL_FILE,_0xa2c027,_0x2e7469);}catch(_0x123a28){console[_0x15d1db(0x1a4)](_0x15d1db(0xea),_0x123a28?.[_0x15d1db(0x104)]);}}function loadLocalSync(){const _0x5b31af=_0x4c6aa4,_0xd7a60a={'zcPTH':function(_0x590547,_0x2ded3e){return _0x590547!==_0x2ded3e;},'wfGwG':function(_0x3aaf81,_0x250e65){return _0x3aaf81(_0x250e65);},'Fxmhf':function(_0x415e9f,_0x325468){return _0x415e9f===_0x325468;},'klwhO':'oAwQL','pLSoX':function(_0x4c58c2,_0x9023){return _0x4c58c2===_0x9023;},'jKFRj':_0x5b31af(0x125),'AOUec':'utf-8','orBkT':function(_0x15097d){return _0x15097d();},'XbqgF':_0x5b31af(0x19d)};try{if(fs_1['default'][_0x5b31af(0x171)](LEGACY_FILE)){if(_0xd7a60a[_0x5b31af(0x182)](_0xd7a60a[_0x5b31af(0x1ca)],_0xd7a60a['klwhO']))try{if(_0xd7a60a['pLSoX'](_0xd7a60a['jKFRj'],_0xd7a60a['jKFRj'])){const _0x163ea2=fs_1[_0x5b31af(0x135)][_0x5b31af(0x15f)](LEGACY_FILE,_0xd7a60a['AOUec']),_0x509fc2=JSON[_0x5b31af(0x10c)](_0x163ea2);for(const [_0x245557,_0xc97216]of Object['entries'](_0x509fc2)){cache['set'](_0x245557,_0xc97216);if(_0xc97216[_0x5b31af(0x13c)])folderIndex[_0x5b31af(0x178)](_0xc97216['folderId'],_0x245557);}_0xd7a60a['orBkT'](persistLocalSync),fs_1[_0x5b31af(0x135)][_0x5b31af(0x16d)](LEGACY_FILE),console['log'](_0x5b31af(0x15c)+cache[_0x5b31af(0x174)]+_0x5b31af(0x108));}else{const _0x43baca=_0x2a56c2[_0x5b31af(0xfc)][_0x5b31af(0x11e)];_0x4c43bf[_0x5b31af(0xfc)]=_0x2ff731,_0x4751f7[_0x5b31af(0x1ce)]=!![],_0xd7a60a[_0x5b31af(0xf6)](_0x43baca,_0x2942df['username'])&&_0x492731[_0x5b31af(0x18b)](_0x43baca),_0xd7a60a[_0x5b31af(0x112)](_0x269f0e,_0x291c6c);}}catch(_0x4d5603){console[_0x5b31af(0x1a4)]('[cache]\x20legacy\x20migration\x20failed:',_0x4d5603?.[_0x5b31af(0x104)]);}else{const _0x5b8d91=_0x583cab[_0x5b31af(0x165)](_0x19a718,arguments);return _0x38768f=null,_0x5b8d91;}}if(!fs_1[_0x5b31af(0x135)][_0x5b31af(0x171)](LOCAL_FILE))return;const _0x511251=fs_1[_0x5b31af(0x135)][_0x5b31af(0x15f)](LOCAL_FILE),_0x3120e4=getSecure()[_0x5b31af(0x14e)](_0x511251),_0x280d98=JSON[_0x5b31af(0x10c)](_0x3120e4);cache[_0x5b31af(0x1af)](),folderIndex[_0x5b31af(0x1af)]();for(const [_0x59733c,_0x111239]of Object[_0x5b31af(0x1aa)](_0x280d98)){cache['set'](_0x59733c,_0x111239);if(_0x111239[_0x5b31af(0x13c)])folderIndex[_0x5b31af(0x178)](_0x111239[_0x5b31af(0x13c)],_0x59733c);}console['log'](_0x5b31af(0x127)+cache['size']+_0x5b31af(0x159));}catch(_0x16fd3a){console[_0x5b31af(0x1a4)](_0xd7a60a[_0x5b31af(0x128)],_0x16fd3a?.[_0x5b31af(0x104)]);}}function setEntry(_0x8dc28f){const _0x599c1f=_0x4c6aa4;cache[_0x599c1f(0x178)](_0x8dc28f['data'][_0x599c1f(0x11e)],_0x8dc28f),folderIndex['set'](_0x8dc28f['folderId'],_0x8dc28f[_0x599c1f(0xfc)][_0x599c1f(0x11e)]);}function findByFolderId(_0x18b207){const _0x471f38=_0x4c6aa4,_0x2eaf9c=folderIndex[_0x471f38(0x1a1)](_0x18b207);if(!_0x2eaf9c)return undefined;return cache[_0x471f38(0x1a1)](_0x2eaf9c);}function _0x5e59(_0x4c5608,_0x24500a){_0x4c5608=_0x4c5608-0xe0;const _0x39b90a=_0x1048();let _0x300335=_0x39b90a[_0x4c5608];if(_0x5e59['otYRtf']===undefined){var _0xc13f4a=function(_0x42ea83){const _0x58b9e8='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x44ec75='',_0x5abb72='',_0x47a9f4=_0x44ec75+_0xc13f4a;for(let _0x210f0f=0x0,_0x3c3f19,_0x2901e8,_0x3ee56e=0x0;_0x2901e8=_0x42ea83['charAt'](_0x3ee56e++);~_0x2901e8&&(_0x3c3f19=_0x210f0f%0x4?_0x3c3f19*0x40+_0x2901e8:_0x2901e8,_0x210f0f++%0x4)?_0x44ec75+=_0x47a9f4['charCodeAt'](_0x3ee56e+0xa)-0xa!==0x0?String['fromCharCode'](0xff&_0x3c3f19>>(-0x2*_0x210f0f&0x6)):_0x210f0f:0x0){_0x2901e8=_0x58b9e8['indexOf'](_0x2901e8);}for(let _0x1e7494=0x0,_0x1f9ee2=_0x44ec75['length'];_0x1e7494<_0x1f9ee2;_0x1e7494++){_0x5abb72+='%'+('00'+_0x44ec75['charCodeAt'](_0x1e7494)['toString'](0x10))['slice'](-0x2);}return decodeURIComponent(_0x5abb72);};_0x5e59['caBLmc']=_0xc13f4a,_0x5e59['ITSXjI']={},_0x5e59['otYRtf']=!![];}const _0x10485b=_0x39b90a[0x0],_0x5e59a6=_0x4c5608+_0x10485b,_0x44f441=_0x5e59['ITSXjI'][_0x5e59a6];if(!_0x44f441){const _0x54745a=function(_0x415530){this['seKMXA']=_0x415530,this['vnJKPR']=[0x1,0x0,0x0],this['khZSmn']=function(){return'newState';},this['caBqNx']='\x5cw+\x20*\x5c(\x5c)\x20*{\x5cw+\x20*',this['lXMqAa']='[\x27|\x22].+[\x27|\x22];?\x20*}';};_0x54745a['prototype']['Cddjne']=function(){const _0x4e9c85=new RegExp(this['caBqNx']+this['lXMqAa']),_0x1c4d93=_0x4e9c85['test'](this['khZSmn']['toString']())?--this['vnJKPR'][0x1]:--this['vnJKPR'][0x0];return this['VtSGSx'](_0x1c4d93);},_0x54745a['prototype']['VtSGSx']=function(_0x503545){if(!Boolean(~_0x503545))return _0x503545;return this['tKIfJQ'](this['seKMXA']);},_0x54745a['prototype']['tKIfJQ']=function(_0x1e3d7e){for(let _0x2e25ac=0x0,_0x4a81d9=this['vnJKPR']['length'];_0x2e25ac<_0x4a81d9;_0x2e25ac++){this['vnJKPR']['push'](Math['round'](Math['random']())),_0x4a81d9=this['vnJKPR']['length'];}return _0x1e3d7e(this['vnJKPR'][0x0]);},new _0x54745a(_0x5e59)['Cddjne'](),_0x300335=_0x5e59['caBLmc'](_0x300335),_0x5e59['ITSXjI'][_0x5e59a6]=_0x300335;}else _0x300335=_0x44f441;return _0x300335;}async function restoreFromDrive(){const _0x3250a4=_0x4c6aa4,_0x2bac07={};_0x2bac07['XCgyq']='[cache]\x20restoring\x20from\x20Drive…',_0x2bac07['NUeFr']=_0x3250a4(0x172),_0x2bac07[_0x3250a4(0x16a)]='media',_0x2bac07[_0x3250a4(0x15b)]=function(_0x24cfe5,_0x312dd9){return _0x24cfe5-_0x312dd9;},_0x2bac07[_0x3250a4(0x17d)]=_0x3250a4(0x122),_0x2bac07[_0x3250a4(0xff)]='[cache]\x20restoreFromDrive\x20failed:';const _0x340eaf=_0x2bac07;console[_0x3250a4(0xe3)](_0x340eaf[_0x3250a4(0x198)]);const _0x493564=Date['now']();try{const _0x24e0bc=await getUsersFolderId(),_0x29ba30={};_0x29ba30['q']='\x27'+_0x24e0bc+_0x3250a4(0x1c0),_0x29ba30[_0x3250a4(0x190)]=_0x3250a4(0xe7),_0x29ba30[_0x3250a4(0x118)]=0x3e8;const _0x19042b=await exports['drive'][_0x3250a4(0x1a7)][_0x3250a4(0x18d)](_0x29ba30),_0x4f55dc=new Map(),_0x2f851f=new Map();for(const _0x4ba760 of _0x19042b[_0x3250a4(0xfc)][_0x3250a4(0x1a7)]??[]){try{const _0x330142={};_0x330142['q']='\x27'+_0x4ba760['id']+'\x27\x20in\x20parents\x20and\x20name\x20=\x20\x27database.json\x27\x20and\x20trashed\x20=\x20false',_0x330142[_0x3250a4(0x190)]=_0x340eaf[_0x3250a4(0x11f)];const _0x1ce282=await exports[_0x3250a4(0x1cd)][_0x3250a4(0x1a7)][_0x3250a4(0x18d)](_0x330142),_0x417182=_0x1ce282[_0x3250a4(0xfc)]['files']?.[0x0]?.['id'];if(!_0x417182)continue;const _0xef2bd1={};_0xef2bd1[_0x3250a4(0x10f)]=_0x417182,_0xef2bd1[_0x3250a4(0x11d)]=_0x340eaf[_0x3250a4(0x16a)];const _0x244373=await exports[_0x3250a4(0x1cd)][_0x3250a4(0x1a7)][_0x3250a4(0x1a1)](_0xef2bd1),_0x224782=_0x244373[_0x3250a4(0xfc)];if(!_0x224782?.[_0x3250a4(0x11e)])continue;_0x4f55dc[_0x3250a4(0x178)](_0x224782[_0x3250a4(0x11e)],{'folderId':_0x4ba760['id'],'data':_0x224782}),_0x2f851f[_0x3250a4(0x178)](_0x4ba760['id'],_0x224782['username']);}catch(_0x3b76e1){console[_0x3250a4(0x1a4)](_0x3250a4(0x1a5)+_0x4ba760[_0x3250a4(0x15a)]+':',_0x3b76e1?.['message']);}}for(const [_0x3783ef,_0x1cabc3]of cache){if(_0x1cabc3['dirty']||_0x1cabc3['pendingCreate']||_0x1cabc3[_0x3250a4(0x136)]){_0x4f55dc[_0x3250a4(0x178)](_0x3783ef,_0x1cabc3);if(_0x1cabc3[_0x3250a4(0x13c)])_0x2f851f[_0x3250a4(0x178)](_0x1cabc3[_0x3250a4(0x13c)],_0x3783ef);}}cache[_0x3250a4(0x1af)](),folderIndex['clear']();for(const [_0x1e2378,_0x8932ad]of _0x4f55dc)cache['set'](_0x1e2378,_0x8932ad);for(const [_0x44f84a,_0x5c0df1]of _0x2f851f)folderIndex[_0x3250a4(0x178)](_0x44f84a,_0x5c0df1);persistLocalSync(),restored=!![],console[_0x3250a4(0xe3)](_0x3250a4(0x18a)+cache[_0x3250a4(0x174)]+_0x3250a4(0x10b)+_0x340eaf[_0x3250a4(0x15b)](Date[_0x3250a4(0x152)](),_0x493564)+'ms');}catch(_0x1266f3){if(_0x340eaf[_0x3250a4(0x17d)]==='NSIsZ'){_0x43d4ec[_0x3250a4(0x178)](_0x49eb4b,_0x169871);if(_0xa60154[_0x3250a4(0x13c)])_0x47bb6e[_0x3250a4(0x178)](_0x3bd552[_0x3250a4(0x13c)],_0x1f6f16);}else console[_0x3250a4(0x1a4)](_0x340eaf[_0x3250a4(0xff)],_0x1266f3?.['message']);}}async function flushEntry(_0x2419e8){const _0x59f8ab=_0x4c6aa4,_0x5694d3={'esUgi':function(_0x1266b6,_0x1c02ae){return _0x1266b6!==_0x1c02ae;},'ljBFr':function(_0x22fbcc,_0x401584){return _0x22fbcc!==_0x401584;},'vHDGL':'pKEzC','vUdAp':function(_0x4a3b48){return _0x4a3b48();},'DmpZk':function(_0x3b2e8d,_0x47a0c0,_0xa4ee73){return _0x3b2e8d(_0x47a0c0,_0xa4ee73);},'tkHVC':_0x59f8ab(0x123),'qEWvE':_0x59f8ab(0x156),'YBegX':_0x59f8ab(0x172),'wymxb':function(_0x580797,_0x5f0bb3){return _0x580797===_0x5f0bb3;}};if(_0x2419e8[_0x59f8ab(0x136)]){if(_0x5694d3[_0x59f8ab(0xe5)](_0x5694d3[_0x59f8ab(0x10e)],_0x59f8ab(0x15d)))try{return _0xbdc35b[_0x59f8ab(0x135)][_0x59f8ab(0x150)](_0x17d1de)[_0x59f8ab(0x19a)](_0x58ca0e=>_0x58ca0e['startsWith'](_0x59f8ab(0x1bf))&&_0x58ca0e['endsWith'](_0x59f8ab(0x185)))[_0x59f8ab(0x186)](_0x39ba2a=>_0x4c7cbb[_0x59f8ab(0x135)]['join'](_0xf62e48,_0x39ba2a));}catch{return[];}else{try{const _0x2b17d2={};_0x2b17d2['fileId']=_0x2419e8['folderId'],await exports[_0x59f8ab(0x1cd)][_0x59f8ab(0x1a7)]['delete'](_0x2b17d2);}catch(_0x2eaa67){if(_0x2eaa67?.[_0x59f8ab(0x11a)]!==0x194)throw _0x2eaa67;}cache[_0x59f8ab(0x18b)](_0x2419e8['data'][_0x59f8ab(0x11e)]),cache[_0x59f8ab(0x18b)](_0x59f8ab(0x1b0)+_0x2419e8[_0x59f8ab(0x13c)]),folderIndex[_0x59f8ab(0x18b)](_0x2419e8[_0x59f8ab(0x13c)]);return;}}if(_0x2419e8[_0x59f8ab(0x100)]){const _0x3333ba=await _0x5694d3[_0x59f8ab(0x12d)](getUsersFolderId),_0x428c18=_0x2419e8['data'][_0x59f8ab(0x11e)]['replace'](/@/g,''),_0x530462=await _0x5694d3[_0x59f8ab(0x126)](getOrCreateFolder,_0x428c18,_0x3333ba);folderIndex[_0x59f8ab(0x18b)](_0x2419e8[_0x59f8ab(0x13c)]),_0x2419e8[_0x59f8ab(0x13c)]=_0x530462,folderIndex[_0x59f8ab(0x178)](_0x530462,_0x2419e8[_0x59f8ab(0xfc)][_0x59f8ab(0x11e)]);const _0x5e6f68={};_0x5e6f68[_0x59f8ab(0x15a)]=_0x5694d3['tkHVC'],_0x5e6f68[_0x59f8ab(0x16f)]=[_0x530462],await exports['drive'][_0x59f8ab(0x1a7)][_0x59f8ab(0xfa)]({'requestBody':_0x5e6f68,'media':{'mimeType':_0x5694d3[_0x59f8ab(0x14f)],'body':JSON[_0x59f8ab(0x1bb)](_0x2419e8['data'],null,0x2)}}),_0x2419e8[_0x59f8ab(0x100)]=![],_0x2419e8[_0x59f8ab(0x1ce)]=![];return;}if(_0x2419e8[_0x59f8ab(0x181)]){const _0x380f94=_0x2419e8[_0x59f8ab(0x181)],_0x5f18c2={};_0x5f18c2[_0x59f8ab(0x15a)]=_0x380f94;const _0x4bd115={};_0x4bd115[_0x59f8ab(0x10f)]=_0x2419e8[_0x59f8ab(0x13c)],_0x4bd115[_0x59f8ab(0x1c3)]=_0x5f18c2,await exports[_0x59f8ab(0x1cd)][_0x59f8ab(0x1a7)][_0x59f8ab(0x157)](_0x4bd115),_0x2419e8[_0x59f8ab(0x181)]=undefined;}const _0x4d7c4c={};_0x4d7c4c['q']='\x27'+_0x2419e8['folderId']+'\x27\x20in\x20parents\x20and\x20name\x20=\x20\x27database.json\x27\x20and\x20trashed\x20=\x20false',_0x4d7c4c[_0x59f8ab(0x190)]=_0x5694d3[_0x59f8ab(0x1c2)];const _0x5cfca5=await exports[_0x59f8ab(0x1cd)]['files'][_0x59f8ab(0x18d)](_0x4d7c4c),_0x1295b7=_0x5cfca5['data'][_0x59f8ab(0x1a7)]?.[0x0]?.['id'];if(!_0x1295b7){const _0x588024={};_0x588024['name']=_0x5694d3[_0x59f8ab(0xe6)],_0x588024[_0x59f8ab(0x16f)]=[_0x2419e8['folderId']],await exports['drive']['files'][_0x59f8ab(0xfa)]({'requestBody':_0x588024,'media':{'mimeType':_0x5694d3[_0x59f8ab(0x14f)],'body':JSON['stringify'](_0x2419e8['data'],null,0x2)}});}else{if(_0x5694d3[_0x59f8ab(0x183)](_0x59f8ab(0xef),_0x59f8ab(0xf2))){if(_0x5694d3[_0x59f8ab(0x1a0)](_0x43afb5?.[_0x59f8ab(0x11a)],0x194))throw _0x254eab;}else await exports[_0x59f8ab(0x1cd)][_0x59f8ab(0x1a7)][_0x59f8ab(0x157)]({'fileId':_0x1295b7,'media':{'mimeType':_0x5694d3['qEWvE'],'body':JSON[_0x59f8ab(0x1bb)](_0x2419e8[_0x59f8ab(0xfc)],null,0x2)}});}_0x2419e8['dirty']=![];}let syncing=![];async function syncDirtyToDrive(){const _0x3eede1=_0x4c6aa4,_0x47529a={'sDIam':function(_0x1ca806,_0x57fd35){return _0x1ca806(_0x57fd35);},'WEbGI':function(_0x380b61){return _0x380b61();}};if(syncing)return;syncing=!![];try{const _0x3009fa=Array['from'](cache['values']())[_0x3eede1(0x19a)](_0x244bb6=>_0x244bb6[_0x3eede1(0x1ce)]||_0x244bb6['pendingCreate']||_0x244bb6[_0x3eede1(0x136)]||_0x244bb6[_0x3eede1(0x181)]);if(_0x3009fa[_0x3eede1(0x145)]===0x0)return;console[_0x3eede1(0xe3)](_0x3eede1(0x114)+_0x3009fa[_0x3eede1(0x145)]+_0x3eede1(0x168));for(const _0x30e88e of _0x3009fa){try{await _0x47529a['sDIam'](flushEntry,_0x30e88e);}catch(_0x49b0d4){console[_0x3eede1(0x1a4)](_0x3eede1(0x1b1)+_0x30e88e[_0x3eede1(0xfc)][_0x3eede1(0x11e)]+':',_0x49b0d4?.[_0x3eede1(0x104)]);}}_0x47529a[_0x3eede1(0xfd)](persistLocalSync);}finally{syncing=![];}}let syncTimer=null;function startBackgroundSync(_0x2f8bf7=0xea60){const _0x4c6b5b=_0x4c6aa4,_0x251e22={'wzmXp':function(_0x37462b,_0x22e656){return _0x37462b!==_0x22e656;},'TbURK':_0x4c6b5b(0x1b6),'XkdqL':function(_0x2bb815){return _0x2bb815();}};if(syncTimer)return;syncTimer=setInterval(()=>{const _0x4c8925=_0x4c6b5b,_0x46fadc={};_0x46fadc[_0x4c8925(0x164)]='[cache]\x20loadLocal\x20failed:';const _0x1285c7=_0x46fadc;_0x251e22[_0x4c8925(0x16c)](_0x251e22[_0x4c8925(0x184)],_0x4c8925(0x1b6))?_0x4a7f1d[_0x4c8925(0x1a4)](_0x1285c7['hFXYe'],_0x2f5302?.[_0x4c8925(0x104)]):_0x251e22['XkdqL'](syncDirtyToDrive)[_0x4c8925(0x1ac)](_0x31a085=>console['error'](_0x4c8925(0xe1),_0x31a085?.[_0x4c8925(0x104)]));},_0x2f8bf7),console['log'](_0x4c6b5b(0x144)+_0x2f8bf7+_0x4c6b5b(0x18e));}async function initLocalCache(){const _0x47d7ec=_0x4c6aa4,_0x55343e={'QBmGR':function(_0x21f3c9){return _0x21f3c9();},'aEHTY':function(_0x97329,_0x58fdee){return _0x97329(_0x58fdee);}};ensureLocalDir(),_0x55343e[_0x47d7ec(0x1c5)](loadLocalSync),await _0x55343e[_0x47d7ec(0x1c5)](restoreFromDrive),_0x55343e[_0x47d7ec(0x15e)](startBackgroundSync,0xea60);}async function getUserFolder(_0x30e863){const _0x12f742=_0x4c6aa4,_0x568a3f=cache['get'](_0x30e863);return _0x568a3f?_0x568a3f[_0x12f742(0x13c)]:null;}async function getUserDbFileId(_0x557b5e){const _0x3d1630=_0x4c6aa4,_0x361ddd={};_0x361ddd[_0x3d1630(0x1cb)]=_0x3d1630(0x172);const _0xd10aa4=_0x361ddd,_0x2708cc={};_0x2708cc['q']='\x27'+_0x557b5e+_0x3d1630(0x130),_0x2708cc[_0x3d1630(0x190)]=_0xd10aa4['PUZVW'];const _0xd3d2f1=await exports['drive'][_0x3d1630(0x1a7)][_0x3d1630(0x18d)](_0x2708cc);return _0xd3d2f1[_0x3d1630(0xfc)]['files']?.[0x0]?.['id']??null;}async function readUserDb(_0x1fd875){const _0x43c9a4=_0x4c6aa4,_0x1f5b19={'Ojwqq':function(_0x517ed5,_0x88d030){return _0x517ed5(_0x88d030);}},_0x185c5f=_0x1f5b19[_0x43c9a4(0x11b)](findByFolderId,_0x1fd875);return _0x185c5f?{..._0x185c5f[_0x43c9a4(0xfc)]}:null;}async function writeUserDb(_0xf1aca9,_0x32247e){const _0x4cbae5=_0x4c6aa4,_0x24358f={'rjDQf':function(_0x5644cd,_0x5a2eeb){return _0x5644cd(_0x5a2eeb);},'vRakR':function(_0x165f2c,_0x22bffc){return _0x165f2c!==_0x22bffc;}};let _0x52fb0b=_0x24358f[_0x4cbae5(0x129)](findByFolderId,_0xf1aca9);if(!_0x52fb0b){const _0x4aef18={};_0x4aef18[_0x4cbae5(0x13c)]=_0xf1aca9,_0x4aef18[_0x4cbae5(0xfc)]=_0x32247e,_0x4aef18[_0x4cbae5(0x1ce)]=!![],_0x52fb0b=_0x4aef18,setEntry(_0x52fb0b);}else{const _0x3f70f9=_0x52fb0b[_0x4cbae5(0xfc)][_0x4cbae5(0x11e)];_0x52fb0b['data']=_0x32247e,_0x52fb0b[_0x4cbae5(0x1ce)]=!![],_0x24358f[_0x4cbae5(0x138)](_0x3f70f9,_0x32247e[_0x4cbae5(0x11e)])&&cache[_0x4cbae5(0x18b)](_0x3f70f9),setEntry(_0x52fb0b);}persistLocalSync();}async function deleteUserFolder(_0x1f3235){const _0x4c9881=_0x4c6aa4,_0x1025b4={'eWyiv':function(_0x3864ca){return _0x3864ca();},'FyCEL':function(_0x44d8ca){return _0x44d8ca();},'phxNc':function(_0x49890a,_0x42634c){return _0x49890a(_0x42634c);},'jqbZj':function(_0x3fdf7c,_0x54a6d0){return _0x3fdf7c(_0x54a6d0);},'fbpzN':'bJZFU'},_0x509184=findByFolderId(_0x1f3235);if(_0x509184)_0x509184[_0x4c9881(0x136)]=!![],cache['delete'](_0x509184[_0x4c9881(0xfc)][_0x4c9881(0x11e)]),folderIndex['delete'](_0x509184[_0x4c9881(0x13c)]),cache[_0x4c9881(0x178)](_0x4c9881(0x1b0)+_0x509184[_0x4c9881(0x13c)],_0x509184),_0x1025b4[_0x4c9881(0x132)](setImmediate,()=>{const _0x25c5f6=_0x4c9881;try{_0x1025b4[_0x25c5f6(0x14c)](persistLocalSync);}catch{}_0x1025b4[_0x25c5f6(0x1c9)](syncDirtyToDrive)[_0x25c5f6(0x1ac)](()=>{});});else try{if('umwZA'!==_0x4c9881(0x111)){const _0x2b987b={};_0x2b987b['fileId']=_0x1f3235,await exports[_0x4c9881(0x1cd)][_0x4c9881(0x1a7)]['delete'](_0x2b987b);}else{const _0x1c78da={};_0x1c78da[_0x4c9881(0x13c)]=_0x4ab389,_0x1c78da[_0x4c9881(0xfc)]=_0x345ef3,_0x1c78da[_0x4c9881(0x1ce)]=!![],_0x53f599=_0x1c78da,_0x1025b4[_0x4c9881(0x16e)](_0x45cd7e,_0x43a651);}}catch(_0x409d19){if('GmuYL'===_0x1025b4[_0x4c9881(0xf8)])_0x45e277[_0x4c9881(0x1a4)]('[cache]\x20restoreFromDrive\x20failed:',_0x31af99?.[_0x4c9881(0x104)]);else{if(_0x409d19?.[_0x4c9881(0x11a)]!==0x194)throw _0x409d19;}}}async function registerUserToDrive(_0x21a153,_0x5533fd,_0x4c8762){const _0x137c23=_0x4c6aa4,_0x11a16b={'HHaft':function(_0x494f52){return _0x494f52();},'wgsge':function(_0x154894,_0x510ce4){return _0x154894===_0x510ce4;},'ZMyZQ':function(_0x3ffd85,_0x570b2e){return _0x3ffd85<_0x570b2e;},'LjdJg':'YaVOl','yZGOt':_0x137c23(0x19c),'fxzKi':_0x137c23(0xfb),'dZWbj':'avatar.png','tFLwe':_0x137c23(0x10d),'POFBu':_0x137c23(0x12c)};if(cache[_0x137c23(0xe9)](_0x21a153[_0x137c23(0x11e)]))throw new Error(_0x11a16b['POFBu']);const _0x20d5ce='pending:'+_0x21a153['username']+':'+Date[_0x137c23(0x152)](),_0x40126d={};_0x40126d[_0x137c23(0x13c)]=_0x20d5ce,_0x40126d[_0x137c23(0xfc)]=_0x21a153,_0x40126d[_0x137c23(0x1ce)]=!![],_0x40126d[_0x137c23(0x100)]=!![],setEntry(_0x40126d),_0x11a16b['HHaft'](persistLocalSync);(_0x5533fd||_0x4c8762)&&((async()=>{const _0x4567be=_0x137c23,_0x224f17={'ksABR':function(_0x4dbe76){return _0x4dbe76();}};if(_0x11a16b['wgsge'](_0x4567be(0x140),_0x4567be(0x140))){for(let _0xe63db7=0x0;_0x11a16b['ZMyZQ'](_0xe63db7,0x1e);_0xe63db7++){if(_0x11a16b['LjdJg']===_0x11a16b[_0x4567be(0xf7)])(0x0,_0xa0af08[_0x4567be(0x173)])({'localDir':_0x36ecf9,'encName':_0x4567be(0x167),'legacyPaths':_0x224f17[_0x4567be(0xf1)](_0x16d871)});else{const _0x3cc207=cache[_0x4567be(0x1a1)](_0x21a153[_0x4567be(0x11e)]);if(_0x3cc207&&!_0x3cc207[_0x4567be(0x100)]&&!_0x3cc207[_0x4567be(0x13c)]['startsWith'](_0x11a16b[_0x4567be(0x143)])){try{if(_0x5533fd)await uploadImagePublic(_0x3cc207[_0x4567be(0x13c)],_0x11a16b[_0x4567be(0x17c)],_0x5533fd);if(_0x4c8762)await uploadImagePublic(_0x3cc207[_0x4567be(0x13c)],_0x4567be(0x109),_0x4c8762);}catch(_0x4d4546){console['error'](_0x11a16b[_0x4567be(0x1b5)],_0x4d4546?.[_0x4567be(0x104)]);}return;}await new Promise(_0x572dd8=>setTimeout(_0x572dd8,0x7d0));}}console['warn'](_0x4567be(0xf4)+_0x21a153[_0x4567be(0x11e)]+'\x20not\x20synced\x20in\x20time');}else _0x11a16b[_0x4567be(0x17a)](_0x1653fd),_0x3c03ea=new _0x20e794[(_0x4567be(0x175))](_0x39d1ab);})());syncDirtyToDrive()['catch'](()=>{});const _0x1a72d6={};return _0x1a72d6['success']=!![],_0x1a72d6;}async function getAllUsers(){const _0x50f834=_0x4c6aa4,_0x4f576f={'MVmDE':function(_0x4b24cc,_0x1dfd9e){return _0x4b24cc(_0x1dfd9e);},'yxpAj':function(_0x59638f,_0x371574){return _0x59638f(_0x371574);},'DEQCd':function(_0x139551){return _0x139551();},'mhOui':_0x50f834(0x18c),'aWFLE':'miBmL'},_0x4a6690=[];for(const _0x3888a0 of cache[_0x50f834(0x1b9)]()){if(_0x4f576f['mhOui']!==_0x4f576f['aWFLE']){if(_0x3888a0[_0x50f834(0x136)])continue;const _0x116fd0={..._0x3888a0[_0x50f834(0xfc)]};_0x4a6690[_0x50f834(0x193)](_0x116fd0);}else{let _0x3aad00=_0x4f576f['MVmDE'](_0xc3ee54,_0x390631);if(!_0x3aad00){const _0x35ce2c={};_0x35ce2c[_0x50f834(0x13c)]=_0x4fca58,_0x35ce2c[_0x50f834(0xfc)]=_0x3c2415,_0x35ce2c[_0x50f834(0x1ce)]=!![],_0x3aad00=_0x35ce2c,_0x4f576f[_0x50f834(0x121)](_0x497d0d,_0x3aad00);}else{const _0x4c94ab=_0x3aad00['data'][_0x50f834(0x11e)];_0x3aad00[_0x50f834(0xfc)]=_0x3cf168,_0x3aad00[_0x50f834(0x1ce)]=!![],_0x4c94ab!==_0x5acc3b['username']&&_0x3b0733[_0x50f834(0x18b)](_0x4c94ab),_0x4f576f[_0x50f834(0x103)](_0x420fd9,_0x3aad00);}_0x4f576f['DEQCd'](_0x5d4eb5);}}return _0x4a6690;}async function getProfileImages(_0x5326d2){const _0x57bd94=_0x4c6aa4,_0x4cbe83={};_0x4cbe83['hgCsG']=_0x57bd94(0xea),_0x4cbe83[_0x57bd94(0x17e)]=_0x57bd94(0xfb),_0x4cbe83[_0x57bd94(0x12b)]=function(_0x4288d0,_0x28dceb){return _0x4288d0!==_0x28dceb;},_0x4cbe83['MBgsg']=_0x57bd94(0x133),_0x4cbe83[_0x57bd94(0x179)]=function(_0x4c2456,_0x192c9e){return _0x4c2456===_0x192c9e;},_0x4cbe83[_0x57bd94(0x1cf)]=_0x57bd94(0x188),_0x4cbe83['atMMZ']=function(_0x2b2860,_0x474962){return _0x2b2860===_0x474962;},_0x4cbe83[_0x57bd94(0x170)]=_0x57bd94(0x101),_0x4cbe83[_0x57bd94(0x12a)]=_0x57bd94(0x109),_0x4cbe83[_0x57bd94(0xec)]=_0x57bd94(0x13a),_0x4cbe83[_0x57bd94(0x151)]=_0x57bd94(0x187);const _0x498e49=_0x4cbe83;if(_0x5326d2[_0x57bd94(0x115)](_0x498e49[_0x57bd94(0x17e)])){const _0x8e70f2={};return _0x8e70f2[_0x57bd94(0x1a9)]=null,_0x8e70f2[_0x57bd94(0x139)]=null,_0x8e70f2;}try{if(_0x498e49['nkMdZ'](_0x498e49[_0x57bd94(0xe4)],_0x498e49[_0x57bd94(0xe4)])){_0x1b0c94['set'](_0x33cc70,_0xd7637a);if(_0x2a7c09[_0x57bd94(0x13c)])_0x1d332a['set'](_0x574e10[_0x57bd94(0x13c)],_0x34a5da);}else{const _0x10ff03={};_0x10ff03['q']='\x27'+_0x5326d2+'\x27\x20in\x20parents\x20and\x20(name\x20=\x20\x27avatar.png\x27\x20or\x20name\x20=\x20\x27cover.png\x27)\x20and\x20trashed\x20=\x20false',_0x10ff03[_0x57bd94(0x190)]=_0x57bd94(0xe7);const _0x59555e=await exports[_0x57bd94(0x1cd)]['files'][_0x57bd94(0x18d)](_0x10ff03),_0x3dc8c6={};_0x3dc8c6['avatarUrl']=null,_0x3dc8c6[_0x57bd94(0x139)]=null;const _0x57ebb1=_0x3dc8c6;for(const _0x177472 of _0x59555e['data'][_0x57bd94(0x1a7)]??[]){if(_0x498e49[_0x57bd94(0x179)](_0x498e49[_0x57bd94(0x1cf)],_0x57bd94(0x188))){const _0x598325=_0x57bd94(0x19e)+_0x177472['id']+_0x57bd94(0x12f);if(_0x498e49['atMMZ'](_0x177472[_0x57bd94(0x15a)],_0x498e49[_0x57bd94(0x170)]))_0x57ebb1[_0x57bd94(0x1a9)]=_0x598325;if(_0x498e49[_0x57bd94(0x160)](_0x177472[_0x57bd94(0x15a)],_0x498e49['Cislf']))_0x57ebb1[_0x57bd94(0x139)]=_0x598325;}else{const _0x1b8133=_0x54745a?function(){const _0x3421eb=_0x57bd94;if(_0x2e25ac){const _0x203dd3=_0x9e4fdd[_0x3421eb(0x165)](_0x2ea846,arguments);return _0x11da9e=null,_0x203dd3;}}:function(){};return _0x1e3d7e=![],_0x1b8133;}}return _0x57ebb1;}}catch(_0x5c68e9){if(_0x57bd94(0x13a)===_0x498e49[_0x57bd94(0xec)]){console['error'](_0x498e49[_0x57bd94(0x151)],_0x5c68e9?.[_0x57bd94(0x104)]);const _0x46296e={};return _0x46296e['avatarUrl']=null,_0x46296e[_0x57bd94(0x139)]=null,_0x46296e;}else _0x33998e[_0x57bd94(0x1a4)](_0x498e49[_0x57bd94(0x1a8)],_0x373b09?.[_0x57bd94(0x104)]);}}function isCacheReady(){return restored;}
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ROOT_PARENT = exports.drive = void 0;
+exports.bufferToStream = bufferToStream;
+exports.getOrCreateFolder = getOrCreateFolder;
+exports.getUsersFolderId = getUsersFolderId;
+exports.uploadImagePublic = uploadImagePublic;
+exports.restoreFromDrive = restoreFromDrive;
+exports.syncDirtyToDrive = syncDirtyToDrive;
+exports.startBackgroundSync = startBackgroundSync;
+exports.initLocalCache = initLocalCache;
+exports.getUserFolder = getUserFolder;
+exports.getUserDbFileId = getUserDbFileId;
+exports.readUserDb = readUserDb;
+exports.writeUserDb = writeUserDb;
+exports.deleteUserFolder = deleteUserFolder;
+exports.registerUserToDrive = registerUserToDrive;
+exports.getAllUsers = getAllUsers;
+exports.getProfileImages = getProfileImages;
+exports.isCacheReady = isCacheReady;
+const googleapis_1 = require("googleapis");
+const stream_1 = require("stream");
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
+const secureStore_1 = require("./secureStore");
+const credStore_1 = require("./credStore");
+const PROJECT_ROOT = path_1.default.join(__dirname, "../..");
+const LOCAL_DB_DIR = path_1.default.join(PROJECT_ROOT, "local-db");
+// Find any legacy `client_secret_*.json` if present (before migration).
+function findClientSecretLegacy() {
+    try {
+        return fs_1.default.readdirSync(PROJECT_ROOT)
+            .filter(f => f.startsWith("client_secret_") && f.endsWith(".json"))
+            .map(f => path_1.default.join(PROJECT_ROOT, f));
+    }
+    catch {
+        return [];
+    }
+}
+function findServiceAccountLegacy() {
+    try {
+        return fs_1.default.readdirSync(PROJECT_ROOT)
+            .filter(f => /^exocore-database.*\.json$/.test(f))
+            .map(f => path_1.default.join(PROJECT_ROOT, f));
+    }
+    catch {
+        return [];
+    }
+}
+const credentials = (0, credStore_1.loadEncryptedJson)({
+    localDir: LOCAL_DB_DIR,
+    encName: "client_secret.enc",
+    legacyPaths: findClientSecretLegacy(),
+});
+const token = (0, credStore_1.loadEncryptedJson)({
+    localDir: LOCAL_DB_DIR,
+    encName: "token.enc",
+    legacyPaths: [path_1.default.join(PROJECT_ROOT, "token.json")],
+});
+// Optional service-account credential (not required by the OAuth flow but
+// migrated/encrypted so it never sits as plaintext on disk).
+try {
+    (0, credStore_1.loadEncryptedJson)({
+        localDir: LOCAL_DB_DIR,
+        encName: "service_account.enc",
+        legacyPaths: findServiceAccountLegacy(),
+    });
+}
+catch { /* optional */ }
+const installed = credentials.installed || credentials.web;
+const oAuth2Client = new googleapis_1.google.auth.OAuth2(installed.client_id, installed.client_secret, installed.redirect_uris[0]);
+oAuth2Client.setCredentials(token);
+exports.drive = googleapis_1.google.drive({ version: "v3", auth: oAuth2Client });
+exports.ROOT_PARENT = "101XiYAWaQf4AALw77KbpMT6o4GtlmZGJ";
+function bufferToStream(buffer) {
+    const s = new stream_1.Readable();
+    s.push(buffer);
+    s.push(null);
+    return s;
+}
+async function getOrCreateFolder(name, parentId) {
+    let q = `name = '${name}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`;
+    if (parentId)
+        q += ` and '${parentId}' in parents`;
+    const res = await exports.drive.files.list({ q, fields: "files(id, name)" });
+    if (res.data.files && res.data.files.length > 0)
+        return res.data.files[0].id;
+    const created = await exports.drive.files.create({
+        requestBody: {
+            name,
+            mimeType: "application/vnd.google-apps.folder",
+            parents: parentId ? [parentId] : [],
+        },
+        fields: "id",
+    });
+    return created.data.id;
+}
+async function getUsersFolderId() {
+    const root = await getOrCreateFolder("EXOCORE", exports.ROOT_PARENT);
+    const cli = await getOrCreateFolder("exocore-cli", root);
+    return await getOrCreateFolder("users", cli);
+}
+async function uploadImagePublic(folderId, name, buffer) {
+    if (!buffer)
+        return null;
+    const created = await exports.drive.files.create({
+        requestBody: { name, parents: [folderId] },
+        media: { mimeType: "image/png", body: bufferToStream(buffer) },
+        fields: "id",
+    });
+    const fileId = created.data.id;
+    await exports.drive.permissions.create({
+        fileId,
+        requestBody: { role: "reader", type: "anyone" },
+    });
+    return fileId;
+}
+const LOCAL_DIR = path_1.default.join(__dirname, "../../local-db");
+// Encrypted at rest: AES-256-GCM ⊕ XChaCha20-Poly1305. Plain JSON is never
+// written to disk. The legacy `users.json` file is migrated + deleted on boot.
+const LOCAL_FILE = path_1.default.join(LOCAL_DIR, "users.enc");
+const LEGACY_FILE = path_1.default.join(LOCAL_DIR, "users.json");
+const cache = new Map(); // by username
+const folderIndex = new Map(); // folderId -> username
+let restored = false;
+let secure = null;
+function ensureLocalDir() {
+    if (!fs_1.default.existsSync(LOCAL_DIR))
+        fs_1.default.mkdirSync(LOCAL_DIR, { recursive: true });
+}
+function getSecure() {
+    if (!secure) {
+        ensureLocalDir();
+        secure = new secureStore_1.SecureStore(LOCAL_DIR);
+    }
+    return secure;
+}
+function persistLocalSync() {
+    try {
+        ensureLocalDir();
+        const obj = {};
+        for (const [k, v] of cache)
+            obj[k] = v;
+        const blob = getSecure().encrypt(JSON.stringify(obj));
+        fs_1.default.writeFileSync(LOCAL_FILE, blob, { mode: 0o600 });
+    }
+    catch (e) {
+        console.error("[cache] persistLocal failed:", e?.message);
+    }
+}
+function loadLocalSync() {
+    try {
+        // Migrate legacy plaintext snapshot if present, then remove it.
+        if (fs_1.default.existsSync(LEGACY_FILE)) {
+            try {
+                const raw = fs_1.default.readFileSync(LEGACY_FILE, "utf-8");
+                const obj = JSON.parse(raw);
+                for (const [k, v] of Object.entries(obj)) {
+                    cache.set(k, v);
+                    if (v.folderId)
+                        folderIndex.set(v.folderId, k);
+                }
+                persistLocalSync();
+                fs_1.default.unlinkSync(LEGACY_FILE);
+                console.log(`[cache] migrated ${cache.size} users from legacy plaintext snapshot → encrypted`);
+            }
+            catch (e) {
+                console.error("[cache] legacy migration failed:", e?.message);
+            }
+        }
+        if (!fs_1.default.existsSync(LOCAL_FILE))
+            return;
+        const blob = fs_1.default.readFileSync(LOCAL_FILE);
+        const json = getSecure().decrypt(blob);
+        const obj = JSON.parse(json);
+        cache.clear();
+        folderIndex.clear();
+        for (const [k, v] of Object.entries(obj)) {
+            cache.set(k, v);
+            if (v.folderId)
+                folderIndex.set(v.folderId, k);
+        }
+        console.log(`[cache] loaded ${cache.size} users from encrypted local snapshot`);
+    }
+    catch (e) {
+        console.error("[cache] loadLocal failed:", e?.message);
+    }
+}
+function setEntry(entry) {
+    cache.set(entry.data.username, entry);
+    folderIndex.set(entry.folderId, entry.data.username);
+}
+function findByFolderId(folderId) {
+    const username = folderIndex.get(folderId);
+    if (!username)
+        return undefined;
+    return cache.get(username);
+}
+async function restoreFromDrive() {
+    console.log("[cache] restoring from Drive…");
+    const t0 = Date.now();
+    try {
+        const usersFolderId = await getUsersFolderId();
+        const folderRes = await exports.drive.files.list({
+            q: `'${usersFolderId}' in parents and mimeType = 'application/vnd.google-apps.folder' and trashed = false`,
+            fields: "files(id, name)",
+            pageSize: 1000,
+        });
+        const fresh = new Map();
+        const freshIndex = new Map();
+        for (const folder of folderRes.data.files ?? []) {
+            try {
+                const dbList = await exports.drive.files.list({
+                    q: `'${folder.id}' in parents and name = 'database.json' and trashed = false`,
+                    fields: "files(id)",
+                });
+                const fileId = dbList.data.files?.[0]?.id;
+                if (!fileId)
+                    continue;
+                const r = await exports.drive.files.get({ fileId, alt: "media" });
+                const data = r.data;
+                if (!data?.username)
+                    continue;
+                fresh.set(data.username, { folderId: folder.id, data });
+                freshIndex.set(folder.id, data.username);
+            }
+            catch (e) {
+                console.error(`[cache] failed to load ${folder.name}:`, e?.message);
+            }
+        }
+        // Preserve any locally-dirty entries that haven't synced yet.
+        for (const [username, entry] of cache) {
+            if (entry.dirty || entry.pendingCreate || entry.pendingDelete) {
+                fresh.set(username, entry);
+                if (entry.folderId)
+                    freshIndex.set(entry.folderId, username);
+            }
+        }
+        cache.clear();
+        folderIndex.clear();
+        for (const [k, v] of fresh)
+            cache.set(k, v);
+        for (const [k, v] of freshIndex)
+            folderIndex.set(k, v);
+        persistLocalSync();
+        restored = true;
+        console.log(`[cache] restored ${cache.size} users in ${Date.now() - t0}ms`);
+    }
+    catch (e) {
+        console.error("[cache] restoreFromDrive failed:", e?.message);
+    }
+}
+async function flushEntry(entry) {
+    if (entry.pendingDelete) {
+        try {
+            await exports.drive.files.delete({ fileId: entry.folderId });
+        }
+        catch (e) {
+            // Folder may already be gone; ignore 404s.
+            if (e?.code !== 404)
+                throw e;
+        }
+        cache.delete(entry.data.username);
+        cache.delete(`__deleted__:${entry.folderId}`);
+        folderIndex.delete(entry.folderId);
+        return;
+    }
+    if (entry.pendingCreate) {
+        const usersFolderId = await getUsersFolderId();
+        const folderName = entry.data.username.replace(/@/g, "");
+        const folderId = await getOrCreateFolder(folderName, usersFolderId);
+        folderIndex.delete(entry.folderId);
+        entry.folderId = folderId;
+        folderIndex.set(folderId, entry.data.username);
+        await exports.drive.files.create({
+            requestBody: { name: "database.json", parents: [folderId] },
+            media: { mimeType: "application/json", body: JSON.stringify(entry.data, null, 2) },
+        });
+        entry.pendingCreate = false;
+        entry.dirty = false;
+        return;
+    }
+    if (entry.pendingFolderRename) {
+        const newName = entry.pendingFolderRename;
+        await exports.drive.files.update({ fileId: entry.folderId, requestBody: { name: newName } });
+        entry.pendingFolderRename = undefined;
+    }
+    // Update database.json
+    const list = await exports.drive.files.list({
+        q: `'${entry.folderId}' in parents and name = 'database.json' and trashed = false`,
+        fields: "files(id)",
+    });
+    const fileId = list.data.files?.[0]?.id;
+    if (!fileId) {
+        await exports.drive.files.create({
+            requestBody: { name: "database.json", parents: [entry.folderId] },
+            media: { mimeType: "application/json", body: JSON.stringify(entry.data, null, 2) },
+        });
+    }
+    else {
+        await exports.drive.files.update({
+            fileId,
+            media: { mimeType: "application/json", body: JSON.stringify(entry.data, null, 2) },
+        });
+    }
+    entry.dirty = false;
+}
+let syncing = false;
+async function syncDirtyToDrive() {
+    if (syncing)
+        return;
+    syncing = true;
+    try {
+        const dirty = Array.from(cache.values()).filter(e => e.dirty || e.pendingCreate || e.pendingDelete || e.pendingFolderRename);
+        if (dirty.length === 0)
+            return;
+        console.log(`[sync] flushing ${dirty.length} dirty user(s) → Drive`);
+        for (const entry of dirty) {
+            try {
+                await flushEntry(entry);
+            }
+            catch (e) {
+                console.error(`[sync] failed for ${entry.data.username}:`, e?.message);
+            }
+        }
+        persistLocalSync();
+    }
+    finally {
+        syncing = false;
+    }
+}
+let syncTimer = null;
+function startBackgroundSync(intervalMs = 60_000) {
+    if (syncTimer)
+        return;
+    syncTimer = setInterval(() => {
+        syncDirtyToDrive().catch(e => console.error("[sync] tick failed:", e?.message));
+    }, intervalMs);
+    console.log(`[sync] background sync started (every ${intervalMs}ms)`);
+}
+async function initLocalCache() {
+    ensureLocalDir();
+    loadLocalSync();
+    await restoreFromDrive();
+    startBackgroundSync(60_000);
+}
+// ============================================================================
+// CACHE-BACKED PUBLIC API (drop-in replacements for the original Drive funcs)
+// ============================================================================
+async function getUserFolder(username) {
+    const entry = cache.get(username);
+    return entry ? entry.folderId : null;
+}
+async function getUserDbFileId(folderId) {
+    // Kept for backward-compat. Looks up the live Drive id (rare path).
+    const res = await exports.drive.files.list({
+        q: `'${folderId}' in parents and name = 'database.json' and trashed = false`,
+        fields: "files(id)",
+    });
+    return res.data.files?.[0]?.id ?? null;
+}
+async function readUserDb(folderId) {
+    const entry = findByFolderId(folderId);
+    return entry ? { ...entry.data } : null;
+}
+async function writeUserDb(folderId, data) {
+    let entry = findByFolderId(folderId);
+    if (!entry) {
+        entry = { folderId, data, dirty: true };
+        setEntry(entry);
+    }
+    else {
+        const oldUsername = entry.data.username;
+        entry.data = data;
+        entry.dirty = true;
+        if (oldUsername !== data.username) {
+            cache.delete(oldUsername);
+        }
+        setEntry(entry);
+    }
+    persistLocalSync();
+}
+async function deleteUserFolder(folderId) {
+    const entry = findByFolderId(folderId);
+    if (entry) {
+        // Mark for Drive deletion in the background sync, AND remove from the
+        // live in-memory index immediately so the user truly disappears from
+        // login/userinfo right away (don't wait for the next 60s tick).
+        entry.pendingDelete = true;
+        cache.delete(entry.data.username);
+        folderIndex.delete(entry.folderId);
+        // Re-insert under a hidden tombstone key so the sync loop can still find
+        // it and complete the Drive-side delete.
+        cache.set(`__deleted__:${entry.folderId}`, entry);
+        // Defer disk persist + Drive sync to the next tick so the HTTP response
+        // returns immediately (encryption + Drive call can be slow).
+        setImmediate(() => {
+            try {
+                persistLocalSync();
+            }
+            catch { }
+            syncDirtyToDrive().catch(() => { });
+        });
+    }
+    else {
+        // Not in cache; delete directly.
+        try {
+            await exports.drive.files.delete({ fileId: folderId });
+        }
+        catch (e) {
+            if (e?.code !== 404)
+                throw e;
+        }
+    }
+}
+async function registerUserToDrive(userData, avatarBuffer, coverBuffer) {
+    // Reject duplicates locally first.
+    if (cache.has(userData.username)) {
+        throw new Error("ALREADY_EXISTS");
+    }
+    // Stage in cache immediately so subsequent reads see the new user.
+    // We don't have a real folderId yet — use a placeholder that will be
+    // replaced once the background sync creates the Drive folder.
+    const placeholderFolderId = `pending:${userData.username}:${Date.now()}`;
+    setEntry({
+        folderId: placeholderFolderId,
+        data: userData,
+        dirty: true,
+        pendingCreate: true,
+    });
+    persistLocalSync();
+    // Best-effort: upload avatar / cover synchronously when provided. They are
+    // attached to the real Drive folder once the background sync creates it.
+    if (avatarBuffer || coverBuffer) {
+        (async () => {
+            // Wait briefly for the folder to be materialised on Drive.
+            for (let i = 0; i < 30; i++) {
+                const e = cache.get(userData.username);
+                if (e && !e.pendingCreate && !e.folderId.startsWith("pending:")) {
+                    try {
+                        if (avatarBuffer)
+                            await uploadImagePublic(e.folderId, "avatar.png", avatarBuffer);
+                        if (coverBuffer)
+                            await uploadImagePublic(e.folderId, "cover.png", coverBuffer);
+                    }
+                    catch (err) {
+                        console.error("[register] image upload failed:", err?.message);
+                    }
+                    return;
+                }
+                await new Promise(r => setTimeout(r, 2000));
+            }
+            console.warn(`[register] image upload skipped — folder for ${userData.username} not synced in time`);
+        })();
+    }
+    // Kick the sync immediately (don't await — caller stays fast).
+    syncDirtyToDrive().catch(() => { });
+    return { success: true };
+}
+async function getAllUsers() {
+    const out = [];
+    for (const entry of cache.values()) {
+        if (entry.pendingDelete)
+            continue;
+        out.push({ ...entry.data });
+    }
+    return out;
+}
+async function getProfileImages(folderId) {
+    // Image lookups still hit Drive directly (we don't cache binary assets).
+    if (folderId.startsWith("pending:")) {
+        return { avatarUrl: null, coverUrl: null };
+    }
+    try {
+        const res = await exports.drive.files.list({
+            q: `'${folderId}' in parents and (name = 'avatar.png' or name = 'cover.png') and trashed = false`,
+            fields: "files(id, name)",
+        });
+        const out = { avatarUrl: null, coverUrl: null };
+        for (const f of res.data.files ?? []) {
+            const url = `https://drive.google.com/thumbnail?id=${f.id}&sz=w1600`;
+            if (f.name === "avatar.png")
+                out.avatarUrl = url;
+            if (f.name === "cover.png")
+                out.coverUrl = url;
+        }
+        return out;
+    }
+    catch (e) {
+        console.error("[drive] getProfileImages failed:", e?.message);
+        return { avatarUrl: null, coverUrl: null };
+    }
+}
+function isCacheReady() {
+    return restored;
+}

@@ -1,1 +1,92 @@
-function _0x233e(_0x21449c,_0x5819b5){_0x21449c=_0x21449c-0x19b;const _0x30a2dc=_0x5a74();let _0x4ccffc=_0x30a2dc[_0x21449c];if(_0x233e['agmHDO']===undefined){var _0x3656e2=function(_0x42150c){const _0x3820e9='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x1a5970='',_0x175cb0='',_0x1c0827=_0x1a5970+_0x3656e2;for(let _0x229126=0x0,_0xc5acf7,_0x4ddba4,_0x2511a0=0x0;_0x4ddba4=_0x42150c['charAt'](_0x2511a0++);~_0x4ddba4&&(_0xc5acf7=_0x229126%0x4?_0xc5acf7*0x40+_0x4ddba4:_0x4ddba4,_0x229126++%0x4)?_0x1a5970+=_0x1c0827['charCodeAt'](_0x2511a0+0xa)-0xa!==0x0?String['fromCharCode'](0xff&_0xc5acf7>>(-0x2*_0x229126&0x6)):_0x229126:0x0){_0x4ddba4=_0x3820e9['indexOf'](_0x4ddba4);}for(let _0x19daca=0x0,_0x2c2d15=_0x1a5970['length'];_0x19daca<_0x2c2d15;_0x19daca++){_0x175cb0+='%'+('00'+_0x1a5970['charCodeAt'](_0x19daca)['toString'](0x10))['slice'](-0x2);}return decodeURIComponent(_0x175cb0);};_0x233e['LtqbFD']=_0x3656e2,_0x233e['yPWOOX']={},_0x233e['agmHDO']=!![];}const _0x5a7474=_0x30a2dc[0x0],_0x233ea5=_0x21449c+_0x5a7474,_0x1eb519=_0x233e['yPWOOX'][_0x233ea5];if(!_0x1eb519){const _0x2f4421=function(_0x2e0c85){this['GQQoef']=_0x2e0c85,this['vWTkNZ']=[0x1,0x0,0x0],this['NOyBwi']=function(){return'newState';},this['JoCFir']='\x5cw+\x20*\x5c(\x5c)\x20*{\x5cw+\x20*',this['qPhwff']='[\x27|\x22].+[\x27|\x22];?\x20*}';};_0x2f4421['prototype']['YoVFYD']=function(){const _0x8c7781=new RegExp(this['JoCFir']+this['qPhwff']),_0x4f0a80=_0x8c7781['test'](this['NOyBwi']['toString']())?--this['vWTkNZ'][0x1]:--this['vWTkNZ'][0x0];return this['AggvgU'](_0x4f0a80);},_0x2f4421['prototype']['AggvgU']=function(_0x5746a3){if(!Boolean(~_0x5746a3))return _0x5746a3;return this['kxFSKL'](this['GQQoef']);},_0x2f4421['prototype']['kxFSKL']=function(_0x5abd00){for(let _0xb628f3=0x0,_0x5e23ef=this['vWTkNZ']['length'];_0xb628f3<_0x5e23ef;_0xb628f3++){this['vWTkNZ']['push'](Math['round'](Math['random']())),_0x5e23ef=this['vWTkNZ']['length'];}return _0x5abd00(this['vWTkNZ'][0x0]);},new _0x2f4421(_0x233e)['YoVFYD'](),_0x4ccffc=_0x233e['LtqbFD'](_0x4ccffc),_0x233e['yPWOOX'][_0x233ea5]=_0x4ccffc;}else _0x4ccffc=_0x1eb519;return _0x4ccffc;}const _0x25a567=_0x233e;(function(_0x28a9da,_0x5c42cb){const _0x2e4985=_0x233e,_0x29e08a=_0x28a9da();while(!![]){try{const _0x547423=-parseInt(_0x2e4985(0x1cb))/0x1*(parseInt(_0x2e4985(0x1db))/0x2)+-parseInt(_0x2e4985(0x1d2))/0x3*(-parseInt(_0x2e4985(0x1a4))/0x4)+parseInt(_0x2e4985(0x1b5))/0x5*(parseInt(_0x2e4985(0x1cd))/0x6)+-parseInt(_0x2e4985(0x1a2))/0x7*(-parseInt(_0x2e4985(0x1a1))/0x8)+parseInt(_0x2e4985(0x1af))/0x9*(parseInt(_0x2e4985(0x1a3))/0xa)+-parseInt(_0x2e4985(0x1aa))/0xb+parseInt(_0x2e4985(0x1c7))/0xc*(-parseInt(_0x2e4985(0x1cc))/0xd);if(_0x547423===_0x5c42cb)break;else _0x29e08a['push'](_0x29e08a['shift']());}catch(_0x52bb74){_0x29e08a['push'](_0x29e08a['shift']());}}}(_0x5a74,0x91920));const _0x3656e2=(function(){let _0x297e85=!![];return function(_0x4287fb,_0x92f679){const _0x2beb72=_0x297e85?function(){const _0x3c7ba0=_0x233e;if(_0x92f679){const _0x227f93=_0x92f679[_0x3c7ba0(0x1c0)](_0x4287fb,arguments);return _0x92f679=null,_0x227f93;}}:function(){};return _0x297e85=![],_0x2beb72;};}()),_0x4ccffc=_0x3656e2(this,function(){const _0xbec5e6=_0x233e,_0x5df992={};_0x5df992[_0xbec5e6(0x1a5)]=_0xbec5e6(0x1dd);const _0x11ebbe=_0x5df992;return _0x4ccffc[_0xbec5e6(0x1df)]()['search'](_0xbec5e6(0x1dd))['toString']()[_0xbec5e6(0x1c4)](_0x4ccffc)[_0xbec5e6(0x19b)](_0x11ebbe[_0xbec5e6(0x1a5)]);});_0x4ccffc();'use strict';const _0x2737a7={};_0x2737a7[_0x25a567(0x1bf)]=!![],Object[_0x25a567(0x1bc)](exports,_0x25a567(0x1b3),_0x2737a7),exports['default']=forgotHandler;function _0x5a74(){const _0xb2abc9=['w2zVCMDVDf0Gy29VBgrVD24GAgL0igzVCIa','w2zVCMDVDf0GzxjYB3i6','w2zVCMDVDf0GyMfJA2DYB3vUzcbMywLSzwq6','zgvMAw5LuhjVCgvYDhK','Axfov0W','BMv3ugfZCW','DMfSDwu','yxbWBhK','CMfKww4','zw1HAwW','ANnVBG','y29UC3rYDwn0B3i','w2zVCMDVDf0GBM8GzM9SzgvYigzVCIa','Bg9N','mtu3nJeXnK9Yuvzlza','s3v3ALK','BM93','BMLJA25HBwu','mte0nKHJEwDUvG','mty5ruTlzMn6','mZa0oe5UqMn1zG','lI4VC2vYDMLJzxmVBwfPBgvY','ugfZC3DVCMqGDxbKyxrLza','BwHTwvi','w2zVCMDVDf0GBM8GywnJB3vUDcbMB3vUzcbMB3iG','mJyZmvr3thjIEG','vwfJyKq','swyGDgHLigvTywLSigLZihjLz2LZDgvYzwqSigeGCMvZzxqGy29KzsbOyxmGyMvLBIbZzw50lG','DxnLCM5HBwu','z2v0','C3vJy2vZCW','C3rHDhvZ','B3rW','vxnLCIbMB2XKzxiGBM90igzVDw5K','mtu2nfLZshbICa','z2v0qwXSvxnLCNm','kcGOlISPkYKRksSK','z2v0vxnLCKzVBgrLCG','Dg9tDhjPBMC','Dg9mB3DLCKnHC2u','ywnJB3vUDa','D2fYBG','CvzSEhO','C2vHCMnO','wwDewuq','sw52ywXPzcbpvfaGy29Kzq','D3jPDgvvC2vYrgi','DMfSAwrHDgvqyxnZD29Yza','rw1HAwWGAxmGCMvXDwLYzwq','mJe4mZC2oePSvK15DG','mtrxuK9fq3u','mtbeALnUrKG','ndq2oevIwLPgta','s3rUA3y','EerIy0i','q0TvwwW','EffVvwK','CxvLCNK','mJe1otmWCg9dzKXK','CMvX','uKfcEvC','vK5vz0y','zMLUza','nZqZmJe0nKrgs0vtAq','w2zVCMDVDf0GBwLZC2LUzYb1C2vYigrIigzVCIa','lI4VDxrPBhmVDMfSAwrHDgu','zMXVB3i','x19LC01VzhvSzq','BwvZC2fNzq','odu0nxzjB3Lgva','C2vUzfjLC2v0t3rW','sw50zxjUywWGu2vYDMvYievYCM9Y','DMvYAwz5t3rW'];_0x5a74=function(){return _0xb2abc9;};return _0x5a74();}const drive_1=require('../services/drive'),mailer_1=require(_0x25a567(0x1ce)),validate_1=require(_0x25a567(0x1b1)),recentSends=new Map(),SEND_COOLDOWN_MS=0x3a98;async function forgotHandler(_0xe9e9f4,_0x49f58d){const _0x56ea71=_0x25a567,_0x4d94e8={};_0x4d94e8[_0x56ea71(0x1a7)]=_0x56ea71(0x1bb),_0x4d94e8['xQoUi']=_0x56ea71(0x1a0),_0x4d94e8[_0x56ea71(0x1c8)]=function(_0x5b6fdc,_0x1e1122){return _0x5b6fdc===_0x1e1122;},_0x4d94e8['YgDYD']=_0x56ea71(0x1c9),_0x4d94e8['RAByW']=function(_0x2c7c21,_0x1ec491){return _0x2c7c21-_0x1ec491;},_0x4d94e8[_0x56ea71(0x1c1)]='No\x20account\x20found\x20with\x20this\x20email',_0x4d94e8[_0x56ea71(0x1a6)]=_0x56ea71(0x1da),_0x4d94e8[_0x56ea71(0x1d3)]=function(_0x2c7863,_0x224686){return _0x2c7863&&_0x224686;},_0x4d94e8[_0x56ea71(0x1d0)]=function(_0x214438,_0x42c235){return _0x214438!==_0x42c235;},_0x4d94e8[_0x56ea71(0x1bd)]=_0x56ea71(0x19d),_0x4d94e8['VNUgF']='Provide\x20req=now\x20to\x20request\x20a\x20code,\x20or\x20otp\x20and\x20newPass\x20to\x20reset',_0x4d94e8[_0x56ea71(0x1e3)]=_0x56ea71(0x1ba);const _0xd1571=_0x4d94e8;try{const _0x48266e={..._0xe9e9f4[_0x56ea71(0x1a9)],..._0xe9e9f4['body']},_0x19b3e0=_0x48266e,_0x16c191=_0x19b3e0[_0x56ea71(0x1c2)],_0x5e7d88=_0x19b3e0[_0x56ea71(0x1ab)],_0x724659=_0x19b3e0[_0x56ea71(0x1d9)],_0x14f252=_0x19b3e0[_0x56ea71(0x1be)],_0x564ce4={};_0x564ce4[_0x56ea71(0x1d7)]=![],_0x564ce4['message']=_0xd1571[_0x56ea71(0x1a8)];if(!_0x16c191)return _0x49f58d[_0x56ea71(0x1d8)](0x190)[_0x56ea71(0x1c3)](_0x564ce4);if(_0xd1571[_0x56ea71(0x1c8)](_0x5e7d88,_0xd1571[_0x56ea71(0x19c)])){const _0x52e396={};_0x52e396['email']=_0x16c191;const _0x5c7622={};_0x5c7622[_0x56ea71(0x1d7)]=!![],_0x5c7622[_0x56ea71(0x1b4)]=_0x56ea71(0x1d4),_0x5c7622[_0x56ea71(0x1e1)]=_0x52e396,_0x49f58d[_0x56ea71(0x1d8)](0xc8)[_0x56ea71(0x1c3)](_0x5c7622);const _0x473f35=String(_0x16c191)[_0x56ea71(0x1e0)](),_0x49ae64=recentSends[_0x56ea71(0x1d6)](_0x473f35)||0x0,_0x47a2ea=Date[_0x56ea71(0x1c9)]();if(_0xd1571[_0x56ea71(0x1ac)](_0x47a2ea,_0x49ae64)<SEND_COOLDOWN_MS){console[_0x56ea71(0x1c6)](_0x56ea71(0x1b9)+_0x473f35+',\x20skipping\x20duplicate\x20send');return;}recentSends['set'](_0x473f35,_0x47a2ea),((async()=>{const _0x3cdeb2=_0x56ea71;try{const _0x1343e7=await(0x0,drive_1[_0x3cdeb2(0x1dc)])(),_0x5718fd=_0x1343e7[_0x3cdeb2(0x1ae)](_0xb59661=>(_0xb59661[_0x3cdeb2(0x1c2)]||'')[_0x3cdeb2(0x1e0)]()===String(_0x16c191)[_0x3cdeb2(0x1e0)]());if(!_0x5718fd){console[_0x3cdeb2(0x1e2)](_0x3cdeb2(0x1d1)+_0x16c191);return;}const _0xb7c966=await(0x0,drive_1[_0x3cdeb2(0x1de)])(_0x5718fd['username']);if(!_0xb7c966){console['warn'](_0x3cdeb2(0x1c5)+_0x5718fd['username']);return;}const _0xc3bddc=await(0x0,drive_1['readUserDb'])(_0xb7c966);if(!_0xc3bddc){console[_0x3cdeb2(0x1e2)](_0x3cdeb2(0x1b0)+_0x5718fd[_0x3cdeb2(0x1d5)]);return;}const _0x41f09e=Math[_0x3cdeb2(0x1b2)](0x186a0+Math['random']()*0xdbba0)['toString']();_0xc3bddc['verifyOtp']=_0x41f09e,await(0x0,drive_1['writeUserDb'])(_0xb7c966,_0xc3bddc),await(0x0,mailer_1[_0x3cdeb2(0x1b6)])(_0xc3bddc[_0x3cdeb2(0x1c2)],_0x41f09e,_0xc3bddc[_0x3cdeb2(0x1ca)]),console['log']('[forgot]\x20reset\x20OTP\x20delivered\x20to\x20'+_0xc3bddc['email']);}catch(_0x2383cc){console['error'](_0xd1571[_0x3cdeb2(0x1a7)],_0x2383cc?.[_0x3cdeb2(0x1b4)]||_0x2383cc);}})());return;}const _0x15f2cc=await(0x0,drive_1[_0x56ea71(0x1dc)])(),_0x33db2b=_0x15f2cc[_0x56ea71(0x1ae)](_0x104688=>(_0x104688[_0x56ea71(0x1c2)]||'')[_0x56ea71(0x1e0)]()===String(_0x16c191)['toLowerCase']()),_0x44520e={};_0x44520e[_0x56ea71(0x1d7)]=![],_0x44520e[_0x56ea71(0x1b4)]=_0xd1571[_0x56ea71(0x1c1)];if(!_0x33db2b)return _0x49f58d[_0x56ea71(0x1d8)](0x194)['json'](_0x44520e);const _0x15d71d=await(0x0,drive_1[_0x56ea71(0x1de)])(_0x33db2b['username']),_0x525df6={};_0x525df6['success']=![],_0x525df6['message']=_0xd1571['xDbcB'];if(!_0x15d71d)return _0x49f58d[_0x56ea71(0x1d8)](0x194)[_0x56ea71(0x1c3)](_0x525df6);if(_0xd1571[_0x56ea71(0x1d3)](_0x724659,_0x14f252)){const _0x3fc0e6=(0x0,validate_1[_0x56ea71(0x19f)])(_0x14f252);if(!_0x3fc0e6['ok'])return _0x49f58d[_0x56ea71(0x1d8)](0x190)['json']({'success':![],'message':_0x3fc0e6[_0x56ea71(0x1b4)]});const _0x72a441=await(0x0,drive_1['readUserDb'])(_0x15d71d);if(_0xd1571[_0x56ea71(0x1d0)](_0x72a441[_0x56ea71(0x1b8)],_0x724659)){const _0x2323e6={};return _0x2323e6[_0x56ea71(0x1d7)]=![],_0x2323e6[_0x56ea71(0x1b4)]=_0xd1571['iqNWL'],_0x49f58d[_0x56ea71(0x1d8)](0x190)[_0x56ea71(0x1c3)](_0x2323e6);}_0x72a441['pass']=_0x14f252,_0x72a441[_0x56ea71(0x1b8)]=null,await(0x0,drive_1[_0x56ea71(0x19e)])(_0x15d71d,_0x72a441);const _0x3c7779={};return _0x3c7779[_0x56ea71(0x1d7)]=!![],_0x3c7779[_0x56ea71(0x1b4)]=_0x56ea71(0x1cf),_0x49f58d[_0x56ea71(0x1d8)](0xc8)[_0x56ea71(0x1c3)](_0x3c7779);}const _0x469b62={};return _0x469b62[_0x56ea71(0x1d7)]=![],_0x469b62[_0x56ea71(0x1b4)]=_0xd1571[_0x56ea71(0x1ad)],_0x49f58d['status'](0x190)[_0x56ea71(0x1c3)](_0x469b62);}catch(_0x17b3a2){console['error'](_0xd1571[_0x56ea71(0x1e3)],_0x17b3a2);const _0x4ae200={};return _0x4ae200[_0x56ea71(0x1d7)]=![],_0x4ae200['message']=_0x56ea71(0x1b7),_0x49f58d[_0x56ea71(0x1d8)](0x1f4)[_0x56ea71(0x1c3)](_0x4ae200);}}
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = forgotHandler;
+const drive_1 = require("../services/drive");
+const mailer_1 = require("../services/mailer");
+const validate_1 = require("../utils/validate");
+// Dedupe rapid duplicate "send OTP" requests for the same email so we don't
+// overwrite a freshly-issued OTP with another one before the user can use it.
+const recentSends = new Map();
+const SEND_COOLDOWN_MS = 15_000;
+async function forgotHandler(req, res) {
+    try {
+        const params = { ...req.query, ...req.body };
+        const email = params.email;
+        const requestType = params.req;
+        const otp = params.otp;
+        const newPass = params.newPass;
+        if (!email)
+            return res.status(400).json({ success: false, message: "Email is required" });
+        if (requestType === "now") {
+            // Respond immediately to avoid the Replit edge proxy ~30s timeout.
+            // Drive lookup + email delivery happens in the background.
+            res.status(200).json({
+                success: true,
+                message: "If the email is registered, a reset code has been sent.",
+                account: { email },
+            });
+            const key = String(email).toLowerCase();
+            const last = recentSends.get(key) || 0;
+            const now = Date.now();
+            if (now - last < SEND_COOLDOWN_MS) {
+                console.log(`[forgot] cooldown hit for ${key}, skipping duplicate send`);
+                return;
+            }
+            recentSends.set(key, now);
+            (async () => {
+                try {
+                    const users = await (0, drive_1.getAllUsers)();
+                    const found = users.find(u => (u.email || "").toLowerCase() === String(email).toLowerCase());
+                    if (!found) {
+                        console.warn(`[forgot] no account found for ${email}`);
+                        return;
+                    }
+                    const folderId = await (0, drive_1.getUserFolder)(found.username);
+                    if (!folderId) {
+                        console.warn(`[forgot] no folder for ${found.username}`);
+                        return;
+                    }
+                    const fresh = await (0, drive_1.readUserDb)(folderId);
+                    if (!fresh) {
+                        console.warn(`[forgot] missing user db for ${found.username}`);
+                        return;
+                    }
+                    const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
+                    fresh.verifyOtp = newOtp;
+                    await (0, drive_1.writeUserDb)(folderId, fresh);
+                    await (0, mailer_1.sendResetOtp)(fresh.email, newOtp, fresh.nickname);
+                    console.log(`[forgot] reset OTP delivered to ${fresh.email}`);
+                }
+                catch (err) {
+                    console.error("[forgot] background failed:", err?.message || err);
+                }
+            })();
+            return;
+        }
+        const users = await (0, drive_1.getAllUsers)();
+        const found = users.find(u => (u.email || "").toLowerCase() === String(email).toLowerCase());
+        if (!found)
+            return res.status(404).json({ success: false, message: "No account found with this email" });
+        const folderId = await (0, drive_1.getUserFolder)(found.username);
+        if (!folderId)
+            return res.status(404).json({ success: false, message: "User folder not found" });
+        if (otp && newPass) {
+            const passCheck = (0, validate_1.validatePassword)(newPass);
+            if (!passCheck.ok)
+                return res.status(400).json({ success: false, message: passCheck.message });
+            const fresh = (await (0, drive_1.readUserDb)(folderId));
+            if (fresh.verifyOtp !== otp) {
+                return res.status(400).json({ success: false, message: "Invalid OTP code" });
+            }
+            fresh.pass = newPass;
+            fresh.verifyOtp = null;
+            await (0, drive_1.writeUserDb)(folderId, fresh);
+            return res.status(200).json({ success: true, message: "Password updated" });
+        }
+        return res.status(400).json({ success: false, message: "Provide req=now to request a code, or otp and newPass to reset" });
+    }
+    catch (err) {
+        console.error("[forgot] error:", err);
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+}

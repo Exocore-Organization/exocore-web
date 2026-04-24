@@ -1,1 +1,95 @@
-const _0x536e75=_0x2a0b;(function(_0x18ed0a,_0x402395){const _0x4cf7ab=_0x2a0b,_0xd9202f=_0x18ed0a();while(!![]){try{const _0x57436d=-parseInt(_0x4cf7ab(0x210))/0x1*(-parseInt(_0x4cf7ab(0x217))/0x2)+parseInt(_0x4cf7ab(0x206))/0x3+parseInt(_0x4cf7ab(0x21b))/0x4+-parseInt(_0x4cf7ab(0x1e9))/0x5+-parseInt(_0x4cf7ab(0x205))/0x6+-parseInt(_0x4cf7ab(0x1fe))/0x7+parseInt(_0x4cf7ab(0x20a))/0x8;if(_0x57436d===_0x402395)break;else _0xd9202f['push'](_0xd9202f['shift']());}catch(_0x3e3798){_0xd9202f['push'](_0xd9202f['shift']());}}}(_0x2ee4,0xc0e3c));function _0x2a0b(_0x531887,_0x41ab25){_0x531887=_0x531887-0x1d6;const _0x433031=_0x2ee4();let _0x2fcbc4=_0x433031[_0x531887];if(_0x2a0b['DpEnnI']===undefined){var _0x5a3fd2=function(_0x55e0c7){const _0x340c77='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x4ae280='',_0x54fbc0='',_0x345f4e=_0x4ae280+_0x5a3fd2;for(let _0x2d2586=0x0,_0x2dc176,_0x114c21,_0x35afb0=0x0;_0x114c21=_0x55e0c7['charAt'](_0x35afb0++);~_0x114c21&&(_0x2dc176=_0x2d2586%0x4?_0x2dc176*0x40+_0x114c21:_0x114c21,_0x2d2586++%0x4)?_0x4ae280+=_0x345f4e['charCodeAt'](_0x35afb0+0xa)-0xa!==0x0?String['fromCharCode'](0xff&_0x2dc176>>(-0x2*_0x2d2586&0x6)):_0x2d2586:0x0){_0x114c21=_0x340c77['indexOf'](_0x114c21);}for(let _0x4094ce=0x0,_0x7d27ef=_0x4ae280['length'];_0x4094ce<_0x7d27ef;_0x4094ce++){_0x54fbc0+='%'+('00'+_0x4ae280['charCodeAt'](_0x4094ce)['toString'](0x10))['slice'](-0x2);}return decodeURIComponent(_0x54fbc0);};_0x2a0b['gSxiVv']=_0x5a3fd2,_0x2a0b['JAIrhh']={},_0x2a0b['DpEnnI']=!![];}const _0x2ee450=_0x433031[0x0],_0x2a0bc1=_0x531887+_0x2ee450,_0x3986f1=_0x2a0b['JAIrhh'][_0x2a0bc1];if(!_0x3986f1){const _0x90d67f=function(_0x353f98){this['gUlCGt']=_0x353f98,this['FFVkSJ']=[0x1,0x0,0x0],this['FkvSza']=function(){return'newState';},this['jRtIds']='\x5cw+\x20*\x5c(\x5c)\x20*{\x5cw+\x20*',this['FVuiBa']='[\x27|\x22].+[\x27|\x22];?\x20*}';};_0x90d67f['prototype']['XweYMU']=function(){const _0x549833=new RegExp(this['jRtIds']+this['FVuiBa']),_0xb2797c=_0x549833['test'](this['FkvSza']['toString']())?--this['FFVkSJ'][0x1]:--this['FFVkSJ'][0x0];return this['cACehM'](_0xb2797c);},_0x90d67f['prototype']['cACehM']=function(_0x1483bc){if(!Boolean(~_0x1483bc))return _0x1483bc;return this['VYwMDy'](this['gUlCGt']);},_0x90d67f['prototype']['VYwMDy']=function(_0x673954){for(let _0xde9502=0x0,_0x49cb35=this['FFVkSJ']['length'];_0xde9502<_0x49cb35;_0xde9502++){this['FFVkSJ']['push'](Math['round'](Math['random']())),_0x49cb35=this['FFVkSJ']['length'];}return _0x673954(this['FFVkSJ'][0x0]);},new _0x90d67f(_0x2a0b)['XweYMU'](),_0x2fcbc4=_0x2a0b['gSxiVv'](_0x2fcbc4),_0x2a0b['JAIrhh'][_0x2a0bc1]=_0x2fcbc4;}else _0x2fcbc4=_0x3986f1;return _0x2fcbc4;}const _0x5a3fd2=(function(){const _0x128eac=_0x2a0b,_0x189618={};_0x189618[_0x128eac(0x1e3)]=_0x128eac(0x1db),_0x189618[_0x128eac(0x1f7)]=_0x128eac(0x20c);const _0x4eeb2b=_0x189618;let _0x56f64e=!![];return function(_0x34900a,_0x37cd87){const _0x5cd26c=_0x128eac,_0x4458fe={};_0x4458fe[_0x5cd26c(0x1f2)]=_0x4eeb2b[_0x5cd26c(0x1e3)],_0x4458fe['KdHcL']=_0x4eeb2b[_0x5cd26c(0x1f7)];const _0x27c23c=_0x4458fe,_0x171249=_0x56f64e?function(){const _0x1d9e5b=_0x5cd26c;if(_0x37cd87){if(_0x27c23c[_0x1d9e5b(0x1f2)]!==_0x27c23c['KdHcL']){const _0x4d947a=_0x37cd87[_0x1d9e5b(0x1f4)](_0x34900a,arguments);return _0x37cd87=null,_0x4d947a;}else return _0x18f0e4[_0x1d9e5b(0x1e6)]()[_0x1d9e5b(0x1eb)](_0x1d9e5b(0x1dc))[_0x1d9e5b(0x1e6)]()['constructor'](_0x1600e3)[_0x1d9e5b(0x1eb)](_0x1d9e5b(0x1dc));}}:function(){};return _0x56f64e=![],_0x171249;};}()),_0x2fcbc4=_0x5a3fd2(this,function(){const _0x213b55=_0x2a0b;return _0x2fcbc4[_0x213b55(0x1e6)]()[_0x213b55(0x1eb)]('(((.+)+)+)+$')[_0x213b55(0x1e6)]()[_0x213b55(0x200)](_0x2fcbc4)[_0x213b55(0x1eb)](_0x213b55(0x1dc));});_0x2fcbc4();'use strict';var __importDefault=this&&this[_0x536e75(0x222)]||function(_0x2624e8){const _0x3ee20e=_0x536e75;return _0x2624e8&&_0x2624e8[_0x3ee20e(0x215)]?_0x2624e8:{'default':_0x2624e8};};const _0x357a6b={};function _0x2ee4(){const _0x4fa1b6=['CMfUzg9T','CgrpAu8','w3jLz2LZDgvYxsbLCNjVCJO','mJCZodC2qMnJvfPW','zNzsqwC','y292zxi','DgLTzvPVBMu','C2vUzfzLCMLMEuvTywLS','l2v4B2nVCMuVyxbPl2f1DgGVDMvYAwz5p3vZzxjUyw1Lpq','zMXVB3i','x19PBxbVCNrezwzHDwX0','uMvNAxn0CMf0Aw9UigzHAwXLza','ANnVBG','lI4VC2vYDMLJzxmVBwfPBgvY','DMvYAwzPzwq','DMfSAwrHDgvfBwfPBa','DhjPBq','zgvMyxvSDa','zw52','jM90Cd0','BLz0wu4','DMfSAwrHDgvvC2vYBMfTzq','s2X1BKy','kcGOlISPkYKRksSK','C3rHDhvZ','shDuzwO','zxjYB3i','z2v0qwXSvxnLCNm','zgvMAw5LuhjVCgvYDhK','CxvLCNK','qvHPqwi','C29Tzq','y3j5ChrV','Dg9tDhjPBMC','DMfSDwu','DgvZDa','nduXoda2mgTNqxjhqW','CMfUzg9TqNL0zxm','C2vHCMnO','zw1HAwW','y2f0y2G','vxnLCM5HBwuGywXYzwfKEsb0ywTLBG','quXsrufewv9fweLtvfm','Ag9ZDa','DxnLCM5HBwu','zKL1Dgy','BM93','yxbWBhK','sNjwAem','BxrhqLe','tvDMDfC','u0vpy2S','jMHVC3q9','ue9sva','CM9SzuzVCKvTywLS','yNvMzMvY','CMvWBgfJzq','ntG0ntq1nwzZB2D3zq','vhzhsvm','y29UC3rYDwn0B3i','CMvZB2X2zwrpChrPB25Z','C3vJy2vZCW','Dg9mB3DLCKnHC2u','y2XLyw5vC2vYBMfTzq','mZeYnJq3nezMBNHYqq','mJiZmJG0nNLcs2jlAW','B2jPtem','wgjZt2S','zMLSzxm','odCZntu2mePQvfzoAa','AvzWBee','uw9Xsxa','qvbjx1bvqKXjq19cqvnf','uKTTB2u','yM9KEq','mtziq0ruyMG','BwvZC2fNzq','lI4VDxrPBhmVDMfSAwrHDgu','rgf0zvrPBwvgB3jTyxq','Agv4','x19LC01VzhvSzq','zu9hy0G','mtqZmtqYCgzjD3ro'];_0x2ee4=function(){return _0x4fa1b6;};return _0x2ee4();}_0x357a6b[_0x536e75(0x1e7)]=!![],Object[_0x536e75(0x1e1)](exports,_0x536e75(0x215),_0x357a6b),exports[_0x536e75(0x1d6)]=registerHandler;const crypto_1=__importDefault(require(_0x536e75(0x1e5))),drive_1=require('../services/drive'),mailer_1=require(_0x536e75(0x225)),validate_1=require(_0x536e75(0x212)),owners_1=require('../utils/owners');async function registerHandler(_0x541707,_0x270a17){const _0x208155=_0x536e75,_0x129165={'iVplA':_0x208155(0x1ee),'XbsOk':function(_0x26bb80,_0x3334e6){return _0x26bb80||_0x3334e6;},'fvRAg':function(_0x29a098,_0x5eaed0){return _0x29a098(_0x5eaed0);},'nVtYN':_0x208155(0x207),'mtGBQ':function(_0x525030,_0x3b78fd){return _0x525030!==_0x3b78fd;},'OVLVW':_0x208155(0x1de),'TvGIS':_0x208155(0x21d),'pdOiO':function(_0x21f7ba,_0x546406){return _0x21f7ba+_0x546406;},'RKmoe':function(_0x52b95a,_0x1f447b){return _0x52b95a*_0x1f447b;},'hPIiX':function(_0x55b016,_0x45cd14){return _0x55b016+_0x45cd14;},'eOGcH':_0x208155(0x214),'JrVhC':function(_0x144e5a,_0x1bb169){return _0x144e5a||_0x1bb169;},'SEOck':_0x208155(0x1ef)};try{const {user:_0x3c68c2,pass:_0x414487,email:_0xf99fae,bio:_0x29f932,nickname:_0x242c90,dob:_0x47d9be,country:_0x19fea9}=_0x541707['body']||{},_0x3a5045=_0x541707[_0x208155(0x20f)]?.[_0x208155(0x1f0)]||_0x541707[_0x208155(0x1e2)]?.[_0x208155(0x1f0)]||'',_0x477885=(0x0,validate_1[_0x208155(0x1da)])(String(_0x129165[_0x208155(0x208)](_0x3c68c2,'')));if(!_0x477885['ok'])return _0x270a17['status'](0x190)[_0x208155(0x224)]({'success':![],'message':_0x477885[_0x208155(0x211)]});const _0x34cbe5=(0x0,validate_1[_0x208155(0x227)])(_0x129165['fvRAg'](String,_0xf99fae||''));if(!_0x34cbe5['ok'])return _0x270a17['status'](0x190)[_0x208155(0x224)]({'success':![],'message':_0x34cbe5[_0x208155(0x211)]});const _0x1e8744=(0x0,validate_1['validatePassword'])(_0x129165[_0x208155(0x21c)](String,_0x129165[_0x208155(0x208)](_0x414487,'')));if(!_0x1e8744['ok'])return _0x270a17[_0x208155(0x1dd)](0x190)[_0x208155(0x224)]({'success':![],'message':_0x1e8744['message']});const _0x11127e=String(_0xf99fae)[_0x208155(0x228)]()[_0x208155(0x203)](),_0x31ca28=await(0x0,drive_1[_0x208155(0x1e0)])(),_0x24312b=_0x31ca28[_0x208155(0x1e4)](_0x252f2e=>(_0x252f2e[_0x208155(0x1ec)]||'')[_0x208155(0x228)]()[_0x208155(0x203)]()===_0x11127e);if(_0x24312b){if(_0x129165[_0x208155(0x1d9)]===_0x129165[_0x208155(0x1d9)]){const _0x395c78={};return _0x395c78[_0x208155(0x202)]=![],_0x395c78['message']='An\x20account\x20with\x20this\x20email\x20already\x20exists',_0x270a17[_0x208155(0x1dd)](0x199)[_0x208155(0x224)](_0x395c78);}else{const _0x2cf0c6=_0x90d67f?function(){const _0x4ab9af=_0x208155;if(_0xde9502){const _0x43e204=_0x1faf50[_0x4ab9af(0x1f4)](_0x3f933d,arguments);return _0x1aade9=null,_0x43e204;}}:function(){};return _0x673954=![],_0x2cf0c6;}}const _0x2785a9=(0x0,validate_1[_0x208155(0x204)])(_0x3c68c2),_0x2a5a95=_0x31ca28[_0x208155(0x1e4)](_0x743e92=>_0x743e92[_0x208155(0x1f1)]===_0x2785a9);if(_0x2a5a95){if(_0x129165[_0x208155(0x1f6)]('HwTej',_0x129165['OVLVW'])){const _0x3675c7={};return _0x3675c7[_0x208155(0x202)]=![],_0x3675c7['message']=_0x129165['iVplA'],_0x42748d[_0x208155(0x1dd)](0x199)['json'](_0x3675c7);}else{const _0x13e083={};return _0x13e083['success']=![],_0x13e083[_0x208155(0x211)]=_0x129165[_0x208155(0x20b)],_0x270a17[_0x208155(0x1dd)](0x199)['json'](_0x13e083);}}const _0x2db5e1=_0x541707[_0x208155(0x209)],_0x9106ff=_0x2db5e1?.['avatar']?.[0x0]?.['buffer']??null,_0x46f6e5=_0x2db5e1?.[_0x129165[_0x208155(0x1ff)]]?.[0x0]?.[_0x208155(0x1fc)]??null,_0x2d3dba=Intl[_0x208155(0x213)]()[_0x208155(0x201)]()[_0x208155(0x21e)],_0x252b8e=_0x129165[_0x208155(0x219)](Date[_0x208155(0x1f3)](),Math['floor'](_0x129165[_0x208155(0x20e)](Math[_0x208155(0x218)](),0x3e8))),_0x1102c2=Math[_0x208155(0x221)](_0x129165['hPIiX'](0x186a0,Math[_0x208155(0x218)]()*0xdbba0))[_0x208155(0x1e6)](),_0x41802c=crypto_1[_0x208155(0x1d6)][_0x208155(0x1ea)](0x20)[_0x208155(0x1e6)](_0x129165[_0x208155(0x216)]),_0x52bc2d={'id':_0x252b8e,'user':String(_0x3c68c2),'username':_0x2785a9,'pass':_0x129165[_0x208155(0x21c)](String,_0x414487),'email':_0x11127e,'bio':_0x29f932||'','nickname':_0x129165[_0x208155(0x208)](_0x242c90,_0x3c68c2),'dob':_0x129165[_0x208155(0x208)](_0x47d9be,''),'country':_0x129165[_0x208155(0x1f5)](_0x19fea9,''),'timezone':_0x2d3dba,'verified':![],'verifyOtp':_0x1102c2,'token':_0x41802c,'createdAt':Date[_0x208155(0x1f3)](),'role':(0x0,owners_1[_0x208155(0x1fb)])(_0x11127e)||'user','level':0x0,'xp':0x0,'achievements':[],'bannedUntil':null};await(0x0,drive_1['registerUserToDrive'])(_0x52bc2d,_0x9106ff,_0x46f6e5);const _0x2a29cd=process[_0x208155(0x1d7)][_0x208155(0x1fa)]||0x1f91,_0x1c8eb4=(_0x3a5045&&/^https?:\/\//[_0x208155(0x1e8)](_0x3a5045)?_0x3a5045[_0x208155(0x1fd)](/\/$/,''):null)||process[_0x208155(0x1d7)][_0x208155(0x20d)]||'http://localhost:'+_0x2a29cd,_0x40e6ee=_0x1c8eb4+_0x208155(0x220)+_0x129165[_0x208155(0x21c)](encodeURIComponent,_0x2785a9)+_0x208155(0x1d8)+_0x1102c2+_0x208155(0x1f9)+encodeURIComponent(_0x3a5045);(0x0,mailer_1[_0x208155(0x21f)])(_0x11127e,_0x40e6ee,_0x52bc2d['nickname'])[_0x208155(0x1ed)](()=>{});const _0x336e1={};_0x336e1['id']=_0x252b8e,_0x336e1[_0x208155(0x1f1)]=_0x2785a9,_0x336e1[_0x208155(0x1ec)]=_0x11127e,_0x336e1['nickname']=_0x52bc2d['nickname'],_0x336e1[_0x208155(0x226)]=![],_0x336e1['token']=_0x41802c;const _0x4c5592={};return _0x4c5592[_0x208155(0x202)]=!![],_0x4c5592['message']='Account\x20created.\x20Check\x20your\x20email\x20to\x20verify.',_0x4c5592['data']=_0x336e1,_0x270a17[_0x208155(0x1dd)](0xc8)[_0x208155(0x224)](_0x4c5592);}catch(_0x742374){if(_0x742374?.['message']===_0x129165[_0x208155(0x1f8)]){const _0x440467={};return _0x440467['success']=![],_0x440467[_0x208155(0x211)]=_0x129165['iVplA'],_0x270a17['status'](0x199)[_0x208155(0x224)](_0x440467);}console[_0x208155(0x1df)](_0x208155(0x21a),_0x742374);const _0x975dd3={};return _0x975dd3[_0x208155(0x202)]=![],_0x975dd3[_0x208155(0x211)]=_0x208155(0x223),_0x975dd3[_0x208155(0x1df)]=_0x742374?.[_0x208155(0x211)],_0x270a17[_0x208155(0x1dd)](0x1f4)['json'](_0x975dd3);}}
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = registerHandler;
+const crypto_1 = __importDefault(require("crypto"));
+const drive_1 = require("../services/drive");
+const mailer_1 = require("../services/mailer");
+const validate_1 = require("../utils/validate");
+const owners_1 = require("../utils/owners");
+async function registerHandler(req, res) {
+    try {
+        const { user, pass, email, bio, nickname, dob, country } = req.body || {};
+        const host = req.body?.host || req.query?.host || "";
+        const usernameCheck = (0, validate_1.validateUsername)(String(user || ""));
+        if (!usernameCheck.ok)
+            return res.status(400).json({ success: false, message: usernameCheck.message });
+        const emailCheck = (0, validate_1.validateEmail)(String(email || ""));
+        if (!emailCheck.ok)
+            return res.status(400).json({ success: false, message: emailCheck.message });
+        const passCheck = (0, validate_1.validatePassword)(String(pass || ""));
+        if (!passCheck.ok)
+            return res.status(400).json({ success: false, message: passCheck.message });
+        const normalizedEmail = String(email).trim().toLowerCase();
+        // Enforce: ONE account per email
+        const existing = await (0, drive_1.getAllUsers)();
+        const emailTaken = existing.some(u => (u.email || "").trim().toLowerCase() === normalizedEmail);
+        if (emailTaken) {
+            return res.status(409).json({ success: false, message: "An account with this email already exists" });
+        }
+        const formattedUsername = (0, validate_1.cleanUsername)(user);
+        const usernameTaken = existing.some(u => u.username === formattedUsername);
+        if (usernameTaken) {
+            return res.status(409).json({ success: false, message: "Username already taken" });
+        }
+        const files = req.files;
+        const avatarBuffer = files?.["avatar"]?.[0]?.buffer ?? null;
+        const coverBuffer = files?.["cover"]?.[0]?.buffer ?? null;
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const userId = Date.now() + Math.floor(Math.random() * 1000);
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const generatedToken = crypto_1.default.randomBytes(32).toString("hex");
+        const userData = {
+            id: userId,
+            user: String(user),
+            username: formattedUsername,
+            pass: String(pass),
+            email: normalizedEmail,
+            bio: bio || "",
+            nickname: nickname || user,
+            dob: dob || "",
+            country: country || "",
+            timezone,
+            verified: false,
+            verifyOtp: otp,
+            token: generatedToken,
+            createdAt: Date.now(),
+            role: (0, owners_1.roleForEmail)(normalizedEmail) || "user",
+            level: 0,
+            xp: 0,
+            achievements: [],
+            bannedUntil: null,
+        };
+        await (0, drive_1.registerUserToDrive)(userData, avatarBuffer, coverBuffer);
+        // Best-effort send the verification email immediately.
+        // Prefer the public web host (the user's browser URL) so the link works
+        // outside the Replit container. Fall back to API_PUBLIC_BASE then localhost.
+        const port = process.env.PORT || 8081;
+        const apiBase = (host && /^https?:\/\//.test(host) ? host.replace(/\/$/, "") : null) ||
+            process.env.API_PUBLIC_BASE ||
+            `http://localhost:${port}`;
+        const verifyLink = `${apiBase}/exocore/api/auth/verify?username=${encodeURIComponent(formattedUsername)}&otp=${otp}&host=${encodeURIComponent(host)}`;
+        (0, mailer_1.sendVerifyEmail)(normalizedEmail, verifyLink, userData.nickname).catch(() => { });
+        return res.status(200).json({
+            success: true,
+            message: "Account created. Check your email to verify.",
+            data: {
+                id: userId,
+                username: formattedUsername,
+                email: normalizedEmail,
+                nickname: userData.nickname,
+                verified: false,
+                token: generatedToken,
+            },
+        });
+    }
+    catch (err) {
+        if (err?.message === "ALREADY_EXISTS") {
+            return res.status(409).json({ success: false, message: "Username already taken" });
+        }
+        console.error("[register] error:", err);
+        return res.status(500).json({ success: false, message: "Registration failed", error: err?.message });
+    }
+}

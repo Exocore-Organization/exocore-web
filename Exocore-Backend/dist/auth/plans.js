@@ -1,1 +1,245 @@
-const _0x1321f6=_0x31d2;(function(_0x4c284d,_0x1907a0){const _0x319730=_0x31d2,_0x396537=_0x4c284d();while(!![]){try{const _0x1d57b4=parseInt(_0x319730(0x265))/0x1+-parseInt(_0x319730(0x214))/0x2*(parseInt(_0x319730(0x20d))/0x3)+-parseInt(_0x319730(0x20a))/0x4*(-parseInt(_0x319730(0x237))/0x5)+parseInt(_0x319730(0x26e))/0x6+-parseInt(_0x319730(0x1de))/0x7+parseInt(_0x319730(0x1bf))/0x8+parseInt(_0x319730(0x26d))/0x9*(parseInt(_0x319730(0x1c6))/0xa);if(_0x1d57b4===_0x1907a0)break;else _0x396537['push'](_0x396537['shift']());}catch(_0x74a8b2){_0x396537['push'](_0x396537['shift']());}}}(_0x3fc8,0x56e5f));function _0x31d2(_0x4ae703,_0x5c7247){_0x4ae703=_0x4ae703-0x1bf;const _0x1fec5a=_0x3fc8();let _0x1403c2=_0x1fec5a[_0x4ae703];if(_0x31d2['VRUkeC']===undefined){var _0x3392af=function(_0x126e6f){const _0x1f1262='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x242938='',_0x4da3f7='',_0x19ed60=_0x242938+_0x3392af;for(let _0x1130e1=0x0,_0x581f9,_0x351c5f,_0x249bab=0x0;_0x351c5f=_0x126e6f['charAt'](_0x249bab++);~_0x351c5f&&(_0x581f9=_0x1130e1%0x4?_0x581f9*0x40+_0x351c5f:_0x351c5f,_0x1130e1++%0x4)?_0x242938+=_0x19ed60['charCodeAt'](_0x249bab+0xa)-0xa!==0x0?String['fromCharCode'](0xff&_0x581f9>>(-0x2*_0x1130e1&0x6)):_0x1130e1:0x0){_0x351c5f=_0x1f1262['indexOf'](_0x351c5f);}for(let _0x404ec6=0x0,_0x2f7b8b=_0x242938['length'];_0x404ec6<_0x2f7b8b;_0x404ec6++){_0x4da3f7+='%'+('00'+_0x242938['charCodeAt'](_0x404ec6)['toString'](0x10))['slice'](-0x2);}return decodeURIComponent(_0x4da3f7);};_0x31d2['qIhMsM']=_0x3392af,_0x31d2['fwOlCv']={},_0x31d2['VRUkeC']=!![];}const _0x3fc829=_0x1fec5a[0x0],_0x31d289=_0x4ae703+_0x3fc829,_0x253327=_0x31d2['fwOlCv'][_0x31d289];if(!_0x253327){const _0x3cbc88=function(_0x48af47){this['HywqjB']=_0x48af47,this['MZNxNY']=[0x1,0x0,0x0],this['uLVNpL']=function(){return'newState';},this['DIpTFh']='\x5cw+\x20*\x5c(\x5c)\x20*{\x5cw+\x20*',this['GAwROz']='[\x27|\x22].+[\x27|\x22];?\x20*}';};_0x3cbc88['prototype']['hvppnd']=function(){const _0x357082=new RegExp(this['DIpTFh']+this['GAwROz']),_0x21df81=_0x357082['test'](this['uLVNpL']['toString']())?--this['MZNxNY'][0x1]:--this['MZNxNY'][0x0];return this['UDQpwj'](_0x21df81);},_0x3cbc88['prototype']['UDQpwj']=function(_0x1e2e85){if(!Boolean(~_0x1e2e85))return _0x1e2e85;return this['wieDid'](this['HywqjB']);},_0x3cbc88['prototype']['wieDid']=function(_0x6c85b1){for(let _0x2acee9=0x0,_0x5d74a1=this['MZNxNY']['length'];_0x2acee9<_0x5d74a1;_0x2acee9++){this['MZNxNY']['push'](Math['round'](Math['random']())),_0x5d74a1=this['MZNxNY']['length'];}return _0x6c85b1(this['MZNxNY'][0x0]);},new _0x3cbc88(_0x31d2)['hvppnd'](),_0x1403c2=_0x31d2['qIhMsM'](_0x1403c2),_0x31d2['fwOlCv'][_0x31d289]=_0x1403c2;}else _0x1403c2=_0x253327;return _0x1403c2;}const _0x3392af=(function(){let _0x3d45a2=!![];return function(_0x5aa0a3,_0x47ff19){const _0x373298=_0x3d45a2?function(){const _0x9aca5c=_0x31d2;if(_0x47ff19){const _0x1ee6d4=_0x47ff19[_0x9aca5c(0x259)](_0x5aa0a3,arguments);return _0x47ff19=null,_0x1ee6d4;}}:function(){};return _0x3d45a2=![],_0x373298;};}()),_0x1403c2=_0x3392af(this,function(){const _0x5a15be=_0x31d2,_0x2b551f={};_0x2b551f[_0x5a15be(0x1f1)]=_0x5a15be(0x1df);const _0xc6a3e0=_0x2b551f;return _0x1403c2[_0x5a15be(0x21c)]()[_0x5a15be(0x1e8)](_0xc6a3e0['yJQou'])[_0x5a15be(0x21c)]()['constructor'](_0x1403c2)[_0x5a15be(0x1e8)](_0xc6a3e0['yJQou']);});_0x1403c2();'use strict';var __importDefault=this&&this[_0x1321f6(0x287)]||function(_0x526f6d){const _0x6eb4dd=_0x1321f6;return _0x526f6d&&_0x526f6d[_0x6eb4dd(0x233)]?_0x526f6d:{'default':_0x526f6d};};const _0x4e9192={};_0x4e9192['value']=!![],Object[_0x1321f6(0x1db)](exports,_0x1321f6(0x233),_0x4e9192),exports[_0x1321f6(0x25d)]=catalogHandler,exports[_0x1321f6(0x201)]=submitPaymentHandler,exports[_0x1321f6(0x1e2)]=myPaymentsHandler,exports[_0x1321f6(0x1c8)]=listPendingHandler,exports[_0x1321f6(0x25b)]=decidePaymentHandler;const axios_1=__importDefault(require('axios')),drive_1=require(_0x1321f6(0x1ce)),paymentsStore_1=require(_0x1321f6(0x1d5)),xpService_1=require(_0x1321f6(0x1e0)),auditStore_1=require('../services/auditStore'),PLAN_BASE_PHP=0x64,PLAN_DURATION_DAYS=0x5a,_0x43b7be={};_0x43b7be['PH']='PHP',_0x43b7be['US']=_0x1321f6(0x1d3),_0x43b7be['GB']=_0x1321f6(0x26a),_0x43b7be['CA']=_0x1321f6(0x200),_0x43b7be['AU']=_0x1321f6(0x20f),_0x43b7be['JP']='JPY',_0x43b7be['KR']=_0x1321f6(0x1eb),_0x43b7be['CN']=_0x1321f6(0x27b),_0x43b7be['IN']=_0x1321f6(0x1d7),_0x43b7be['ID']=_0x1321f6(0x272),_0x43b7be['SG']=_0x1321f6(0x255),_0x43b7be['MY']=_0x1321f6(0x220),_0x43b7be['TH']='THB',_0x43b7be['VN']='VND',_0x43b7be['DE']=_0x1321f6(0x229),_0x43b7be['FR']=_0x1321f6(0x229),_0x43b7be['IT']=_0x1321f6(0x229),_0x43b7be['ES']=_0x1321f6(0x229),_0x43b7be['NL']=_0x1321f6(0x229),_0x43b7be['BE']=_0x1321f6(0x229),_0x43b7be['PT']=_0x1321f6(0x229),_0x43b7be['IE']='EUR',_0x43b7be['BR']=_0x1321f6(0x1da),_0x43b7be['MX']='MXN',_0x43b7be['AR']=_0x1321f6(0x218),_0x43b7be['ZA']=_0x1321f6(0x22e),_0x43b7be['AE']=_0x1321f6(0x213),_0x43b7be['SA']=_0x1321f6(0x1d2),_0x43b7be['TR']=_0x1321f6(0x244),_0x43b7be['RU']=_0x1321f6(0x1fe),_0x43b7be['PL']='PLN',_0x43b7be['SE']=_0x1321f6(0x1d4),_0x43b7be['NO']=_0x1321f6(0x24f),_0x43b7be['DK']=_0x1321f6(0x1c1),_0x43b7be['CH']=_0x1321f6(0x258),_0x43b7be['NZ']=_0x1321f6(0x242),_0x43b7be['HK']='HKD',_0x43b7be['TW']=_0x1321f6(0x251),_0x43b7be['PK']=_0x1321f6(0x235),_0x43b7be['BD']=_0x1321f6(0x1ca),_0x43b7be['EG']=_0x1321f6(0x207),_0x43b7be['IL']=_0x1321f6(0x215);function _0x3fc8(){const _0x5b3222=['qvve','uK9zwMy','Cgf5BwvUDa','Bwv0Ag9K','quve','ogriufrgvW','suXt','Bwv0yq','Avjtz3O','qvjt','C2TmqMG','sefgBum','w3bSyw5ZxsbMEcbMzxrJAcbMywLSzwq6','Dg9tDhjPBMC','BurHzuq','z2v0qwXSvxnLCNm','C2v0','tvLs','CgXHBNm','yxDHCMrby2HPzxzLBwvUDa','DwXirxa','BgLZDefSBa','Ahr0Chm6lY9KCML2zs5NB29NBguUy29Tl3rODw1IBMfPBd9Pzd0','zw1HAwW','Aw52ywXPzcb0B2TLBG','CgvUzgLUzW','rvvs','yLfwvhC','zuLqDNK','wgLLr3K','DvbkA1i','wKfs','z2v0ugf5BwvUDa','z290Ew1L','z3LzteS','jNn6pxCXnJaW','x19LC01VzhvSzq','CgXHBKv4CgLYzxnbDa','ueTs','DgLTzw91Da','mJC5mtbWtvzmqxy','AuXkvfK','z2v0','D3jPDgvvC2vYrgi','ywrKugf5BwvUDa','se9lCxK','CMvHC29U','mdK5oty0ndaZmdm','EMnVv0i','Aej5zxm','Bg9JywXqCMLJzq','tLPe','B3DUzxiGB25SEq','vfjz','D2fYBG','ueHq','yM9KEq','uu9Rwg8','C2XPy2u','lNbUzW','mdaWmJaXmdeWmJeXmJC4mZaWmtjJB20UCdjWCxjWyxKWmteXr1HdsfbittjywfGWmJa4otK5nJq0mdmWmZe1mJe3mdiWmdaWmdaWnJu2mdqXn0rxuu00veSZsKrpnKHnwJHlntiWndyWmty1mZaZnJa4ntGWmLbintKXm0PpkK4Gu1qQkKuGqY42mda4sw5HEwf3yw42mta0mtiZndyZmdrdntvc','ANnVBG','BM90zq','BNfmseC','tK9l','BNvTyMvY','vfDe','Cgf5','BLDOAfG','Bg93uvm','u0De','BM93','txjMC3u','q0Hg','yxbWBhK','tMDYEha','zgvJAwrLugf5BwvUDeHHBMrSzxi','rvHpifbmqu4','y2f0ywXVz0HHBMrSzxi','B0HtzgS','AxndywnOzvjLywr5','sM9OBNn0zxzLienVC3rHW7fVCW','q1HODe8','q3vNvxe','Dg9Rzw4VCgf5BwvUDeLKl2rLy2LZAw9UihjLCxvPCMvK','r0TIue4','mtaYnda4suDNtxPi','yNvMzMvY','CgfPzf9ZDxbWB3j0zxi','ywn0Aw9U','yxnHDuC','r0jq','CgfXwfu','rhPsswm','mta2mNDoserkta','odGWmZmYqNr4zuvA','zfzLseC','C01Avfe','EKD4Aee','surs','rMjdvgm','yxbWzw5KqxvKAxq','wg9TEu0','Dg9vChbLCKnHC2u','uvPOu1m','y291BNrYEq','D2fcrNO','CM9Szq','q05z','DhjPBq','CffWyLm','Ce13CKO','CMPTrMG','t050EuW','DgfYz2v0','DxbKyxrLugf5BwvUDa','Bg9JywXdDxjYzw5JEq','rhvQtMO','BwvZC2fNzq','DxbSB2fKsw1Hz2vqDwjSAwm','x19PBxbVCNrezwzHDwX0','zM9SzgvYig1PC3nPBMC','rfHLDw8','ywXS','mJaXmde0nhrkvg1Hta','mde3nYaXnJiWidKWntK','reTl','zxHWAxjLC0f0','z2v0vxnLCKzVBgrLCG','EejOywq','zNHsyxrL','mtuZmtbPCfrNCMu','ywDRAwG','BgLZDfbLBMrPBMDiyw5KBgvY','DxnLCM5HBwu','qKru','u05bENG','BMrmqvi','EeXbrha','lI4VC2vYDMLJzxmVzhjPDMu','CgvUzgLUz1bHEw1LBNrjza','uxjsy1a','CM91BMq','u0fs','vvne','u0vl','lI4VC2vYDMLJzxmVCgf5BwvUDhntDg9Yzq','D2fYBwLUzYb1Ca','su5s','C3vJy2vZCW','zhvYyxrPB25eyxLZ','qLjm','zgvMAw5LuhjVCgvYDhK','yxbWCM92zwq','vxPrv1K','mtCXnZG0ovf1rfjWsa','kcGOlISPkYKRksSK','lI4VC2vYDMLJzxmVEhbtzxj2AwnL','uxHKuNO','BxLqyxLTzw50C0HHBMrSzxi','CMf0zq','CxvLCNK','zMLSzq','z2nHC2G','s09Xwgy','C2vHCMnO','w3bSyw5ZxsbWCM9VzIb1CgXVywqGzMfPBgvKoG','CgXHBG','s1jx','zxHV','CMf0zxm','Dg9Rzw4','Cg9eB3K','AxngAw5PDgu','EuPrB3u','BgLZDfbLBMrPBMC','vgrjEwq','rg1zDwW','C1HoEuu','Ahr0Chm6lY9HCgKUzNjHBMTMDxj0zxiUyxbWl2XHDgvZDa','Ag5iA0i','tMX3v2i','Cgf5BwvUDdPYzwPLy3q','wNn0B0u','zNjVBq','BMfTzq','yMfZzvbYAwnLueHq','uLvc','q3v2EuC','q0fe','C3vIBwL0ugf5BwvUDeHHBMrSzxi','BM90igzVDw5K','BMTosgi','zLnytKS','CxjqyxLSB2fK','sevcu3O','ruDq','C3rHDhvZ','C05kBuy','mZy0ruDxC3zs','Cgf5BwvUDhm','rhjXvgK','ndqWnZu3uKfKtLnt','A3P6C1O'];_0x3fc8=function(){return _0x5b3222;};return _0x3fc8();}const COUNTRY_TO_CCY=_0x43b7be,fxCache=new Map(),FX_TTL_MS=0x6*0x3c*0x3c*0x3e8;async function getRateFromPHP(_0xa33218){const _0xe3d8d5=_0x1321f6,_0x4b0c76={};_0x4b0c76[_0xe3d8d5(0x262)]=_0xe3d8d5(0x246),_0x4b0c76['sXNyE']=function(_0x1ff37f,_0x28d851){return _0x1ff37f<_0x28d851;},_0x4b0c76[_0xe3d8d5(0x280)]=function(_0x3daf2c,_0x57faa5){return _0x3daf2c-_0x57faa5;},_0x4b0c76[_0xe3d8d5(0x1f7)]='[plans]\x20fx\x20fetch\x20failed:';const _0x4bac3c=_0x4b0c76;if(_0xa33218===_0x4bac3c['CugUq'])return 0x1;const _0x35d652=_0xa33218['toUpperCase'](),_0x5210dd=fxCache[_0xe3d8d5(0x239)](_0x35d652);if(_0x5210dd&&_0x4bac3c[_0xe3d8d5(0x1f5)](_0x4bac3c[_0xe3d8d5(0x280)](Date[_0xe3d8d5(0x256)](),_0x5210dd['ts']),FX_TTL_MS))return _0x5210dd[_0xe3d8d5(0x1e3)];try{const _0x3ab49d={};_0x3ab49d[_0xe3d8d5(0x1fb)]=_0xe3d8d5(0x246),_0x3ab49d['to']=_0x35d652;const _0x557ae8={};_0x557ae8['params']=_0x3ab49d,_0x557ae8[_0xe3d8d5(0x236)]=0x1388;const _0xbc5512=await axios_1['default'][_0xe3d8d5(0x239)](_0xe3d8d5(0x1f6),_0x557ae8),_0x1dc2b4=Number(_0xbc5512['data']?.[_0xe3d8d5(0x1ed)]?.[_0x35d652]);if(Number[_0xe3d8d5(0x1f0)](_0x1dc2b4)&&_0x1dc2b4>0x0)return fxCache[_0xe3d8d5(0x21f)](_0x35d652,{'rate':_0x1dc2b4,'ts':Date['now']()}),_0x1dc2b4;}catch(_0x4de95d){console[_0xe3d8d5(0x245)](_0x4bac3c[_0xe3d8d5(0x1f7)],_0x4de95d?.['message']);}return 0x1;}async function userByToken(_0x498eb2){const _0x4b4ac7=_0x1321f6;if(!_0x498eb2)return null;return(await(0x0,drive_1[_0x4b4ac7(0x21e)])())['find'](_0x5432f2=>_0x5432f2[_0x4b4ac7(0x1ee)]===_0x498eb2)??null;}async function userByName(_0x4f9f56){if(!_0x4f9f56)return null;return(await(0x0,drive_1['getAllUsers'])())['find'](_0x216d92=>_0x216d92['username']===_0x4f9f56)??null;}function newId(_0x59ecc6){const _0x33aa39=_0x1321f6;return _0x59ecc6+'_'+Date[_0x33aa39(0x256)]()[_0x33aa39(0x21c)](0x24)+'_'+Math['random']()['toString'](0x24)[_0x33aa39(0x249)](0x2,0x8);}async function catalogHandler(_0x262d18,_0x5aa3b0){const _0x2e7683=_0x1321f6,_0x4822dd={'mPlHq':function(_0x8853b8,_0x24f955){return _0x8853b8(_0x24f955);},'agkih':_0x2e7683(0x246),'QxdRz':function(_0x103d7a,_0x1000b8){return _0x103d7a/_0x1000b8;},'ydVcY':function(_0x20b5ba,_0x2830f5){return _0x20b5ba*_0x2830f5;},'XomyM':function(_0x34904e,_0x5e1689){return _0x34904e*_0x5e1689;},'skLBh':'exo','XieGy':'JO*N\x20ST**E\x20C.','BwDCb':_0x2e7683(0x23e),'pMwrJ':_0x2e7683(0x1c0),'DrqTi':'free','qqmyT':_0x2e7683(0x289)};try{const _0x4e1bde=String(_0x262d18[_0x2e7683(0x1e4)][_0x2e7683(0x1ee)]||''),_0x483f81=_0x4e1bde?await userByToken(_0x4e1bde):null,_0x130af4=_0x4822dd['mPlHq'](String,_0x483f81?.[_0x2e7683(0x278)]||_0x262d18[_0x2e7683(0x1e4)][_0x2e7683(0x278)]||'PH')['toUpperCase'](),_0x44343a=COUNTRY_TO_CCY[_0x130af4]||_0x4822dd[_0x2e7683(0x1c7)],_0x6f31b8=await getRateFromPHP(_0x44343a),_0x3f10b7=_0x4822dd[_0x2e7683(0x1e1)](Math[_0x2e7683(0x1d1)](_0x4822dd['ydVcY'](_0x4822dd[_0x2e7683(0x275)](PLAN_BASE_PHP,_0x6f31b8),0x64)),0x64),_0x3ec252={};_0x3ec252['id']=_0x4822dd[_0x2e7683(0x219)],_0x3ec252[_0x2e7683(0x1fc)]=_0x2e7683(0x25c),_0x3ec252[_0x2e7683(0x1d9)]=PLAN_DURATION_DAYS,_0x3ec252[_0x2e7683(0x1fd)]=PLAN_BASE_PHP,_0x3ec252[_0x2e7683(0x283)]=_0x44343a,_0x3ec252[_0x2e7683(0x241)]=_0x3f10b7,_0x3ec252[_0x2e7683(0x1c5)]=_0x6f31b8;const _0x4c4044={};_0x4c4044[_0x2e7683(0x1fc)]=_0x4822dd[_0x2e7683(0x22c)],_0x4c4044['number']=_0x4822dd['BwDCb'],_0x4c4044[_0x2e7683(0x205)]=_0x2e7683(0x24b);const _0x1650ca={};_0x1650ca[_0x2e7683(0x1fc)]=_0x2e7683(0x260),_0x1650ca[_0x2e7683(0x250)]=_0x4822dd[_0x2e7683(0x27e)];const _0x12f34c={};_0x12f34c[_0x2e7683(0x1e6)]=_0x4c4044,_0x12f34c[_0x2e7683(0x230)]=_0x1650ca;const _0x3c3917={};return _0x3c3917[_0x2e7683(0x1d8)]=!![],_0x3c3917[_0x2e7683(0x221)]=[_0x3ec252],_0x3c3917['payment']=_0x12f34c,_0x3c3917['me']=_0x483f81?{'plan':_0x483f81[_0x2e7683(0x1ea)]||_0x4822dd[_0x2e7683(0x20c)],'planExpiresAt':_0x483f81[_0x2e7683(0x234)]||null,'pendingPaymentId':_0x483f81[_0x2e7683(0x1cf)]||null}:null,_0x5aa3b0[_0x2e7683(0x24c)](_0x3c3917);}catch(_0x3cf968){if(_0x4822dd['qqmyT']===_0x2e7683(0x289)){const _0x54c06d={};return _0x54c06d[_0x2e7683(0x1d8)]=![],_0x54c06d[_0x2e7683(0x285)]=_0x3cf968?.['message'],_0x5aa3b0['status'](0x1f4)[_0x2e7683(0x24c)](_0x54c06d);}else _0x59d8c9[_0x2e7683(0x245)]('[plans]\x20proof\x20upload\x20failed:',_0x14cd50?.['message']);}}async function submitPaymentHandler(_0x323463,_0xc86bba){const _0x5a80ce=_0x1321f6,_0x1cb883={'MVZDT':_0x5a80ce(0x21b),'SNAzx':_0x5a80ce(0x1d6),'oHSdk':_0x5a80ce(0x1ec),'xBhad':_0x5a80ce(0x1e6),'MxRfN':'unknown\x20plan','HvGda':_0x5a80ce(0x227),'Mrfsu':function(_0x39067e,_0x335ab2){return _0x39067e!==_0x335ab2;},'kzzsZ':_0x5a80ce(0x23f),'HEBSz':'you\x20already\x20have\x20a\x20pending\x20payment','TdIyd':_0x5a80ce(0x288),'ndLAR':_0x5a80ce(0x1e9),'nkNHb':function(_0xd040bb,_0x4ce615){return _0xd040bb(_0x4ce615);},'BwZDD':function(_0x47a69c,_0x4b84f4){return _0x47a69c*_0x4b84f4;},'ulHEp':_0x5a80ce(0x228),'QrRcP':function(_0x399034,_0xc6c2e7){return _0x399034!==_0xc6c2e7;},'dVeHG':_0x5a80ce(0x277),'gNTmD':_0x5a80ce(0x27d)};try{const _0x33d3e9={};_0x33d3e9[_0x5a80ce(0x1d8)]=![],_0x33d3e9[_0x5a80ce(0x285)]=_0x1cb883[_0x5a80ce(0x1cb)];if(!(0x0,drive_1[_0x5a80ce(0x25f)])())return _0xc86bba[_0x5a80ce(0x208)](0x1f7)[_0x5a80ce(0x24c)](_0x33d3e9);const _0x2e5ffe=String(_0x323463[_0x5a80ce(0x247)]?.[_0x5a80ce(0x1ee)]??_0x323463[_0x5a80ce(0x1e4)][_0x5a80ce(0x1ee)]??'')['trim'](),_0x429b03=String(_0x323463['body']?.['plan']??_0x1cb883[_0x5a80ce(0x25e)])[_0x5a80ce(0x27c)](),_0x150705=String(_0x323463[_0x5a80ce(0x247)]?.[_0x5a80ce(0x212)]??_0x1cb883[_0x5a80ce(0x1c4)])['trim'](),_0x396136=String(_0x323463['body']?.[_0x5a80ce(0x24d)]??'')[_0x5a80ce(0x249)](0x0,0x12c);if(_0x429b03!==_0x1cb883[_0x5a80ce(0x25e)])return _0xc86bba['status'](0x190)['json']({'success':![],'message':_0x1cb883['MxRfN']});const _0x3065a7=await userByToken(_0x2e5ffe),_0x941e04={};_0x941e04[_0x5a80ce(0x1d8)]=![],_0x941e04[_0x5a80ce(0x285)]=_0x1cb883['HvGda'];if(!_0x3065a7)return _0xc86bba['status'](0x191)[_0x5a80ce(0x24c)](_0x941e04);if(_0x3065a7['pendingPaymentId']){if(_0x1cb883[_0x5a80ce(0x257)](_0x1cb883[_0x5a80ce(0x20e)],_0x5a80ce(0x1dd))){const _0x3d25c7={};return _0x3d25c7[_0x5a80ce(0x1d8)]=![],_0x3d25c7[_0x5a80ce(0x285)]=_0x1cb883[_0x5a80ce(0x206)],_0xc86bba[_0x5a80ce(0x208)](0x199)[_0x5a80ce(0x24c)](_0x3d25c7);}else _0x488f96[_0x5a80ce(0x245)](_0x1cb883['MVZDT'],_0x213c8e?.[_0x5a80ce(0x285)]);}const _0x38e5fe=await(0x0,drive_1[_0x5a80ce(0x1c3)])(_0x3065a7[_0x5a80ce(0x1c9)]),_0x23839a={};_0x23839a[_0x5a80ce(0x1d8)]=![],_0x23839a[_0x5a80ce(0x285)]=_0x1cb883[_0x5a80ce(0x1f3)];if(!_0x38e5fe)return _0xc86bba[_0x5a80ce(0x208)](0x194)[_0x5a80ce(0x24c)](_0x23839a);const _0x3325e6=newId(_0x5a80ce(0x252));let _0x26677a=null,_0x54bb31=null;const _0x5e7762=_0x323463[_0x5a80ce(0x1e5)];if(_0x5e7762?.[_0x5a80ce(0x266)])try{const _0x37a6e3=await(0x0,drive_1[_0x5a80ce(0x286)])(_0x38e5fe,'payment_'+_0x3325e6+_0x5a80ce(0x24a),_0x5e7762['buffer']);_0x37a6e3&&(_0x54bb31=_0x37a6e3,_0x26677a=_0x5a80ce(0x225)+_0x37a6e3+_0x5a80ce(0x232));}catch(_0x18697e){console[_0x5a80ce(0x245)](_0x1cb883[_0x5a80ce(0x1cc)],_0x18697e?.['message']);}const _0x3ad072=_0x1cb883[_0x5a80ce(0x203)](String,_0x3065a7[_0x5a80ce(0x278)]||'PH')[_0x5a80ce(0x276)](),_0xedd887=COUNTRY_TO_CCY[_0x3ad072]||_0x5a80ce(0x246),_0x396934=await _0x1cb883[_0x5a80ce(0x203)](getRateFromPHP,_0xedd887),_0x87ff3b=Math['round'](_0x1cb883['BwZDD'](PLAN_BASE_PHP*_0x396934,0x64))/0x64,_0x5eb949={'id':_0x3325e6,'ts':Date[_0x5a80ce(0x256)](),'username':_0x3065a7[_0x5a80ce(0x1c9)],'email':_0x3065a7[_0x5a80ce(0x226)],'plan':_0x429b03,'amount':_0x87ff3b,'currency':_0xedd887,'method':_0x150705,'proofUrl':_0x26677a,'proofFileId':_0x54bb31,'note':_0x396136,'status':_0x1cb883[_0x5a80ce(0x223)]};(0x0,paymentsStore_1[_0x5a80ce(0x23b)])(_0x5eb949);const _0x28883b={..._0x3065a7};_0x28883b[_0x5a80ce(0x1cf)]=_0x3325e6,await(0x0,drive_1['writeUserDb'])(_0x38e5fe,_0x28883b);const _0x29368f={};return _0x29368f[_0x5a80ce(0x1d8)]=!![],_0x29368f[_0x5a80ce(0x211)]=_0x5eb949,_0xc86bba[_0x5a80ce(0x24c)](_0x29368f);}catch(_0x474c85){if(_0x1cb883[_0x5a80ce(0x1d0)](_0x1cb883[_0x5a80ce(0x26f)],_0x1cb883['gNTmD'])){const _0x5ce602={};return _0x5ce602[_0x5a80ce(0x1d8)]=![],_0x5ce602[_0x5a80ce(0x285)]=_0x474c85?.[_0x5a80ce(0x285)],_0xc86bba[_0x5a80ce(0x208)](0x1f4)[_0x5a80ce(0x24c)](_0x5ce602);}else{const _0x552754={};return _0x552754[_0x5a80ce(0x1d8)]=![],_0x552754[_0x5a80ce(0x285)]=_0x5d9f8e?.[_0x5a80ce(0x285)],_0x362d9e[_0x5a80ce(0x208)](0x1f4)[_0x5a80ce(0x24c)](_0x552754);}}}async function myPaymentsHandler(_0x2d5aaf,_0x3733f8){const _0x403ab3=_0x1321f6,_0x30093b={'bQVTw':function(_0x8103e8,_0x5dfcdc){return _0x8103e8(_0x5dfcdc);},'hByes':'invalid\x20token','MPOkT':'free'};try{const _0x50dcfd=String(_0x2d5aaf[_0x403ab3(0x1e4)][_0x403ab3(0x1ee)]||''),_0x3e2718=await _0x30093b[_0x403ab3(0x22a)](userByToken,_0x50dcfd),_0xc3607e={};_0xc3607e[_0x403ab3(0x1d8)]=![],_0xc3607e[_0x403ab3(0x285)]=_0x30093b[_0x403ab3(0x240)];if(!_0x3e2718)return _0x3733f8[_0x403ab3(0x208)](0x191)[_0x403ab3(0x24c)](_0xc3607e);return _0x3733f8[_0x403ab3(0x24c)]({'success':!![],'plan':_0x3e2718[_0x403ab3(0x1ea)]||_0x30093b['MPOkT'],'planExpiresAt':_0x3e2718['planExpiresAt']||null,'pendingPaymentId':_0x3e2718[_0x403ab3(0x1cf)]||null,'payments':(0x0,paymentsStore_1['listForUser'])(_0x3e2718['username'])});}catch(_0x48cf8){const _0x3bc93a={};return _0x3bc93a[_0x403ab3(0x1d8)]=![],_0x3bc93a[_0x403ab3(0x285)]=_0x48cf8?.[_0x403ab3(0x285)],_0x3733f8[_0x403ab3(0x208)](0x1f4)['json'](_0x3bc93a);}}async function listPendingHandler(_0x4dfd00,_0x5d99b3){const _0x35668b=_0x1321f6,_0x868a25={'paqXU':function(_0x42e7c1,_0x5dcf50){return _0x42e7c1===_0x5dcf50;},'KOqXf':'DzRIc','RhVGU':_0x35668b(0x227),'asauG':'owner','GKbPN':_0x35668b(0x243),'CXhtO':function(_0x58369b,_0x2c8dc9){return _0x58369b(_0x2c8dc9);},'HAFmC':_0x35668b(0x228),'nWhhX':_0x35668b(0x28a)};try{if(_0x868a25['paqXU'](_0x35668b(0x26c),_0x868a25[_0x35668b(0x1e7)])){const _0x139042=String(_0x4dfd00[_0x35668b(0x1e4)][_0x35668b(0x1ee)]||''),_0x58e33d=await userByToken(_0x139042),_0x25e17b={};_0x25e17b[_0x35668b(0x1d8)]=![],_0x25e17b[_0x35668b(0x285)]=_0x868a25['RhVGU'];if(!_0x58e33d)return _0x5d99b3[_0x35668b(0x208)](0x191)[_0x35668b(0x24c)](_0x25e17b);if(_0x58e33d[_0x35668b(0x27a)]!==_0x868a25[_0x35668b(0x269)])return _0x5d99b3[_0x35668b(0x208)](0x193)[_0x35668b(0x24c)]({'success':![],'message':_0x868a25[_0x35668b(0x264)]});const _0x13945d=_0x868a25[_0x35668b(0x261)](String,_0x4dfd00['query']['status']||_0x868a25[_0x35668b(0x21a)]),_0x1996b2=_0x868a25[_0x35668b(0x26b)](_0x13945d,_0x868a25[_0x35668b(0x253)])?(0x0,paymentsStore_1[_0x35668b(0x224)])():(0x0,paymentsStore_1[_0x35668b(0x1f2)])(),_0x595854={};return _0x595854[_0x35668b(0x1d8)]=!![],_0x595854[_0x35668b(0x20b)]=_0x1996b2,_0x5d99b3[_0x35668b(0x24c)](_0x595854);}else{const _0xda9e15={};return _0xda9e15[_0x35668b(0x1d8)]=![],_0xda9e15[_0x35668b(0x285)]=_0x360f24?.['message'],_0x15992b[_0x35668b(0x208)](0x1f4)[_0x35668b(0x24c)](_0xda9e15);}}catch(_0x27cba6){const _0x2bf97b={};return _0x2bf97b[_0x35668b(0x1d8)]=![],_0x2bf97b[_0x35668b(0x285)]=_0x27cba6?.['message'],_0x5d99b3[_0x35668b(0x208)](0x1f4)[_0x35668b(0x24c)](_0x2bf97b);}}async function decidePaymentHandler(_0x3083e1,_0xd48656){const _0x49157e=_0x1321f6,_0x5e3940={'Ngrxp':_0x49157e(0x263),'sNJmF':function(_0x2451cf,_0x56bcf7){return _0x2451cf===_0x56bcf7;},'DujNj':_0x49157e(0x217),'ZstoE':function(_0xb7333b,_0x671114){return _0xb7333b(_0x671114);},'ROYZf':'invalid\x20token','iLJTY':'owner','CuvyG':_0x49157e(0x202),'gyYLK':function(_0x747486,_0x5b1672){return _0x747486!==_0x5b1672;},'NlwWb':'pending','VhIsh':'already\x20decided','EPhUE':'user\x20not\x20found','Yhxfn':_0x49157e(0x288),'rjmFh':function(_0x3dec34,_0xdfc76b){return _0x3dec34===_0xdfc76b;},'poDoy':_0x49157e(0x270),'mDaeD':_0x49157e(0x1dc),'eIPvy':function(_0x3e8578,_0x1458d2){return _0x3e8578===_0x1458d2;},'DmYul':function(_0xf540c4,_0x1fac95){return _0xf540c4*_0x1fac95;},'nqLHG':_0x49157e(0x1ec),'waBFz':_0x49157e(0x204),'QOkXo':'payment_approved','lowQS':'payment:approve','HOKqy':'reject','uPJkR':'xLADp','FbCTc':'rejected','zGxhA':'invalid\x20decision'};try{const {token:_0x1ed40b,paymentId:_0x5565c8,decision:_0x484cc1,reason:_0x22766a}=_0x3083e1[_0x49157e(0x247)]||{};if(!_0x1ed40b||!_0x5565c8||!_0x484cc1){if(_0x5e3940[_0x49157e(0x209)](_0x49157e(0x217),_0x5e3940[_0x49157e(0x284)])){const _0x40e239={};return _0x40e239[_0x49157e(0x1d8)]=![],_0x40e239[_0x49157e(0x285)]=_0x5e3940[_0x49157e(0x25a)],_0xd48656[_0x49157e(0x208)](0x190)[_0x49157e(0x24c)](_0x40e239);}else _0x5bf491=_0x4b5bf1,_0x4470e6=_0x49157e(0x225)+_0x491ed5+_0x49157e(0x232);}const _0x55720c=await _0x5e3940[_0x49157e(0x1fa)](userByToken,_0x1ed40b),_0x2c564a={};_0x2c564a[_0x49157e(0x1d8)]=![],_0x2c564a[_0x49157e(0x285)]=_0x5e3940[_0x49157e(0x210)];if(!_0x55720c)return _0xd48656[_0x49157e(0x208)](0x191)['json'](_0x2c564a);const _0xbd247={};_0xbd247[_0x49157e(0x1d8)]=![],_0xbd247[_0x49157e(0x285)]=_0x49157e(0x243);if(_0x55720c[_0x49157e(0x27a)]!==_0x5e3940[_0x49157e(0x238)])return _0xd48656[_0x49157e(0x208)](0x193)['json'](_0xbd247);const _0x33fec4=(0x0,paymentsStore_1[_0x49157e(0x22f)])(_0x5565c8),_0x4e5fed={};_0x4e5fed[_0x49157e(0x1d8)]=![],_0x4e5fed[_0x49157e(0x285)]=_0x5e3940[_0x49157e(0x1ff)];if(!_0x33fec4)return _0xd48656['status'](0x194)[_0x49157e(0x24c)](_0x4e5fed);if(_0x5e3940[_0x49157e(0x231)](_0x33fec4[_0x49157e(0x208)],_0x5e3940[_0x49157e(0x1f8)]))return _0xd48656[_0x49157e(0x208)](0x190)[_0x49157e(0x24c)]({'success':![],'message':_0x5e3940['VhIsh']});const _0x876a74=await _0x5e3940[_0x49157e(0x1fa)](userByName,_0x33fec4[_0x49157e(0x1c9)]),_0x16fdfc={};_0x16fdfc[_0x49157e(0x1d8)]=![],_0x16fdfc['message']=_0x5e3940['EPhUE'];if(!_0x876a74)return _0xd48656[_0x49157e(0x208)](0x194)[_0x49157e(0x24c)](_0x16fdfc);const _0x5d190c=await(0x0,drive_1[_0x49157e(0x1c3)])(_0x876a74['username']),_0x1246d8={};_0x1246d8[_0x49157e(0x1d8)]=![],_0x1246d8[_0x49157e(0x285)]=_0x5e3940['Yhxfn'];if(!_0x5d190c)return _0xd48656['status'](0x194)[_0x49157e(0x24c)](_0x1246d8);if(_0x5e3940[_0x49157e(0x27f)](_0x484cc1,'approve')){if(_0x5e3940['poDoy']===_0x5e3940[_0x49157e(0x1ef)]){(0x0,paymentsStore_1[_0x49157e(0x282)])(_0x5565c8,{'status':_0x5e3940[_0x49157e(0x21d)],'decidedAt':Date['now'](),'decidedBy':_0x55720c['username']});const _0x5777f4=Date[_0x49157e(0x256)](),_0x2d905e=_0x5e3940[_0x49157e(0x22b)](typeof _0x876a74['planExpiresAt'],_0x49157e(0x250))&&_0x876a74[_0x49157e(0x234)]>_0x5777f4?_0x876a74[_0x49157e(0x234)]:_0x5777f4,_0x1b5145=_0x2d905e+_0x5e3940[_0x49157e(0x1f4)](PLAN_DURATION_DAYS,0x15180)*0x3e8,_0x563c7c={..._0x876a74};_0x563c7c['plan']=_0x5e3940[_0x49157e(0x24e)],_0x563c7c[_0x49157e(0x234)]=_0x1b5145,_0x563c7c[_0x49157e(0x1cf)]=null;const _0x2237e5=_0x563c7c;await(0x0,drive_1[_0x49157e(0x23a)])(_0x5d190c,_0x2237e5);try{await(0x0,xpService_1[_0x49157e(0x222)])(_0x2237e5,_0x49157e(0x267));}catch{}try{if(_0x5e3940[_0x49157e(0x279)]===_0x5e3940[_0x49157e(0x279)])await(0x0,xpService_1['addXp'])(_0x2237e5,_0x5e3940[_0x49157e(0x248)]);else{const _0xe303f7={};return _0xe303f7['success']=![],_0xe303f7['message']=_0x5e3940['Ngrxp'],_0x30fe72['status'](0x190)[_0x49157e(0x24c)](_0xe303f7);}}catch{}const _0x2f6adc={};_0x2f6adc[_0x49157e(0x1c9)]=_0x876a74[_0x49157e(0x1c9)],_0x2f6adc[_0x49157e(0x1c2)]=_0x1b5145;const _0x33c3d8={};return _0x33c3d8['by']=_0x55720c[_0x49157e(0x1c9)],_0x33c3d8[_0x49157e(0x268)]=_0x5e3940[_0x49157e(0x254)],_0x33c3d8[_0x49157e(0x281)]=_0x5565c8,_0x33c3d8[_0x49157e(0x216)]=_0x2f6adc,(0x0,auditStore_1['appendAudit'])(_0x33c3d8),_0xd48656['json']({'success':!![],'payment':(0x0,paymentsStore_1[_0x49157e(0x22f)])(_0x5565c8),'planExpiresAt':_0x1b5145});}else{const _0x17576b={};return _0x17576b['success']=![],_0x17576b[_0x49157e(0x285)]=_0x17189f?.[_0x49157e(0x285)],_0x52bc24[_0x49157e(0x208)](0x1f4)[_0x49157e(0x24c)](_0x17576b);}}else{if(_0x484cc1===_0x5e3940[_0x49157e(0x23c)]){if(_0x49157e(0x1cd)===_0x5e3940[_0x49157e(0x22d)]){(0x0,paymentsStore_1[_0x49157e(0x282)])(_0x5565c8,{'status':_0x5e3940[_0x49157e(0x273)],'decidedAt':Date[_0x49157e(0x256)](),'decidedBy':_0x55720c[_0x49157e(0x1c9)],'reason':_0x22766a});const _0x5fb53e={..._0x876a74};_0x5fb53e[_0x49157e(0x1cf)]=null,await(0x0,drive_1[_0x49157e(0x23a)])(_0x5d190c,_0x5fb53e);const _0x118c36={};_0x118c36['username']=_0x876a74[_0x49157e(0x1c9)],_0x118c36[_0x49157e(0x23d)]=_0x22766a;const _0x5cf7ed={};return _0x5cf7ed['by']=_0x55720c[_0x49157e(0x1c9)],_0x5cf7ed['action']=_0x49157e(0x1f9),_0x5cf7ed['target']=_0x5565c8,_0x5cf7ed[_0x49157e(0x216)]=_0x118c36,(0x0,auditStore_1[_0x49157e(0x274)])(_0x5cf7ed),_0xd48656[_0x49157e(0x24c)]({'success':!![],'payment':(0x0,paymentsStore_1[_0x49157e(0x22f)])(_0x5565c8)});}else return _0x49add8[_0x49157e(0x21f)](_0x2b295d,{'rate':_0xdc171a,'ts':_0x448c2f[_0x49157e(0x256)]()}),_0x1061ec;}}const _0x1e6733={};return _0x1e6733[_0x49157e(0x1d8)]=![],_0x1e6733[_0x49157e(0x285)]=_0x5e3940[_0x49157e(0x271)],_0xd48656[_0x49157e(0x208)](0x190)['json'](_0x1e6733);}catch(_0x3971fb){const _0x1a26c5={};return _0x1a26c5['success']=![],_0x1a26c5[_0x49157e(0x285)]=_0x3971fb?.[_0x49157e(0x285)],_0xd48656[_0x49157e(0x208)](0x1f4)[_0x49157e(0x24c)](_0x1a26c5);}}
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.catalogHandler = catalogHandler;
+exports.submitPaymentHandler = submitPaymentHandler;
+exports.myPaymentsHandler = myPaymentsHandler;
+exports.listPendingHandler = listPendingHandler;
+exports.decidePaymentHandler = decidePaymentHandler;
+const axios_1 = __importDefault(require("axios"));
+const drive_1 = require("../services/drive");
+const paymentsStore_1 = require("../services/paymentsStore");
+const xpService_1 = require("../services/xpService");
+const auditStore_1 = require("../services/auditStore");
+const PLAN_BASE_PHP = 100;
+const PLAN_DURATION_DAYS = 90;
+const COUNTRY_TO_CCY = {
+    PH: "PHP", US: "USD", GB: "GBP", CA: "CAD", AU: "AUD", JP: "JPY",
+    KR: "KRW", CN: "CNY", IN: "INR", ID: "IDR", SG: "SGD", MY: "MYR",
+    TH: "THB", VN: "VND", DE: "EUR", FR: "EUR", IT: "EUR", ES: "EUR",
+    NL: "EUR", BE: "EUR", PT: "EUR", IE: "EUR", BR: "BRL", MX: "MXN",
+    AR: "ARS", ZA: "ZAR", AE: "AED", SA: "SAR", TR: "TRY", RU: "RUB",
+    PL: "PLN", SE: "SEK", NO: "NOK", DK: "DKK", CH: "CHF", NZ: "NZD",
+    HK: "HKD", TW: "TWD", PK: "PKR", BD: "BDT", EG: "EGP", IL: "ILS",
+};
+const fxCache = new Map();
+const FX_TTL_MS = 6 * 60 * 60 * 1000; // 6h
+async function getRateFromPHP(targetCcy) {
+    if (targetCcy === "PHP")
+        return 1;
+    const key = targetCcy.toUpperCase();
+    const cached = fxCache.get(key);
+    if (cached && Date.now() - cached.ts < FX_TTL_MS)
+        return cached.rate;
+    try {
+        const r = await axios_1.default.get(`https://api.frankfurter.app/latest`, {
+            params: { from: "PHP", to: key }, timeout: 5000,
+        });
+        const rate = Number(r.data?.rates?.[key]);
+        if (Number.isFinite(rate) && rate > 0) {
+            fxCache.set(key, { rate, ts: Date.now() });
+            return rate;
+        }
+    }
+    catch (e) {
+        console.warn("[plans] fx fetch failed:", e?.message);
+    }
+    return 1;
+}
+async function userByToken(token) {
+    if (!token)
+        return null;
+    return (await (0, drive_1.getAllUsers)()).find(u => u.token === token) ?? null;
+}
+async function userByName(username) {
+    if (!username)
+        return null;
+    return (await (0, drive_1.getAllUsers)()).find(u => u.username === username) ?? null;
+}
+function newId(prefix) {
+    return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+}
+/** GET /exocore/api/plans/catalog?token=... */
+async function catalogHandler(req, res) {
+    try {
+        const token = String(req.query.token || "");
+        const me = token ? await userByToken(token) : null;
+        const country = String(me?.country || req.query.country || "PH").toUpperCase();
+        const targetCcy = COUNTRY_TO_CCY[country] || "PHP";
+        const rate = await getRateFromPHP(targetCcy);
+        const localPrice = Math.round(PLAN_BASE_PHP * rate * 100) / 100;
+        return res.json({
+            success: true,
+            plans: [{
+                    id: "exo",
+                    name: "EXO PLAN",
+                    durationDays: PLAN_DURATION_DAYS,
+                    basePricePHP: PLAN_BASE_PHP,
+                    localCurrency: targetCcy,
+                    localPrice,
+                    fxRate: rate,
+                }],
+            payment: {
+                gcash: {
+                    name: "JO*N ST**E C.",
+                    number: "09996440303",
+                    qrPayload: "00020101021127830012com.p2pqrpay0111GXCHPHM2XXX02089996440303152170200000006560417DWQM4TK3JDO6HMZ8K5204601653036085802PH5913JO*N ST**E C.6008Inayawan610412346304C55B",
+                },
+                gotyme: {
+                    name: "Johnsteve Costaños",
+                    number: "0177 1620 9059",
+                },
+            },
+            me: me ? { plan: me.plan || "free", planExpiresAt: me.planExpiresAt || null, pendingPaymentId: me.pendingPaymentId || null } : null,
+        });
+    }
+    catch (e) {
+        return res.status(500).json({ success: false, message: e?.message });
+    }
+}
+/** POST /exocore/api/plans/submit  multipart  fields: token, plan, method, note? + file */
+async function submitPaymentHandler(req, res) {
+    try {
+        if (!(0, drive_1.isCacheReady)())
+            return res.status(503).json({ success: false, message: "warming up" });
+        const token = String((req.body?.token ?? req.query.token ?? "")).trim();
+        const plan = String((req.body?.plan ?? "exo")).trim();
+        const method = String(req.body?.method ?? "gcash").trim();
+        const note = String(req.body?.note ?? "").slice(0, 300);
+        if (plan !== "exo")
+            return res.status(400).json({ success: false, message: "unknown plan" });
+        const me = await userByToken(token);
+        if (!me)
+            return res.status(401).json({ success: false, message: "invalid token" });
+        if (me.pendingPaymentId) {
+            return res.status(409).json({ success: false, message: "you already have a pending payment" });
+        }
+        const folderId = await (0, drive_1.getUserFolder)(me.username);
+        if (!folderId)
+            return res.status(404).json({ success: false, message: "folder missing" });
+        const id = newId("pay");
+        let proofUrl = null;
+        let proofFileId = null;
+        const file = req.file;
+        if (file?.buffer) {
+            try {
+                const fid = await (0, drive_1.uploadImagePublic)(folderId, `payment_${id}.png`, file.buffer);
+                if (fid) {
+                    proofFileId = fid;
+                    proofUrl = `https://drive.google.com/thumbnail?id=${fid}&sz=w1600`;
+                }
+            }
+            catch (e) {
+                console.warn("[plans] proof upload failed:", e?.message);
+            }
+        }
+        const country = String(me.country || "PH").toUpperCase();
+        const targetCcy = COUNTRY_TO_CCY[country] || "PHP";
+        const rate = await getRateFromPHP(targetCcy);
+        const amount = Math.round(PLAN_BASE_PHP * rate * 100) / 100;
+        const pay = {
+            id, ts: Date.now(), username: me.username, email: me.email,
+            plan, amount, currency: targetCcy, method,
+            proofUrl, proofFileId, note, status: "pending",
+        };
+        (0, paymentsStore_1.addPayment)(pay);
+        await (0, drive_1.writeUserDb)(folderId, { ...me, pendingPaymentId: id });
+        return res.json({ success: true, payment: pay });
+    }
+    catch (e) {
+        return res.status(500).json({ success: false, message: e?.message });
+    }
+}
+/** GET /exocore/api/plans/me?token=... → user's payments + plan state */
+async function myPaymentsHandler(req, res) {
+    try {
+        const token = String(req.query.token || "");
+        const me = await userByToken(token);
+        if (!me)
+            return res.status(401).json({ success: false, message: "invalid token" });
+        return res.json({
+            success: true,
+            plan: me.plan || "free",
+            planExpiresAt: me.planExpiresAt || null,
+            pendingPaymentId: me.pendingPaymentId || null,
+            payments: (0, paymentsStore_1.listForUser)(me.username),
+        });
+    }
+    catch (e) {
+        return res.status(500).json({ success: false, message: e?.message });
+    }
+}
+/** GET /exocore/api/plans/pending?token=... (owner only) */
+async function listPendingHandler(req, res) {
+    try {
+        const token = String(req.query.token || "");
+        const me = await userByToken(token);
+        if (!me)
+            return res.status(401).json({ success: false, message: "invalid token" });
+        if (me.role !== "owner")
+            return res.status(403).json({ success: false, message: "owner only" });
+        const status = String(req.query.status || "pending");
+        const all = status === "all" ? (0, paymentsStore_1.listAll)() : (0, paymentsStore_1.listPending)();
+        return res.json({ success: true, payments: all });
+    }
+    catch (e) {
+        return res.status(500).json({ success: false, message: e?.message });
+    }
+}
+/** POST /exocore/api/plans/decide  { token, paymentId, decision: "approve"|"reject", reason? } (owner only) */
+async function decidePaymentHandler(req, res) {
+    try {
+        const { token, paymentId, decision, reason } = (req.body || {});
+        if (!token || !paymentId || !decision) {
+            return res.status(400).json({ success: false, message: "token/paymentId/decision required" });
+        }
+        const me = await userByToken(token);
+        if (!me)
+            return res.status(401).json({ success: false, message: "invalid token" });
+        if (me.role !== "owner")
+            return res.status(403).json({ success: false, message: "owner only" });
+        const pay = (0, paymentsStore_1.getPayment)(paymentId);
+        if (!pay)
+            return res.status(404).json({ success: false, message: "not found" });
+        if (pay.status !== "pending")
+            return res.status(400).json({ success: false, message: "already decided" });
+        const target = await userByName(pay.username);
+        if (!target)
+            return res.status(404).json({ success: false, message: "user not found" });
+        const folderId = await (0, drive_1.getUserFolder)(target.username);
+        if (!folderId)
+            return res.status(404).json({ success: false, message: "folder missing" });
+        if (decision === "approve") {
+            (0, paymentsStore_1.updatePayment)(paymentId, { status: "approved", decidedAt: Date.now(), decidedBy: me.username });
+            const now = Date.now();
+            const baseExpiry = (typeof target.planExpiresAt === "number" && target.planExpiresAt > now)
+                ? target.planExpiresAt : now;
+            const newExpiry = baseExpiry + PLAN_DURATION_DAYS * 86400 * 1000;
+            const updatedTarget = { ...target, plan: "exo", planExpiresAt: newExpiry, pendingPaymentId: null };
+            await (0, drive_1.writeUserDb)(folderId, updatedTarget);
+            // Phase 5: award supporter + bonus XP. Phase 6: audit.
+            try {
+                await (0, xpService_1.awardAchievement)(updatedTarget, "paid_supporter");
+            }
+            catch { }
+            try {
+                await (0, xpService_1.addXp)(updatedTarget, "payment_approved");
+            }
+            catch { }
+            (0, auditStore_1.appendAudit)({ by: me.username, action: "payment:approve", target: paymentId, meta: { username: target.username, expiresAt: newExpiry } });
+            return res.json({ success: true, payment: (0, paymentsStore_1.getPayment)(paymentId), planExpiresAt: newExpiry });
+        }
+        else if (decision === "reject") {
+            (0, paymentsStore_1.updatePayment)(paymentId, { status: "rejected", decidedAt: Date.now(), decidedBy: me.username, reason });
+            await (0, drive_1.writeUserDb)(folderId, { ...target, pendingPaymentId: null });
+            (0, auditStore_1.appendAudit)({ by: me.username, action: "payment:reject", target: paymentId, meta: { username: target.username, reason } });
+            return res.json({ success: true, payment: (0, paymentsStore_1.getPayment)(paymentId) });
+        }
+        return res.status(400).json({ success: false, message: "invalid decision" });
+    }
+    catch (e) {
+        return res.status(500).json({ success: false, message: e?.message });
+    }
+}

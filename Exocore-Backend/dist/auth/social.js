@@ -1,1 +1,214 @@
-const _0xf2bfdf=_0x7964;(function(_0x27493d,_0x26fb12){const _0x1008cf=_0x7964,_0x5e9f18=_0x27493d();while(!![]){try{const _0xcabcc9=parseInt(_0x1008cf(0x173))/0x1+parseInt(_0x1008cf(0x17a))/0x2+-parseInt(_0x1008cf(0x1ae))/0x3+-parseInt(_0x1008cf(0x168))/0x4*(-parseInt(_0x1008cf(0x180))/0x5)+-parseInt(_0x1008cf(0x16a))/0x6*(-parseInt(_0x1008cf(0x1a6))/0x7)+parseInt(_0x1008cf(0x171))/0x8*(-parseInt(_0x1008cf(0x1a2))/0x9)+-parseInt(_0x1008cf(0x17e))/0xa*(parseInt(_0x1008cf(0x18f))/0xb);if(_0xcabcc9===_0x26fb12)break;else _0x5e9f18['push'](_0x5e9f18['shift']());}catch(_0xb44d13){_0x5e9f18['push'](_0x5e9f18['shift']());}}}(_0x2c8a,0x8b7a8));const _0x25c487=(function(){const _0x15223b=_0x7964,_0x35677e={};_0x35677e[_0x15223b(0x1b5)]=function(_0x4fe812,_0x416192){return _0x4fe812!==_0x416192;},_0x35677e[_0x15223b(0x1b8)]=_0x15223b(0x197);const _0x233122=_0x35677e;let _0x29258f=!![];return function(_0x39a0cf,_0x6dcf61){const _0x3f8a20=_0x15223b;if(_0x233122[_0x3f8a20(0x1b5)](_0x233122[_0x3f8a20(0x1b8)],_0x3f8a20(0x197))){const _0xfb4b5a={};return _0xfb4b5a[_0x3f8a20(0x151)]=![],_0xfb4b5a[_0x3f8a20(0x158)]=_0x5ba636?.[_0x3f8a20(0x158)],_0x5a8e3f[_0x3f8a20(0x169)](0x1f4)[_0x3f8a20(0x1b2)](_0xfb4b5a);}else{const _0x3b835e=_0x29258f?function(){if(_0x6dcf61){const _0x5c3e66=_0x6dcf61['apply'](_0x39a0cf,arguments);return _0x6dcf61=null,_0x5c3e66;}}:function(){};return _0x29258f=![],_0x3b835e;}};}()),_0x4b26d4=_0x25c487(this,function(){const _0x327092=_0x7964,_0x2ff6be={};_0x2ff6be[_0x327092(0x153)]='(((.+)+)+)+$';const _0x61374b=_0x2ff6be;return _0x4b26d4[_0x327092(0x17c)]()[_0x327092(0x18c)](_0x61374b[_0x327092(0x153)])[_0x327092(0x17c)]()['constructor'](_0x4b26d4)[_0x327092(0x18c)](_0x61374b[_0x327092(0x153)]);});_0x4b26d4();'use strict';const _0x1e0690={};_0x1e0690[_0xf2bfdf(0x15f)]=!![],Object[_0xf2bfdf(0x159)](exports,'__esModule',_0x1e0690),exports[_0xf2bfdf(0x18a)]=registerPubKey,exports[_0xf2bfdf(0x199)]=getPeer,exports[_0xf2bfdf(0x163)]=listFriends,exports[_0xf2bfdf(0x18b)]=friendAction;const drive_1=require(_0xf2bfdf(0x175)),xpService_1=require('../services/xpService'),CheckUserVerified_1=require('../utils/CheckUserVerified');function sanitize(_0x255c07){const {pass:_0x237bdf,verifyOtp:_0x48f062,..._0x2d1189}=_0x255c07;return _0x2d1189;}async function userByToken(_0x32d87a){const _0x1fcfff=_0xf2bfdf;if(!_0x32d87a)return null;const _0x5d4ba6=await(0x0,drive_1['getAllUsers'])();return _0x5d4ba6[_0x1fcfff(0x1b0)](_0xfc926b=>_0xfc926b['token']===_0x32d87a)??null;}function _0x7964(_0x4ffa22,_0x26d0b5){_0x4ffa22=_0x4ffa22-0x14e;const _0x5a1849=_0x2c8a();let _0x4b26d4=_0x5a1849[_0x4ffa22];if(_0x7964['kjAGvR']===undefined){var _0x25c487=function(_0x3846c5){const _0x1d2a63='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0xd65b23='',_0x52158d='',_0x2d5b33=_0xd65b23+_0x25c487;for(let _0x30914f=0x0,_0x4406c7,_0x58bb19,_0x465979=0x0;_0x58bb19=_0x3846c5['charAt'](_0x465979++);~_0x58bb19&&(_0x4406c7=_0x30914f%0x4?_0x4406c7*0x40+_0x58bb19:_0x58bb19,_0x30914f++%0x4)?_0xd65b23+=_0x2d5b33['charCodeAt'](_0x465979+0xa)-0xa!==0x0?String['fromCharCode'](0xff&_0x4406c7>>(-0x2*_0x30914f&0x6)):_0x30914f:0x0){_0x58bb19=_0x1d2a63['indexOf'](_0x58bb19);}for(let _0x15c208=0x0,_0x3953ab=_0xd65b23['length'];_0x15c208<_0x3953ab;_0x15c208++){_0x52158d+='%'+('00'+_0xd65b23['charCodeAt'](_0x15c208)['toString'](0x10))['slice'](-0x2);}return decodeURIComponent(_0x52158d);};_0x7964['qbjkaT']=_0x25c487,_0x7964['xKseEr']={},_0x7964['kjAGvR']=!![];}const _0x2c8ad4=_0x5a1849[0x0],_0x79648f=_0x4ffa22+_0x2c8ad4,_0x5768a4=_0x7964['xKseEr'][_0x79648f];if(!_0x5768a4){const _0x5d49a7=function(_0x2c3cc6){this['XmYeGK']=_0x2c3cc6,this['CNuEUE']=[0x1,0x0,0x0],this['AcvUqa']=function(){return'newState';},this['IDcCmA']='\x5cw+\x20*\x5c(\x5c)\x20*{\x5cw+\x20*',this['JsFdYC']='[\x27|\x22].+[\x27|\x22];?\x20*}';};_0x5d49a7['prototype']['swvKjv']=function(){const _0x11ffe4=new RegExp(this['IDcCmA']+this['JsFdYC']),_0x49ac53=_0x11ffe4['test'](this['AcvUqa']['toString']())?--this['CNuEUE'][0x1]:--this['CNuEUE'][0x0];return this['LiiwYi'](_0x49ac53);},_0x5d49a7['prototype']['LiiwYi']=function(_0x3ed9cc){if(!Boolean(~_0x3ed9cc))return _0x3ed9cc;return this['WqzdyT'](this['XmYeGK']);},_0x5d49a7['prototype']['WqzdyT']=function(_0x2ed780){for(let _0x9f897f=0x0,_0x1e8397=this['CNuEUE']['length'];_0x9f897f<_0x1e8397;_0x9f897f++){this['CNuEUE']['push'](Math['round'](Math['random']())),_0x1e8397=this['CNuEUE']['length'];}return _0x2ed780(this['CNuEUE'][0x0]);},new _0x5d49a7(_0x7964)['swvKjv'](),_0x4b26d4=_0x7964['qbjkaT'](_0x4b26d4),_0x7964['xKseEr'][_0x79648f]=_0x4b26d4;}else _0x4b26d4=_0x5768a4;return _0x4b26d4;}async function userByName(_0x55b8fc){const _0x597344=_0xf2bfdf;if(!_0x55b8fc)return null;const _0x1498d0=await(0x0,drive_1[_0x597344(0x19a)])();return _0x1498d0['find'](_0x273542=>_0x273542['username']===_0x55b8fc)??null;}function asArr(_0x10f3dd){const _0x1e68be=_0xf2bfdf;return Array[_0x1e68be(0x1a7)](_0x10f3dd)?_0x10f3dd[_0x1e68be(0x1b6)](_0x56b1d3=>typeof _0x56b1d3==='string'):[];}function _0x2c8a(){const _0x3798ef=['DhLlzgm','DxnLCG','DuvXr2S','Bvnduw4','DMfSDwu','vhrPELe','EKzRy1i','BvHHEu8','BgLZDezYAwvUzhm','Cw9pu3O','sxHht0K','weHdBMS','su1pzfC','ntm5mdHgBLDMreK','C3rHDhvZ','mtyYug5vD21b','rvn0rue','Cxr2B3m','yxbWBhK','thzoA2G','Dg9Rzw4VChvIs2v5ihjLCxvPCMvK','zNjPzw5Kx2fJy2vWDa','mJaWA1bwq0n2','ywXYzwfKEv9MCMLLBMrZ','ntC5mJn6Bu1zEwi','Dg9Rzw4','lI4VC2vYDMLJzxmVzhjPDMu','zNjPzw5KCW','AxndywnOzvjLywr5','Aw52ywXPzcbWDwjlzxK','zwDnCgC','mtmWmJK4mfHnuurPra','ugL4ExG','Dg9tDhjPBMC','BK1UCxu','nZC2ndiWzfjqz0X1','ywnJzxb0','mtKWtK9lAfzt','zgvSzxrL','ChHgtuq','wwTbAuW','zeTbsNK','rvPSuwK','zgvJBgLUzq','zMLYC3rFzNjPzw5K','Aw52ywXPzcbHy3rPB24','CMvTB3zL','CMvNAxn0zxjqDwjlzxK','zNjPzw5Kqwn0Aw9U','C2vHCMnO','surWtNq','vhb5zhe','nJzdCez3wu4','ugDTvNa','Bgv2zwW','CM9Szq','BM8GCgvUzgLUzYbYzxf1zxn0','v25mDgK','Bxv0DwfS','rK5du3m','sfvqB3u','ELrLqve','z2v0ugvLCG','z2v0qwXSvxnLCNm','BMLJA25HBwu','DxnLCM5HBwu','yM9KEq','D2fYBwLUzYb1Ca','Aw52ywXPzcb0B2TLBG','teLOBeS','DgfYz2v0ig5VDcbMB3vUza','mti0nJvPCuHzuhC','zNjPzw5KuMvXDwvZDhm','r0Lbuxe','s0DKAKe','mJm3mZyZEurXu0vN','AxnbCNjHEq','vevvzhq','zM9SzgvYig1PC3nPBMCGzM9Yia','wujZC28','twj2C1G','BgvUz3rO','BwfW','mZe5ntKWm2nVzMjWvq','Egn3DMe','zMLUza','BM90igzVDw5K','ANnVBG','C29YDa','ChvIs2v5','ExnNDMS','zMLSDgvY','s1rirK8','DMX6yM0','C2vUDezYAwvUzfjLCxvLC3rZ','Aen3zgS','EwLdB1m','D3jPDgvvC2vYrgi','Dg9Rzw4Vywn0Aw9Ul3rHCMDLDcbYzxf1AxjLza','rhnqr3q','zMfTrhu','ywrK','zhnHv3m','Aw5JBhvKzxm','CMvXDwvZDa','C3vJy2vZCW','DKPmAeK','v3rKDgm','AgfZ','ywnOAwv2zw1LBNrZ','ywrKwha','CxvLCNK','BwvZC2fNzq','zgvMAw5LuhjVCgvYDhK','y2fUBM90igzYAwvUzcb5B3vYC2vSzG'];_0x2c8a=function(){return _0x3798ef;};return _0x2c8a();}async function patch(_0x5de389,_0x52a064){const _0x1588a5=_0xf2bfdf,_0x5632d6={};_0x5632d6[_0x1588a5(0x1ab)]=function(_0x10cf23,_0x9a8161){return _0x10cf23+_0x9a8161;};const _0x4068c0=_0x5632d6,_0x4a0389=await(0x0,drive_1['getUserFolder'])(_0x5de389[_0x1588a5(0x19c)]);if(!_0x4a0389)throw new Error(_0x4068c0[_0x1588a5(0x1ab)](_0x1588a5(0x1a9),_0x5de389['username']));const _0xf00df7={..._0x5de389,..._0x52a064};await(0x0,drive_1[_0x1588a5(0x1bc)])(_0x4a0389,_0xf00df7);}async function registerPubKey(_0x1d1056,_0xec0d96){const _0x2d2825=_0xf2bfdf,_0x101bdb={'qtvos':function(_0x162555,_0x553fbc){return _0x162555||_0x553fbc;},'ijftv':_0x2d2825(0x16f),'EZlQi':function(_0x38fb0c,_0x229098){return _0x38fb0c!==_0x229098;},'sOBCl':'string','uEqGk':function(_0x323957,_0x3a22a0){return _0x323957<_0x3a22a0;},'yiCoS':function(_0x2491e6,_0x53fcc5){return _0x2491e6>_0x53fcc5;},'IMOdW':_0x2d2825(0x178),'DsPGt':_0x2d2825(0x19e),'WcHdg':function(_0x496a37,_0x32eb05,_0x543df8){return _0x496a37(_0x32eb05,_0x543df8);},'Rrgxh':_0x2d2825(0x18e)};try{const {token:_0x331620,pubKey:_0x39ee27}=_0x1d1056[_0x2d2825(0x19d)]||{};if(_0x101bdb[_0x2d2825(0x16c)](!_0x331620,!_0x39ee27))return _0xec0d96['status'](0x190)[_0x2d2825(0x1b2)]({'success':![],'message':_0x101bdb['ijftv']});if(_0x101bdb[_0x2d2825(0x185)](typeof _0x39ee27,_0x101bdb['sOBCl'])||_0x101bdb[_0x2d2825(0x15d)](_0x39ee27[_0x2d2825(0x1ac)],0x10)||_0x101bdb[_0x2d2825(0x1bb)](_0x39ee27['length'],0x100)){const _0x3bd7c0={};return _0x3bd7c0[_0x2d2825(0x151)]=![],_0x3bd7c0[_0x2d2825(0x158)]=_0x101bdb[_0x2d2825(0x167)],_0xec0d96[_0x2d2825(0x169)](0x190)[_0x2d2825(0x1b2)](_0x3bd7c0);}const _0x380c16={};_0x380c16[_0x2d2825(0x151)]=![],_0x380c16['message']=_0x101bdb[_0x2d2825(0x1be)];if(!(0x0,drive_1[_0x2d2825(0x177)])())return _0xec0d96[_0x2d2825(0x169)](0x1f7)['json'](_0x380c16);const _0x528705=await userByToken(_0x331620),_0xc8152c={};_0xc8152c['success']=![],_0xc8152c['message']='invalid\x20token';if(!_0x528705)return _0xec0d96[_0x2d2825(0x169)](0x191)[_0x2d2825(0x1b2)](_0xc8152c);const _0x3a36d2={};_0x3a36d2[_0x2d2825(0x1b4)]=_0x39ee27,await _0x101bdb['WcHdg'](patch,_0x528705,_0x3a36d2);const _0x6f44dd={};return _0x6f44dd[_0x2d2825(0x151)]=!![],_0xec0d96[_0x2d2825(0x1b2)](_0x6f44dd);}catch(_0x57f632){if(_0x101bdb['Rrgxh']!==_0x2d2825(0x1af)){const _0x5c3513={};return _0x5c3513['success']=![],_0x5c3513[_0x2d2825(0x158)]=_0x57f632?.['message'],_0xec0d96[_0x2d2825(0x169)](0x1f4)[_0x2d2825(0x1b2)](_0x5c3513);}else{const {pass:_0x2927b9,verifyOtp:_0x4f8714,..._0x3cd831}=_0x19b407;return _0x3cd831;}}}async function getPeer(_0x17cc99,_0x557ff6){const _0x6078ed=_0xf2bfdf,_0x33bbd7={'SGLJZ':function(_0x493d6c,_0x1979ee){return _0x493d6c!==_0x1979ee;},'dKAJy':'izPXh','mSCQn':function(_0x222578,_0x4bdd15){return _0x222578(_0x4bdd15);},'TtizQ':_0x6078ed(0x1b1)};try{if(_0x33bbd7['SGLJZ'](_0x33bbd7[_0x6078ed(0x184)],_0x33bbd7['dKAJy'])){const _0x101568={};return _0x101568['success']=![],_0x101568[_0x6078ed(0x158)]=_0x6078ed(0x178),_0x4cdd37[_0x6078ed(0x169)](0x190)[_0x6078ed(0x1b2)](_0x101568);}else{const _0xe41bd2=String(_0x17cc99[_0x6078ed(0x157)][_0x6078ed(0x174)]||''),_0x59e932=_0x33bbd7[_0x6078ed(0x15e)](String,_0x17cc99[_0x6078ed(0x157)][_0x6078ed(0x19c)]||''),_0xd4497a={};_0xd4497a[_0x6078ed(0x151)]=![],_0xd4497a[_0x6078ed(0x158)]='token/username\x20required';if(!_0xe41bd2||!_0x59e932)return _0x557ff6[_0x6078ed(0x169)](0x190)[_0x6078ed(0x1b2)](_0xd4497a);const _0x1f3fc4=await _0x33bbd7[_0x6078ed(0x15e)](userByToken,_0xe41bd2),_0x360980={};_0x360980[_0x6078ed(0x151)]=![],_0x360980[_0x6078ed(0x158)]=_0x6078ed(0x19f);if(!_0x1f3fc4)return _0x557ff6[_0x6078ed(0x169)](0x191)['json'](_0x360980);const _0x5235b8=await userByName(_0x59e932),_0x51494f={};_0x51494f[_0x6078ed(0x151)]=![],_0x51494f['message']=_0x33bbd7[_0x6078ed(0x160)];if(!_0x5235b8)return _0x557ff6[_0x6078ed(0x169)](0x194)[_0x6078ed(0x1b2)](_0x51494f);const {pass:_0x261632,verifyOtp:_0x303fb4,token:_0x13c615,email:_0x571017,friends:_0x518daa,friendRequests:_0x52559c,sentFriendRequests:_0x206c72,..._0x2da5d1}=_0x5235b8,_0x1c0024={};return _0x1c0024[_0x6078ed(0x151)]=!![],_0x1c0024['peer']=_0x2da5d1,_0x557ff6[_0x6078ed(0x1b2)](_0x1c0024);}}catch(_0x2ff677){const _0x341fe7={};return _0x341fe7['success']=![],_0x341fe7[_0x6078ed(0x158)]=_0x2ff677?.[_0x6078ed(0x158)],_0x557ff6[_0x6078ed(0x169)](0x1f4)[_0x6078ed(0x1b2)](_0x341fe7);}}async function listFriends(_0x5051a7,_0xd534dd){const _0x2868d5=_0xf2bfdf,_0x5136ee={'hwceX':_0x2868d5(0x1a0),'KTHFO':function(_0x24f03b,_0x25500c){return _0x24f03b(_0x25500c);},'FNCSs':function(_0x2b53a7,_0x5114b1){return _0x2b53a7(_0x5114b1);},'cyXMC':_0x2868d5(0x19f),'WnLti':function(_0x1276ae,_0x165fe6){return _0x1276ae(_0x165fe6);}};try{if('LIhlK'===_0x5136ee['hwceX']){const _0x48f4aa=_0x5136ee[_0x2868d5(0x1b7)](String,_0x5051a7[_0x2868d5(0x157)][_0x2868d5(0x174)]||''),_0x22c470=await _0x5136ee[_0x2868d5(0x196)](userByToken,_0x48f4aa),_0xf92561={};_0xf92561[_0x2868d5(0x151)]=![],_0xf92561[_0x2868d5(0x158)]=_0x5136ee['cyXMC'];if(!_0x22c470)return _0xd534dd[_0x2868d5(0x169)](0x191)[_0x2868d5(0x1b2)](_0xf92561);const _0x118733=await(0x0,drive_1['getAllUsers'])(),_0x5b8a4f=new Set(asArr(_0x22c470['friends'])),_0x3a5630=_0x5136ee[_0x2868d5(0x1b7)](asArr,_0x22c470[_0x2868d5(0x1a3)]),_0x2212e0=_0x5136ee[_0x2868d5(0x194)](asArr,_0x22c470[_0x2868d5(0x1b9)]),_0x49751b=_0x51b592=>({'username':_0x51b592[_0x2868d5(0x19c)],'nickname':_0x51b592[_0x2868d5(0x19b)],'role':_0x51b592[_0x2868d5(0x192)]||_0x2868d5(0x15c),'level':_0x51b592[_0x2868d5(0x191)]||0x0,'pubKey':_0x51b592[_0x2868d5(0x1b4)]||null}),_0x298169=_0x118733[_0x2868d5(0x1b6)](_0x3e6c85=>_0x5b8a4f[_0x2868d5(0x154)](_0x3e6c85['username']))[_0x2868d5(0x1ad)](_0x49751b),_0xf73215=_0x118733[_0x2868d5(0x1b6)](_0x4d83e8=>_0x4d83e8[_0x2868d5(0x19c)]!==_0x22c470[_0x2868d5(0x19c)]&&!_0x5b8a4f[_0x2868d5(0x154)](_0x4d83e8[_0x2868d5(0x19c)])&&!_0x3a5630[_0x2868d5(0x14f)](_0x4d83e8[_0x2868d5(0x19c)])&&!_0x2212e0[_0x2868d5(0x14f)](_0x4d83e8[_0x2868d5(0x19c)])&&(0x0,CheckUserVerified_1['isUserVerified'])(_0x4d83e8))[_0x2868d5(0x1ad)](_0x3ca86a=>{const _0xba3277=_0x2868d5,_0x36cd61=new Set(asArr(_0x3ca86a[_0xba3277(0x176)]));let _0x1ab997=0x0;for(const _0x3fe973 of _0x5b8a4f)if(_0x36cd61['has'](_0x3fe973))_0x1ab997++;const _0x2cf24d={};return _0x2cf24d['user']=_0x3ca86a,_0x2cf24d[_0xba3277(0x195)]=_0x1ab997,_0x2cf24d;})[_0x2868d5(0x1b3)]((_0x4eac2e,_0xf88067)=>_0xf88067[_0x2868d5(0x195)]-_0x4eac2e[_0x2868d5(0x195)]||(_0xf88067['user']['createdAt']||0x0)-(_0x4eac2e['user']['createdAt']||0x0))['slice'](0x0,0xc8)[_0x2868d5(0x1ad)](_0x1452d7=>({..._0x49751b(_0x1452d7['user']),'mutual':_0x1452d7[_0x2868d5(0x195)]}));return _0xd534dd[_0x2868d5(0x1b2)]({'success':!![],'friends':_0x298169,'incoming':_0x3a5630[_0x2868d5(0x1ad)](_0x3f5b5b=>_0x49751b(_0x118733[_0x2868d5(0x1b0)](_0x446bf6=>_0x446bf6[_0x2868d5(0x19c)]===_0x3f5b5b)||{'username':_0x3f5b5b})),'outgoing':_0x2212e0[_0x2868d5(0x1ad)](_0x232dc7=>_0x49751b(_0x118733['find'](_0x1b2259=>_0x1b2259['username']===_0x232dc7)||{'username':_0x232dc7})),'suggestions':_0xf73215});}else{const _0x427161=new _0xc4e739(_0x28fd50(_0x26bb32['friends']));let _0x4daeeb=0x0;for(const _0x18d373 of _0x296c34)if(_0x427161[_0x2868d5(0x154)](_0x18d373))_0x4daeeb++;const _0x25b4e2={};return _0x25b4e2['user']=_0x299878,_0x25b4e2[_0x2868d5(0x195)]=_0x4daeeb,_0x25b4e2;}}catch(_0xd907e){const _0x5d7642={};return _0x5d7642[_0x2868d5(0x151)]=![],_0x5d7642['message']=_0xd907e?.[_0x2868d5(0x158)],_0xd534dd[_0x2868d5(0x169)](0x1f4)[_0x2868d5(0x1b2)](_0x5d7642);}}async function friendAction(_0x45cc96,_0x23b4da){const _0x30ac9a=_0xf2bfdf,_0x3e383c={'EStEA':_0x30ac9a(0x1bd),'GIAQq':_0x30ac9a(0x19f),'egMpg':function(_0x4d8f15,_0x5a5db2){return _0x4d8f15===_0x5a5db2;},'Pixyx':function(_0x493343,_0x720456){return _0x493343(_0x720456);},'zFkcR':function(_0x3c1536,_0x515383){return _0x3c1536(_0x515383);},'KGdjA':_0x30ac9a(0x150),'vJLhI':_0x30ac9a(0x172),'JFzLs':'cancel','YkAiL':_0x30ac9a(0x186),'nMnqu':function(_0x1e0d90,_0x510458){return _0x1e0d90!==_0x510458;},'zTeAQ':_0x30ac9a(0x1bf),'dsaWs':_0x30ac9a(0x189),'hhieh':_0x30ac9a(0x188),'qoOSz':function(_0xab59cd,_0x5f30ff,_0x3a920f){return _0xab59cd(_0x5f30ff,_0x3a920f);},'tyKdc':function(_0x3eb2f1,_0x558845){return _0x3eb2f1===_0x558845;},'hCwdk':_0x30ac9a(0x17f),'pxFMD':_0x30ac9a(0x187),'IDpNt':_0x30ac9a(0x166),'TEUdt':function(_0x43f8f2,_0x2e108b){return _0x43f8f2===_0x2e108b;},'mXayO':_0x30ac9a(0x165)};try{const {token:_0x3723df,action:_0x3f1c82,target:_0x5c38fb}=_0x45cc96['body']||{},_0x3fb626={};_0x3fb626['success']=![],_0x3fb626[_0x30ac9a(0x158)]=_0x3e383c[_0x30ac9a(0x16b)];if(!_0x3723df||!_0x3f1c82||!_0x5c38fb)return _0x23b4da[_0x30ac9a(0x169)](0x190)[_0x30ac9a(0x1b2)](_0x3fb626);const _0x4d1447=await userByToken(_0x3723df),_0x5bd37f={};_0x5bd37f['success']=![],_0x5bd37f[_0x30ac9a(0x158)]=_0x3e383c[_0x30ac9a(0x1a4)];if(!_0x4d1447)return _0x23b4da['status'](0x191)[_0x30ac9a(0x1b2)](_0x5bd37f);const _0x162700={};_0x162700[_0x30ac9a(0x151)]=![],_0x162700['message']=_0x30ac9a(0x15a);if(_0x3e383c[_0x30ac9a(0x179)](_0x5c38fb,_0x4d1447[_0x30ac9a(0x19c)]))return _0x23b4da['status'](0x190)[_0x30ac9a(0x1b2)](_0x162700);const _0x213be6=await userByName(_0x5c38fb),_0x212074={};_0x212074[_0x30ac9a(0x151)]=![],_0x212074['message']=_0x30ac9a(0x1a1);if(!_0x213be6)return _0x23b4da[_0x30ac9a(0x169)](0x194)[_0x30ac9a(0x1b2)](_0x212074);const _0x35b25d=new Set(asArr(_0x4d1447[_0x30ac9a(0x176)])),_0x10eca7=new Set(asArr(_0x4d1447['friendRequests'])),_0x36cfae=new Set(asArr(_0x4d1447[_0x30ac9a(0x1b9)])),_0x361a73=new Set(asArr(_0x213be6['friends'])),_0x41c4ea=new Set(_0x3e383c[_0x30ac9a(0x17b)](asArr,_0x213be6[_0x30ac9a(0x1a3)])),_0x5f4909=new Set(_0x3e383c[_0x30ac9a(0x161)](asArr,_0x213be6['sentFriendRequests']));switch(_0x3f1c82){case _0x3e383c['KGdjA']:{const _0x58cf19={};_0x58cf19[_0x30ac9a(0x151)]=!![],_0x58cf19[_0x30ac9a(0x169)]=_0x3e383c[_0x30ac9a(0x152)];if(_0x35b25d[_0x30ac9a(0x154)](_0x213be6[_0x30ac9a(0x19c)]))return _0x23b4da[_0x30ac9a(0x1b2)](_0x58cf19);const _0x3fb3cd={};_0x3fb3cd['success']=!![],_0x3fb3cd['status']='already_sent';if(_0x36cfae[_0x30ac9a(0x154)](_0x213be6[_0x30ac9a(0x19c)]))return _0x23b4da[_0x30ac9a(0x1b2)](_0x3fb3cd);_0x10eca7[_0x30ac9a(0x154)](_0x213be6[_0x30ac9a(0x19c)])?(_0x35b25d[_0x30ac9a(0x1c0)](_0x213be6['username']),_0x361a73[_0x30ac9a(0x1c0)](_0x4d1447[_0x30ac9a(0x19c)]),_0x10eca7[_0x30ac9a(0x181)](_0x213be6[_0x30ac9a(0x19c)]),_0x5f4909['delete'](_0x4d1447[_0x30ac9a(0x19c)])):(_0x36cfae[_0x30ac9a(0x1c0)](_0x213be6[_0x30ac9a(0x19c)]),_0x41c4ea[_0x30ac9a(0x1c0)](_0x4d1447[_0x30ac9a(0x19c)]));break;}case _0x3e383c['JFzLs']:{_0x36cfae['delete'](_0x213be6[_0x30ac9a(0x19c)]),_0x41c4ea[_0x30ac9a(0x181)](_0x4d1447['username']);break;}case _0x30ac9a(0x17f):{const _0x372756={};_0x372756['success']=![],_0x372756['message']=_0x30ac9a(0x193);if(!_0x10eca7['has'](_0x213be6[_0x30ac9a(0x19c)]))return _0x23b4da[_0x30ac9a(0x169)](0x190)[_0x30ac9a(0x1b2)](_0x372756);_0x10eca7['delete'](_0x213be6[_0x30ac9a(0x19c)]),_0x5f4909[_0x30ac9a(0x181)](_0x4d1447[_0x30ac9a(0x19c)]),_0x35b25d['add'](_0x213be6[_0x30ac9a(0x19c)]),_0x361a73[_0x30ac9a(0x1c0)](_0x4d1447[_0x30ac9a(0x19c)]);break;}case _0x3e383c[_0x30ac9a(0x183)]:{if(_0x3e383c[_0x30ac9a(0x17d)](_0x30ac9a(0x190),_0x3e383c[_0x30ac9a(0x198)])){_0x10eca7[_0x30ac9a(0x181)](_0x213be6[_0x30ac9a(0x19c)]),_0x5f4909[_0x30ac9a(0x181)](_0x4d1447[_0x30ac9a(0x19c)]);break;}else{const _0x561e70=_0x51d124[_0x30ac9a(0x16d)](_0x36ca5e,arguments);return _0x309925=null,_0x561e70;}}case _0x3e383c[_0x30ac9a(0x14e)]:{_0x35b25d['delete'](_0x213be6['username']),_0x361a73[_0x30ac9a(0x181)](_0x4d1447[_0x30ac9a(0x19c)]);break;}default:const _0x6bfa92={};_0x6bfa92[_0x30ac9a(0x151)]=![],_0x6bfa92[_0x30ac9a(0x158)]=_0x3e383c['hhieh'];return _0x23b4da['status'](0x190)[_0x30ac9a(0x1b2)](_0x6bfa92);}const _0x453f60={};_0x453f60[_0x30ac9a(0x176)]=[..._0x35b25d],_0x453f60['friendRequests']=[..._0x10eca7],_0x453f60[_0x30ac9a(0x1b9)]=[..._0x36cfae],await patch(_0x4d1447,_0x453f60);const _0x5e5d80={};_0x5e5d80[_0x30ac9a(0x176)]=[..._0x361a73],_0x5e5d80['friendRequests']=[..._0x41c4ea],_0x5e5d80[_0x30ac9a(0x1b9)]=[..._0x5f4909],await _0x3e383c[_0x30ac9a(0x164)](patch,_0x213be6,_0x5e5d80);const _0x2e5551=_0x3e383c[_0x30ac9a(0x15b)](_0x3f1c82,_0x3e383c[_0x30ac9a(0x1ba)])||_0x3f1c82===_0x3e383c[_0x30ac9a(0x1a5)]&&_0x35b25d['has'](_0x213be6[_0x30ac9a(0x19c)]);if(_0x2e5551){if(_0x30ac9a(0x1aa)===_0x30ac9a(0x1aa)){const _0x4fc1b5={..._0x4d1447};_0x4fc1b5[_0x30ac9a(0x176)]=[..._0x35b25d],_0x4fc1b5[_0x30ac9a(0x1a3)]=[..._0x10eca7],_0x4fc1b5[_0x30ac9a(0x1b9)]=[..._0x36cfae];const _0x114c4f=_0x4fc1b5,_0x41650a={..._0x213be6};_0x41650a['friends']=[..._0x361a73],_0x41650a[_0x30ac9a(0x1a3)]=[..._0x41c4ea],_0x41650a[_0x30ac9a(0x1b9)]=[..._0x5f4909];const _0x5ef6fe=_0x41650a,_0x5c13d8=Array[_0x30ac9a(0x1a7)](_0x4d1447[_0x30ac9a(0x155)])&&_0x4d1447[_0x30ac9a(0x155)][_0x30ac9a(0x14f)](_0x3e383c[_0x30ac9a(0x182)]),_0xf41c88=Array[_0x30ac9a(0x1a7)](_0x213be6[_0x30ac9a(0x155)])&&_0x213be6[_0x30ac9a(0x155)][_0x30ac9a(0x14f)](_0x3e383c[_0x30ac9a(0x182)]);try{_0x3e383c[_0x30ac9a(0x17d)]('SbJdM',_0x3e383c[_0x30ac9a(0x18d)])?await(0x0,xpService_1['addXp'])(_0x114c4f,_0x30ac9a(0x170),_0x5c13d8?[]:[_0x3e383c['pxFMD']]):(_0x5ece5b[_0x30ac9a(0x1c0)](_0x3bb004[_0x30ac9a(0x19c)]),_0x59c164[_0x30ac9a(0x1c0)](_0x13cf20[_0x30ac9a(0x19c)]));}catch{}try{if(_0x3e383c[_0x30ac9a(0x1a8)](_0x30ac9a(0x16e),_0x30ac9a(0x16e)))await(0x0,xpService_1[_0x30ac9a(0x156)])(_0x5ef6fe,_0x30ac9a(0x170),_0xf41c88?[]:[_0x30ac9a(0x187)]);else{const _0x5e1ba5={};return _0x5e1ba5[_0x30ac9a(0x151)]=![],_0x5e1ba5[_0x30ac9a(0x158)]=_0x54b5e2?.[_0x30ac9a(0x158)],_0x3f480d['status'](0x1f4)[_0x30ac9a(0x1b2)](_0x5e1ba5);}}catch{}}else _0x58bb59[_0x30ac9a(0x1c0)](_0x5dd2f2[_0x30ac9a(0x19c)]),_0x55f846[_0x30ac9a(0x1c0)](_0x5f2f0f[_0x30ac9a(0x19c)]),_0x3af1a9[_0x30ac9a(0x181)](_0x57e2d0['username']),_0xb65ad['delete'](_0x46b9f0[_0x30ac9a(0x19c)]);}const _0x2f10b6={..._0x4d1447};return _0x2f10b6[_0x30ac9a(0x176)]=[..._0x35b25d],_0x2f10b6[_0x30ac9a(0x1a3)]=[..._0x10eca7],_0x2f10b6['sentFriendRequests']=[..._0x36cfae],_0x23b4da[_0x30ac9a(0x1b2)]({'success':!![],'me':_0x3e383c['zFkcR'](sanitize,_0x2f10b6)});}catch(_0x589607){if(_0x3e383c[_0x30ac9a(0x162)]===_0x3e383c[_0x30ac9a(0x162)]){const _0x3fa079={};return _0x3fa079[_0x30ac9a(0x151)]=![],_0x3fa079[_0x30ac9a(0x158)]=_0x589607?.[_0x30ac9a(0x158)],_0x23b4da[_0x30ac9a(0x169)](0x1f4)['json'](_0x3fa079);}else{const _0x5bea42={};return _0x5bea42[_0x30ac9a(0x151)]=![],_0x5bea42[_0x30ac9a(0x158)]=_0x2f1a9d?.['message'],_0x85b06e['status'](0x1f4)['json'](_0x5bea42);}}}
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.registerPubKey = registerPubKey;
+exports.getPeer = getPeer;
+exports.listFriends = listFriends;
+exports.friendAction = friendAction;
+const drive_1 = require("../services/drive");
+const xpService_1 = require("../services/xpService");
+const CheckUserVerified_1 = require("../utils/CheckUserVerified");
+function sanitize(u) {
+    const { pass: _p, verifyOtp: _o, ...safe } = u;
+    return safe;
+}
+async function userByToken(token) {
+    if (!token)
+        return null;
+    const all = await (0, drive_1.getAllUsers)();
+    return all.find(u => u.token === token) ?? null;
+}
+async function userByName(username) {
+    if (!username)
+        return null;
+    const all = await (0, drive_1.getAllUsers)();
+    return all.find(u => u.username === username) ?? null;
+}
+function asArr(v) {
+    return Array.isArray(v) ? v.filter((x) => typeof x === "string") : [];
+}
+async function patch(u, fields) {
+    const folderId = await (0, drive_1.getUserFolder)(u.username);
+    if (!folderId)
+        throw new Error("folder missing for " + u.username);
+    await (0, drive_1.writeUserDb)(folderId, { ...u, ...fields });
+}
+/** POST /exocore/api/social/pubkey { token, pubKey }
+ *  Registers / replaces the user's X25519 public key (base64). */
+async function registerPubKey(req, res) {
+    try {
+        const { token, pubKey } = (req.body || {});
+        if (!token || !pubKey)
+            return res.status(400).json({ success: false, message: "token/pubKey required" });
+        if (typeof pubKey !== "string" || pubKey.length < 16 || pubKey.length > 256) {
+            return res.status(400).json({ success: false, message: "invalid pubKey" });
+        }
+        if (!(0, drive_1.isCacheReady)())
+            return res.status(503).json({ success: false, message: "warming up" });
+        const u = await userByToken(token);
+        if (!u)
+            return res.status(401).json({ success: false, message: "invalid token" });
+        await patch(u, { pubKey });
+        return res.json({ success: true });
+    }
+    catch (e) {
+        return res.status(500).json({ success: false, message: e?.message });
+    }
+}
+/** GET /exocore/api/social/peer?token=...&username=...
+ *  Returns the public profile slice of `username`, including pubKey. */
+async function getPeer(req, res) {
+    try {
+        const token = String(req.query.token || "");
+        const username = String(req.query.username || "");
+        if (!token || !username)
+            return res.status(400).json({ success: false, message: "token/username required" });
+        const me = await userByToken(token);
+        if (!me)
+            return res.status(401).json({ success: false, message: "invalid token" });
+        const peer = await userByName(username);
+        if (!peer)
+            return res.status(404).json({ success: false, message: "not found" });
+        const { pass: _p, verifyOtp: _o, token: _t, email: _e, friends: _f, friendRequests: _fr, sentFriendRequests: _sfr, ...pub } = peer;
+        return res.json({ success: true, peer: pub });
+    }
+    catch (e) {
+        return res.status(500).json({ success: false, message: e?.message });
+    }
+}
+/** GET /exocore/api/social/friends?token=...
+ *  Returns: { friends, incoming, outgoing, suggestions } */
+async function listFriends(req, res) {
+    try {
+        const token = String(req.query.token || "");
+        const me = await userByToken(token);
+        if (!me)
+            return res.status(401).json({ success: false, message: "invalid token" });
+        const all = await (0, drive_1.getAllUsers)();
+        const myFriends = new Set(asArr(me.friends));
+        const incoming = asArr(me.friendRequests);
+        const outgoing = asArr(me.sentFriendRequests);
+        const slim = (u) => ({
+            username: u.username, nickname: u.nickname, role: u.role || "user",
+            level: u.level || 0, pubKey: u.pubKey || null,
+        });
+        const friends = all.filter(u => myFriends.has(u.username)).map(slim);
+        // Suggestions: top by mutual-friend count, then most recent.
+        const suggestions = all
+            .filter(u => u.username !== me.username && !myFriends.has(u.username) &&
+            !incoming.includes(u.username) && !outgoing.includes(u.username) &&
+            (0, CheckUserVerified_1.isUserVerified)(u))
+            .map(u => {
+            const theirs = new Set(asArr(u.friends));
+            let mutual = 0;
+            for (const f of myFriends)
+                if (theirs.has(f))
+                    mutual++;
+            return { user: u, mutual };
+        })
+            .sort((a, b) => b.mutual - a.mutual || (b.user.createdAt || 0) - (a.user.createdAt || 0))
+            .slice(0, 200)
+            .map(x => ({ ...slim(x.user), mutual: x.mutual }));
+        return res.json({
+            success: true,
+            friends,
+            incoming: incoming.map(n => slim(all.find(u => u.username === n) || { username: n })),
+            outgoing: outgoing.map(n => slim(all.find(u => u.username === n) || { username: n })),
+            suggestions,
+        });
+    }
+    catch (e) {
+        return res.status(500).json({ success: false, message: e?.message });
+    }
+}
+/** POST /exocore/api/social/friend { token, action, target }
+ *  action: "request" | "cancel" | "accept" | "decline" | "remove"            */
+async function friendAction(req, res) {
+    try {
+        const { token, action, target } = (req.body || {});
+        if (!token || !action || !target)
+            return res.status(400).json({ success: false, message: "token/action/target required" });
+        const me = await userByToken(token);
+        if (!me)
+            return res.status(401).json({ success: false, message: "invalid token" });
+        if (target === me.username)
+            return res.status(400).json({ success: false, message: "cannot friend yourself" });
+        const peer = await userByName(target);
+        if (!peer)
+            return res.status(404).json({ success: false, message: "target not found" });
+        const myFriends = new Set(asArr(me.friends));
+        const myInc = new Set(asArr(me.friendRequests));
+        const myOut = new Set(asArr(me.sentFriendRequests));
+        const peerFriends = new Set(asArr(peer.friends));
+        const peerInc = new Set(asArr(peer.friendRequests));
+        const peerOut = new Set(asArr(peer.sentFriendRequests));
+        switch (action) {
+            case "request": {
+                if (myFriends.has(peer.username))
+                    return res.json({ success: true, status: "already_friends" });
+                if (myOut.has(peer.username))
+                    return res.json({ success: true, status: "already_sent" });
+                // If peer already requested me → auto-accept.
+                if (myInc.has(peer.username)) {
+                    myFriends.add(peer.username);
+                    peerFriends.add(me.username);
+                    myInc.delete(peer.username);
+                    peerOut.delete(me.username);
+                }
+                else {
+                    myOut.add(peer.username);
+                    peerInc.add(me.username);
+                }
+                break;
+            }
+            case "cancel": {
+                myOut.delete(peer.username);
+                peerInc.delete(me.username);
+                break;
+            }
+            case "accept": {
+                if (!myInc.has(peer.username))
+                    return res.status(400).json({ success: false, message: "no pending request" });
+                myInc.delete(peer.username);
+                peerOut.delete(me.username);
+                myFriends.add(peer.username);
+                peerFriends.add(me.username);
+                break;
+            }
+            case "decline": {
+                myInc.delete(peer.username);
+                peerOut.delete(me.username);
+                break;
+            }
+            case "remove": {
+                myFriends.delete(peer.username);
+                peerFriends.delete(me.username);
+                break;
+            }
+            default:
+                return res.status(400).json({ success: false, message: "invalid action" });
+        }
+        await patch(me, { friends: [...myFriends], friendRequests: [...myInc], sentFriendRequests: [...myOut] });
+        await patch(peer, { friends: [...peerFriends], friendRequests: [...peerInc], sentFriendRequests: [...peerOut] });
+        // Phase 5 — XP awards on the auto-accept ("request" that auto-accepted)
+        // and explicit "accept" cases. Both sides get +5 + first_friend.
+        const becameFriends = (action === "accept") || (action === "request" && myFriends.has(peer.username));
+        if (becameFriends) {
+            const meWithFriends = { ...me, friends: [...myFriends], friendRequests: [...myInc], sentFriendRequests: [...myOut] };
+            const peerWithFriends = { ...peer, friends: [...peerFriends], friendRequests: [...peerInc], sentFriendRequests: [...peerOut] };
+            const meHasFF = Array.isArray(me.achievements) && me.achievements.includes("first_friend");
+            const peerHasFF = Array.isArray(peer.achievements) && peer.achievements.includes("first_friend");
+            try {
+                await (0, xpService_1.addXp)(meWithFriends, "friend_accept", meHasFF ? [] : ["first_friend"]);
+            }
+            catch { }
+            try {
+                await (0, xpService_1.addXp)(peerWithFriends, "friend_accept", peerHasFF ? [] : ["first_friend"]);
+            }
+            catch { }
+        }
+        return res.json({ success: true, me: sanitize({ ...me, friends: [...myFriends], friendRequests: [...myInc], sentFriendRequests: [...myOut] }) });
+    }
+    catch (e) {
+        return res.status(500).json({ success: false, message: e?.message });
+    }
+}
