@@ -25,12 +25,12 @@ export function Home({ onSidebarOpen }: Props) {
     return (
         <div className="home">
             <section className="hero">
-                <span className="hero-eyebrow">Exocore · 2026 docs</span>
-                <h1 className="hero-title">Browser-based IDE, social platform, and developer panel — all under one roof.</h1>
+                <span className="hero-eyebrow">Exocore · Docs 2026</span>
+                <h1 className="hero-title">The cloud workspace for builders.</h1>
                 <p className="hero-sub">
-                    Search every page, jump straight to the editor walkthrough, browse panel-gate
-                    setup, or dive into the social / leaderboard / GitHub guides. Press
-                    <kbd>/</kbd> anywhere to focus search.
+                    A browser-based IDE, a developer-first social layer, and an admin panel that
+                    sees everything — documented in one place. Search every page, jump straight to a
+                    walkthrough, or press <kbd>/</kbd> anywhere to focus search.
                 </p>
                 <SearchBox autoFocus placeholder="Search docs · routes · modules · features…" />
                 {root && (
@@ -39,6 +39,27 @@ export function Home({ onSidebarOpen }: Props) {
                         On mobile? <button type="button" className="hero-link" onClick={onSidebarOpen}>open the sidebar</button>.
                     </p>
                 )}
+            </section>
+
+            {/* Stat strip — sits half-overlapping the hero so the page has a
+                tactile, layered feel instead of a flat stack of sections. */}
+            <section className="hero-stats" aria-label="At a glance">
+                <div className="hero-stat">
+                    <div className="hero-stat-num">{DOCS.length}</div>
+                    <div className="hero-stat-label">Doc pages</div>
+                </div>
+                <div className="hero-stat">
+                    <div className="hero-stat-num">{sections.length}</div>
+                    <div className="hero-stat-label">Sections</div>
+                </div>
+                <div className="hero-stat">
+                    <div className="hero-stat-num">∞</div>
+                    <div className="hero-stat-label">Projects</div>
+                </div>
+                <div className="hero-stat">
+                    <div className="hero-stat-num">2026</div>
+                    <div className="hero-stat-label">Edition</div>
+                </div>
             </section>
 
             <section className="section">

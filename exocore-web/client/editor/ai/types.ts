@@ -1,5 +1,5 @@
 export type AgentAction = {
-    type: 'file_create' | 'file_delete' | 'terminal';
+    type: 'file_create' | 'file_edit' | 'file_delete' | 'terminal';
     target: string;
     status: 'pending' | 'executing' | 'done' | 'failed' | 'awaiting_confirm' | 'skipped';
     output?: string;
@@ -7,6 +7,11 @@ export type AgentAction = {
     content?: string; // payload for file_create, kept so we can retry/inspect
     existingContent?: string; // for file_create overwrites — what's currently on disk
     autoFixed?: boolean; // terminal: true once we've already triggered an auto-fix from this failure
+    // file_edit (diff) payload — apply a small old → new replacement to the
+    // existing file. Avoids re-sending the whole file when only a few lines
+    // change. The patch must match `oldText` verbatim or the edit fails.
+    oldText?: string;
+    newText?: string;
 };
 
 export type Message = {

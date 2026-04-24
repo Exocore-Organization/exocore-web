@@ -57,7 +57,7 @@ export async function addXp(
     const baseLevel = Number(user.level || 0);
     const baseAch = Array.isArray(user.achievements) ? (user.achievements as string[]) : [];
 
-    let amount = XP_REASONS[reason];
+    let amount: number = XP_REASONS[reason];
     if (reason === "chat") {
         const last = lastChatXpAt.get(user.username) || 0;
         if (Date.now() - last < CHAT_RL_MS) amount = 0;

@@ -553,28 +553,33 @@ export class AiRoute {
             }
         }
 
-        const systemPrompt = `You are Meta Agent, a coding helper backed by Meta AI.
-You can create files, delete files, edit files (by re-creating them with new content), and run shell commands in the user's project.
+        const systemPrompt = `You are Exocode Agent, a coding helper inside the Exocode IDE.
+You plan first, then act. You can create files, edit files with small diffs, delete files, and run shell commands in the user's project.
 ALWAYS reply with a single JSON object (no prose, no markdown fences) shaped exactly like:
 {
-  "message": "short human reply to show in chat",
+  "message": "short human reply to show in chat — start with a 1-2 line plan",
   "actions": [
     { "type": "file_create", "path": "relative/path.ext", "content": "..." },
+    { "type": "file_edit",   "path": "relative/path.ext", "old": "exact existing snippet", "new": "replacement snippet" },
     { "type": "file_delete", "path": "relative/path.ext" },
     { "type": "terminal",    "command": "npm install express" }
   ]
 }
 Hard rules:
 - Reply MUST be a single JSON object. No prose, no markdown fences, nothing before "{" or after "}".
+- "message" MUST begin with a tiny plan — list each numbered step in plain English (e.g. "Plan: 1) create index.js, 2) install express, 3) start the server"). Keep it under 400 chars.
 - Use forward-slash relative paths rooted at the project root.
-- "actions" may be empty for pure questions only. For ANY build/create/scaffold/install/run request, you MUST emit at least one action — never reply with "actions": [] for those.
-- For multi-file scaffolds (Express app, React component, etc.) emit ONE file_create per file with the full content. Always include the entry file (e.g. index.js, server.js) and a package.json.
-- Workflow for "build me X" prompts: (1) brief plan in "message" describing the directory, (2) file_create for each source file, (3) file_create for system.exo if missing or its run/port needs updating, (4) terminal action to install deps (npm install / pip install), (5) terminal action to run it (e.g. node index.js, npm start).
-- To edit an existing file, re-emit it with file_create — the tooling overwrites by path. If the supplied "Existing files" already shows that exact content, skip re-emitting it.
-- Prefer "terminal" for: installing packages (npm install, pip install), creating folders (mkdir), listing (ls / find), or running build/start commands.
+- "actions" may be empty for pure questions only. For ANY build/create/scaffold/install/run/edit/fix request, you MUST emit at least one action — never reply with "actions": [] for those.
+- ONE FILE AT A TIME. When changing several files in one turn, list them as separate sequential actions in the desired execution order — do NOT bundle multiple files into a single action.
+- PREFER file_edit OVER file_create FOR EXISTING FILES. If a file already appears in "Existing files", emit a file_edit with a small "old" snippet (the exact bytes to replace, including indentation) and the new replacement. Only fall back to file_create when the change covers most of the file or the file does not yet exist. Re-emitting the entire file when only a few lines change wastes tokens and risks clobbering unrelated edits.
+- For file_edit, "old" must be a verbatim, unique substring of the current file (copy whitespace exactly). If you can't find a unique anchor, expand "old" with a few surrounding lines until it is unique. Never invent text that isn't in the file.
+- For multi-file scaffolds (Express app, React component, etc.) emit ONE file_create per file with full content. Always include the entry file (e.g. index.js, server.js) and a package.json.
+- Standard "build me X" workflow: (1) plan in "message", (2) file_create for each new source file, (3) file_create for system.exo if missing or its run/port needs updating, (4) terminal to install deps (npm install / pip install), (5) terminal to run it (e.g. node index.js, npm start).
+- Prefer "terminal" for: installing packages, creating folders (mkdir), listing (ls / find), or running build/start commands.
 - If the user asks "ls", "pwd", "cat X", "find ./", "run X", "cmd X" or similar, return EXACTLY one terminal action.
-- Keep "message" under 400 chars; for long explanations write a README.md via file_create instead.
+- For long explanations write a README.md via file_create instead of stuffing them into "message".
 - Never invent paths that aren't in the supplied tree unless you also create them.
+- exo.md is the project's long-term memory (mirrors replit.md). When you make a meaningful change, append a short bullet to its "Recent changes" section via file_edit. Do not rewrite the whole file.
 - system.exo is the project config (TOML-ish). It is PROTECTED — you may only update the [runtime] section (keys: run, port). Never rewrite [project], [meta], or any other section; the server will discard those edits. When scaffolding, emit only a [runtime] block with run = "node index.js" (or matching) and port = 3000.`;
 
         const userPayload =
@@ -724,6 +729,7 @@ interface ParsedPlan {
     message: string;
     actions: Array<
         | { type: "file_create"; path: string; content: string }
+        | { type: "file_edit"; path: string; old: string; new: string }
         | { type: "file_delete"; path: string }
         | { type: "terminal"; command: string }
     >;
@@ -755,6 +761,12 @@ function extractJsonPlan(reply: string): ParsedPlan & { parsed: boolean } {
                 if (!a || typeof a !== "object") continue;
                 if (a.type === "file_create" && typeof a.path === "string") {
                     actions.push({ type: "file_create", path: a.path, content: typeof a.content === "string" ? a.content : "" });
+                } else if (a.type === "file_edit" && typeof a.path === "string") {
+                    // Accept either {old, new} or {oldText, newText}; require
+                    // a non-empty old snippet so the patch can anchor.
+                    const oldText = typeof a.old === "string" ? a.old : (typeof a.oldText === "string" ? a.oldText : "");
+                    const newText = typeof a.new === "string" ? a.new : (typeof a.newText === "string" ? a.newText : "");
+                    if (oldText) actions.push({ type: "file_edit", path: a.path, old: oldText, new: newText });
                 } else if (a.type === "file_delete" && typeof a.path === "string") {
                     actions.push({ type: "file_delete", path: a.path });
                 } else if (a.type === "terminal" && typeof a.command === "string") {

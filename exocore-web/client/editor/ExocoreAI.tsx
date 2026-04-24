@@ -329,6 +329,9 @@ export const ExocoreAI: React.FC<ExocoreAIProps> = ({ projectId, theme }) => {
                             if (action.type === 'file_create' && action.status === 'pending' && typeof action.content === 'string') {
                                 queueFileCreate(action.target, action.content, msg.id, idx);
                             }
+                            if (action.type === 'file_edit' && action.status === 'pending') {
+                                autoExecuteFileEdit(action.target, action.oldText || '', action.newText || '', msg.id, idx);
+                            }
                             if (action.type === 'file_delete' && action.status === 'pending') {
                                 autoExecuteFileDelete(action.target, msg.id, idx);
                             }
@@ -336,6 +339,88 @@ export const ExocoreAI: React.FC<ExocoreAIProps> = ({ projectId, theme }) => {
                     }
                 });
             }, [messages]);
+
+            // Apply a small diff (oldText → newText) to an existing file. We
+            // read the current contents, do an exact-match replace, and write
+            // it back. If the oldText doesn't match (model drift) we mark the
+            // action as failed so the AI can retry with a fresh snapshot.
+            const autoExecuteFileEdit = async (
+                filePath: string, oldText: string, newText: string,
+                messageId: string, actionIndex: number,
+            ) => {
+                setMessages(prev => {
+                    const newMsgs = [...prev];
+                    const msg = newMsgs.find(m => m.id === messageId);
+                    if (msg && msg.actions) msg.actions[actionIndex].status = 'executing';
+                    return newMsgs;
+                });
+                try {
+                    const { rpc } = await import('../access/rpcClient');
+                    const cur = await rpc.call<any>('coding.read', { projectId, filePath });
+                    const original: string = typeof cur?.content === 'string' ? cur.content : '';
+                    if (!oldText || !original.includes(oldText)) {
+                        throw new Error('old_text_not_found');
+                    }
+                    const patched = original.replace(oldText, newText);
+                    await rpc.call('coding.save', { projectId, filePath, content: patched, source: 'agent' });
+                    await refreshFileTree();
+                    setMessages(prev => {
+                        const newMsgs = [...prev];
+                        const msg = newMsgs.find(m => m.id === messageId);
+                        if (msg && msg.actions) msg.actions[actionIndex].status = 'done';
+                        return newMsgs;
+                    });
+                } catch {
+                    setMessages(prev => {
+                        const newMsgs = [...prev];
+                        const msg = newMsgs.find(m => m.id === messageId);
+                        if (msg && msg.actions) msg.actions[actionIndex].status = 'failed';
+                        return newMsgs;
+                    });
+                }
+            };
+
+            // Ensure the project has an exo.md memory file (mirrors replit.md).
+            // Created lazily the first time the agent runs anything in a
+            // project, with a friendly starter outlining what the AI should
+            // remember between turns. Never overwrites an existing file.
+            const exoMdInitRef = useRef<Set<string>>(new Set());
+            const ensureExoMd = async () => {
+                if (exoMdInitRef.current.has(projectId)) return;
+                exoMdInitRef.current.add(projectId);
+                try {
+                    const { rpc } = await import('../access/rpcClient');
+                    let exists = false;
+                    try {
+                        const r = await rpc.call<any>('coding.read', { projectId, filePath: 'exo.md' });
+                        exists = typeof r?.content === 'string';
+                    } catch {}
+                    if (exists) return;
+                    const seed =
+`# exo.md
+
+This file is the project's long-term memory for Exocode AI.
+The agent updates it as it works — keep notes here that should
+survive across chats (architecture, decisions, conventions).
+
+## Project overview
+_Add a one-liner here once the project takes shape._
+
+## Recent changes
+- Project initialized.
+
+## Preferences
+- Language: (auto-detected)
+- Run command: (see system.exo)
+
+## Open todos
+- [ ] First task
+`;
+                    await rpc.call('coding.create', { projectId, filePath: 'exo.md', type: 'file', source: 'agent' }).catch(() => {});
+                    await rpc.call('coding.save', { projectId, filePath: 'exo.md', content: seed, source: 'agent' });
+                    await refreshFileTree();
+                } catch {}
+            };
 
             // Auto-apply: file edits are written immediately, no confirmation.
             // The server-side guard for system.exo (only [runtime] mergeable)
@@ -474,22 +559,45 @@ export const ExocoreAI: React.FC<ExocoreAIProps> = ({ projectId, theme }) => {
                     const raw = event.data.toString();
                     outputBuffer += raw;
 
-                    
+                    // Kitty-terminal style cleanup: strip ANSI escapes, OSC
+                    // sequences, bell/ESC bytes, and CR. Then peel away every
+                    // shell prompt residue so only the *result* of the command
+                    // shows up — no "user@host$", no "(env) ➜", no "fish>".
                     let cleanStr = outputBuffer
-                    .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '') 
-                    .replace(/\u001b\][0-9;]*.*?(?:\u0007|\u001b\\)/g, '') 
-                    .replace(/\u0007/g, '') 
-                    .replace(/\u001b/g, '') 
-                    .replace(/\r/g, '');    
+                        .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
+                        .replace(/\u001b\][0-9;]*.*?(?:\u0007|\u001b\\)/g, '')
+                        .replace(/\u0007/g, '')
+                        .replace(/\u001b/g, '')
+                        .replace(/\r/g, '');
 
-                    
+                    // Drop the wrapper invocation we ourselves sent.
+                    cleanStr = cleanStr.replace(/^\s*env\s+TERM=dumb\s+PS1=''\s+sh\s*$/gm, '');
+
+                    // Echo of the command we sent.
                     const escapedCmd = command.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                     cleanStr = cleanStr.replace(new RegExp(`^${escapedCmd}\\s*\\n?`, 'm'), '');
 
-                    
-                    cleanStr = cleanStr.replace(/exit\s*$/g, '');
+                    // Drop "exit" + any trailing logout banners.
+                    cleanStr = cleanStr.replace(/^\s*exit\s*$/gm, '');
+                    cleanStr = cleanStr.replace(/^\s*logout\s*$/gm, '');
 
-                    cleanStr = cleanStr.replace(/^[ \t]+$/gm, '').replace(/\n{3,}/g, '\n\n').trim();
+                    // Strip common shell prompts (bash/zsh/fish/sh). We only
+                    // remove lines that LOOK like a prompt header so legit
+                    // output containing "$" or "%" inside text survives.
+                    cleanStr = cleanStr
+                        .replace(/^[\w.+-]+@[\w.-]+:[^\s$#%>]*[$#%>]\s*/gm, '')   // user@host:/path$
+                        .replace(/^[\w.-]+[$#%>]\s+/gm, '')                       // hostname$
+                        .replace(/^\([^)]+\)\s*[➜→»]\s+\S+\s*/gm, '')             // (venv) ➜ folder
+                        .replace(/^[➜→»]\s+\S+\s*/gm, '')                         // ➜ folder
+                        .replace(/^fish:\s*/gm, '')                                // fish: prefix
+                        .replace(/^sh-\d[\d.]*\$\s*/gm, '')                       // sh-5.1$
+                        .replace(/^\$\s+/gm, '');                                  // bare "$ "
+
+                    // Tidy up whitespace.
+                    cleanStr = cleanStr
+                        .replace(/^[ \t]+$/gm, '')
+                        .replace(/\n{3,}/g, '\n\n')
+                        .trim();
 
                     setMessages(prev => {
                         const newMsgs = [...prev];
@@ -1183,17 +1291,35 @@ Use the project tree (find ./) and existing files supplied in the workspace cont
 
                                 const planned = (agentRes.actions || []).map((a: any) => {
                                     if (a.type === 'file_create') return { type: 'file_create', target: a.path, status: 'pending', content: a.content };
+                                    if (a.type === 'file_edit')   return { type: 'file_edit',   target: a.path, status: 'pending', oldText: a.old || a.oldText || '', newText: a.new || a.newText || '', showOutput: true };
                                     if (a.type === 'file_delete') return { type: 'file_delete', target: a.path, status: 'pending' };
-                                    if (a.type === 'terminal') return { type: 'terminal', target: a.command, status: 'pending', showOutput: false };
+                                    if (a.type === 'terminal')    return { type: 'terminal',    target: a.command, status: 'pending', showOutput: false };
                                     return null;
                                 }).filter(Boolean);
+
+                                // Build a friendly per-step plan list so the
+                                // user sees "1. Create index.js, 2. Install
+                                // express, 3. Run node index.js" before the
+                                // executor starts firing actions.
+                                const planSteps = planned.map((a: any, i: number) => {
+                                    const verb = a.type === 'file_create' ? 'Create' : a.type === 'file_edit' ? 'Edit' : a.type === 'file_delete' ? 'Delete' : 'Run';
+                                    return `${i + 1}. ${verb} ${a.type === 'terminal' ? '`' + a.target + '`' : a.target}`;
+                                });
+
+                                // Lazily seed exo.md the first time the agent
+                                // does any work in a project (mirrors replit.md).
+                                ensureExoMd();
 
                                 setMessages(prev => {
                                     const msgs = [...prev];
                                     const last = msgs[msgs.length - 1];
                                     last.text = agentRes.message || 'Plan ready.';
                                     last.actions = planned;
-                                    last.steps = [...(last.steps || []), `Plan: ${planned.length} action(s)`];
+                                    last.steps = [
+                                        ...(last.steps || []),
+                                        `Plan ready — ${planned.length} step${planned.length === 1 ? '' : 's'}`,
+                                        ...planSteps,
+                                    ];
                                     last.isGenerating = false;
                                     return msgs;
                                 });
@@ -1830,6 +1956,16 @@ Use the project tree (find ./) and existing files supplied in the workspace cont
                         .agent-action-body { padding: 10px 12px; background: #0D1117; border-top: 1px solid #21262D; max-height: 280px; overflow-y: auto; }
                         .agent-action-body .logs-divider { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #6E7681; margin-bottom: 6px; letter-spacing: 0.5px; }
                         .agent-action-body pre { margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #C9D1D9; white-space: pre-wrap; word-break: break-word; line-height: 1.5; }
+
+                        /* DIFF VIEW (file_edit) — only show changed lines, no full file */
+                        .diff-view { font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.55; }
+                        .diff-line { display: flex; gap: 6px; padding: 0 4px; border-radius: 2px; }
+                        .diff-line.del { background: rgba(255, 85, 85, 0.10); color: #ffb3b3; }
+                        .diff-line.add { background: rgba(0, 230, 118, 0.10); color: #b8f5d0; }
+                        .diff-marker { color: #6E7681; flex-shrink: 0; width: 10px; text-align: center; user-select: none; }
+                        .diff-line.del .diff-marker { color: #ff6b6b; }
+                        .diff-line.add .diff-marker { color: #00e676; }
+                        .diff-text { white-space: pre-wrap; word-break: break-word; flex: 1; }
 
                         .agent-confirm-box { padding: 10px 12px; background: rgba(255, 184, 108, 0.06); border-top: 1px solid rgba(255, 184, 108, 0.25); display: flex; flex-direction: column; gap: 8px; }
                         .agent-confirm-box .confirm-msg { font-size: 12px; color: #E6EDF3; }

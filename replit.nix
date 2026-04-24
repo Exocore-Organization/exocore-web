@@ -1,5 +1,6 @@
 {pkgs}: {
   deps = [
+    pkgs.typescript
     pkgs.fish
     pkgs.chromium
     pkgs.libdrm

@@ -16,6 +16,7 @@ interface ChatMessageProps {
 function actionIcon(a: AgentAction) {
     if (a.type === 'terminal') return <Terminal size={14} color="#bd93f9" />;
     if (a.type === 'file_delete') return <FileMinus size={14} color="#ff6b6b" />;
+    if (a.type === 'file_edit') return <Wrench size={14} color="#fbbf24" />;
     return <FilePlus size={14} color="#58a6ff" />;
 }
 
@@ -59,7 +60,32 @@ function commandTitle(cmd: string): string {
 function actionTitle(a: AgentAction): string {
     if (a.type === 'terminal') return commandTitle(a.target);
     if (a.type === 'file_delete') return `Deleting ${a.target}`;
+    if (a.type === 'file_edit') return `Editing ${a.target}`;
     return `Writing ${a.target}`;
+}
+
+/* Render a tiny unified-diff view for a `file_edit` action. We split the
+ * old/new texts on lines and prefix removals with `-`, additions with `+`,
+ * so the user sees only the changed slice instead of a wall of code. */
+function DiffView({ oldText, newText }: { oldText: string; newText: string }) {
+    const oldLines = (oldText || '').split('\n');
+    const newLines = (newText || '').split('\n');
+    return (
+        <div className="diff-view">
+            {oldLines.map((l, i) => (
+                <div key={`o-${i}`} className="diff-line del">
+                    <span className="diff-marker">-</span>
+                    <span className="diff-text">{l || ' '}</span>
+                </div>
+            ))}
+            {newLines.map((l, i) => (
+                <div key={`n-${i}`} className="diff-line add">
+                    <span className="diff-marker">+</span>
+                    <span className="diff-text">{l || ' '}</span>
+                </div>
+            ))}
+        </div>
+    );
 }
 
 function actionStatusIcon(a: AgentAction) {
@@ -116,8 +142,8 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ msg, onToggleActionOut
                             <div key={idx} className={`agent-action-card ${action.status}`}>
                                 <div
                                     className="agent-action-head"
-                                    onClick={() => expandable && onToggleActionOutput(msg.id, idx)}
-                                    style={{ cursor: expandable ? 'pointer' : 'default' }}
+                                    onClick={() => (expandable || action.type === 'file_edit') && onToggleActionOutput(msg.id, idx)}
+                                    style={{ cursor: (expandable || action.type === 'file_edit') ? 'pointer' : 'default' }}
                                 >
                                     <div className="head-left">
                                         <span className="head-icon">{actionIcon(action)}</span>
@@ -146,6 +172,12 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ msg, onToggleActionOut
                                     <div className="agent-action-cmdline">
                                         <span className="cmd-label">cmd:</span>
                                         <code>{action.target}</code>
+                                    </div>
+                                )}
+
+                                {action.type === 'file_edit' && (action.oldText || action.newText) && (
+                                    <div className="agent-action-body file-preview custom-scrollbar">
+                                        <DiffView oldText={action.oldText || ''} newText={action.newText || ''} />
                                     </div>
                                 )}
 

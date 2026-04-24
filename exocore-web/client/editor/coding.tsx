@@ -492,7 +492,7 @@ const CodingPage = () => {
         const isLight = LIGHT_THEMES.has(currentTheme);
         const scheme = isLight ? 'light' : 'dark';
 
-        if (isLoading) return <div className="loader-screen" style={{ background: active.bg, color: active.accent }}><Loader2 className="spin" /> Starting Exocore...</div>;
+        if (isLoading) return <div className="loader-screen" style={{ background: active.bg, color: active.accent }}><Loader2 className="spin" /> Starting Exocode...</div>;
 
         const mediaUrl = activeFile ? `/exocore/api/editor/coding/media?projectId=${projectId}&filePath=${encodeURIComponent(activeFile.path)}` : '';
 

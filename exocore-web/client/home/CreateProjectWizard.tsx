@@ -62,15 +62,23 @@ export const CreateProjectWizard: React.FC<CreateProjectWizardProps> = ({
 }) => {
     const hasTemplates = availableTemplates.length > 0;
 
+    // Hard filter: only show templates whose runtime language is enabled.
+    // This complements the language-card lock and keeps the user from
+    // selecting a PHP/HTML/etc template via the category route.
+    const enabledTemplates = useMemo(
+        () => availableTemplates.filter(t => ENABLED_LANGUAGES.has(t.meta.language)),
+        [availableTemplates],
+    );
+
     const templatesByCategory = useMemo(() => {
         const map: Record<string, Template[]> = {};
-        for (const t of availableTemplates) {
+        for (const t of enabledTemplates) {
             const cat = t.meta.category || 'language';
             if (!map[cat]) map[cat] = [];
             map[cat].push(t);
         }
         return map;
-    }, [availableTemplates]);
+    }, [enabledTemplates]);
 
     const visibleTemplates = selectedCategory ? templatesByCategory[selectedCategory] || [] : [];
     const activeCatMeta = TEMPLATE_CATEGORIES.find(c => c.id === selectedCategory);
