@@ -1,0 +1,8 @@
+{
+  "name": "exocore-bun",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "bun run index.ts",
+    "dev": "bun --hot run index.ts"
+  }
+}

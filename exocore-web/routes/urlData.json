@@ -1,0 +1,5 @@
+{
+  "URL": "https://raw.githubusercontent.com/ChoruOfficial/global-exocore/refs/heads/main/server.json",
+  "local": "http://localhost:8081",
+  "preferLocal": true
+}

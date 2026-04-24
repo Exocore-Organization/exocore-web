@@ -1,0 +1,11 @@
+{
+  "name": "OpenAI Chat",
+  "description": "Chat completion starter using OpenAI",
+  "language": "js",
+  "runtime": "node",
+  "run": "node index.js",
+  "port": 0,
+  "install": true,
+  "category": "aibot",
+  "icon": "openai"
+}

@@ -1,0 +1,13 @@
+{
+    "themes": [
+        { "id": "modern", "label": "Modern UI" },
+        { "id": "aero", "label": "Windows Aero" },
+        { "id": "xp", "label": "Classic XP" }
+    ],
+    "languages": [
+        { "id": "nodejs", "label": "Node.js", "icon": "🟢" },
+        { "id": "python", "label": "Python", "icon": "🐍" },
+        { "id": "html", "label": "HTML/JS", "icon": "🌐" },
+        { "id": "php", "label": "PHP", "icon": "🐘" }
+    ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Lua",
+  "description": "Lightweight scripting language",
+  "language": "lua",
+  "runtime": "lua",
+  "run": "lua main.lua",
+  "port": 0,
+  "install": false,
+  "category": "language",
+  "icon": "lua"
+}

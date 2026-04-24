@@ -1,0 +1,11 @@
+{
+  "name": "Vite + Svelte",
+  "description": "Svelte app scaffolded with Vite",
+  "language": "svelte",
+  "runtime": "node",
+  "run": "npm run dev",
+  "port": 3000,
+  "install": true,
+  "category": "web",
+  "icon": "svelte"
+}

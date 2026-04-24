@@ -1,0 +1,11 @@
+{
+  "name": "CLI Tool",
+  "description": "Node.js command-line app starter",
+  "language": "js",
+  "runtime": "node",
+  "run": "node index.js",
+  "port": 0,
+  "install": false,
+  "category": "language",
+  "icon": "node"
+}

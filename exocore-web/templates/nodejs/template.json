@@ -1,0 +1,11 @@
+{
+  "name": "Node.js Blank",
+  "description": "A minimal Node.js project",
+  "language": "nodejs",
+  "runtime": "node",
+  "run": "node index.js",
+  "port": 3000,
+  "install": true,
+  "category": "language",
+  "icon": "node"
+}

@@ -1,0 +1,16 @@
+flask
+gunicorn
+requests
+requests-html
+beautifulsoup4
+lxml
+lxml_html_clean
+python-dotenv
+beautifulsoup4
+flask
+gunicorn
+lxml
+lxml_html_clean
+python-dotenv
+requests
+requests-html

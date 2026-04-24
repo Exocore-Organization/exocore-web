@@ -1,0 +1,11 @@
+{
+  "name": "Sinatra",
+  "description": "Minimal Ruby web DSL",
+  "language": "rb",
+  "runtime": "ruby",
+  "run": "ruby app.rb",
+  "port": 4567,
+  "install": true,
+  "category": "backend",
+  "icon": "ruby"
+}

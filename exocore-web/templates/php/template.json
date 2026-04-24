@@ -1,0 +1,11 @@
+{
+  "name": "PHP",
+  "description": "PHP web project",
+  "language": "php",
+  "runtime": "php",
+  "run": "php -S 0.0.0.0:3000",
+  "port": 3000,
+  "install": true,
+  "category": "language",
+  "icon": "php"
+}

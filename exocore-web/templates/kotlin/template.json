@@ -1,0 +1,11 @@
+{
+  "name": "Kotlin",
+  "description": "Modern JVM language",
+  "language": "kt",
+  "runtime": "kotlin",
+  "run": "kotlinc main.kt -include-runtime -d main.jar && java -jar main.jar",
+  "port": 0,
+  "install": false,
+  "category": "language",
+  "icon": "kotlin"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "LÖVE 2D",
+  "description": "2D games in Lua",
+  "language": "lua",
+  "runtime": "love",
+  "run": "love .",
+  "port": 0,
+  "install": false,
+  "category": "game",
+  "icon": "lua"
+}

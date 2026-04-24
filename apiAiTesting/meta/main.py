@@ -1,0 +1,2140 @@
+import json
+import logging
+import os
+import re
+import time
+import urllib.parse
+import uuid
+from pathlib import Path
+from typing import Dict, List, Generator, Iterator, Optional, Union, Any
+
+import requests
+from dotenv import load_dotenv
+from requests_html import HTMLSession
+
+from meta.utils import (
+    generate_offline_threading_id,
+    extract_value,
+    format_response,
+    detect_challenge_page,
+    handle_meta_ai_challenge,
+)
+
+from meta.utils import get_fb_session, get_session
+
+from meta.exceptions import FacebookRegionBlocked
+from meta.image_upload import ImageUploader
+from meta.generation import GenerationAPI
+
+MAX_RETRIES = 3
+
+
+class MetaAI:
+    """
+    A class to interact with Meta AI for chat, image and video generation.
+    
+    WORKING FEATURES:
+    - generate_image_new(): Generate AI images with custom orientations
+    - generate_video_new(): Create AI videos from text prompts
+    - upload_image(): Upload images for generation/editing
+    
+    Authentication: Uses cookie-based auth for all features.
+    Chat additionally requires a valid OAuth access token (ecto1:...), which can be
+    loaded from META_AI_ACCESS_TOKEN or extracted from meta.ai page HTML.
+    """
+
+    def __init__(
+        self, 
+        fb_email: Optional[str] = None, 
+        fb_password: Optional[str] = None, 
+        cookies: Optional[dict] = None, 
+        proxy: Optional[dict] = None
+    ):
+        # Load .env file from workspace root
+        env_path = Path(__file__).parent.parent.parent / ".env"
+        if env_path.exists():
+            load_dotenv(env_path)
+            logging.info(f"Loaded .env from: {env_path}")
+        
+        self.session = get_session()
+        self.session.headers.update(
+            {
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0",
+            }
+        )
+        self.access_token = None
+        self.fb_email = fb_email
+        self.fb_password = fb_password
+        self.proxy = proxy
+
+        self.is_authed = (fb_password is not None and fb_email is not None) or cookies is not None
+
+        # Priority: explicit cookies > env cookies > fetched cookies
+        if cookies is not None:
+            self.cookies = cookies
+            logging.info("Using provided cookies (cookie-based auth only)")
+            self.is_authed = True
+        else:
+            env_cookies = self._load_cookies_from_env()
+            if env_cookies:
+                self.cookies = env_cookies
+                logging.info("✅ Loaded cookies from .env file (cookie-based auth only)")
+                self.is_authed = True
+            else:
+                self.cookies = self.get_cookies()
+                logging.info("Fetched cookies from Meta AI website")
+                # Update is_authed if we successfully got cookies
+                if self.cookies:
+                    self.is_authed = True
+            
+        self.external_conversation_id = None
+        self.offline_threading_id = None
+        # Per-conversation branch-path tracker. Mirrors the meta.ai web
+        # client's `latestBranchPath` field. ROOT_PATH is "0"; each turn
+        # adds two segments (user + assistant), e.g. "0" -> "2" -> "4".
+        # Sending the wrong path makes Meta treat each new message as a
+        # sibling branch off the root, so only the latest one shows in UI.
+        self._branch_paths: Dict[str, str] = {}
+        
+        # Extract access token (needed for image upload OAuth)
+        # First try to load from environment variable (to avoid rate limiting)
+        self.access_token = os.getenv('META_AI_ACCESS_TOKEN')
+        
+        if self.access_token:
+            logging.info(f"✅ Loaded access token from META_AI_ACCESS_TOKEN environment variable: {self.access_token[:50]}...")
+        elif self.cookies:
+            # If not in env, extract from page HTML
+            self.access_token = self.extract_access_token_from_page()
+            if not self.access_token:
+                logging.warning("⚠️ Could not extract accessToken from page. Image upload may fail.")
+        
+        # Initialize Generation API
+        self.generation_api = GenerationAPI(session=self.session, cookies=self.cookies)
+
+    def _load_cookies_from_env(self) -> Optional[Dict[str, str]]:
+        """
+        Load cookies from environment variables (META_AI_* prefix).
+        
+        CRITICAL: ecto_1_sess is the primary session token and must be present.
+        
+        Environment variables expected:
+        - META_AI_DATR: Required - Device identifier cookie
+        - META_AI_ABRA_SESS: Optional - Session cookie (some regions like Indonesia may not have this)
+        - META_AI_ECTO_1_SESS: Critical - Session state token (MOST IMPORTANT)
+        - META_AI_ACCESS_TOKEN: Optional - OAuth access token for image upload (ecto1:... format)
+                               If not provided, will be extracted from meta.ai page (may hit rate limits)
+        - META_AI_DPR: Optional - Device pixel ratio
+        - META_AI_WD: Optional - Window dimensions
+        - META_AI_JS_DATR: Optional - JavaScript datr
+        - META_AI_ABRA_CSRF: Optional - CSRF token
+        - META_AI_PS_L: Optional - Page state (usually 1)
+        - META_AI_PS_N: Optional - Page state (usually 1)
+        - META_AI_RD_CHALLENGE: Optional - Challenge cookie
+        
+        Returns:
+            dict or None: Cookie dictionary if at least required cookies are found, None otherwise
+        """
+        required_cookies = {
+            "datr": os.getenv("META_AI_DATR"),
+            "abra_sess": os.getenv("META_AI_ABRA_SESS"),
+        }
+        
+        # Check if required cookies are present (only datr is truly required)
+        if not required_cookies["datr"]:
+            return None
+        
+        # Build complete cookie dict with required cookies
+        cookies = {
+            "datr": required_cookies["datr"],
+        }
+        
+        # Add abra_sess if available (optional, some regions don't have it)
+        if required_cookies["abra_sess"]:
+            cookies["abra_sess"] = required_cookies["abra_sess"]
+        
+        # Add critical session cookie (MOST IMPORTANT)
+        ecto_session = os.getenv("META_AI_ECTO_1_SESS")
+        if ecto_session:
+            cookies["ecto_1_sess"] = ecto_session
+            logging.debug("Critical ecto_1_sess cookie loaded")
+        else:
+            logging.warning("META_AI_ECTO_1_SESS not found - API may return empty responses")
+        
+        # Add optional cookies if present
+        optional_cookies = {
+            "dpr": os.getenv("META_AI_DPR"),
+            "wd": os.getenv("META_AI_WD"),
+            "_js_datr": os.getenv("META_AI_JS_DATR"),
+            "abra_csrf": os.getenv("META_AI_ABRA_CSRF"),
+            "rd_challenge": os.getenv("META_AI_RD_CHALLENGE"),
+            "ps_l": os.getenv("META_AI_PS_L"),
+            "ps_n": os.getenv("META_AI_PS_N"),
+        }
+        
+        for key, value in optional_cookies.items():
+            if value:
+                cookies[key] = value
+        
+        logging.info(f"Cookies loaded from .env: {list(cookies.keys())}")
+        return cookies
+
+    def extract_access_token_from_page(self) -> Optional[str]:
+        """
+        Extract the accessToken from meta.ai page HTML.
+        This is the actual OAuth token needed for image upload, NOT the ecto_1_sess cookie.
+        Handles challenge pages automatically.
+        
+        Returns:
+            str: The accessToken in format "ecto1:..." or None if extraction fails
+        """
+        try:
+            import re
+            from meta.utils import detect_challenge_page, handle_meta_ai_challenge
+            
+            # Fetch meta.ai page with cookies
+            cookie_header = self.get_cookie_header()
+            headers = {
+                "cookie": cookie_header,
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                              "(KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36"
+            }
+            
+            response = self.session.get("https://meta.ai", headers=headers)
+            
+            # Check for challenge page BEFORE calling raise_for_status
+            challenge_url = detect_challenge_page(response.text)
+            if challenge_url:
+                logging.warning("⚠️ Meta AI returned a challenge page during token extraction. Attempting to handle it...")
+                cookies_dict = self.get_cookies_dict()
+                if handle_meta_ai_challenge(self.session, challenge_url=challenge_url, cookies_dict=cookies_dict):
+                    # Update cookies with rd_challenge if it was extracted
+                    if "rd_challenge" in cookies_dict:
+                        self.cookies["rd_challenge"] = cookies_dict["rd_challenge"]
+                        logging.info(f"[TOKEN] Saved rd_challenge: {cookies_dict['rd_challenge'][:50]}...")
+                    
+                    # Retry after handling challenge
+                    logging.info("🔄 Re-fetching page after challenge resolution...")
+                    cookie_header = self.get_cookie_header()
+                    headers["cookie"] = cookie_header
+                    response = self.session.get("https://meta.ai", headers=headers)
+                else:
+                    logging.error("❌ Failed to handle challenge page in extract_access_token_from_page.")
+                    return None
+            
+            # Now check status after challenge handling
+            response.raise_for_status()
+            
+            # Extract accessToken from page HTML using regex (handles escaped quotes)
+            # Pattern matches: \"accessToken\":\"ecto1:...\" (escaped in HTML)
+            pattern = r'accessToken\\":\\"(ecto1:[^"\\]+)'
+            match = re.search(pattern, response.text)
+            
+            if match:
+                access_token = match.group(1)
+                logging.info(f"✅ Extracted accessToken from page (length: {len(access_token)} chars)")
+                return access_token
+            else:
+                logging.warning("⚠️ accessToken not found in page HTML using regex pattern")
+                return None
+                
+        except Exception as e:
+            logging.error(f"❌ Failed to extract accessToken from page: {e}")
+            return None
+
+    def get_cookies_dict(self) -> Dict[str, str]:
+        """
+        Get cookies as a dictionary.
+        
+        Returns:
+            dict: Cookie dictionary
+        """
+        return self.cookies.copy() if self.cookies else {}
+
+    def get_cookie_header(self) -> str:
+        """
+        Get cookies formatted as a Cookie header string.
+        
+        Returns:
+            str: Cookie header value (e.g., "datr=abc; abra_sess=def; ...")
+        """
+        if not self.cookies:
+            return ""
+        return "; ".join([f"{k}={v}" for k, v in self.cookies.items()])
+
+    def _handle_expired_session(self, error_msg: str = ""):
+        """
+        Handle expired ecto_1_sess cookie and provide user guidance.
+        
+        Args:
+            error_msg (str): Optional error message from the API response
+        """
+        logging.error("="*70)
+        logging.error("❌ Cookie Expired: ecto_1_sess needs to be refreshed")
+        logging.error("="*70)
+        logging.error("")
+        logging.error("Your session cookie (ecto_1_sess) has expired.")
+        logging.error("")
+        logging.error("To get fresh cookies, choose one of these methods:")
+        logging.error("")
+        logging.error("METHOD 1 (Automatic - Recommended):")
+        logging.error("   Run: python auto_refresh_cookies.py")
+        logging.error("   This will open a browser, let you log in, and extract cookies automatically.")
+        logging.error("")
+        logging.error("METHOD 2 (Manual - Quick):")
+        logging.error("   1. Open https://meta.ai in your browser and log in")
+        logging.error("   2. Open DevTools (F12) → Network tab")
+        logging.error("   3. Generate an image or perform any action")
+        logging.error("   4. Right-click the 'graphql' request → Copy → Copy as cURL")
+        logging.error("   5. Save to curl.json")
+        logging.error("   6. Run: python refresh_cookies.py")
+        logging.error("")
+        logging.error("="*70)
+        
+        if error_msg:
+            logging.debug(f"API Error: {error_msg}")
+
+    def _check_response_for_auth_error(self, response: requests.Response) -> bool:
+        """
+        Check if API response indicates expired/invalid authentication.
+        
+        Args:
+            response: requests Response object
+            
+        Returns:
+            bool: True if authentication error detected, False otherwise
+        """
+        # Check for 403 Forbidden
+        if response.status_code == 403:
+            self._handle_expired_session("403 Forbidden - session expired")
+            return True
+        
+        # Check response content for auth errors
+        try:
+            if response.text:
+                error_indicators = [
+                    "Access token required",
+                    "authentication",
+                    "unauthorized",
+                    "invalid session",
+                    "session expired"
+                ]
+                
+                response_lower = response.text.lower()
+                for indicator in error_indicators:
+                    if indicator in response_lower:
+                        self._handle_expired_session(f"Auth error detected: {indicator}")
+                        return True
+        except:
+            pass
+        
+        return False
+
+    # DEPRECATED: Token fetching removed - chat functionality unavailable
+    # Image and video generation use cookie-based authentication only
+    def _fetch_missing_tokens(self, max_retries: int = 3):
+        """
+        DEPRECATED: This method is no longer used.
+        
+        Token fetching (lsd/fb_dtsg) has been removed as it causes authentication
+        challenges and is not needed for working features (image/video generation).
+        Chat functionality that requires these tokens is currently unavailable.
+        """
+        logging.warning("Token fetching is deprecated and disabled. Use cookie-based auth only.")
+        logging.warning("Chat operations are not supported. Use generate_image_new() or generate_video_new() instead.")
+
+    def get_access_token(self) -> str:
+        """
+        DEPRECATED: Retrieves an access token using Meta's authentication API.
+        
+        NOTE: Non-authenticated temporary access is currently unavailable.
+        Use cookie-based authentication instead with generate_image_new() or generate_video_new().
+
+        Returns:
+            str: A valid access token (if already cached), otherwise raises an error.
+        """
+        
+        logging.warning("get_access_token() is deprecated. Non-authenticated access is unavailable.")
+        logging.warning("Use cookie-based authentication with generate_image_new() or generate_video_new().")
+
+        if self.access_token:
+            return self.access_token
+
+        # Legacy code kept for compatibility - will fail without proper cookies
+        url = "https://www.meta.ai/api/graphql/"
+        payload = {
+            "lsd": self.cookies.get("lsd", ""),  # Safe access - won't crash if missing
+            "fb_api_caller_class": "RelayModern",
+            "fb_api_req_friendly_name": "useAbraAcceptTOSForTempUserMutation",
+            "variables": {
+                "dob": "1999-01-01",
+                "icebreaker_type": "TEXT",
+                "__relay_internal__pv__WebPixelRatiorelayprovider": 1,
+            },
+            "doc_id": "7604648749596940",
+        }
+        payload = urllib.parse.urlencode(payload)  # noqa
+        headers = {
+            "content-type": "application/x-www-form-urlencoded",
+            "cookie": f'_js_datr={self.cookies.get("_js_datr", "")}; '
+            f'abra_csrf={self.cookies.get("abra_csrf", "")}; datr={self.cookies.get("datr", "")};',
+            "sec-fetch-site": "same-origin",
+            "x-fb-friendly-name": "useAbraAcceptTOSForTempUserMutation",
+        }
+
+        response = self.session.post(url, headers=headers, data=payload)
+
+        try:
+            auth_json = response.json()
+        except json.JSONDecodeError:
+            raise FacebookRegionBlocked(
+                "Unable to receive a valid response from Meta AI. This is likely due to your region being blocked. "
+                "Try manually accessing https://www.meta.ai/ to confirm."
+            )
+
+        access_token = auth_json["data"]["xab_abra_accept_terms_of_service"][
+            "new_temp_user_auth"
+        ]["access_token"]
+
+        # Need to sleep for a bit, for some reason the API doesn't like it when we send request too quickly
+        # (maybe Meta needs to register Cookies on their side?)
+        time.sleep(1)
+
+        return access_token
+
+    def prompt(
+        self,
+        message: str,
+        stream: bool = False,
+        attempts: int = 0,
+        new_conversation: bool = False,
+        images: Optional[list] = None,
+        media_ids: Optional[list] = None,
+        attachment_metadata: Optional[Dict[str, Any]] = None,
+        is_image_generation: bool = False,
+        orientation: Optional[str] = None,
+    ) -> Union[Dict, Generator[Dict, None, None]]:
+        """
+        Send a chat prompt to Meta AI using OAuth + GraphQL stream responses.
+
+        Args:
+            message (str): The message to send.
+            stream (bool): Whether to stream the response or not. Defaults to False.
+            attempts (int): Kept for compatibility; not used by this implementation.
+            new_conversation (bool): Whether to start a new conversation or not. Defaults to False.
+            images (list): Kept for compatibility.
+            media_ids (list): Optional media IDs to attach.
+            attachment_metadata (dict): Kept for compatibility.
+            is_image_generation (bool): Kept for compatibility.
+            orientation (str): Kept for compatibility.
+
+        Returns:
+            dict or generator: Chat response with message, sources, and media.
+
+        Raises:
+            Exception: If authentication or request fails.
+        """
+        def _collect_text_from_content_items(content_items: Any) -> str:
+            if not isinstance(content_items, list):
+                return ""
+            fragments: List[str] = []
+            for item in content_items:
+                if not isinstance(item, dict):
+                    continue
+                text = item.get("text")
+                if isinstance(text, str) and text.strip():
+                    fragments.append(text.strip())
+            return "\n".join(fragments).strip()
+
+        def _extract_chat_content_snapshot(event: Dict[str, Any]) -> str:
+            if not isinstance(event, dict):
+                return ""
+
+            snapshots: List[str] = []
+
+            def add_candidate(value: Any) -> None:
+                if isinstance(value, str):
+                    cleaned = value.strip()
+                    if cleaned:
+                        snapshots.append(cleaned)
+
+            data_obj = event.get("data")
+            if isinstance(data_obj, dict):
+                stream_obj = data_obj.get("sendMessageStream")
+                if isinstance(stream_obj, dict):
+                    add_candidate(stream_obj.get("content"))
+                    stream_message = stream_obj.get("message")
+                    if isinstance(stream_message, dict):
+                        add_candidate(stream_message.get("content"))
+                        add_candidate(stream_message.get("text"))
+
+                message_obj = data_obj.get("message")
+                if isinstance(message_obj, dict):
+                    for key in ("content", "text", "streaming_text", "message"):
+                        add_candidate(message_obj.get(key))
+                    composed = message_obj.get("composed_text")
+                    if isinstance(composed, dict):
+                        add_candidate(_collect_text_from_content_items(composed.get("content")))
+
+                node_obj = data_obj.get("node")
+                if isinstance(node_obj, dict):
+                    bot_message = node_obj.get("bot_response_message")
+                    if isinstance(bot_message, dict):
+                        for key in ("content", "text", "streaming_text", "message"):
+                            add_candidate(bot_message.get(key))
+
+                        composed = bot_message.get("composed_text")
+                        if isinstance(composed, dict):
+                            add_candidate(_collect_text_from_content_items(composed.get("content")))
+
+                        nested_content = bot_message.get("content")
+                        if isinstance(nested_content, dict):
+                            agent_steps = nested_content.get("agent_steps")
+                            if isinstance(agent_steps, list):
+                                for step in agent_steps:
+                                    if not isinstance(step, dict):
+                                        continue
+                                    composed_text = step.get("composed_text")
+                                    if isinstance(composed_text, dict):
+                                        add_candidate(
+                                            _collect_text_from_content_items(composed_text.get("content"))
+                                        )
+
+            add_candidate(format_response(event))
+
+            if not snapshots:
+                return ""
+            return max(snapshots, key=len)
+
+        def _extract_chat_conversation_id(event: Dict[str, Any]) -> Optional[str]:
+            if not isinstance(event, dict):
+                return None
+
+            data_obj = event.get("data")
+            if not isinstance(data_obj, dict):
+                return None
+
+            stream_obj = data_obj.get("sendMessageStream")
+            if isinstance(stream_obj, dict):
+                conversation_id = stream_obj.get("conversationId")
+                if isinstance(conversation_id, str) and conversation_id:
+                    return conversation_id
+
+            message_obj = data_obj.get("message")
+            if isinstance(message_obj, dict):
+                for key in ("conversationId", "conversation_id"):
+                    conversation_id = message_obj.get(key)
+                    if isinstance(conversation_id, str) and conversation_id:
+                        return conversation_id
+
+            node_obj = data_obj.get("node")
+            if isinstance(node_obj, dict):
+                bot_message = node_obj.get("bot_response_message")
+                if isinstance(bot_message, dict):
+                    chat_id = bot_message.get("id")
+                    if isinstance(chat_id, str) and "_" in chat_id:
+                        return chat_id.split("_", 1)[0]
+
+            return None
+
+        def _extract_chat_event_errors(event: Dict[str, Any]) -> List[Dict[str, Any]]:
+            errors: List[Dict[str, Any]] = []
+            seen = set()
+
+            def add_error(err: Any) -> None:
+                if not isinstance(err, dict):
+                    return
+                message_text = str(err.get("message") or "Unknown GraphQL error")
+                extensions = err.get("extensions") if isinstance(err.get("extensions"), dict) else {}
+                code = str(extensions.get("code") or err.get("code") or err.get("type") or "UNKNOWN")
+                key = (message_text, code)
+                if key in seen:
+                    return
+                seen.add(key)
+                errors.append(
+                    {
+                        "message": message_text,
+                        "code": code,
+                        "locations": err.get("locations") if isinstance(err.get("locations"), list) else [],
+                        "path": err.get("path") if isinstance(err.get("path"), list) else [],
+                        "extensions": extensions,
+                    }
+                )
+
+            for err in event.get("errors", []):
+                add_error(err)
+
+            data_obj = event.get("data")
+            if isinstance(data_obj, dict):
+                for err in data_obj.get("errors", []):
+                    add_error(err)
+
+                stream_obj = data_obj.get("sendMessageStream")
+                if isinstance(stream_obj, dict):
+                    for err in stream_obj.get("errors", []):
+                        add_error(err)
+
+            return errors
+
+        def _iter_stream_events(response_obj: requests.Response) -> Generator[Dict[str, Any], None, None]:
+            for raw_line in response_obj.iter_lines(decode_unicode=True):
+                if not raw_line:
+                    continue
+
+                line = raw_line.strip()
+                if not line or line.startswith("event:"):
+                    continue
+
+                payload_line = line[5:].strip() if line.startswith("data:") else line
+                if not payload_line or payload_line in {"[DONE]", "null"}:
+                    continue
+
+                try:
+                    parsed = json.loads(payload_line)
+                except Exception:
+                    continue
+
+                if isinstance(parsed, dict):
+                    yield parsed
+                elif isinstance(parsed, list):
+                    for item in parsed:
+                        if isinstance(item, dict):
+                            yield item
+
+        def _resolve_chat_doc_ids() -> List[str]:
+            default_unified_chat_doc_id = "2f707e4a86f4b01adba97e1376cbdc14"
+            candidates = [
+                os.getenv("META_AI_CHAT_DOC_ID"),
+                os.getenv("META_AI_CHAT_DOC_ID_ALT"),
+                "ac0bad4b9787a393e160fb39f43404c1",
+                os.getenv("META_AI_CHAT_DOC_ID_UNIFIED_FALLBACK", default_unified_chat_doc_id),
+            ]
+            resolved: List[str] = []
+            for candidate in candidates:
+                if isinstance(candidate, str) and candidate and candidate not in resolved:
+                    resolved.append(candidate)
+            return resolved
+
+        chat_doc_ids = _resolve_chat_doc_ids()
+        default_unified_chat_doc_id = "2f707e4a86f4b01adba97e1376cbdc14"
+
+        if not self.access_token:
+            self.access_token = self.extract_access_token_from_page()
+        if not self.access_token:
+            raise Exception(
+                "Chat requires META_AI_ACCESS_TOKEN (ecto1:...) or successful token extraction from meta.ai"
+            )
+
+        if not self.external_conversation_id or new_conversation:
+            self.external_conversation_id = str(uuid.uuid4())
+            # Reset branch tracking when starting a fresh conversation.
+            self._branch_paths.pop(self.external_conversation_id, None)
+
+        is_new_conversation = bool(new_conversation)
+        conversation_id = self.external_conversation_id
+
+        # Determine currentBranchPath. For a brand new conversation this is
+        # ROOT_PATH ("0"). For follow-up turns it's the assistant path of
+        # the previous turn. Each turn advances the path by 2 segments.
+        def _increment_last_segment(path: str) -> str:
+            if not path:
+                return "1"
+            segments = path.split(":")
+            try:
+                segments[-1] = str(int(segments[-1]) + 1)
+            except (ValueError, IndexError):
+                segments.append("1")
+            return ":".join(segments)
+
+        current_branch_path = self._branch_paths.get(conversation_id, "0")
+
+        attachments_v2 = [str(mid) for mid in (media_ids or [])]
+
+        headers = {
+            "cookie": self.get_cookie_header(),
+            "authorization": f"OAuth {self.access_token}",
+            "user-agent": self.session.headers.get(
+                "user-agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0",
+            ),
+            "content-type": "application/json",
+            "origin": "https://www.meta.ai",
+            "referer": "https://www.meta.ai/",
+            "accept-language": "en-US,en;q=0.9",
+            "accept": "text/event-stream, application/json",
+        }
+
+        def _build_payload(doc_id: str) -> Dict[str, Any]:
+            return {
+                "doc_id": doc_id,
+                "variables": {
+                    "conversationId": conversation_id,
+                    "content": message,
+                    "userMessageId": str(uuid.uuid4()),
+                    "assistantMessageId": str(uuid.uuid4()),
+                    "userUniqueMessageId": str(uuid.uuid4().int)[:19],
+                    "turnId": str(uuid.uuid4()),
+                    "mode": os.getenv("META_AI_CHAT_MODE", "chat"),
+                    "isNewConversation": is_new_conversation,
+                    "clientTimezone": "Asia/Kolkata",
+                    "entryPoint": os.getenv("META_AI_CHAT_ENTRY_POINT", "KADABRA__UNKNOWN"),
+                    "promptSessionId": str(uuid.uuid4()),
+                    "userAgent": headers["user-agent"],
+                    "currentBranchPath": current_branch_path,
+                    "promptEditType": "new_message",
+                    "userLocale": "en-US",
+                    "attachments": None,
+                    "attachmentsV2": attachments_v2 if attachments_v2 else None,
+                    "mentions": None,
+                    "rewriteOptions": None,
+                    "imagineOperationRequest": None,
+                },
+            }
+
+        def _post_chat_request(doc_id: str) -> requests.Response:
+            response_obj = self.session.post(
+                "https://www.meta.ai/api/graphql",
+                headers=headers,
+                json=_build_payload(doc_id),
+                stream=True,
+                timeout=(10, 120),
+            )
+            if self._check_response_for_auth_error(response_obj):
+                raise Exception("Authentication failed - please refresh cookies")
+            response_obj.raise_for_status()
+            # Force UTF-8 so iter_lines(decode_unicode=True) doesn't fall back
+            # to Latin-1 for text/event-stream responses (would otherwise
+            # mangle UTF-8 chars like ' into "â€™").
+            response_obj.encoding = "utf-8"
+            return response_obj
+
+        def _sanitize_assistant_text(
+            text: str,
+            user_message: str,
+            remove_embedded_prompt: bool = False,
+        ) -> str:
+            """Strip prompt-echo artifacts occasionally appended by stream snapshots."""
+            cleaned = (text or "").strip()
+            prompt = (user_message or "").strip()
+            if not cleaned or not prompt:
+                return cleaned
+
+            # Remove embedded user-prompt echoes when mixed into assistant output.
+            if remove_embedded_prompt and prompt in cleaned and cleaned != prompt:
+                cleaned = cleaned.replace(prompt, "").strip()
+
+            # Remove repeated trailing user prompt echoes.
+            while cleaned.endswith(prompt):
+                cleaned = cleaned[: -len(prompt)].rstrip()
+
+            return cleaned
+
+        def _replace_inline_tags(match: re.Match) -> str:
+            try:
+                json_content = json.loads(match.group(1))
+                name = json_content.get("name")
+                return name if isinstance(name, str) else ""
+            except json.JSONDecodeError:
+                return ""
+
+        def _normalize_assistant_text(text: str) -> str:
+            """Replace Meta inline entities with readable text and trim output."""
+            normalized = text or ""
+            normalized = re.sub(r"<inline>({.*?})</inline>", _replace_inline_tags, normalized)
+            normalized = re.sub(r"<inline>.*?</inline>", "", normalized)
+            return normalized.strip()
+
+        def _graph_error_summary(errors: List[Dict[str, Any]]) -> str:
+            if not errors:
+                return "Unknown GraphQL error"
+            first = errors[0]
+            return f"GraphQL error ({first.get('code', 'UNKNOWN')}): {first.get('message', 'Unknown GraphQL error')}"
+
+        logged_unified_doc_id_warning = False
+
+        def _maybe_log_unified_doc_id(doc_id: str) -> None:
+            nonlocal logged_unified_doc_id_warning
+            if doc_id == default_unified_chat_doc_id and not logged_unified_doc_id_warning:
+                logging.info(
+                    "Using unified chat fallback doc_id %s; backend may include create/media suggestions in chat replies",
+                    doc_id,
+                )
+                logged_unified_doc_id_warning = True
+
+        def _stream_messages() -> Generator[Dict, None, None]:
+            last_errors: List[Dict[str, Any]] = []
+            last_transport_error: Optional[str] = None
+
+            for doc_id in chat_doc_ids:
+                _maybe_log_unified_doc_id(doc_id)
+                try:
+                    response = _post_chat_request(doc_id)
+                except requests.RequestException as exc:
+                    last_transport_error = str(exc)
+                    logging.warning(
+                        "Chat stream request with doc_id %s failed before parsing response: %s",
+                        doc_id,
+                        exc,
+                    )
+                    continue
+
+                yielded_any = False
+                last_snapshot = ""
+                errors_for_attempt: List[Dict[str, Any]] = []
+
+                try:
+                    for event in _iter_stream_events(response):
+                        conv_id = _extract_chat_conversation_id(event)
+                        if conv_id:
+                            self.external_conversation_id = conv_id
+
+                        errors_for_attempt.extend(_extract_chat_event_errors(event))
+
+                        snapshot = _extract_chat_content_snapshot(event)
+                        if not snapshot:
+                            continue
+
+                        if not last_snapshot:
+                            delta = snapshot
+                        elif snapshot.startswith(last_snapshot):
+                            delta = snapshot[len(last_snapshot):]
+                        elif snapshot == last_snapshot:
+                            delta = ""
+                        else:
+                            delta = snapshot
+
+                        last_snapshot = snapshot
+                        delta = _normalize_assistant_text(delta)
+                        if not delta:
+                            continue
+
+                        yielded_any = True
+                        yield {"message": delta, "sources": [], "media": []}
+                finally:
+                    response.close()
+
+                if yielded_any:
+                    user_path = _increment_last_segment(current_branch_path)
+                    assistant_path = _increment_last_segment(user_path)
+                    self._branch_paths[self.external_conversation_id] = assistant_path
+                    return
+
+                last_errors = errors_for_attempt
+                if errors_for_attempt:
+                    logging.warning(
+                        "Chat stream attempt with doc_id %s returned GraphQL errors; trying next fallback if available",
+                        doc_id,
+                    )
+
+            if last_errors:
+                raise Exception(_graph_error_summary(last_errors))
+            if last_transport_error:
+                raise Exception(last_transport_error)
+            raise Exception(
+                f"No chat response parsed from Meta AI stream (doc_ids tried: {', '.join(chat_doc_ids)})"
+            )
+
+        if stream:
+            return _stream_messages()
+
+        last_errors: List[Dict[str, Any]] = []
+        last_transport_error: Optional[str] = None
+
+        for doc_id in chat_doc_ids:
+            _maybe_log_unified_doc_id(doc_id)
+            try:
+                response = _post_chat_request(doc_id)
+            except requests.RequestException as exc:
+                last_transport_error = str(exc)
+                logging.warning(
+                    "Chat request with doc_id %s failed before parsing response: %s",
+                    doc_id,
+                    exc,
+                )
+                continue
+
+            last_stream_content = ""
+            errors_for_attempt: List[Dict[str, Any]] = []
+
+            try:
+                for event in _iter_stream_events(response):
+                    conv_id = _extract_chat_conversation_id(event)
+                    if conv_id:
+                        self.external_conversation_id = conv_id
+
+                    errors_for_attempt.extend(_extract_chat_event_errors(event))
+
+                    content = _extract_chat_content_snapshot(event)
+                    if content:
+                        last_stream_content = content
+            finally:
+                response.close()
+
+            final_message = _sanitize_assistant_text(
+                _normalize_assistant_text(last_stream_content),
+                message,
+                remove_embedded_prompt=True,
+            )
+
+            if final_message:
+                # Advance branch path so the next turn appends to this one
+                # instead of replacing it (mirrors meta.ai web client logic).
+                user_path = _increment_last_segment(current_branch_path)
+                assistant_path = _increment_last_segment(user_path)
+                self._branch_paths[self.external_conversation_id] = assistant_path
+                return {"message": final_message, "sources": [], "media": []}
+
+            last_errors = errors_for_attempt
+            if errors_for_attempt:
+                logging.warning(
+                    "Chat request with doc_id %s returned GraphQL errors; trying next fallback if available",
+                    doc_id,
+                )
+
+        if last_errors:
+            raise Exception(_graph_error_summary(last_errors))
+        if last_transport_error:
+            raise Exception(last_transport_error)
+
+        raise Exception(
+            f"No chat response parsed from Meta AI stream (doc_ids tried: {', '.join(chat_doc_ids)})"
+        )
+
+    def retry(self, message: str, stream: bool = False, attempts: int = 0, new_conversation: bool = False, images: Optional[list] = None, media_ids: Optional[list] = None, attachment_metadata: Optional[Dict[str, Any]] = None, is_image_generation: bool = False, orientation: Optional[str] = None):
+        """
+        Retries the prompt function if an error occurs.
+        """
+        if attempts <= MAX_RETRIES:
+            logging.warning(
+                f"Was unable to obtain a valid response from Meta AI. Retrying... Attempt {attempts + 1}/{MAX_RETRIES}."
+            )
+            time.sleep(3)
+            return self.prompt(message, stream=stream, attempts=attempts + 1, new_conversation=new_conversation, images=images, media_ids=media_ids, attachment_metadata=attachment_metadata, is_image_generation=is_image_generation, orientation=orientation)
+        else:
+            raise Exception(
+                "Unable to obtain a valid response from Meta AI. Try again later."
+            )
+
+    def extract_last_response(self, response: str) -> Optional[Dict]:
+        """
+        Extracts the last response from the Meta AI API.
+        Handles both Abra and Kadabra response structures.
+
+        Args:
+            response (str): The response to extract the last response from.
+
+        Returns:
+            dict: A dictionary containing the last response.
+        """
+        last_streamed_response = None
+        all_responses = []
+        
+        for line in response.split("\n"):
+            try:
+                json_line = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+
+            # Store all valid JSON responses
+            all_responses.append(json_line)
+            
+            bot_response_message = (
+                json_line.get("data", {})
+                .get("node", {})
+                .get("bot_response_message", {})
+            )
+            
+            if not bot_response_message:
+                # Try alternative structure for Kadabra
+                bot_response_message = (
+                    json_line.get("data", {})
+                    .get("message", {})
+                )
+            
+            chat_id = bot_response_message.get("id")
+            if chat_id:
+                try:
+                    external_conversation_id, offline_threading_id, _ = chat_id.split("_")
+                    self.external_conversation_id = external_conversation_id
+                    self.offline_threading_id = offline_threading_id
+                except:
+                    pass
+
+            streaming_state = bot_response_message.get("streaming_state")
+            if streaming_state == "OVERALL_DONE":
+                last_streamed_response = json_line
+        
+        # If no OVERALL_DONE found, use the last non-empty response
+        if not last_streamed_response and all_responses:
+            # Find last response with actual content
+            for resp in reversed(all_responses):
+                if resp.get("data", {}).get("node", {}).get("bot_response_message", {}):
+                    last_streamed_response = resp
+                    break
+                elif resp.get("data", {}).get("message", {}):
+                    # Kadabra structure
+                    last_streamed_response = resp
+                    break
+
+        return last_streamed_response
+
+    def stream_response(self, lines: Iterator[str]):
+        """
+        Streams the response from the Meta AI API.
+
+        Args:
+            lines (Iterator[str]): The lines to stream.
+
+        Yields:
+            dict: A dictionary containing the response message and sources.
+        """
+        for line in lines:
+            if line:
+                json_line = json.loads(line)
+                extracted_data = self.extract_data(json_line)
+                if not extracted_data.get("message"):
+                    continue
+                yield extracted_data
+
+    def extract_data(self, json_line: dict):
+        """
+        Extract data and sources from a parsed JSON line.
+        Handles both Abra and Kadabra response structures.
+
+        Args:
+            json_line (dict): Parsed JSON line.
+
+        Returns:
+            Tuple (str, list): Response message and list of sources.
+        """
+        # Try standard Abra structure first
+        bot_response_message = (
+            json_line.get("data", {}).get("node", {}).get("bot_response_message", {})
+        )
+        
+        # If empty, try Kadabra structure
+        if not bot_response_message:
+            bot_response_message = json_line.get("data", {}).get("message", {})
+        
+        response = format_response(response=json_line)
+        fetch_id = bot_response_message.get("fetch_id")
+        sources = self.fetch_sources(fetch_id) if fetch_id else []
+        medias = self.extract_media(bot_response_message)
+        
+        return {"message": response, "sources": sources, "media": medias}
+
+    @staticmethod
+    def extract_media(json_line: dict) -> List[Dict]:
+        """
+        Extract media from a parsed JSON line.
+        Supports images from imagine_card and videos from various fields.
+
+        Args:
+            json_line (dict): Parsed JSON line.
+
+        Returns:
+            list: A list of dictionaries containing the extracted media.
+        """
+        medias = []
+        
+        # Extract images from content.imagine.session (has full URLs)
+        # This is the primary location with complete media information
+        content = json_line.get("content", {})
+        imagine = content.get("imagine", {})
+        session = imagine.get("session", {})
+        media_sets = session.get("media_sets", [])
+        
+        if media_sets:
+            # Found full imagine data with URIs
+            for media_set in media_sets:
+                imagine_media = media_set.get("imagine_media", [])
+                for media in imagine_media:
+                    # Try multiple possible URL fields
+                    url = (media.get("uri") or 
+                           media.get("image_uri") or 
+                           media.get("maybe_image_uri") or
+                           media.get("url"))
+                    if url:  # Only add if URL is found
+                        medias.append(
+                            {
+                                "url": url,
+                                "type": media.get("media_type"),
+                                "prompt": media.get("prompt"),
+                            }
+                        )
+        else:
+            # Fallback: Try imagine_card.session (may not have full URLs)
+            imagine_card = json_line.get("imagine_card", {})
+            if imagine_card:
+                session = imagine_card.get("session", {})
+                media_sets = session.get("media_sets", []) if session else []
+                for media_set in media_sets:
+                    imagine_media = media_set.get("imagine_media", [])
+                    for media in imagine_media:
+                        url = (media.get("uri") or 
+                               media.get("image_uri") or 
+                               media.get("maybe_image_uri") or
+                               media.get("url"))
+                        if url:
+                            medias.append(
+                                {
+                                    "url": url,
+                                    "type": media.get("media_type"),
+                                    "prompt": media.get("prompt"),
+                                }
+                            )
+        
+        # Extract from image_attachments (may contain both images and videos)
+        image_attachments = json_line.get("image_attachments", [])
+        if isinstance(image_attachments, list):
+            for attachment in image_attachments:
+                if isinstance(attachment, dict):
+                    # Check for video URLs
+                    uri = attachment.get("uri") or attachment.get("url")
+                    if uri:
+                        media_type = "VIDEO" if ".mp4" in uri.lower() or ".m4v" in uri.lower() else "IMAGE"
+                        medias.append(
+                            {
+                                "url": uri,
+                                "type": media_type,
+                                "prompt": attachment.get("prompt"),
+                            }
+                        )
+        
+        # Extract videos from video_generation field (if present)
+        video_generation = json_line.get("video_generation", {})
+        if isinstance(video_generation, dict):
+            video_media_sets = video_generation.get("media_sets", [])
+            for media_set in video_media_sets:
+                video_media = media_set.get("video_media", [])
+                for media in video_media:
+                    uri = media.get("uri")
+                    if uri:  # Only add if URI is not null
+                        medias.append(
+                            {
+                                "url": uri,
+                                "type": "VIDEO",
+                                "prompt": media.get("prompt"),
+                            }
+                        )
+        
+        # Extract from direct video fields
+        for possible_video_field in ["video_media", "generated_video", "reels"]:
+            field_data = json_line.get(possible_video_field)
+            if field_data:
+                if isinstance(field_data, list):
+                    for item in field_data:
+                        if isinstance(item, dict) and ("uri" in item or "url" in item):
+                            url = item.get("uri") or item.get("url")
+                            if url:  # Only add if URL is not null
+                                medias.append(
+                                    {
+                                        "url": url,
+                                        "type": "VIDEO",
+                                        "prompt": item.get("prompt"),
+                                    }
+                                )
+        
+        return medias
+
+    def get_cookies(self) -> dict:
+        """
+        Extracts necessary cookies from the Meta AI main page.
+        Handles challenge pages automatically.
+
+        Returns:
+            dict: A dictionary containing essential cookies.
+        """
+        session = HTMLSession()
+        headers = {}
+        fb_session = None
+        if self.fb_email is not None and self.fb_password is not None:
+            fb_session = get_fb_session(self.fb_email, self.fb_password)
+            headers = {"cookie": f"abra_sess={fb_session['abra_sess']}"}
+        
+        response = session.get(
+            "https://meta.ai",
+            headers=headers,
+        )
+        
+        # Initialize cookies_dict before challenge check
+        cookies_dict: Dict[str, str] = {}
+        
+        # Check for challenge page
+        challenge_url = detect_challenge_page(response.text)
+        if challenge_url:
+            logging.warning("⚠️  Meta AI returned a challenge page during get_cookies. Attempting to handle it...")
+            if fb_session:
+                cookies_dict = {"abra_sess": fb_session["abra_sess"]}
+            if handle_meta_ai_challenge(session, challenge_url=challenge_url, cookies_dict=cookies_dict):
+                # Retry after handling challenge
+                logging.info("🔄 Re-fetching cookies after challenge resolution...")
+                response = session.get("https://meta.ai", headers=headers)
+                # Save the rd_challenge cookie if it was extracted
+                if "rd_challenge" in cookies_dict:
+                    logging.info(f"[COOKIES] Saving rd_challenge: {cookies_dict['rd_challenge'][:50]}...")
+            else:
+                logging.error("❌ Failed to handle challenge page in get_cookies.")
+        
+        cookies = {
+            "_js_datr": extract_value(
+                response.text, start_str='_js_datr":{"value":"', end_str='",'
+            ),
+            "datr": extract_value(
+                response.text, start_str='datr":{"value":"', end_str='",'
+            ),
+            "lsd": extract_value(
+                response.text, start_str='"LSD",[],{"token":"', end_str='"}'
+            ),
+            "fb_dtsg": extract_value(
+                response.text, start_str='DTSGInitData",[],{"token":"', end_str='"'
+            ),
+        }
+
+        # Add rd_challenge if it was extracted from challenge handling
+        if challenge_url and "rd_challenge" in cookies_dict:
+            cookies["rd_challenge"] = cookies_dict["rd_challenge"]
+
+        if len(headers) > 0 and fb_session is not None:
+            cookies["abra_sess"] = fb_session["abra_sess"]
+        else:
+            cookies["abra_csrf"] = extract_value(
+                response.text, start_str='abra_csrf":{"value":"', end_str='",'
+            )
+        return cookies
+
+    def fetch_sources(self, fetch_id: str) -> List[Dict]:
+        """
+        Fetches sources from the Meta AI API based on the given query.
+
+        Args:
+            fetch_id (str): The fetch ID to use for the query.
+
+        Returns:
+            list: A list of dictionaries containing the fetched sources.
+        """
+
+        url = "https://graph.meta.ai/graphql?locale=user"
+        payload = {
+            "access_token": self.access_token,
+            "fb_api_caller_class": "RelayModern",
+            "fb_api_req_friendly_name": "AbraSearchPluginDialogQuery",
+            "variables": json.dumps({"abraMessageFetchID": fetch_id}),
+            "server_timestamps": "true",
+            "doc_id": "6946734308765963",
+        }
+
+        payload = urllib.parse.urlencode(payload)  # noqa
+
+        # Build cookie string with rd_challenge if present
+        cookie_parts = [
+            "dpr=2",
+            f'abra_csrf={self.cookies.get("abra_csrf")}',
+            f'datr={self.cookies.get("datr")}',
+            "ps_n=1",
+            "ps_l=1"
+        ]
+        if "rd_challenge" in self.cookies:
+            cookie_parts.append(f'rd_challenge={self.cookies.get("rd_challenge")}')
+        
+        headers = {
+            "authority": "graph.meta.ai",
+            "accept-language": "en-US,en;q=0.9,fr-FR;q=0.8,fr;q=0.7",
+            "content-type": "application/x-www-form-urlencoded",
+            "cookie": "; ".join(cookie_parts),
+            "x-fb-friendly-name": "AbraSearchPluginDialogQuery",
+        }
+
+        response = self.session.post(url, headers=headers, data=payload)
+        response_json = response.json()
+        message = response_json.get("data", {}).get("message", {})
+        search_results = (
+            (response_json.get("data", {}).get("message", {}).get("searchResults"))
+            if message
+            else None
+        )
+        if search_results is None:
+            return []
+
+        references = search_results["references"]
+        return references
+
+    @staticmethod
+    def _extract_graphql_errors(response: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Extract normalized GraphQL errors from parser output and raw events."""
+        errors: List[Dict[str, Any]] = []
+        seen = set()
+
+        def add_error(err: Any) -> None:
+            if not isinstance(err, dict):
+                return
+            message = str(err.get("message") or "Unknown GraphQL error")
+            extensions = err.get("extensions") if isinstance(err.get("extensions"), dict) else {}
+            code = str(extensions.get("code") or err.get("code") or err.get("type") or "UNKNOWN")
+            key = (message, code)
+            if key in seen:
+                return
+            seen.add(key)
+            errors.append(
+                {
+                    "message": message,
+                    "code": code,
+                    "locations": err.get("locations") if isinstance(err.get("locations"), list) else [],
+                    "path": err.get("path") if isinstance(err.get("path"), list) else [],
+                    "extensions": extensions,
+                }
+            )
+
+        for err in response.get("graphql_errors", []):
+            add_error(err)
+
+        for event in response.get("events", []):
+            if not isinstance(event, dict):
+                continue
+            for err in event.get("errors", []):
+                add_error(err)
+            data_obj = event.get("data")
+            if isinstance(data_obj, dict):
+                for err in data_obj.get("errors", []):
+                    add_error(err)
+                stream_obj = data_obj.get("sendMessageStream")
+                if isinstance(stream_obj, dict):
+                    for err in stream_obj.get("errors", []):
+                        add_error(err)
+
+        return errors
+
+    @staticmethod
+    def _graphql_error_summary(errors: List[Dict[str, Any]]) -> str:
+        if not errors:
+            return "Unknown GraphQL error"
+        primary = errors[0]
+        message = primary.get("message", "Unknown GraphQL error")
+        code = primary.get("code", "UNKNOWN")
+        return f"GraphQL error ({code}): {message}"
+
+    def generate_image_new(
+        self,
+        prompt: str,
+        orientation: str = "VERTICAL",
+        num_images: int = 1,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """
+        Generate images using new API (based on captured network requests).
+        
+        Args:
+            prompt: Text description of the image to generate
+            orientation: Image orientation - "VERTICAL", "HORIZONTAL", or "SQUARE"
+            num_images: Number of images to generate (default: 1)
+            **kwargs: Additional parameters
+            
+        Returns:
+            Dictionary with response data and extracted image URLs
+            
+        Example:
+            >>> ai = MetaAI(cookies={"datr": "...", "abra_sess": "..."})
+            >>> result = ai.generate_image_new("Astronaut in space", orientation="VERTICAL")
+            >>> if result.get('success'):
+            >>>     for url in result.get('image_urls', []):
+            >>>         print(f"Image URL: {url}")
+        """
+        # Validate inputs
+        if not prompt or not prompt.strip():
+            return {
+                "success": False,
+                "error": "Prompt cannot be empty",
+                "prompt": prompt
+            }
+        
+        valid_orientations = ["VERTICAL", "HORIZONTAL", "LANDSCAPE", "SQUARE"]
+        if orientation.upper() not in valid_orientations:
+            return {
+                "success": False,
+                "error": f"Invalid orientation '{orientation}'. Must be one of: {', '.join(valid_orientations)}",
+                "prompt": prompt
+            }
+        
+        try:
+            response = self.generation_api.generate_image(
+                prompt=prompt,
+                orientation=orientation,
+                num_images=num_images,
+                **kwargs
+            )
+
+            graphql_errors = self._extract_graphql_errors(response)
+            has_graphql_errors = bool(graphql_errors) or bool(response.get("has_graphql_errors"))
+            
+            # Extract image URLs with type safety
+            image_urls = response.get('images') or self.generation_api.extract_media_urls(response)
+            if image_urls and isinstance(image_urls, list) and len(image_urls) > 0 and isinstance(image_urls[0], dict):
+                image_urls = [img.get('url') for img in image_urls if isinstance(img, dict) and img.get('url')]
+            
+            has_urls = bool(image_urls and len(image_urls) > 0)
+            if has_graphql_errors:
+                status = "FAILED"
+            elif has_urls:
+                status = "READY"
+            else:
+                status = "PROCESSING"
+
+            success = has_urls and not has_graphql_errors
+            error_message = None
+            if has_graphql_errors:
+                error_message = self._graphql_error_summary(graphql_errors)
+            elif status == "PROCESSING":
+                error_message = "No image URLs returned yet - images may still be processing"
+            
+            return {
+                "success": success,
+                "prompt": prompt,
+                "orientation": orientation,
+                "num_images": num_images,
+                "image_urls": image_urls if has_urls else [],
+                "status": status,
+                "processing": status == "PROCESSING",
+                "has_graphql_errors": has_graphql_errors,
+                "graphql_errors": graphql_errors,
+                "response": response,
+                "error": error_message,
+            }
+        except Exception as e:
+            logging.error(f"Error generating images: {e}")
+            return {
+                "success": False,
+                "status": "FAILED",
+                "processing": False,
+                "has_graphql_errors": False,
+                "graphql_errors": [],
+                "error": str(e),
+                "prompt": prompt
+            }
+
+    def generate_video_new(
+        self,
+        prompt: str,
+        auto_poll: bool = True,
+        max_poll_attempts: int = 15,
+        poll_wait_seconds: int = 3,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """
+        Generate video using new API (based on captured network requests).
+        
+        NOTE: Video generation is asynchronous. By default, this method automatically
+        polls for video URLs (~24-45s). Videos are viewable at:
+        https://www.meta.ai/create/{media_id}
+        
+        Args:
+            prompt: Text description of the video to generate
+            auto_poll: If True, automatically poll for video IDs (default: True)
+            max_poll_attempts: Maximum polling attempts when auto_poll=True (default: 15)
+            poll_wait_seconds: Seconds between polls (default: 3)
+            **kwargs: Additional parameters
+            
+        Returns:
+            Dictionary with:
+            - success: True if request submitted successfully
+            - conversation_id: ID for tracking the video generation
+            - media_ids: Generated media IDs for later extend-video flows
+            - video_urls: List of actual video delivery URLs when available
+            - processing: True if video is still being generated/polled
+            
+        Example:
+            >>> ai = MetaAI(cookies={"datr": "...", "abra_sess": "..."})
+            >>> # Default: Auto-polls for URLs (waits ~24-45s)
+            >>> result = ai.generate_video_new("Astronaut in space")
+            >>> print(f"Video URLs: {result['video_urls']}")
+            >>> 
+            >>> # Quick submission (no polling, returns immediately)
+            >>> result = ai.generate_video_new("Astronaut in space", auto_poll=False)
+            >>> print(f"Track at: https://www.meta.ai/prompt/{result['conversation_id']}")
+        """
+        # Validate inputs
+        if not prompt or not prompt.strip():
+            return {
+                "success": False,
+                "error": "Prompt cannot be empty",
+                "prompt": prompt
+            }
+        
+        try:
+            response = self.generation_api.generate_video(
+                prompt=prompt,
+                fetch_urls=False,  # Don't use old fetch method
+                **kwargs
+            )
+
+            graphql_errors = self._extract_graphql_errors(response)
+            has_graphql_errors = bool(graphql_errors) or bool(response.get("has_graphql_errors"))
+            
+            # Extract conversation ID
+            conversation_id = response.get('conversation_id')
+            
+            # Extract video IDs and construct Meta AI tracking URLs
+            video_objects = response.get('video_objects', [])
+            media_ids = list(response.get('media_ids', []) or [])
+            video_page_urls = []
+
+            if not media_ids:
+                for vid_obj in video_objects:
+                    vid_id = vid_obj.get('id')
+                    if vid_id and vid_id not in media_ids:
+                        media_ids.append(vid_id)
+            
+            for vid_obj in video_objects:
+                vid_id = vid_obj.get('id')
+                if vid_id:
+                    # Construct Meta AI create page URL
+                    meta_ai_url = f"https://www.meta.ai/create/{vid_id}"
+                    video_page_urls.append(meta_ai_url)
+
+            # If no media IDs were attached to the initial response, attempt to
+            # recover them from the tracking URLs returned above.
+            if not media_ids and video_page_urls:
+                for page_url in video_page_urls:
+                    vid_id = page_url.rsplit('/', 1)[-1].split('?', 1)[0]
+                    if vid_id and vid_id not in media_ids:
+                        media_ids.append(vid_id)
+
+            actual_video_objects: List[Dict[str, Any]] = []
+            actual_video_urls: List[str] = []
+            if not has_graphql_errors and media_ids and conversation_id:
+                actual_video_objects = self.generation_api.fetch_video_urls_by_media_id(
+                    video_ids=media_ids,
+                    conversation_id=conversation_id,
+                    max_attempts=max_poll_attempts,
+                    wait_seconds=poll_wait_seconds,
+                )
+                actual_video_urls = [
+                    video.get('url')
+                    for video in actual_video_objects
+                    if isinstance(video, dict) and video.get('url')
+                ]
+            
+            # Auto-poll for video IDs if enabled
+            if not has_graphql_errors and auto_poll and conversation_id and not media_ids:
+                logging.info(f"Auto-polling for video IDs (max {max_poll_attempts} attempts, {poll_wait_seconds}s intervals)...")
+                video_page_urls = self.generation_api.poll_for_video_ids(
+                    conversation_id=conversation_id,
+                    max_attempts=max_poll_attempts,
+                    wait_seconds=poll_wait_seconds
+                )
+                for page_url in video_page_urls:
+                    vid_id = page_url.rsplit('/', 1)[-1].split('?', 1)[0]
+                    if vid_id and vid_id not in media_ids:
+                        media_ids.append(vid_id)
+
+                if media_ids and not actual_video_urls:
+                    actual_video_objects = self.generation_api.fetch_video_urls_by_media_id(
+                        video_ids=media_ids,
+                        conversation_id=conversation_id,
+                        max_attempts=max_poll_attempts,
+                        wait_seconds=poll_wait_seconds,
+                    )
+                    actual_video_urls = [
+                        video.get('url')
+                        for video in actual_video_objects
+                        if isinstance(video, dict) and video.get('url')
+                    ]
+            
+            has_urls = len(actual_video_urls) > 0
+            has_media = has_urls or len(media_ids) > 0
+            if has_graphql_errors:
+                status = "FAILED"
+            elif has_urls:
+                status = "READY"
+            elif media_ids or conversation_id:
+                status = "PROCESSING"
+            else:
+                status = "FAILED"
+
+            success = (not has_graphql_errors) and has_media
+            error_message = None
+            if has_graphql_errors:
+                error_message = self._graphql_error_summary(graphql_errors)
+            elif status == "FAILED":
+                error_message = "Video generation returned no media IDs or URLs"
+            
+            return {
+                "success": success,
+                "prompt": prompt,
+                "conversation_id": conversation_id,
+                "media_ids": media_ids,
+                "video_urls": actual_video_urls,
+                "video_objects": actual_video_objects or video_objects,
+                "status": status,
+                "processing": status == "PROCESSING",
+                "has_graphql_errors": has_graphql_errors,
+                "graphql_errors": graphql_errors,
+                "response": response,
+                "error": error_message,
+            }
+        except Exception as e:
+            logging.error(f"Error generating video: {e}")
+            return {
+                "success": False,
+                "status": "FAILED",
+                "processing": False,
+                "has_graphql_errors": False,
+                "graphql_errors": [],
+                "error": str(e),
+                "prompt": prompt
+            }
+
+    def generate_video(
+        self,
+        prompt: str,
+        media_ids: Optional[list] = None,
+        attachment_metadata: Optional[Dict[str, Any]] = None,
+        orientation: Optional[str] = None,
+        wait_before_poll: int = 10,
+        max_attempts: int = 30,
+        wait_seconds: int = 5,
+        verbose: bool = True
+    ) -> Dict:
+        """
+        DEPRECATED: Use generate_video_new() instead for better reliability.
+        
+        Generate a video from a text prompt using Meta AI.
+        Uses cookie-based authentication.
+
+        Args:
+            prompt: Text prompt for video generation
+            media_ids: Optional list of media IDs from uploaded images
+            attachment_metadata: Optional dict with 'file_size' (int) and 'mime_type' (str)
+            orientation: Video orientation. Valid values: "LANDSCAPE", "VERTICAL", "SQUARE". Defaults to None.
+            wait_before_poll: Seconds to wait before starting to poll (default: 10)
+            max_attempts: Maximum polling attempts (default: 30)
+            wait_seconds: Seconds between polling attempts (default: 5)
+            verbose: Whether to print status messages (default: True)
+
+        Returns:
+            Dictionary with success status, conversation_id, prompt, video_urls, and timestamp
+
+        Example:
+            ai = MetaAI(cookies={"datr": "...", "abra_sess": "..."})
+            result = ai.generate_video(
+                "Generate a video of a sunset",
+                media_ids=["1234567890"],
+                attachment_metadata={'file_size': 3310, 'mime_type': 'image/jpeg'}
+            )
+            if result["success"]:
+                print(f"Video URLs: {result['video_urls']}")
+        """
+        from meta.video_generation import VideoGenerator
+        
+        # Convert cookies dict to string format if needed
+        if isinstance(self.cookies, dict):
+            cookies_str = "; ".join([f"{k}={v}" for k, v in self.cookies.items() if v])
+        else:
+            cookies_str = str(self.cookies)
+        
+        # Use VideoGenerator for video generation
+        video_gen = VideoGenerator(cookies_str=cookies_str)
+        
+        # Try to use existing conversation if we have one
+        conv_id = self.external_conversation_id if hasattr(self, 'external_conversation_id') else None
+        
+        return video_gen.generate_video(
+            prompt=prompt,
+            media_ids=media_ids,
+            attachment_metadata=attachment_metadata,
+            orientation=orientation,
+            conversation_id=conv_id,
+            wait_before_poll=wait_before_poll,
+            max_attempts=max_attempts,
+            wait_seconds=wait_seconds,
+            verbose=verbose
+        )
+
+    def extend_video(
+        self,
+        media_id: str,
+        source_media_url: Optional[str] = None,
+        conversation_id: Optional[str] = None,
+        auto_poll: bool = True,
+        max_poll_attempts: int = 15,
+        poll_wait_seconds: int = 3,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """
+        Extend an existing video using a source media ID.
+
+        Args:
+            media_id: Source media ID to extend
+            source_media_url: Optional source media URL (auto-resolved when omitted)
+            conversation_id: Optional existing conversation ID
+            auto_poll: Whether to poll for actual extended video URLs
+            max_poll_attempts: Maximum polling attempts
+            poll_wait_seconds: Seconds between polling attempts
+            **kwargs: Additional internal request options
+
+        Returns:
+            Dictionary containing success status, conversation_id, media_ids, and video_urls
+        """
+        if not media_id or not str(media_id).strip():
+            return {
+                "success": False,
+                "error": "media_id cannot be empty",
+                "media_id": media_id,
+            }
+
+        try:
+            response = self.generation_api.extend_video(
+                media_id=str(media_id),
+                source_media_url=source_media_url,
+                conversation_id=conversation_id,
+                fetch_urls=False,
+                **kwargs,
+            )
+
+            graphql_errors = self._extract_graphql_errors(response)
+            has_graphql_errors = bool(graphql_errors) or bool(response.get("has_graphql_errors"))
+
+            conv_id = response.get('conversation_id') or conversation_id
+            media_ids = [
+                str(mid)
+                for mid in (response.get('media_ids') or [])
+                if str(mid).strip() and not str(mid).startswith('pending:')
+            ]
+
+            video_urls: List[str] = []
+            if not has_graphql_errors and auto_poll and media_ids and conv_id:
+                video_objects = self.generation_api.fetch_video_urls_by_media_id(
+                    video_ids=media_ids,
+                    conversation_id=conv_id,
+                    max_attempts=max_poll_attempts,
+                    wait_seconds=poll_wait_seconds,
+                )
+                video_urls = [
+                    video.get('url')
+                    for video in video_objects
+                    if isinstance(video, dict) and video.get('url')
+                ]
+
+            has_urls = len(video_urls) > 0
+            has_media = has_urls or len(media_ids) > 0
+            if has_graphql_errors:
+                status = "FAILED"
+            elif has_urls:
+                status = "READY"
+            elif media_ids or conv_id:
+                status = "PROCESSING"
+            else:
+                status = "FAILED"
+
+            success = (not has_graphql_errors) and has_media
+            error_message = None
+            if has_graphql_errors:
+                error_message = self._graphql_error_summary(graphql_errors)
+            elif status == "FAILED":
+                error_message = "Extend video returned no media IDs or URLs"
+
+            return {
+                "success": success,
+                "source_media_id": str(media_id),
+                "conversation_id": conv_id,
+                "media_ids": media_ids,
+                "video_urls": video_urls,
+                "status": status,
+                "processing": status == "PROCESSING",
+                "has_graphql_errors": has_graphql_errors,
+                "graphql_errors": graphql_errors,
+                "response": response,
+                "error": error_message,
+            }
+        except Exception as e:
+            logging.error(f"Error extending video: {e}")
+            return {
+                "success": False,
+                "status": "FAILED",
+                "processing": False,
+                "has_graphql_errors": False,
+                "graphql_errors": [],
+                "error": str(e),
+                "source_media_id": str(media_id),
+            }
+
+    def delete_conversation(self, conversation_id: str) -> Dict[str, Any]:
+        """
+        Delete a Meta AI conversation by id.
+
+        Mirrors the meta.ai GraphQL request:
+            POST https://www.meta.ai/api/graphql
+            body: {"doc_id": "ad35bda8475e29ba4264ef0d6cc0958a",
+                   "variables": {"input": {"id": "<conversation_id>"}}}
+
+        Args:
+            conversation_id: The conversation UUID to delete.
+
+        Returns:
+            Dict with keys: success (bool), status_code (int), data (raw response).
+        """
+        if not conversation_id:
+            return {"success": False, "error": "conversation_id is required"}
+
+        url = "https://www.meta.ai/api/graphql"
+        headers = {
+            "accept": "multipart/mixed, application/json",
+            "accept-language": "en-US,en;q=0.9",
+            "content-type": "application/json",
+            "origin": "https://www.meta.ai",
+            "referer": "https://www.meta.ai/",
+            "sec-ch-ua": '"Not-A.Brand";v="24", "Chromium";v="146"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Linux"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+        }
+        payload = {
+            "doc_id": "ad35bda8475e29ba4264ef0d6cc0958a",
+            "variables": {"input": {"id": conversation_id}},
+        }
+
+        cookies = self.get_cookies_dict() if hasattr(self, "get_cookies_dict") else (self.cookies or {})
+
+        try:
+            resp = requests.post(
+                url,
+                headers=headers,
+                cookies=cookies,
+                data=json.dumps(payload),
+                timeout=30,
+            )
+        except requests.RequestException as exc:
+            return {"success": False, "error": str(exc)}
+
+        try:
+            data = resp.json()
+        except ValueError:
+            text = resp.text or ""
+            marker = text.find("{")
+            try:
+                data = json.loads(text[marker:]) if marker != -1 else {"raw": text}
+            except Exception:
+                data = {"raw": text}
+
+        success = bool(
+            isinstance(data, dict)
+            and data.get("data", {}).get("deleteConversation", {}).get("success")
+        )
+
+        return {
+            "success": success,
+            "status_code": resp.status_code,
+            "data": data,
+        }
+
+    def list_conversations(self, page_size: int = 50, max_pages: int = 50) -> Dict[str, Any]:
+        """
+        List all conversations for the authenticated user.
+
+        Uses the meta.ai sidebar GraphQL query
+        `EctoConversationListWithPaginationRouterQuery`
+        (doc_id 5b38409017144f88a5e4fc84eb5923f4) and follows pagination cursors
+        until no more pages remain (or `max_pages` is reached).
+
+        Returns:
+            Dict with keys:
+              - success (bool)
+              - count (int)              total conversations returned
+              - conversations (list)     each item: {id, title, updated_at, pinned, type}
+              - pinned (list)            pinned conversations subset
+              - error (str, optional)
+        """
+        url = "https://www.meta.ai/api/graphql"
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/json",
+            "origin": "https://www.meta.ai",
+            "referer": "https://www.meta.ai/",
+        }
+        cookies = self.get_cookies_dict() if hasattr(self, "get_cookies_dict") else (self.cookies or {})
+
+        all_convos: List[Dict[str, Any]] = []
+        pinned_convos: List[Dict[str, Any]] = []
+        cursor: Optional[str] = None
+        pages = 0
+        try:
+            while True:
+                variables: Dict[str, Any] = {"first": page_size}
+                if cursor:
+                    variables["after"] = cursor
+                payload = {
+                    "doc_id": "5b38409017144f88a5e4fc84eb5923f4",
+                    "variables": variables,
+                }
+                resp = requests.post(
+                    url, headers=headers, cookies=cookies,
+                    data=json.dumps(payload), timeout=30,
+                )
+                try:
+                    data = resp.json()
+                except ValueError:
+                    return {"success": False, "error": f"Non-JSON response (status {resp.status_code})", "snippet": (resp.text or "")[:200]}
+
+                root = (data or {}).get("data") or {}
+                unpinned = root.get("unpinnedConversations") or {}
+                pinned = root.get("pinnedConversations") or {}
+
+                if pages == 0:
+                    for edge in (pinned.get("edges") or []):
+                        node = edge.get("node") or {}
+                        if node.get("id"):
+                            pinned_convos.append({
+                                "id": node.get("id"),
+                                "title": node.get("displayTitle") or node.get("title"),
+                                "updated_at": node.get("updatedAt"),
+                                "pinned": True,
+                                "type": node.get("type"),
+                            })
+
+                for edge in (unpinned.get("edges") or []):
+                    node = edge.get("node") or {}
+                    if node.get("id"):
+                        all_convos.append({
+                            "id": node.get("id"),
+                            "title": node.get("displayTitle") or node.get("title"),
+                            "updated_at": node.get("updatedAt"),
+                            "pinned": bool(node.get("pinned")),
+                            "type": node.get("type"),
+                        })
+
+                pages += 1
+                page_info = unpinned.get("pageInfo") or {}
+                if not page_info.get("hasNextPage") or pages >= max_pages:
+                    break
+                cursor = page_info.get("endCursor")
+                if not cursor:
+                    break
+
+            combined = pinned_convos + all_convos
+            # de-dupe by id, preserve order
+            seen = set(); merged: List[Dict[str, Any]] = []
+            for c in combined:
+                if c["id"] in seen: continue
+                seen.add(c["id"]); merged.append(c)
+
+            return {
+                "success": True,
+                "count": len(merged),
+                "conversations": merged,
+                "pinned": pinned_convos,
+                "pages_fetched": pages,
+            }
+        except requests.RequestException as exc:
+            return {"success": False, "error": str(exc)}
+
+    def delete_all_conversations(self) -> Dict[str, Any]:
+        """
+        Delete every conversation owned by the authenticated user.
+
+        Lists conversations via `list_conversations()` and calls
+        `delete_conversation()` for each id. Returns a summary report.
+        """
+        listing = self.list_conversations()
+        if not listing.get("success"):
+            return {"success": False, "error": listing.get("error", "Failed to list conversations"), "deleted": 0}
+
+        ids = [c["id"] for c in (listing.get("conversations") or []) if c.get("id")]
+        deleted: List[str] = []
+        failed: List[Dict[str, Any]] = []
+
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            futures = {pool.submit(self.delete_conversation, cid): cid for cid in ids}
+            for fut in as_completed(futures):
+                cid = futures[fut]
+                try:
+                    res = fut.result()
+                except Exception as exc:
+                    failed.append({"id": cid, "error": str(exc)})
+                    continue
+                if res.get("success"):
+                    deleted.append(cid)
+                else:
+                    failed.append({"id": cid, "error": res.get("error") or res.get("data")})
+
+        return {
+            "success": len(failed) == 0,
+            "total": len(ids),
+            "deleted_count": len(deleted),
+            "failed_count": len(failed),
+            "deleted": deleted,
+            "failed": failed,
+        }
+
+    # ------------------------------------------------------------------
+    # Helpers around the Meta AI sidebar GraphQL ops.
+    # All doc_ids extracted from authenticated meta.ai chunks (Apr 2026).
+    # ------------------------------------------------------------------
+    def _ecto_call(
+        self,
+        doc_id: str,
+        variables: Dict[str, Any],
+        op_name: str,
+    ) -> Dict[str, Any]:
+        url = "https://www.meta.ai/api/graphql"
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/json",
+            "origin": "https://www.meta.ai",
+            "referer": "https://www.meta.ai/",
+        }
+        cookies = self.get_cookies_dict() if hasattr(self, "get_cookies_dict") else (self.cookies or {})
+        try:
+            resp = requests.post(
+                url, headers=headers, cookies=cookies,
+                data=json.dumps({"doc_id": doc_id, "variables": variables}),
+                timeout=30,
+            )
+            resp.encoding = "utf-8"
+            try:
+                data = resp.json()
+            except ValueError:
+                return {"success": False, "error": f"Non-JSON response (status {resp.status_code})", "snippet": (resp.text or "")[:200]}
+            if data.get("errors"):
+                return {"success": False, "operation": op_name, "errors": data["errors"]}
+
+            # Inspect the GraphQL payload — meta.ai returns __typename "GqlError"
+            # (e.g. "You must be logged in...") with HTTP 200, which previously
+            # was reported as success=true. Treat any GqlError-typed node as
+            # failure and surface the message.
+            payload = data.get("data") or {}
+            gql_error_msg: Optional[str] = None
+            if isinstance(payload, dict):
+                for node in payload.values():
+                    if isinstance(node, dict) and node.get("__typename") == "GqlError":
+                        gql_error_msg = node.get("message") or "GraphQL error"
+                        break
+            if gql_error_msg:
+                return {
+                    "success": False,
+                    "operation": op_name,
+                    "error": gql_error_msg,
+                    "data": payload,
+                }
+            return {"success": True, "operation": op_name, "data": payload}
+        except requests.RequestException as exc:
+            return {"success": False, "operation": op_name, "error": str(exc)}
+
+    def rename_conversation(self, conversation_id: str, title: str) -> Dict[str, Any]:
+        """Rename a conversation (sidebar title)."""
+        return self._ecto_call(
+            "2775bdbd0886fb2056fae9c68d323368",
+            {"input": {"id": conversation_id, "title": title}},
+            "useEctoRenameConversationMutation",
+        )
+
+    def pin_conversation(self, conversation_id: str, pinned: bool = True) -> Dict[str, Any]:
+        """Pin or unpin a conversation in the sidebar."""
+        return self._ecto_call(
+            "ee1968033ea19d57f428774cf65b0b5d",
+            {"input": {"id": conversation_id, "pinned": bool(pinned)}},
+            "useEctoPinConversationMutation",
+        )
+
+    def warmup_conversation(self, conversation_id: str) -> Dict[str, Any]:
+        """Pre-warm the model session for a conversation (cuts first-token latency)."""
+        return self._ecto_call(
+            "e7f802582dbfed8e181b012e010993eb",
+            {"conversationId": conversation_id},
+            "useConversationWarmupMutation",
+        )
+
+    def stop_message(self, conversation_id: str, message_id: Optional[str] = None) -> Dict[str, Any]:
+        """Stop an in-flight assistant generation."""
+        variables: Dict[str, Any] = {"conversationId": conversation_id}
+        if message_id:
+            variables["messageId"] = message_id
+        return self._ecto_call(
+            "211fff1b73307b73d2033b7e84e821a8",
+            variables,
+            "useEctoStopMessageMutation",
+        )
+
+    def update_conversation_mode(self, conversation_id: str, mode: str) -> Dict[str, Any]:
+        """Switch a conversation's mode.
+
+        Known modes (from meta.ai web client):
+          - "think_fast"  : default fast/instant replies
+          - "think_hard"  : extended thinking / reasoning mode
+          - "CHAT", "IMAGINE", etc. (older constants, may still be accepted)
+        """
+        return self._ecto_call(
+            "c32bbe999c48e64e855dc63177d5153f",
+            {"input": {"conversationId": conversation_id, "mode": mode}},
+            "useUpdateConversationModeMutation",
+        )
+
+    def get_conversation_starters(self) -> Dict[str, Any]:
+        """Fetch suggested starter prompts shown on a fresh meta.ai page."""
+        result = self._ecto_call(
+            "8b93d5b56ca7a76d49601b95d9e79d3a",
+            {},
+            "EctoConversationStartersQuery",
+        )
+        if result.get("success"):
+            data = result.get("data") or {}
+            starters_list = data.get("conversationStartersByType") or []
+            result["starters"] = [
+                {
+                    "id": s.get("id"),
+                    "text": s.get("text"),
+                    "long_prompt": s.get("longPrompt"),
+                    "category": s.get("category"),
+                    "type": s.get("type"),
+                }
+                for s in starters_list
+            ]
+            result["count"] = len(result["starters"])
+        return result
+
+    def upload_image(self, file_path: str) -> Dict[str, Any]:
+        """
+        Upload an image to Meta AI for use in conversations, image generation, or video creation.
+        
+        Args:
+            file_path: Path to the local image file to upload
+            
+        Returns:
+            Dictionary containing:
+                - success: bool - Whether the upload succeeded
+                - media_id: str - The uploaded image's media ID (use this in prompts)
+                - upload_session_id: str - Unique upload session ID
+                - file_name: str - Original filename
+                - file_size: int - File size in bytes
+                - mime_type: str - MIME type of the image
+                - error: str - Error message if upload failed
+                
+        Example:
+            >>> ai = MetaAI(cookies={"datr": "...", "abra_sess": "...", "ecto_1_sess": "..."})
+            >>> result = ai.upload_image("path/to/image.jpg")
+            >>> if result["success"]:
+            >>>     print(f"Media ID: {result['media_id']}")
+            >>>     # Use media_id in subsequent prompts for image analysis/generation
+        """
+        # Initialize uploader with session, cookies, and access token
+        uploader = ImageUploader(self.session, self.cookies, self.access_token)
+        
+        # Perform upload
+        result = uploader.upload_image(file_path=file_path)
+        
+        # Ensure we always return a dict
+        if result is None:
+            return {
+                "success": False,
+                "error": "Upload failed with no response"
+            }
+        
+        return result
+
+
+if __name__ == "__main__":
+    meta = MetaAI()
+    resp = meta.prompt("What was the Warriors score last game?", stream=False)
+    print(resp)

@@ -1,0 +1,11 @@
+{
+  "name": "Node.js Runtime",
+  "description": "Bare Node.js runtime project",
+  "language": "js",
+  "runtime": "node",
+  "run": "node index.js",
+  "port": 3000,
+  "install": true,
+  "category": "language",
+  "icon": "node"
+}

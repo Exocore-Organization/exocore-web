@@ -1,0 +1,11 @@
+{
+  "name": "Eleventy",
+  "description": "Simpler static site generator",
+  "language": "html",
+  "runtime": "node",
+  "run": "npx @11ty/eleventy --serve",
+  "port": 8080,
+  "install": true,
+  "category": "web",
+  "icon": "html"
+}

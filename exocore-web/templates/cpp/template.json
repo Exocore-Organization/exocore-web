@@ -1,0 +1,11 @@
+{
+  "name": "C++",
+  "description": "C++ language project",
+  "language": "cpp",
+  "runtime": "g++",
+  "run": "g++ main.cpp -o main && ./main",
+  "port": 0,
+  "install": true,
+  "category": "language",
+  "icon": "cpp"
+}

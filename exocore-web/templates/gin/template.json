@@ -1,0 +1,11 @@
+{
+  "name": "Gin",
+  "description": "High-performance Go HTTP framework",
+  "language": "go",
+  "runtime": "go",
+  "run": "go run main.go",
+  "port": 8080,
+  "install": false,
+  "category": "backend",
+  "icon": "go"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Ionic",
+  "description": "Cross-platform mobile UI with web tech",
+  "language": "tsx",
+  "runtime": "node",
+  "run": "ionic serve",
+  "port": 8100,
+  "install": true,
+  "category": "app",
+  "icon": "angular"
+}

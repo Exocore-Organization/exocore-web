@@ -1,0 +1,11 @@
+{
+  "name": "C",
+  "description": "C language project",
+  "language": "c",
+  "runtime": "gcc",
+  "run": "gcc main.c -o main && ./main",
+  "port": 0,
+  "install": true,
+  "category": "language",
+  "icon": "c"
+}

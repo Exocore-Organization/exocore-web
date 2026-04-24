@@ -1,0 +1,11 @@
+{
+  "name": "Discord Bot",
+  "description": "Discord bot with discord.js",
+  "language": "js",
+  "runtime": "node",
+  "run": "node index.js",
+  "port": 0,
+  "install": true,
+  "category": "aibot",
+  "icon": "discord"
+}

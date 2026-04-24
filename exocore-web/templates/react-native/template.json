@@ -1,0 +1,11 @@
+{
+  "name": "React Native",
+  "description": "Native mobile apps in React",
+  "language": "tsx",
+  "runtime": "node",
+  "run": "npx react-native start",
+  "port": 8081,
+  "install": true,
+  "category": "app",
+  "icon": "react"
+}

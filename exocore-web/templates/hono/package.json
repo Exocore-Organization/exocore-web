@@ -1,0 +1,6 @@
+{
+  "name": "exocore-hono",
+  "version": "1.0.0",
+  "scripts": { "start": "bun run index.ts" },
+  "dependencies": { "hono": "^3.9.0" }
+}

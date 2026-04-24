@@ -1,0 +1,11 @@
+{
+  "name": "Preact",
+  "description": "Fast 3kB React alternative",
+  "language": "jsx",
+  "runtime": "node",
+  "run": "npm run dev",
+  "port": 5173,
+  "install": true,
+  "category": "web",
+  "icon": "preact"
+}

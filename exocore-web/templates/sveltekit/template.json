@@ -1,0 +1,11 @@
+{
+  "name": "SvelteKit",
+  "description": "Svelte full-stack framework",
+  "language": "svelte",
+  "runtime": "node",
+  "run": "npm run dev",
+  "port": 3000,
+  "install": true,
+  "category": "web",
+  "icon": "svelte"
+}

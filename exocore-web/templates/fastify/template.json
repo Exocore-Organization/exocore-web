@@ -1,0 +1,11 @@
+{
+  "name": "Fastify",
+  "description": "Fast and low overhead web framework for Node.js",
+  "language": "js",
+  "runtime": "node",
+  "run": "node index.js",
+  "port": 3000,
+  "install": true,
+  "category": "backend",
+  "icon": "fastify"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Haskell",
+  "description": "Pure functional language",
+  "language": "hs",
+  "runtime": "haskell",
+  "run": "runhaskell main.hs",
+  "port": 0,
+  "install": false,
+  "category": "language",
+  "icon": "haskell"
+}

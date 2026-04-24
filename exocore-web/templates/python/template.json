@@ -1,0 +1,11 @@
+{
+  "name": "Python",
+  "description": "Python project with Flask",
+  "language": "python",
+  "runtime": "python",
+  "run": "python3 app.py",
+  "port": 3000,
+  "install": true,
+  "category": "language",
+  "icon": "python"
+}

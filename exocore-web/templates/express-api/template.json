@@ -1,0 +1,11 @@
+{
+  "name": "Express API",
+  "description": "REST API with Express.js",
+  "language": "nodejs",
+  "runtime": "node",
+  "run": "node index.js",
+  "port": 3000,
+  "install": true,
+  "category": "backend",
+  "icon": "express"
+}

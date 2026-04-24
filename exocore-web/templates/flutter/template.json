@@ -1,0 +1,11 @@
+{
+  "name": "Flutter",
+  "description": "Cross-platform mobile UI toolkit",
+  "language": "dart",
+  "runtime": "flutter",
+  "run": "flutter run",
+  "port": 0,
+  "install": false,
+  "category": "app",
+  "icon": "dart"
+}

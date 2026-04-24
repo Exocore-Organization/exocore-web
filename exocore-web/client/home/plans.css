@@ -1,0 +1,133 @@
+.plans-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    z-index: 9999; display: flex; align-items: flex-start; justify-content: center;
+    padding: 32px 16px; overflow-y: auto;
+}
+.plans-modal {
+    background: #0c0c0c; border: 2px solid #ffd400; border-radius: 16px;
+    width: 100%; max-width: 520px; padding: 18px; color: #eaeaea;
+    font-family: var(--font-sans, system-ui, sans-serif);
+    display: flex; flex-direction: column; gap: 14px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.plans-modal.owner { max-width: 720px; }
+.plans-head {
+    display: flex; justify-content: space-between; align-items: center;
+}
+.plans-head h2 { margin: 0; color: #ffd400; font-size: 1.4rem; letter-spacing: .04em; }
+.plans-x {
+    background: transparent; color: #888; border: 0; font-size: 1.4rem;
+    cursor: pointer; line-height: 1;
+}
+.plans-x:hover { color: #fff; }
+.plans-loading { padding: 24px; text-align: center; color: #888; }
+.plans-card {
+    background: linear-gradient(135deg, rgba(255,212,0,0.08), rgba(255,212,0,0.02));
+    border: 1px solid rgba(255,212,0,0.4); border-radius: 12px;
+    padding: 16px; display: flex; flex-direction: column; gap: 8px;
+}
+.plans-card-head { display: flex; align-items: center; gap: 10px; }
+.plans-tag {
+    background: #ffd400; color: #111; font-weight: 800; padding: 2px 8px;
+    border-radius: 4px; font-size: 0.65rem; letter-spacing: .08em;
+}
+.plans-name { font-weight: 700; font-size: 1.1rem; }
+.plans-price { display: flex; align-items: baseline; gap: 6px; }
+.plans-amount { font-size: 1.6rem; font-weight: 800; color: #ffd400; }
+.plans-period { color: #888; font-size: 0.85rem; }
+.plans-fx { color: #888; font-size: 0.75rem; }
+.plans-feat { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; color: #d8d8d8; }
+.plans-status {
+    margin-top: 8px; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem;
+}
+.plans-status.ok { background: rgba(46,160,67,0.12); border: 1px solid rgba(46,160,67,0.4); color: #4cd16a; }
+.plans-status.pending { background: rgba(255,180,0,0.12); border: 1px solid rgba(255,180,0,0.4); color: #ffc34d; }
+
+.plans-tabs { display: flex; gap: 6px; }
+.plans-tabs button {
+    flex: 1; background: #161616; color: #aaa; border: 1px solid #2a2a2a;
+    border-radius: 8px; padding: 8px; font-weight: 700; cursor: pointer;
+}
+.plans-tabs button.on { background: #ffd400; color: #111; border-color: #ffd400; }
+
+.plans-pay {
+    display: flex; gap: 14px; background: #0a0a0a; border: 1px solid #1c1c1c;
+    border-radius: 12px; padding: 12px; align-items: flex-start; flex-wrap: wrap;
+}
+.plans-qr {
+    width: 150px; height: 150px; background: #fff; border-radius: 8px; padding: 6px;
+    flex-shrink: 0;
+}
+.plans-pay-meta { flex: 1; min-width: 200px; font-size: 0.9rem; line-height: 1.6; }
+.plans-help { color: #888; font-size: 0.8rem; margin-top: 6px; }
+
+.plans-form { display: flex; flex-direction: column; gap: 8px; }
+.plans-file { display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; color: #aaa; }
+.plans-file input[type="file"] {
+    background: #0a0a0a; color: #eaeaea; border: 1px solid #2a2a2a;
+    border-radius: 6px; padding: 6px;
+}
+.plans-form textarea {
+    background: #0a0a0a; color: #eaeaea; border: 1px solid #2a2a2a;
+    border-radius: 6px; padding: 8px; font-family: inherit; resize: vertical;
+    min-height: 60px; box-sizing: border-box;
+}
+.plans-err { color: #ff5b5b; font-size: 0.85rem; }
+.plans-ok { color: #4cd16a; font-size: 0.85rem; }
+.plans-submit {
+    background: #ffd400; color: #111; font-weight: 800; border: 0;
+    border-radius: 8px; padding: 10px; cursor: pointer; font-size: 0.95rem;
+}
+.plans-submit:hover { background: #ffe04d; }
+.plans-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.plans-submit.ok { background: #2ea043; color: #fff; flex: 1; }
+.plans-submit.bad { background: #c93232; color: #fff; flex: 1; }
+
+.plans-history {
+    margin-top: 8px; border-top: 1px solid #1c1c1c; padding-top: 10px;
+    display: flex; flex-direction: column; gap: 4px;
+}
+.plans-history h3 { margin: 0 0 6px; font-size: 0.95rem; color: #aaa; }
+.plans-row {
+    display: flex; gap: 8px; align-items: center; font-size: 0.8rem;
+    padding: 6px 0; border-bottom: 1px dashed #1c1c1c; flex-wrap: wrap;
+}
+.plans-row-when { color: #888; }
+.plans-row-amt { font-weight: 700; }
+.plans-row-method { color: #888; }
+.plans-row-status { font-weight: 800; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; text-transform: uppercase; }
+.plans-row-status.st-pending { background: rgba(255,180,0,0.15); color: #ffc34d; }
+.plans-row-status.st-approved { background: rgba(46,160,67,0.15); color: #4cd16a; }
+.plans-row-status.st-rejected { background: rgba(255,91,91,0.15); color: #ff5b5b; }
+.plans-row-reason { color: #888; font-style: italic; }
+
+.own-list { display: flex; flex-direction: column; gap: 10px; max-height: 60vh; overflow-y: auto; }
+.own-card {
+    background: #0a0a0a; border: 1px solid #1c1c1c; border-radius: 10px;
+    padding: 10px; display: flex; flex-direction: column; gap: 8px;
+}
+.own-card.st-pending { border-color: rgba(255,180,0,0.4); }
+.own-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.own-user { font-weight: 700; color: #ffd400; }
+.own-meta { color: #888; font-size: 0.75rem; }
+.own-amt { text-align: right; font-weight: 800; }
+.own-method { display: block; color: #888; font-size: 0.7rem; font-weight: 600; }
+.own-proof img { max-width: 100%; max-height: 240px; border-radius: 6px; }
+.own-note { background: #161616; padding: 6px 10px; border-radius: 6px; font-size: 0.85rem; }
+.own-status-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 0.8rem; color: #888; }
+.own-reason { color: #ff5b5b; }
+.own-decided { color: #aaa; }
+.own-actions { display: flex; gap: 8px; }
+
+.exo-plan-btn {
+    background: linear-gradient(135deg, #ffd400, #ffb700);
+    color: #111; font-weight: 800; border: 0; border-radius: 6px;
+    padding: 6px 12px; font-size: 0.8rem; cursor: pointer; letter-spacing: .04em;
+}
+.exo-plan-btn:hover { box-shadow: 0 0 0 2px rgba(255,212,0,0.3); }
+.exo-plan-btn.on { background: linear-gradient(135deg, #4cd16a, #2ea043); color: #fff; }
+.exo-owner-btn {
+    background: #c93232; color: #fff; font-weight: 800; border: 0;
+    border-radius: 6px; padding: 6px 10px; font-size: 0.75rem; cursor: pointer;
+}
+.exo-owner-btn:hover { background: #e44; }

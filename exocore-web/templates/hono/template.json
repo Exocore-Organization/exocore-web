@@ -1,0 +1,11 @@
+{
+  "name": "Hono",
+  "description": "Ultrafast edge framework",
+  "language": "ts",
+  "runtime": "bun",
+  "run": "bun run index.ts",
+  "port": 3000,
+  "install": true,
+  "category": "backend",
+  "icon": "hono"
+}

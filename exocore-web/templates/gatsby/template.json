@@ -1,0 +1,11 @@
+{
+  "name": "Gatsby",
+  "description": "Static site generator for React",
+  "language": "jsx",
+  "runtime": "node",
+  "run": "npm run develop",
+  "port": 8000,
+  "install": true,
+  "category": "web",
+  "icon": "gatsby"
+}
