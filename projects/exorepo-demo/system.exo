@@ -1,0 +1,18 @@
+project {
+  name = exorepo-demo
+  author = choruyt
+  description = Exocore demo project for editor screenshots.
+  language = js
+  runtime = node
+  icon = node
+}
+
+runtime {
+  run = node index.js
+  port = 3000
+  autoStart = false
+}
+
+state {
+  status = stopped
+}

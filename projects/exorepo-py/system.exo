@@ -1,0 +1,18 @@
+project {
+  name = exorepo-py
+  author = choruyt
+  description = Exocore demo Python project for PyLibs screenshots.
+  language = python
+  runtime = python
+  icon = python
+}
+
+runtime {
+  run = python3 app.py
+  port = 3000
+  autoStart = false
+}
+
+state {
+  status = stopped
+}

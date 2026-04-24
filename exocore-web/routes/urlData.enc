@@ -1,0 +1,10 @@
+{
+  "v": 1,
+  "alg": "aes-256-gcm",
+  "kdf": "pbkdf2-sha512",
+  "iter": 200000,
+  "salt": "7yVRgKXAEMrkBesQopSDbg==",
+  "nonce": "rIB8Cdtfa7D+GM4x",
+  "tag": "0GLdVj/rMGwYHbeqKUzfwA==",
+  "data": "YmtUvrLamfRVU0cBwBS+KuOT43CWN8nF5iaVj4DNaUhHrf5u+EJ3CZZHaO03MNu28P44cfSm7y5E0rk+4V2orVACht64A6RNVWKXFoXmCZE2cmmtmliE6Pdganmy1nPV8yUrsjLujgBXr+bRgNIpj1d/CXc/AaZYxAGqNZBrazNZ90P0ps7dY9gpqw3Uc+1PSkTaa0sIhQ=="
+}

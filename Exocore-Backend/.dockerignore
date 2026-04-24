@@ -1,0 +1,13 @@
+node_modules
+dist
+local-db
+*.log
+.env
+.env.*
+.git
+.gitignore
+.DS_Store
+README.md
+credentials.json
+token.json
+*.tsbuildinfo

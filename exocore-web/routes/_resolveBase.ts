@@ -1,19 +1,11 @@
-import fs from "fs";
-import path from "path";
 import axios from "axios";
-
-interface UrlConfig {
-  URL: string;
-  local?: string;
-  preferLocal?: boolean;
-}
+import { loadUrlConfig, type UrlConfig } from "./_urlVault";
 
 let cached: { base: string; expires: number } | null = null;
 const TTL_MS = 30_000;
 
 function loadCfg(): UrlConfig {
-  const p = path.join(__dirname, "urlData.json");
-  return JSON.parse(fs.readFileSync(p, "utf-8")) as UrlConfig;
+  return loadUrlConfig(__dirname);
 }
 
 async function probe(url: string): Promise<boolean> {

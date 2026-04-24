@@ -127,11 +127,42 @@ async function loginUser(page: Page) {
     return true;
 }
 
-async function snap(page: Page, slug: string, outDir: string) {
+async function snap(page: Page, slug: string, outDir: string): Promise<boolean> {
     const file = path.join(outDir, `${slug}.png`);
     fs.mkdirSync(path.dirname(file), { recursive: true });
-    await page.screenshot({ path: file, fullPage: false, type: "png" });
-    console.log("   📸", path.relative(process.cwd(), file));
+    try {
+        // Some panes (notably the webview/preview) replace the active target
+        // and crash a strict screenshot call. Treat that as "skip this slug
+        // and keep going" instead of killing the whole capture run.
+        if (page.isClosed()) {
+            console.warn(`   ⚠️  page closed before ${slug} — skipping`);
+            return false;
+        }
+        await page.screenshot({ path: file, fullPage: false, type: "png" });
+        console.log("   📸", path.relative(process.cwd(), file));
+        return true;
+    } catch (err: any) {
+        const msg = err?.message || String(err);
+        if (/Session closed|Target closed|detached Frame/i.test(msg)) {
+            console.warn(`   ⚠️  ${slug}: ${msg.split("\n")[0]} — skipping`);
+            return false;
+        }
+        throw err;
+    }
+}
+
+/**
+ * Wraps any "click + wait + snap" step so an individual pane that fails
+ * (modal didn't open, button moved, page detached) doesn't abort the whole
+ * pass. Returns true if the snap succeeded.
+ */
+async function safeStep(label: string, fn: () => Promise<unknown>): Promise<void> {
+    try {
+        await fn();
+    } catch (err: any) {
+        const msg = err?.message || String(err);
+        console.warn(`   ⚠️  step "${label}" failed: ${msg.split("\n")[0]}`);
+    }
 }
 
 async function clickAriaLabel(page: Page, label: string) {
@@ -147,7 +178,18 @@ async function clickAriaLabel(page: Page, label: string) {
 async function openProject(page: Page, projectId: string, autoInstall = true) {
     const url = `${BASE}/editor?project=${encodeURIComponent(projectId)}${autoInstall ? '&autoinstall=1' : ''}`;
     console.log(`📂 opening editor: ${url}`);
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
+    // Use `domcontentloaded` (not `networkidle2`) — Monaco + the wss watcher
+    // never go idle on this app, so networkidle would always time out and
+    // the timeout would propagate up as an unhandled rejection that killed
+    // the script silently. domcontentloaded fires after the HTML is parsed,
+    // which is enough; we still wait an explicit settle below for the
+    // editor surface to render.
+    try {
+        await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
+        console.log("   ↪ editor HTML loaded");
+    } catch (err: any) {
+        console.warn("   ⚠️  editor goto warning:", (err?.message || String(err)).split("\n")[0]);
+    }
     // Editor is heavy (Monaco + WSS). Give it a long settle.
     await new Promise(r => setTimeout(r, 10000));
 }
@@ -380,17 +422,27 @@ async function capturePass(
     await new Promise(r => setTimeout(r, 7000));
     await snap(page, "04-editor-console", outDir);
 
-    // 6) Webview pane
-    if (viewport.isMobile) await openMobileBottom(page, /preview|webview/i);
-    else                   await clickStatusBtn(page, /preview/i);
-    await new Promise(r => setTimeout(r, 6000));
-    await snap(page, "05-editor-webview", outDir);
+    // 6) Webview pane — on mobile, the embedded preview iframe consistently
+    //    crashes the headless chromium target (the page session detaches and
+    //    every subsequent puppeteer call fails). Skip it on mobile and only
+    //    attempt the capture in the desktop pass where it's stable.
+    if (!viewport.isMobile) {
+        await safeStep("webview", async () => {
+            await clickStatusBtn(page, /preview/i);
+            await new Promise(r => setTimeout(r, 6000));
+            await snap(page, "05-editor-webview", outDir);
+        });
+    } else {
+        console.log("   ⏭  skipping webview on mobile (chromium target crash workaround)");
+    }
 
     // 7) Problems pane
-    if (viewport.isMobile) await openMobileBottom(page, /problem|error|warning/i);
-    else                   await clickStatusBtn(page, /error|warning|problem/i);
-    await new Promise(r => setTimeout(r, 2000));
-    await snap(page, "06-editor-problems", outDir);
+    await safeStep("problems", async () => {
+        if (viewport.isMobile) await openMobileBottom(page, /problem|error|warning/i);
+        else                   await clickStatusBtn(page, /error|warning|problem/i);
+        await new Promise(r => setTimeout(r, 2000));
+        await snap(page, "06-editor-problems", outDir);
+    });
 
     // 8) Sidebar tabs: NPM / GitHub / Drive / AI
     const switchSidebar = async (tab: string) => {
@@ -398,60 +450,87 @@ async function capturePass(
         else                   await clickSidebarTab(page, tab);
     };
 
-    await switchSidebar("npm");
-    await new Promise(r => setTimeout(r, 4500));
-    await snap(page, "07-sidebar-npm", outDir);
+    await safeStep("sidebar:npm", async () => {
+        await switchSidebar("npm");
+        await new Promise(r => setTimeout(r, 4500));
+        await snap(page, "07-sidebar-npm", outDir);
+    });
 
-    await switchSidebar("git");
-    await new Promise(r => setTimeout(r, 3500));
-    await snap(page, "08-sidebar-github", outDir);
+    await safeStep("sidebar:git", async () => {
+        await switchSidebar("git");
+        await new Promise(r => setTimeout(r, 3500));
+        await snap(page, "08-sidebar-github", outDir);
+    });
 
-    await switchSidebar("drive");
-    await new Promise(r => setTimeout(r, 3500));
-    await snap(page, "09-sidebar-drive", outDir);
+    await safeStep("sidebar:drive", async () => {
+        await switchSidebar("drive");
+        await new Promise(r => setTimeout(r, 3500));
+        await snap(page, "09-sidebar-drive", outDir);
+    });
 
-    await switchSidebar("ai");
-    await new Promise(r => setTimeout(r, 3500));
-    await snap(page, "10-sidebar-ai", outDir);
+    await safeStep("sidebar:ai", async () => {
+        await switchSidebar("ai");
+        await new Promise(r => setTimeout(r, 3500));
+        await snap(page, "10-sidebar-ai", outDir);
+    });
 
     // 9) Switch back to explorer + open History modal
-    await switchSidebar("explorer");
-    await new Promise(r => setTimeout(r, 1500));
-    await page.evaluate(() => {
-        const rows = Array.from(document.querySelectorAll(".tree-row")) as HTMLElement[];
-        const target = rows.find(r => /index\.js/i.test(r.textContent || ""));
-        if (target) target.click();
+    await safeStep("history-modal", async () => {
+        await switchSidebar("explorer");
+        await new Promise(r => setTimeout(r, 1500));
+        await page.evaluate(() => {
+            const rows = Array.from(document.querySelectorAll(".tree-row")) as HTMLElement[];
+            const target = rows.find(r => /index\.js/i.test(r.textContent || ""));
+            if (target) target.click();
+        });
+        await new Promise(r => setTimeout(r, 2500));
+        await clickAriaLabel(page, "Code history");
+        await new Promise(r => setTimeout(r, 3500));
+        await snap(page, "11-history-modal", outDir);
+        await closeTopModal(page);
     });
-    await new Promise(r => setTimeout(r, 2500));
-    await clickAriaLabel(page, "Code history");
-    await new Promise(r => setTimeout(r, 3500));
-    await snap(page, "11-history-modal", outDir);
-    await closeTopModal(page);
 
     // 10) Settings modal
-    await clickAriaLabel(page, "Settings");
-    await new Promise(r => setTimeout(r, 3000));
-    await snap(page, "12-settings-modal", outDir);
+    await safeStep("settings-modal", async () => {
+        await clickAriaLabel(page, "Settings");
+        await new Promise(r => setTimeout(r, 3000));
+        await snap(page, "12-settings-modal", outDir);
+    });
 
     // 11) Switch theme
-    await page.evaluate(() => {
-        const btns = Array.from(document.querySelectorAll("button, .theme-card, .theme-item, [role='button']")) as HTMLElement[];
-        const target = btns.find(b => /dracula/i.test((b.textContent || "")) && b.offsetParent !== null);
-        if (target) target.click();
+    await safeStep("settings-theme", async () => {
+        await page.evaluate(() => {
+            const btns = Array.from(document.querySelectorAll("button, .theme-card, .theme-item, [role='button']")) as HTMLElement[];
+            const target = btns.find(b => /dracula/i.test((b.textContent || "")) && b.offsetParent !== null);
+            if (target) target.click();
+        });
+        await new Promise(r => setTimeout(r, 2500));
+        await snap(page, "13-settings-theme-changed", outDir);
+        await closeTopModal(page);
     });
-    await new Promise(r => setTimeout(r, 2500));
-    await snap(page, "13-settings-theme-changed", outDir);
-    await closeTopModal(page);
 
     /* ===== Python project: exorepo-py — PyLibs pane ===== */
-    await openProject(page, "exorepo-py", false);
-    await switchSidebar("pypi");
-    await new Promise(r => setTimeout(r, 5000));
-    await snap(page, "14-sidebar-pylib", outDir);
+    await safeStep("python:pylib", async () => {
+        await openProject(page, "exorepo-py", false);
+        await switchSidebar("pypi");
+        await new Promise(r => setTimeout(r, 5000));
+        await snap(page, "14-sidebar-pylib", outDir);
+    });
 
-    await page.close();
-    await ctx.close();
+    try { await page.close(); } catch { /* already closed */ }
+    try { await ctx.close();  } catch { /* already gone   */ }
 }
+
+// Catch any orphan rejections from the puppeteer/chromium internals so the
+// whole script doesn't die silently mid-pass — we'd much rather log the
+// failure and continue with whatever screenshots we managed to capture.
+process.on("unhandledRejection", (reason) => {
+    const msg = (reason as any)?.message || String(reason);
+    console.warn("⚠️  unhandledRejection:", msg.split("\n")[0]);
+});
+process.on("uncaughtException", (err) => {
+    console.warn("⚠️  uncaughtException:", (err?.message || String(err)).split("\n")[0]);
+});
 
 (async () => {
     fs.mkdirSync(OUT, { recursive: true });

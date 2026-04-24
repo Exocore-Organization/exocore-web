@@ -80,7 +80,7 @@ Per-route walkthroughs (with **desktop** + **mobile** screenshots) live under
 Raw screenshot grids:
 
 - Top-level routes: [`docs/screenshots/desktop`](./docs/screenshots/desktop) · [`docs/screenshots/mobile`](./docs/screenshots/mobile)
-- Editor workflow: [`docs/screenshots/editor`](./docs/screenshots/editor) (desktop) · [`docs/screenshots/editor/mobile`](./docs/screenshots/editor/mobile)
+- Editor workflow: [`docs/screenshots/editor`](./docs/screenshots/editor) (desktop, 14 frames) · [`docs/screenshots/editor/mobile`](./docs/screenshots/editor/mobile) (mobile, 5 frames — see *Mobile capture caveats* below)
 
 ---
 
@@ -112,6 +112,42 @@ Useful environment overrides (both scripts):
 | `EXO_LOGIN_PASS`  | `Stevepen4321!`      | Demo-user password |
 | `VIEWPORT`        | *(both)*             | `desktop` or `mobile` to filter (editor script) |
 | `CHROMIUM_PATH`   | bundled nix path     | Override the Chromium binary |
+
+### Mobile capture caveats
+
+Headless Chromium 138 has a stubborn bug where the embedded **preview /
+webview** target detaches the parent page session whenever the editor's
+mobile preview pane is opened. To keep the rest of the mobile pass useful,
+the script:
+
+- Skips the `05-editor-webview` capture on mobile entirely.
+- Wraps every other step in a tolerant `safeStep(...)` so a single
+  pane-open failure doesn't abort the whole pass.
+
+The mobile output therefore covers the **panel gate, editor default,
+explorer file open, terminal pane, and console pane** (5 frames). The
+sidebar / modal panes still need a manual capture pass on a real device —
+that workflow is on the docs roadmap. Desktop captures all 14 frames
+without limitation.
+
+---
+
+## 📚 Standalone docs site (`exocore-docs/`)
+
+The sibling [`../exocore-docs`](../exocore-docs) project is a Vite + React
+SPA that bundles every Markdown file under `exocore-web/docs/**/*.md` into
+a searchable static site, hostable on Hugging Face Spaces, GitHub Pages,
+or any plain static host.
+
+```bash
+cd exocore-docs
+npm install
+npm run dev          # vite dev server on :5173
+npm run build        # → exocore-docs/dist (drop into Hugging Face Static Space)
+```
+
+See [`../exocore-docs/README.md`](../exocore-docs/README.md) for the full
+deploy guide.
 
 ---
 

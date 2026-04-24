@@ -1325,3 +1325,54 @@ Capture-only rate-limit bypass: `app.ts` reads
 `process.env.EXOCORE_CAPTURE === "1"` to raise the global limit.
 The `Start application` workflow ships **without** that env in
 production; set it temporarily when re-capturing.
+
+### Backend Docker hardening + URL vault + standalone docs site (Apr 24, 2026)
+
+A multi-piece pass focused on shippable, leak-resistant artifacts:
+
+- **`Exocore-Backend/Dockerfile`** — multi-stage build (`node:20-bookworm-slim` →
+  `tsc` to JS → `javascript-obfuscator` pass → minimal runtime image as
+  the non-root `exocore` user, `tini` as PID 1, port 8081). Designed for
+  hassle-free hosting on Hugging Face / Fly / Render. Backed by
+  `Exocore-Backend/scripts/obfuscate-dist.js` (control-flow flatten,
+  string-array shuffle/encode, dead-code injection). New
+  `npm run build:secure` and `javascript-obfuscator` devDependency.
+
+- **URL vault for `exocore-web/routes/urlData.json`** — old plain JSON
+  was readable from any source-tree dump. Replaced with
+  `routes/_urlVault.ts` (AES-256-GCM, PBKDF2-SHA512 200k iter,
+  fragmented passphrase, random per-file salt+nonce). Resolver
+  (`_resolveBase.ts`) now goes through `loadUrlConfig()`. Migration done
+  via `exocore-web/scripts/encrypt-urldata.ts` — produces `urlData.enc`
+  and reduces the legacy `urlData.json` to a placeholder so the URL no
+  longer leaks from the file tree. Auto-migration on first boot if a
+  legacy file is present without a vault.
+
+- **Mobile editor capture pass** — `capture-editor.ts` rewritten so the
+  same script runs against both the desktop (1440×900) and mobile
+  (414×896) viewports, and auto-creates the `exorepo-demo` (node) and
+  `exorepo-py` (python) projects via the `/api/editor/templates/create-from-template`
+  SSE endpoint so the editor screenshots have something to render.
+  Hardened with a `safeStep()` wrapper, `unhandledRejection` guard, and
+  a relaxed `domcontentloaded` wait. Mobile output saved under
+  `docs/screenshots/editor/mobile/00..04-*.png` (5 frames covering the
+  panel gate + editor default + explorer + terminal + console). The
+  remaining mobile panes (sidebar/modals) still hit a Chromium 138
+  webview-target detach bug — documented in `exocore-web/README.md`
+  under *Mobile capture caveats*.
+
+- **`exocore-docs/`** — brand-new Vite + React 19 + react-markdown SPA
+  that bundles every `.md` under `exocore-web/docs/**/*.md` at build
+  time (`import.meta.glob`) into a searchable static site, hostable on
+  Hugging Face Static Spaces / GitHub Pages / Netlify. Includes:
+  - In-memory `/`-shortcut search with snippet preview (`src/lib/docs.ts`).
+  - HashRouter (no server rewrite required).
+  - Sidebar nav, breadcrumbs, prev/next pager, dark-mode syntax
+    highlight (rehype-highlight + GitHub Dark theme).
+  - Single-file palette (`src/styles.css`) with mobile drawer.
+  - `npm run build` → 632 KB JS / 11 KB CSS (197 KB gzipped) into
+    `exocore-docs/dist`.
+
+- **Top-level `exocore-web/README.md`** added with credentials matrix,
+  capture instructions, mobile capture caveats, and a link to the new
+  `exocore-docs/` deploy guide.

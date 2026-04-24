@@ -5,14 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resolveBaseUrl = resolveBaseUrl;
 exports.clearResolvedCache = clearResolvedCache;
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
 const axios_1 = __importDefault(require("axios"));
+const _urlVault_1 = require("./_urlVault");
 let cached = null;
 const TTL_MS = 30_000;
 function loadCfg() {
-    const p = path_1.default.join(__dirname, "urlData.json");
-    return JSON.parse(fs_1.default.readFileSync(p, "utf-8"));
+    return (0, _urlVault_1.loadUrlConfig)(__dirname);
 }
 async function probe(url) {
     try {

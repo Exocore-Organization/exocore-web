@@ -1,5 +1,4 @@
 {
-  "URL": "https://raw.githubusercontent.com/ChoruOfficial/global-exocore/refs/heads/main/server.json",
-  "local": "http://localhost:8081",
+  "_comment": "This file is no longer the source of truth — see urlData.enc next to it. Re-encrypt by running `npx tsx exocore-web/scripts/encrypt-urldata.ts`.",
   "preferLocal": true
 }
