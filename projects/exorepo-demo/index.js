@@ -1,7 +1,15 @@
-const http = require('http');
+const express = require('express');
+const app = express();
 const PORT = 3000;
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Hello from Exocore Node.js!\n');
+
+app.use(express.json());
+
+app.get('/', (req, res) => {
+ res.json({ message: 'Hello from Express API' });
 });
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+app.get('/health', (req, res) => {
+ res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+app.listen(PORT, () => console.log(`Express API running on port ${PORT}`));

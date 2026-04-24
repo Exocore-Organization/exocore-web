@@ -1,5 +1,6 @@
 {pkgs}: {
   deps = [
+    pkgs.fish
     pkgs.chromium
     pkgs.libdrm
     pkgs.gtk3

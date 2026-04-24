@@ -25,6 +25,12 @@ const LANG_DESCRIPTIONS: Record<string, string> = {
     php: 'Classic server-side scripting for web applications.',
 };
 
+// Languages the editor / runtime currently support end-to-end.
+// Anything not listed here is rendered with a 🔒 badge and is not
+// selectable. Re-enable a language by adding its `system.json` id below
+// once the matching template + runtime support are wired in.
+const ENABLED_LANGUAGES = new Set<string>(['nodejs', 'python']);
+
 const TOTAL_STEPS = 4;
 
 interface CreateProjectWizardProps {
@@ -146,19 +152,71 @@ export const CreateProjectWizard: React.FC<CreateProjectWizardProps> = ({
         ) : (
             <>
             <div className="wizard-step-label">Step 2 of {TOTAL_STEPS} — Choose your environment</div>
-            <p className="wizard-hint">Pick a language for your project.</p>
+            <p className="wizard-hint">
+                Pick a language for your project. Locked languages are
+                coming soon — Node.js and Python are fully supported today.
+            </p>
             <div className="wizard-lang-grid">
-            {systemData.languages.map(l => (
-                <button
-                key={l.id}
-                className={`wizard-lang-card ${!useTemplate && createForm.language === l.id ? 'selected' : ''}`}
-                onClick={() => { onUseTemplateChange(false); onLangChange(l.id); }}
-                >
-                <div className="wizard-lang-icon">{l.icon}</div>
-                <div className="wizard-lang-name">{l.label}</div>
-                <div className="wizard-lang-desc">{LANG_DESCRIPTIONS[l.id] || ''}</div>
-                </button>
-            ))}
+            {systemData.languages.map(l => {
+                const isEnabled = ENABLED_LANGUAGES.has(l.id);
+                const isSelected = !useTemplate && createForm.language === l.id;
+                return (
+                    <button
+                    key={l.id}
+                    className={`wizard-lang-card ${isSelected ? 'selected' : ''} ${isEnabled ? '' : 'locked'}`}
+                    onClick={() => {
+                        if (!isEnabled) return;
+                        onUseTemplateChange(false);
+                        onLangChange(l.id);
+                    }}
+                    disabled={!isEnabled}
+                    title={isEnabled ? l.label : `${l.label} support is coming soon`}
+                    aria-disabled={!isEnabled}
+                    style={
+                        isEnabled
+                            ? undefined
+                            : { opacity: 0.55, cursor: 'not-allowed', position: 'relative' }
+                    }
+                    >
+                    <div className="wizard-lang-icon" style={{ position: 'relative' }}>
+                        {l.icon}
+                        {!isEnabled && (
+                            <span
+                                aria-hidden
+                                style={{
+                                    position: 'absolute', top: -6, right: -10,
+                                    fontSize: 14, lineHeight: 1,
+                                    background: 'rgba(15, 16, 22, 0.85)',
+                                    border: '1px solid rgba(255,255,255,0.18)',
+                                    borderRadius: 999, padding: '2px 4px',
+                                    boxShadow: '0 2px 6px rgba(0,0,0,0.4)',
+                                }}
+                            >🔒</span>
+                        )}
+                    </div>
+                    <div className="wizard-lang-name">
+                        {l.label}
+                        {!isEnabled && (
+                            <span
+                                style={{
+                                    marginLeft: 6, fontSize: 10, fontWeight: 600,
+                                    letterSpacing: '0.06em', textTransform: 'uppercase',
+                                    color: '#fbbf24',
+                                    background: 'rgba(251,191,36,0.12)',
+                                    border: '1px solid rgba(251,191,36,0.35)',
+                                    borderRadius: 999, padding: '2px 7px',
+                                }}
+                            >Soon</span>
+                        )}
+                    </div>
+                    <div className="wizard-lang-desc">
+                        {isEnabled
+                            ? (LANG_DESCRIPTIONS[l.id] || '')
+                            : `${l.label} runtime + templates aren’t wired up yet — coming soon.`}
+                    </div>
+                    </button>
+                );
+            })}
             </div>
             </>
         )}

@@ -44,7 +44,7 @@ export const LayoutHeader: React.FC<LayoutHeaderProps> = ({
 }) => (
     <header className="main-header" style={{ background: active.surface }}>
         <button className="icon-btn" onClick={onBack} aria-label="Back"><ChevronLeft size={20} /></button>
-        <div className="header-title">EXOCORE</div>
+        <div className="header-title">EXOCODE</div>
         <div className="header-actions">
             {hasActiveFile && activeFileIsCode && autoSaveState !== 'idle' && (
                 <span
