@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Send, Settings2, Trash2, Trash, RotateCcw, Image as ImageIcon, MessageSquare, Zap, Brain, Gauge, KeyRound, Check, X, Plus, Eraser, Sparkles, MoreHorizontal } from 'lucide-react';
 import axios from 'axios';
 import { rpc } from '../access/rpcClient';
@@ -190,16 +191,41 @@ export const ExocoreAI: React.FC<ExocoreAIProps> = ({ projectId, theme }) => {
     const cookieRef = useRef<CookieMap | null>(null);
     const [showCookieMenu, setShowCookieMenu] = useState(false);
     const [showActionsMenu, setShowActionsMenu] = useState(false);
+    // Anchor + computed coordinates for the actions popover. We render it
+    // through a portal at document.body so no parent stacking context (chat
+    // list, terminal frame, modal backdrop, etc) can ever clip it.
+    const actionsBtnRef = useRef<HTMLButtonElement | null>(null);
+    const [actionsMenuPos, setActionsMenuPos] = useState<{ top: number; right: number } | null>(null);
     useEffect(() => {
-        if (!showActionsMenu) return;
+        if (!showActionsMenu) {
+            setActionsMenuPos(null);
+            return;
+        }
+        const place = () => {
+            const btn = actionsBtnRef.current;
+            if (!btn) return;
+            const r = btn.getBoundingClientRect();
+            setActionsMenuPos({
+                top: Math.round(r.bottom + 6),
+                right: Math.max(8, Math.round(window.innerWidth - r.right)),
+            });
+        };
+        place();
         const onDoc = (e: MouseEvent) => {
             const t = e.target as HTMLElement | null;
             if (!t) return;
             if (t.closest('.actions-menu') || t.closest('.icon-only-btn')) return;
             setShowActionsMenu(false);
         };
+        const onResize = () => place();
         document.addEventListener('mousedown', onDoc);
-        return () => document.removeEventListener('mousedown', onDoc);
+        window.addEventListener('resize', onResize);
+        window.addEventListener('scroll', onResize, true);
+        return () => {
+            document.removeEventListener('mousedown', onDoc);
+            window.removeEventListener('resize', onResize);
+            window.removeEventListener('scroll', onResize, true);
+        };
     }, [showActionsMenu]);
     const [cookiePaste, setCookiePaste] = useState('');
     const [cookieBusy, setCookieBusy] = useState(false);
@@ -379,6 +405,57 @@ export const ExocoreAI: React.FC<ExocoreAIProps> = ({ projectId, theme }) => {
                     });
                 }
             };
+
+            // ── exo.md Recent-changes auto-log ────────────────────────────
+            // Each time an action moves to `done`, drop a one-line bullet into
+            // exo.md's "## Recent changes" section so the file stays a live
+            // ledger of what the agent has touched. We track which actions
+            // we've already logged via a ref so React re-renders don't double-
+            // append, and we use file_edit-style replace so we never clobber
+            // user edits in other parts of the file.
+            const loggedActionsRef = useRef<Set<string>>(new Set());
+            const exoMdAppend = async (line: string) => {
+                try {
+                    const { rpc } = await import('../access/rpcClient');
+                    let current = '';
+                    try {
+                        const r = await rpc.call<any>('coding.read', { projectId, filePath: 'exo.md' });
+                        current = typeof r?.content === 'string' ? r.content : '';
+                    } catch {}
+                    if (!current) return; // exo.md not seeded yet — skip
+                    const stamp = new Date().toISOString().slice(0, 16).replace('T', ' ');
+                    const bullet = `- \`${stamp}\` ${line}`;
+                    let next: string;
+                    if (current.includes('## Recent changes')) {
+                        // Insert immediately after the heading line.
+                        next = current.replace(
+                            /(##\s+Recent changes\s*\n)/,
+                            (_m, h) => `${h}${bullet}\n`,
+                        );
+                    } else {
+                        next = `${current.trimEnd()}\n\n## Recent changes\n${bullet}\n`;
+                    }
+                    if (next === current) return;
+                    await rpc.call('coding.save', { projectId, filePath: 'exo.md', content: next, source: 'agent' });
+                } catch { /* best-effort */ }
+            };
+            useEffect(() => {
+                for (const msg of messages) {
+                    if (!msg.actions) continue;
+                    msg.actions.forEach((a, idx) => {
+                        if (a.status !== 'done') return;
+                        const key = `${msg.id}#${idx}`;
+                        if (loggedActionsRef.current.has(key)) return;
+                        loggedActionsRef.current.add(key);
+                        let line = '';
+                        if (a.type === 'file_create') line = `Created \`${a.target}\``;
+                        else if (a.type === 'file_edit') line = `Edited \`${a.target}\``;
+                        else if (a.type === 'file_delete') line = `Deleted \`${a.target}\``;
+                        else if (a.type === 'terminal') line = `Ran \`${a.target}\``;
+                        if (line) exoMdAppend(line);
+                    });
+                }
+            }, [messages]);
 
             // Ensure the project has an exo.md memory file (mirrors replit.md).
             // Created lazily the first time the agent runs anything in a
@@ -1467,6 +1544,7 @@ Use the project tree (find ./) and existing files supplied in the workspace cont
                                     <span className="chip-label">{sessionId ? 'Pinned' : 'Create'}</span>
                                 </button>
                                 <button
+                                    ref={actionsBtnRef}
                                     className={`icon-only-btn ${showActionsMenu ? 'open' : ''}`}
                                     onClick={() => { setShowActionsMenu(v => !v); setShowCookieMenu(false); }}
                                     title="More actions"
@@ -1502,8 +1580,13 @@ Use the project tree (find ./) and existing files supplied in the workspace cont
                             </div>
                         </div>
 
-                        {showActionsMenu && (
-                            <div className="actions-menu" onClick={(e) => e.stopPropagation()}>
+                        {showActionsMenu && actionsMenuPos && createPortal(
+                            <div
+                                className="actions-menu portal"
+                                style={{ top: actionsMenuPos.top, right: actionsMenuPos.right }}
+                                onClick={(e) => e.stopPropagation()}
+                                role="menu"
+                            >
                                 <button className="action-item" onClick={() => { setShowActionsMenu(false); warmupSession(); }} disabled={busySession || !sessionId}>
                                     <Zap size={14} color="#f1c40f" />
                                     <span>Pre-warm convo</span>
@@ -1521,17 +1604,23 @@ Use the project tree (find ./) and existing files supplied in the workspace cont
                                         <span className="action-hint">local history only</span>
                                     </button>
                                 )}
-                                <button className="action-item danger" onClick={() => { setShowActionsMenu(false); deleteAllConversations(); }}>
+                                <button
+                                    className="action-item danger"
+                                    onClick={() => { setShowActionsMenu(false); deleteAllConversations(); }}
+                                    disabled={!cookieMap}
+                                    title={!cookieMap ? 'Paste your meta.ai cookies first' : 'Delete every conversation on your meta.ai account'}
+                                >
                                     <Trash size={14} />
                                     <span>Clear all on meta.ai</span>
-                                    <span className="action-hint">wipe every convo</span>
+                                    <span className="action-hint">{cookieMap ? 'wipe every convo' : 'cookies needed'}</span>
                                 </button>
                                 <div className="action-sep" />
                                 <button className="action-item" onClick={() => { setShowActionsMenu(false); setShowKiloSetup(!showKiloSetup); }}>
                                     <Settings2 size={14} color={theme.textMain} />
                                     <span>{showKiloSetup ? 'Close setup' : 'Cookie setup'}</span>
                                 </button>
-                            </div>
+                            </div>,
+                            document.body,
                         )}
                     </div>
 
@@ -1788,7 +1877,10 @@ Use the project tree (find ./) and existing files supplied in the workspace cont
                         .mode-switch-btn.active.thinking { background: linear-gradient(135deg, #a855f7, #ec4899); color: #fff; box-shadow: 0 4px 14px rgba(168,85,247,0.35), inset 0 1px 0 rgba(255,255,255,0.2); }
                         .mode-switch-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-                        /* Actions overflow popover */
+                        /* Actions overflow popover. Rendered through a body
+                         * portal with position: fixed and a sky-high z-index
+                         * so no parent (chat list, terminal, modal backdrop)
+                         * can clip or stack over it. */
                         .actions-menu {
                             position: absolute; top: calc(100% - 6px); right: 14px; z-index: 50;
                             min-width: 240px; max-width: calc(100vw - 28px);
@@ -1800,6 +1892,10 @@ Use the project tree (find ./) and existing files supplied in the workspace cont
                             box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.02);
                             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
                             animation: actions-pop 0.16s ease-out;
+                        }
+                        .actions-menu.portal {
+                            position: fixed;
+                            z-index: 99999;
                         }
                         @keyframes actions-pop { from { opacity: 0; transform: translateY(-4px) scale(0.98); } to { opacity: 1; transform: none; } }
                         .action-item {
