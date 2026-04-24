@@ -13,6 +13,29 @@ Every screenshot below was captured by
 seeded `exorepo-demo` (Node) project. Mobile shots come from a 414×896 iPhone
 profile; desktop shots from a 1440×900 Chromium 138 window.
 
+## Per-frame docs (one MD per screenshot)
+
+Each frame in the gallery below has its own dedicated walkthrough — click
+the title to jump straight to it on GitHub:
+
+| # | Frame | Doc |
+|---|-------|-----|
+| 00 | Panel gate                     | [`00-panel-gate.md`](./00-panel-gate.md) |
+| 01 | Default editor view            | [`01-editor-default.md`](./01-editor-default.md) |
+| 02 | Explorer · open file           | [`02-editor-explorer-file.md`](./02-editor-explorer-file.md) |
+| 03 | Integrated terminal            | [`03-editor-terminal.md`](./03-editor-terminal.md) |
+| 04 | Console pane                   | [`04-editor-console.md`](./04-editor-console.md) |
+| 05 | Webview / preview *(desktop)*  | [`05-editor-webview.md`](./05-editor-webview.md) |
+| 06 | Problems pane                  | [`06-editor-problems.md`](./06-editor-problems.md) |
+| 07 | NPM sidebar                    | [`07-sidebar-npm.md`](./07-sidebar-npm.md) |
+| 08 | GitHub sidebar                 | [`08-sidebar-github.md`](./08-sidebar-github.md) |
+| 09 | Drive sidebar                  | [`09-sidebar-drive.md`](./09-sidebar-drive.md) |
+| 10 | AI sidebar                     | [`10-sidebar-ai.md`](./10-sidebar-ai.md) |
+| 11 | Code-history modal             | [`11-history-modal.md`](./11-history-modal.md) |
+| 12 | Settings modal                 | [`12-settings-modal.md`](./12-settings-modal.md) |
+| 13 | Settings · theme switch        | [`13-settings-theme-changed.md`](./13-settings-theme-changed.md) |
+| 14 | PyLib pane (Python project)    | [`14-sidebar-pylib.md`](./14-sidebar-pylib.md) |
+
 ## Layout
 
 ```

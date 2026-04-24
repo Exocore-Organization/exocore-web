@@ -255,6 +255,14 @@ const CodingPage = () => {
     const [projectLanguage, setProjectLanguage] = useState<string>('nodejs');
     const [projectRuntime, setProjectRuntime] = useState<string>('node');
 
+    // Brand the browser tab as "Exocode" while the editor is mounted.
+    // (The dashboard re-sets it back to "Exocore" when it mounts.)
+    useEffect(() => {
+        const prev = document.title;
+        document.title = 'Exocode';
+        return () => { document.title = prev; };
+    }, []);
+
     useEffect(() => {
         if (!projectId) return;
         void (async () => {

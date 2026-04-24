@@ -116,6 +116,14 @@ const Dashboard: React.FC = () => {
     const [showAllProjects, setShowAllProjects] = useState(false);
     const PROJECTS_PREVIEW_COUNT = 3;
 
+    // Tab title — keep the dashboard branded as "Exocore" (the editor
+    // renames itself to "Exocode" when it mounts and restores this on exit).
+    useEffect(() => {
+        const prev = document.title;
+        document.title = 'Exocore';
+        return () => { document.title = prev; };
+    }, []);
+
     const showAlert = useCallback((title: string, message: string, type: AlertType = 'info') => {
         const id = Date.now();
         setAlerts(prev => [...prev, { id, title, message, type }]);

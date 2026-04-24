@@ -11,6 +11,47 @@ regular **user accounts** sign in via `/exocore/login`.
 
 ---
 
+## ✨ Features (click any badge to read the full doc on GitHub)
+
+> Every link below points at a self-contained markdown walkthrough with
+> desktop **and** mobile screenshots. They render natively on GitHub —
+> no clone needed.
+
+#### 🔐 Authentication & gating
+- **[Panel-devs gate](./docs/panel/README.md)** — first-touch master-account form, the `devs.json` lock screen, and the per-machine cookie session.
+- **[User auth flow](./docs/auth/README.md)** — landing page, login, register, forgot-password, email-verify, OAuth callback (Google + GitHub).
+
+#### 🧑‍💻 Editor / IDE — `/exocore/editor` ([all 15 frames →](./docs/editor/README.md))
+| Feature | Doc |
+|---------|-----|
+| Default editor view (Monaco + explorer)        | [01-editor-default.md](./docs/editor/01-editor-default.md) |
+| Open file from explorer + LSP diagnostics      | [02-editor-explorer-file.md](./docs/editor/02-editor-explorer-file.md) |
+| Integrated `xterm` terminal (node-pty bridge)  | [03-editor-terminal.md](./docs/editor/03-editor-terminal.md) |
+| Runtime console (Start / Stop project)         | [04-editor-console.md](./docs/editor/04-editor-console.md) |
+| Live webview / preview iframe                  | [05-editor-webview.md](./docs/editor/05-editor-webview.md) |
+| Problems pane (LSP diagnostics)                | [06-editor-problems.md](./docs/editor/06-editor-problems.md) |
+| NPM sidebar (search / install / publish)       | [07-sidebar-npm.md](./docs/editor/07-sidebar-npm.md) |
+| GitHub sidebar (clone / push / diff)           | [08-sidebar-github.md](./docs/editor/08-sidebar-github.md) |
+| Drive sidebar (Google Drive picker)            | [09-sidebar-drive.md](./docs/editor/09-sidebar-drive.md) |
+| AI sidebar (chat + tool-use)                   | [10-sidebar-ai.md](./docs/editor/10-sidebar-ai.md) |
+| Code-history modal (per-file IndexedDB diffs)  | [11-history-modal.md](./docs/editor/11-history-modal.md) |
+| Settings modal (60+ themes, key bindings)      | [12-settings-modal.md](./docs/editor/12-settings-modal.md) |
+| Live theme switch                              | [13-settings-theme-changed.md](./docs/editor/13-settings-theme-changed.md) |
+| PyLib pane (Python projects)                   | [14-sidebar-pylib.md](./docs/editor/14-sidebar-pylib.md) |
+
+#### 🏠 Workspace
+- **[Dashboard](./docs/dashboard/README.md)** — `/dashboard`: project nodes, system stats, plans, payments, account.
+- **[Projects](./docs/projects/README.md)** — `CreateProjectWizard`, FileManager, archived view, bulk delete.
+- **[Cloud storage](./docs/cloud/README.md)** — Google Drive manager (`GDriveManager.tsx`).
+- **[GitHub integration](./docs/github/README.md)** — org / repo browser, clone-to-project, push-back-to-remote.
+
+#### 🌐 Social
+- **[Profile pages](./docs/profile/README.md)** — `/u/:username`, friends, posts, *stalk* mode.
+- **[SocialPanel](./docs/social/README.md)** — chat, DMs, online presence, post composer.
+- **[Leaderboard](./docs/leaderboard/README.md)** — XP / level / achievements, ranked.
+
+---
+
 ## ▶️ Quick start
 
 ```bash
