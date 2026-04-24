@@ -1,5 +1,19 @@
+# ──────────────────────────────────────────────────────────────────────
+# Exocore Backend — Docker build context exclusions
+#
+# The image is built from a PRE-COMPILED, OBFUSCATED `dist/` only.
+# Everything in this list is intentionally kept out of the build
+# context so it can never end up inside the runtime image.
+# ──────────────────────────────────────────────────────────────────────
+
+# 🔒 The TypeScript sources MUST stay on the developer's machine.
+#    Compile locally (`npm run build:secure`) → upload `dist/` only.
+src
+tsconfig.json
+*.tsbuildinfo
+
+# Local-only state, secrets, and logs.
 node_modules
-dist
 local-db
 *.log
 .env
@@ -7,7 +21,18 @@ local-db
 .git
 .gitignore
 .DS_Store
-README.md
 credentials.json
 token.json
-*.tsbuildinfo
+
+# Editor / OS clutter.
+.vscode
+.idea
+*.swp
+*.swo
+
+# Don't bake the Dockerfile or its ignore list into the image itself.
+Dockerfile
+.dockerignore
+
+# Project docs aren't needed inside the runtime image.
+README.md
