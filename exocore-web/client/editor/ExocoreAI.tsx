@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Send, Settings2, Trash2, Trash, RotateCcw, Image as ImageIcon, MessageSquare, Zap, Brain, Gauge, KeyRound, Check, X, Plus, Eraser, Sparkles, MoreHorizontal } from 'lucide-react';
+import { Send, Settings2, Trash2, Trash, RotateCcw, Image as ImageIcon, MessageSquare, Zap, Brain, Gauge, KeyRound, Check, X, Plus, Eraser, Sparkles, MoreHorizontal, BookOpen, Download, ArrowDown, HelpCircle } from 'lucide-react';
 import axios from 'axios';
 import { rpc } from '../access/rpcClient';
 import { muxCarrier } from '../access/wsMux';
@@ -1031,6 +1031,126 @@ Use the project tree (find ./) and existing files supplied in the workspace cont
                 }
             };
 
+            // ── Memory shortcut ───────────────────────────────────────────
+            // Seeds exo.md if missing, then opens it in the main editor pane
+            // so the user can read/hand-edit the agent's persistent notes.
+            const openMemory = async () => {
+                try {
+                    await ensureExoMd();
+                } catch { /* best-effort */ }
+                await openFileInEditor('exo.md');
+                toast.success('Opened exo.md');
+            };
+
+            // ── Export the chat as a Markdown transcript ─────────────────
+            // Walks the in-memory message list and dumps a clean .md file
+            // that captures user prompts, AI replies, planned steps, and the
+            // status of each action — handy for sharing or archiving a run.
+            const exportChat = () => {
+                if (!messages.length) {
+                    toast('Nothing to export yet.', { icon: 'ℹ️' });
+                    return;
+                }
+                const lines: string[] = [
+                    `# ExocoreAI chat — ${new Date().toLocaleString()}`,
+                    `Provider: ${PROVIDER_LABEL[provider]}  ·  Mode: ${sessionMode}`,
+                    sessionId ? `Conversation: \`${sessionId}\`` : '',
+                    '',
+                    '---',
+                    '',
+                ];
+                for (const m of messages) {
+                    if (m.role === 'user') {
+                        lines.push(`## 🧑 You`, '', m.text || '_(empty)_', '');
+                    } else {
+                        lines.push(`## 🤖 ${PROVIDER_LABEL[m.provider || provider]}`, '');
+                        if (m.text) lines.push(m.text, '');
+                        if (m.steps && m.steps.length) {
+                            lines.push('**Plan**', '');
+                            m.steps.forEach((s, i) => lines.push(`${i + 1}. ${s}`));
+                            lines.push('');
+                        }
+                        if (m.actions && m.actions.length) {
+                            lines.push('**Actions**', '');
+                            m.actions.forEach((a) => {
+                                const tag = a.status === 'done' ? '✓' : a.status === 'error' ? '✗' : '…';
+                                lines.push(`- ${tag} \`${a.type}\` → \`${a.target}\``);
+                            });
+                            lines.push('');
+                        }
+                    }
+                }
+                const blob = new Blob([lines.join('\n')], { type: 'text/markdown' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `exocore-chat-${Date.now()}.md`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+                toast.success('Chat exported');
+            };
+
+            // ── Slash commands ────────────────────────────────────────────
+            // Tiny in-composer command palette. If the user's input starts
+            // with `/` we intercept it locally instead of sending it to the
+            // model. Returns true when the command was handled.
+            const handleSlashCommand = (raw: string): boolean => {
+                const cmd = raw.trim().toLowerCase();
+                if (!cmd.startsWith('/')) return false;
+                const [name] = cmd.split(/\s+/);
+                switch (name) {
+                    case '/help':
+                        setMessages(prev => [...prev, {
+                            id: Date.now().toString(),
+                            role: 'ai',
+                            provider,
+                            isGenerating: false,
+                            text: [
+                                '**Slash commands**',
+                                '`/memory` — open exo.md in the editor',
+                                '`/export` — download this chat as Markdown',
+                                '`/clear`  — wipe local chat history',
+                                '`/reset`  — drop the pinned meta.ai conversation',
+                                '`/warm`   — pre-warm the convo (faster next reply)',
+                                '`/help`   — show this list',
+                            ].join('\n'),
+                        }]);
+                        return true;
+                    case '/memory': openMemory(); return true;
+                    case '/export': exportChat(); return true;
+                    case '/clear': clearChat(); return true;
+                    case '/reset': resetSession(); return true;
+                    case '/warm': warmupSession(); return true;
+                    default:
+                        toast.error(`Unknown command: ${name}. Try /help`);
+                        return true;
+                }
+            };
+
+            // ── Scroll-to-bottom floating pill ───────────────────────────
+            // Tracks whether the user has scrolled away from the latest
+            // message; if so we surface a small floating button that snaps
+            // them back. Keeps the "live tail" feeling without forcing it.
+            const messagesScrollRef = useRef<HTMLDivElement | null>(null);
+            const [showScrollDown, setShowScrollDown] = useState(false);
+            useEffect(() => {
+                const el = messagesScrollRef.current;
+                if (!el) return;
+                const onScroll = () => {
+                    const distance = el.scrollHeight - el.scrollTop - el.clientHeight;
+                    setShowScrollDown(distance > 120);
+                };
+                el.addEventListener('scroll', onScroll, { passive: true });
+                onScroll();
+                return () => el.removeEventListener('scroll', onScroll);
+            }, [messages.length]);
+            const scrollToBottom = () => {
+                const el = messagesScrollRef.current;
+                if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+            };
+
             // REST-only: no persistent WebSocket needed
 
             const refreshFileTree = async () => {
@@ -1209,6 +1329,12 @@ Use the project tree (find ./) and existing files supplied in the workspace cont
                 
                 const handleSend = async () => {
                     if (!input.trim()) return;
+
+                    // Intercept slash commands before any network call.
+                    if (handleSlashCommand(input)) {
+                        setInput('');
+                        return;
+                    }
 
                     if (aiMode === 'kilo' && kiloProvider !== 'meta' && !kiloKey) {
                         setShowKiloSetup(true);
@@ -1544,6 +1670,13 @@ Use the project tree (find ./) and existing files supplied in the workspace cont
                                     <span className="chip-label">{sessionId ? 'Pinned' : 'Create'}</span>
                                 </button>
                                 <button
+                                    className="icon-only-btn"
+                                    onClick={openMemory}
+                                    title="Open exo.md — the agent's memory file"
+                                    aria-label="Open memory">
+                                    <BookOpen size={15} />
+                                </button>
+                                <button
                                     ref={actionsBtnRef}
                                     className={`icon-only-btn ${showActionsMenu ? 'open' : ''}`}
                                     onClick={() => { setShowActionsMenu(v => !v); setShowCookieMenu(false); }}
@@ -1587,6 +1720,22 @@ Use the project tree (find ./) and existing files supplied in the workspace cont
                                 onClick={(e) => e.stopPropagation()}
                                 role="menu"
                             >
+                                <button className="action-item" onClick={() => { setShowActionsMenu(false); openMemory(); }}>
+                                    <BookOpen size={14} color="#a855f7" />
+                                    <span>Open memory (exo.md)</span>
+                                    <span className="action-hint">agent's notes</span>
+                                </button>
+                                <button className="action-item" onClick={() => { setShowActionsMenu(false); exportChat(); }} disabled={!messages.length}>
+                                    <Download size={14} color="#22c55e" />
+                                    <span>Export chat as .md</span>
+                                    <span className="action-hint">{messages.length ? `${messages.length} msgs` : 'empty'}</span>
+                                </button>
+                                <button className="action-item" onClick={() => { setShowActionsMenu(false); setInput('/help'); }}>
+                                    <HelpCircle size={14} color={theme.textMuted} />
+                                    <span>Slash commands</span>
+                                    <span className="action-hint">/help</span>
+                                </button>
+                                <div className="action-sep" />
                                 <button className="action-item" onClick={() => { setShowActionsMenu(false); warmupSession(); }} disabled={busySession || !sessionId}>
                                     <Zap size={14} color="#f1c40f" />
                                     <span>Pre-warm convo</span>
@@ -1728,12 +1877,12 @@ Use the project tree (find ./) and existing files supplied in the workspace cont
                         />
                     )}
 
-                    <div className="ai-chat-area custom-scrollbar" style={{ display: showKiloSetup ? 'none' : 'flex' }}>
+                    <div className="ai-chat-area custom-scrollbar" ref={messagesScrollRef} style={{ display: showKiloSetup ? 'none' : 'flex' }}>
                     {messages.length === 0 && (
                         <div className="empty-chat-state">
                         <Zap size={32} />
                         <p>Ask Meta AI to write, analyze, or manage code.</p>
-                        <span className="hint-text">💡 Try: "Create an Express API", "/image a red apple", or "Install lodash"</span>
+                        <span className="hint-text">💡 Try: "Create an Express API", "/image a red apple", or "/help" for slash commands</span>
                         </div>
                     )}
                     {messages.map((msg) => (
@@ -1746,6 +1895,11 @@ Use the project tree (find ./) and existing files supplied in the workspace cont
                         />
                     ))}
                     <div ref={messagesEndRef} />
+                    {showScrollDown && (
+                        <button className="scroll-down-pill" onClick={scrollToBottom} title="Jump to latest">
+                            <ArrowDown size={14} /> Latest
+                        </button>
+                    )}
                     </div>
 
                     <div className="ai-input-area" style={{ display: (showKiloSetup || showRestSetup) ? 'none' : 'block' }}>
@@ -1982,6 +2136,20 @@ Use the project tree (find ./) and existing files supplied in the workspace cont
                         /* CHAT AREA */
                         .ai-chat-area { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
                         .empty-chat-state { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.4; gap: 12px; text-align: center; font-size: 12px; font-weight: 500; }
+
+                        /* Floating "jump to latest" pill — only visible when
+                         * the user has scrolled away from the live tail. */
+                        .scroll-down-pill {
+                            position: sticky; bottom: 12px; align-self: center;
+                            display: inline-flex; align-items: center; gap: 6px;
+                            padding: 6px 12px; border-radius: 999px;
+                            background: linear-gradient(135deg, #a855f7, #38bdf8);
+                            color: #fff; font-size: 11px; font-weight: 600;
+                            border: none; cursor: pointer; box-shadow: 0 6px 18px rgba(168,85,247,0.35);
+                            backdrop-filter: blur(8px);
+                            transition: transform 0.15s ease, box-shadow 0.15s ease;
+                        }
+                        .scroll-down-pill:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(168,85,247,0.45); }
                         .hint-text { font-style: italic; opacity: 0.7; margin-top: 10px; background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: 20px; }
                         .chat-bubble-wrapper { display: flex; gap: 10px; align-items: flex-start; max-width: 100%; }
                         .chat-bubble-wrapper.user { flex-direction: row-reverse; }

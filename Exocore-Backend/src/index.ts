@@ -28,7 +28,7 @@ import { roleForEmail } from "./utils/owners";
 import { attachBridge } from "./wsBridge";
 
 const app = express();
-const PORT = process.env.PORT || 7860;
+const PORT = Number(process.env.PORT) || 7860;
 
 const upload = multer({
   storage: multer.memoryStorage(),

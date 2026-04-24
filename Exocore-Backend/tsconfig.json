@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ESNEXT",
-    "module": "commonjs",
-    "moduleResolution": "bundler",
+    "module": "Node16",
+    "moduleResolution": "node16",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "strict": true,
@@ -11,6 +11,7 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "noImplicitAny": false
+ 
   },
   "include": ["src/**/*"]
 }

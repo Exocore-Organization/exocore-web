@@ -25,7 +25,7 @@ const dedupe_1 = require("./utils/dedupe");
 const owners_1 = require("./utils/owners");
 const wsBridge_1 = require("./wsBridge");
 const app = (0, express_1.default)();
-const PORT = process.env.PORT || 7860;
+const PORT = Number(process.env.PORT) || 7860;
 const upload = (0, multer_1.default)({
     storage: multer_1.default.memoryStorage(),
     limits: { fileSize: 20 * 1024 * 1024 },
