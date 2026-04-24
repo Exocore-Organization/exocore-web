@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import axios from "axios";
+import { resolveBaseUrl } from "../../routes/_resolveBase";
 
 export interface DMRecord {
   id: string;
@@ -11,65 +11,35 @@ export interface DMRecord {
   ephPub?: string;     // base64 (optional sender ephemeral X25519 pub)
 }
 
-const DATA_DIR = path.join(process.cwd(), "Exocore-Backend", "local-db", "dms");
-const RING_LIMIT = 200;
-const FLUSH_MS = 5000;
+const TIMEOUT_MS = 5000;
 
-const buffers = new Map<string, DMRecord[]>();   // pairKey → ring
-const dirty = new Set<string>();
-
-function ensureDir() {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+async function endpoint(): Promise<string> {
+  const base = await resolveBaseUrl();
+  return `${base}/dms`;
 }
 
 export function pairKey(a: string, b: string): string {
   return [a, b].sort().join("__");
 }
 
-function fileFor(pair: string): string {
-  // Sanitize: usernames in our system are safe but be defensive.
-  const safe = pair.replace(/[^a-zA-Z0-9._@\-]/g, "_");
-  return path.join(DATA_DIR, `${safe}.json`);
-}
-
-function load(pair: string): DMRecord[] {
-  if (buffers.has(pair)) return buffers.get(pair)!;
-  ensureDir();
-  const f = fileFor(pair);
-  let arr: DMRecord[] = [];
+export async function appendDM(rec: DMRecord): Promise<void> {
   try {
-    if (fs.existsSync(f)) {
-      arr = JSON.parse(fs.readFileSync(f, "utf-8")) as DMRecord[];
-      if (!Array.isArray(arr)) arr = [];
-    }
-  } catch { arr = []; }
-  buffers.set(pair, arr);
-  return arr;
-}
-
-setInterval(() => {
-  if (dirty.size === 0) return;
-  ensureDir();
-  for (const pair of Array.from(dirty)) {
-    dirty.delete(pair);
-    try {
-      const arr = buffers.get(pair) || [];
-      fs.writeFileSync(fileFor(pair), JSON.stringify(arr.slice(-RING_LIMIT)), { mode: 0o600 });
-    } catch (e: any) {
-      console.warn("[dmStore] flush failed:", e?.message);
-    }
+    await axios.post(await endpoint(), { record: rec }, { timeout: TIMEOUT_MS });
+  } catch (e: any) {
+    console.warn("[dmStore] append failed:", e?.message);
   }
-}, FLUSH_MS).unref?.();
-
-export function appendDM(rec: DMRecord): void {
-  const pair = pairKey(rec.from, rec.to);
-  const arr = load(pair);
-  arr.push(rec);
-  if (arr.length > RING_LIMIT) buffers.set(pair, arr.slice(-RING_LIMIT));
-  dirty.add(pair);
 }
 
-export function listDMs(a: string, b: string, limit = 100): DMRecord[] {
-  const arr = load(pairKey(a, b));
-  return arr.slice(-limit);
+export async function listDMs(a: string, b: string, limit = 100): Promise<DMRecord[]> {
+  try {
+    const r = await axios.get(await endpoint(), {
+      params: { a, b, limit },
+      timeout: TIMEOUT_MS,
+    });
+    const arr = r.data?.messages ?? r.data;
+    return Array.isArray(arr) ? arr : [];
+  } catch (e: any) {
+    console.warn("[dmStore] list failed:", e?.message);
+    return [];
+  }
 }

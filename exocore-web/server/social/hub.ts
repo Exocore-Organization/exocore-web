@@ -4,7 +4,7 @@ import { backendCall } from "../backendWs";
 import { packFrame, unpackFrame } from "./codec";
 import { appendMessage, deleteMessage, listMessages, ChatMessage } from "./store";
 import { appendDM, listDMs, DMRecord } from "./dmStore";
-import { TokenBucket } from "../../../Exocore-Backend/src/services/rateLimit";
+import { TokenBucket } from "./rateLimit";
 
 // Phase 6 — token-bucket rate limits.
 //   chat:  10 messages, refilling at 1/2s (= 0.5/s).
@@ -96,7 +96,7 @@ export function systemAnnounce(text: string): void {
     role: "system",
     text: String(text || "").slice(0, 1000),
   };
-  appendMessage(msg);
+  appendMessage(msg).catch(() => { /* best-effort */ });
   broadcast("chat:msg", msg);
 }
 
@@ -192,13 +192,16 @@ export function createSocialWss(): WebSocketServer {
       send(conn, "auth:ok", { user });
       // Hydrate chat history with avatar URLs.
       (async () => {
-        const msgs = listMessages(80);
+        const msgs = await listMessages(80);
         const uniq = Array.from(new Set(msgs.map(m => m.username).filter(u => u && u !== "system")));
         const av = await Promise.all(uniq.map(async (u) => [u, await avatarFor(u)] as const));
         const map = new Map<string, string | null>(av);
         const enriched = msgs.map(m => ({ ...m, avatarUrl: map.get(m.username) || null }));
         send(conn!, "chat:history", { messages: enriched });
-      })().catch(() => send(conn!, "chat:history", { messages: listMessages(80) }));
+      })().catch(async () => {
+        const fallback = await listMessages(80).catch(() => [] as ChatMessage[]);
+        send(conn!, "chat:history", { messages: fallback });
+      });
       presenceListWithAvatars().then(users => send(conn!, "presence:list", { users }));
       broadcast("presence:join", { user }, conn);
       presenceListWithAvatars().then(users => broadcast("presence:list", { users }));
@@ -263,7 +266,7 @@ export function createSocialWss(): WebSocketServer {
             plan: c2.user.plan || "free",
             text,
           };
-          appendMessage(msg);
+          appendMessage(msg).catch(() => { /* best-effort */ });
           const av = c2.user.avatarUrl ?? await avatarFor(c2.user.username);
           c2.user.avatarUrl = av;
           broadcast("chat:msg", { ...msg, avatarUrl: av });
@@ -297,7 +300,7 @@ export function createSocialWss(): WebSocketServer {
             send(c2, "error", { message: "only owner can delete messages" }, f.id);
             return;
           }
-          if (deleteMessage(id)) {
+          if (await deleteMessage(id)) {
             broadcast("chat:deleted", { id });
           }
           return;
@@ -366,7 +369,8 @@ export function createSocialWss(): WebSocketServer {
         case "dm:history": {
           const peer = String((f.d as any)?.peer || "");
           if (!peer) return;
-          send(c2, "dm:history", { peer, messages: listDMs(c2.user.username, peer, 100) }, f.id);
+          const dmHistory = await listDMs(c2.user.username, peer, 100);
+          send(c2, "dm:history", { peer, messages: dmHistory }, f.id);
           return;
         }
 
@@ -398,7 +402,7 @@ export function createSocialWss(): WebSocketServer {
             ciphertext,
             nonce,
           };
-          appendDM(rec);
+          appendDM(rec).catch(() => { /* best-effort */ });
           // Echo to sender (with id) + push to recipient(s) if online.
           send(c2, "dm:msg", rec, f.id);
           for (const c of conns) {
