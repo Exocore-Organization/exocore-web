@@ -1,0 +1,21 @@
+# Local build artefacts and dev-only files — never copied into the image.
+node_modules
+dist
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor / OS clutter.
+.DS_Store
+.idea
+.vscode
+*.swp
+*.swo
+
+# Git metadata isn't needed at runtime.
+.git
+.gitignore
+
+# Don't ship the Dockerfile or .dockerignore inside the image itself.
+Dockerfile
+.dockerignore

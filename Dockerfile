@@ -1,17 +1,43 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# Exocore Web — production Docker image
+#
+# Slim runtime that bundles ONLY the two language runtimes the editor
+# currently supports out of the box:
+#   • Node.js 20  (default workspace runtime + the Express gateway itself)
+#   • Python 3    (template: `exorepo-py`, plus AI / scripting templates)
+#
+# Other runtimes (PHP, Bun, Deno, Rust, .NET, etc.) are intentionally
+# disabled — re-enable them in this Dockerfile only after the matching
+# templates and editor LSP wiring have landed. Disabling keeps the image
+# small (~250 MB instead of ~1.2 GB) and shrinks the attack surface.
+#
+# Build:
+#   docker build -t exocore-web:latest .
+#
+# Run:
+#   docker run --rm -p 5000:5000 exocore-web:latest
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ───── Stage 1: install + native rebuild ─────
 FROM node:20-slim AS deps
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    python3 make g++ git \
-    && rm -rf /var/lib/apt/lists/*
+# Build tools needed to compile node-pty (the only native module we care about).
+RUN apt-get update -qq \
+ && apt-get install -y --no-install-recommends \
+        python3 make g++ ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
 
 RUN npm ci --legacy-peer-deps
 
+# Rebuild node-pty against the container's libc / node ABI.
 RUN cd node_modules/node-pty && PYTHON=$(which python3) npx node-gyp rebuild
 
+
+# ───── Stage 2: client build ─────
 FROM node:20-slim AS builder
 
 WORKDIR /app
@@ -21,58 +47,42 @@ COPY . .
 
 RUN npm run build:client
 
+
+# ───── Stage 3: minimal runtime ─────
 FROM node:20-slim AS runner
 
-# ----------------------------------------------------------------------------
-# Runtimes & build tools that templates' install.sh expect to find.
-# Pre-installing them here means install.sh on Hugging Face / Render / Railway
-# (Docker, no nix-env) just detects the runtime and skips the install step.
-# ----------------------------------------------------------------------------
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        curl tini procps fish ca-certificates \
-        sudo bash coreutils util-linux \
-        git make cmake gcc g++ build-essential pkg-config \
+# Only the runtimes Exocore currently supports end-to-end:
+#   - Node.js 20 (already in the base image)
+#   - Python 3 + pip + venv
+# Plus the bare-minimum supporting tools for git-clone templates,
+# unzip uploads, and shell sessions.
+RUN apt-get update -qq \
+ && apt-get install -y --no-install-recommends \
+        ca-certificates curl tini procps \
+        bash coreutils util-linux \
+        git unzip zip \
         python3 python3-pip python3-venv \
-        php-cli composer \
-        unzip zip \
-    && rm -rf /var/lib/apt/lists/*
-
-# Optional runtimes that are nice to have pre-installed for templates:
-# Bun, Deno, Rust (cargo), .NET. Failures are non-fatal — install.sh has
-# its own fallbacks if any of these aren't present at runtime.
-RUN curl -fsSL https://bun.sh/install | bash \
-    && ln -sf /root/.bun/bin/bun /usr/local/bin/bun \
-    && curl -fsSL https://deno.land/install.sh | sh \
-    && ln -sf /root/.deno/bin/deno /usr/local/bin/deno \
-    || true
-
-RUN ARCH=$(dpkg --print-architecture) && \
-    if [ "$ARCH" = "amd64" ]; then CF_ARCH="amd64"; \
-    elif [ "$ARCH" = "arm64" ]; then CF_ARCH="arm64"; \
-    else CF_ARCH="amd64"; fi && \
-    curl -fsSL "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-${CF_ARCH}.deb" -o /tmp/cloudflared.deb && \
-    dpkg -i /tmp/cloudflared.deb && \
-    rm /tmp/cloudflared.deb
+ && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 RUN groupadd --system --gid 1001 exocore && \
-    useradd --system --uid 1001 --gid exocore exocore && \
-    echo 'exocore ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/exocore
+    useradd  --system --uid 1001 --gid exocore --create-home exocore
 
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=builder /app/exocore-web/dist ./exocore-web/dist
-COPY --from=builder /app/exocore-web ./exocore-web
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/tsconfig*.json ./
+COPY --from=deps    /app/node_modules         ./node_modules
+COPY --from=builder /app/exocore-web/dist     ./exocore-web/dist
+COPY --from=builder /app/exocore-web          ./exocore-web
+COPY --from=builder /app/package*.json        ./
+COPY --from=builder /app/tsconfig*.json       ./
 
-RUN mkdir -p projects projects_archive uploads/temp && \
-    chown -R exocore:exocore /app
+RUN mkdir -p projects projects_archive uploads/temp \
+ && chown -R exocore:exocore /app
 
 USER exocore
 
-ENV NODE_ENV=production
-ENV PORT=5000
+ENV NODE_ENV=production \
+    PORT=5000 \
+    EXOCORE_RUNTIMES=node,python
 
 EXPOSE 5000
 
