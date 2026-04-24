@@ -26,7 +26,7 @@ WORKDIR /app
 # Build tools needed to compile node-pty (the only native module we care about).
 RUN apt-get update -qq \
  && apt-get install -y --no-install-recommends \
-        python3 ca-certificates \
+        python3 make g++ ca-certificates \
  && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
