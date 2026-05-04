@@ -52,7 +52,7 @@ HOME_DIR="${HOME:-/data/data/com.termux/files/home}"
 
 # Target always inside Termux home (no sdcard symlink issues)
 WORKDIR="$HOME_DIR/exocore-web"
-REPO_URL="${REPO_URL:-https://github.com/your-org/exocore}"
+REPO_URL="${REPO_URL:-https://github.com/Exocore-Organization/exocore-web}"
 BRANCH="${BRANCH:-main}"
 EXOCORE_PORT="${PORT:-5000}"
 
