@@ -13,7 +13,7 @@ setlocal EnableDelayedExpansion
 
 title Exocore Web Installer
 
-set "REPO_URL=https://github.com/your-org/exocore"
+set "REPO_URL=https://github.com/Exocore-Organization/exocore-web"
 set "BRANCH=main"
 set "EXOCORE_DIR=%USERPROFILE%\.exocore"
 set "EXOCORE_PORT=5000"
