@@ -1,0 +1,1179 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profile · Exocore</title>
+    <link rel="icon" href="/exocore/exo-icon.png" type="image/png">
+    <link rel="stylesheet" href="/exocore/_shared/exo-theme-skins.css">
+    <link rel="stylesheet" href="/exocore/_shared/exo-level-frames.css">
+    <script src="/exocore/_shared/exo-level-frames.js"></script>
+    <script>(function(){try{var h=document.documentElement;var id=localStorage.getItem('exo:theme')||'';if(id)h.dataset.theme=id;try{var v=JSON.parse(localStorage.getItem('exo:theme-vars')||'null');if(v){var cs=v['color-scheme'];if(cs)h.style.setProperty('color-scheme',cs);var ks=Object.keys(v);for(var i=0;i<ks.length;i++){var k=ks[i];if(k!=='color-scheme'&&v[k])h.style.setProperty(k,v[k]);}}}catch(_){}}catch(e){}}());</script>
+    <style>
+        :root { color-scheme: dark; }
+        html, body { margin: 0; padding: 0; background: var(--bg-base, #0a0a0a); color: var(--text-primary, #eaeaea); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+        [hidden] { display: none !important; }
+        a { color: inherit; }
+
+        .prof-page { max-width: 880px; margin: 0 auto; padding: 0 16px 80px; }
+        .prof-back { display: inline-block; margin: 16px 0 8px; color: #ffd400; text-decoration: none; font-weight: 700; font-size: 0.85rem; }
+        .prof-back:hover { text-decoration: underline; }
+        .prof-loading, .prof-err, .prof-empty { padding: 48px 16px; text-align: center; color: #888; }
+
+        .prof-cover {
+            height: 240px; border-radius: 18px; overflow: hidden;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255,212,0,0.22), transparent 55%),
+                radial-gradient(circle at 80% 70%, rgba(56,189,248,0.18), transparent 55%),
+                radial-gradient(circle at 50% 110%, rgba(168,85,247,0.12), transparent 50%),
+                linear-gradient(135deg, var(--bg-elev, #16181c) 0%, var(--bg-card, #1f2227) 100%);
+            background-size: cover; background-position: center;
+            border: 1px solid rgba(255,229,0,0.15); position: relative;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+        }
+        .prof-cover::before {
+            content: ''; position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+            background-size: 28px 28px;
+            mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, #000 20%, transparent 80%);
+            pointer-events: none;
+        }
+        .prof-cover::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(180deg, transparent 20%, rgba(0,0,0,0.7) 100%);
+            pointer-events: none;
+        }
+        .prof-cover-shade { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.55)); }
+
+        .prof-head {
+            display: flex; gap: 20px; align-items: flex-end;
+            margin-top: -60px; padding: 0 16px 20px;
+            flex-wrap: wrap; position: relative; z-index: 2;
+        }
+        /* Glass card behind the meta section on wider screens */
+        .prof-meta-glass {
+            flex: 1; min-width: 240px; padding: 14px 18px 10px;
+            background: rgba(10,10,12,0.62);
+            border: 1px solid rgba(255,229,0,0.10);
+            border-radius: 14px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .prof-avatar {
+            width: 124px; height: 124px; border-radius: 50%;
+            background: var(--bg-card, #161616); border: 3px solid #ffd400;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; font-weight: 800; color: #ffd400;
+            overflow: hidden; flex-shrink: 0;
+            position: relative; isolation: isolate;
+            box-shadow:
+                0 0 0 5px rgba(255,212,0,0.12),
+                0 0 20px rgba(255,212,0,0.2),
+                0 6px 20px rgba(0,0,0,0.6);
+        }
+        .prof-avatar::before {
+            content: ""; position: absolute; inset: -3px; border-radius: 50%; padding: 3px;
+            background: conic-gradient(from 0deg, #ffd400, #fff5b3, #ff9900, #8a5a00, #ffd400);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            animation: profRing 5s linear infinite;
+            z-index: 0; pointer-events: none;
+        }
+        @keyframes profRing { to { transform: rotate(360deg); } }
+        @media (prefers-reduced-motion: reduce) { .prof-avatar::before { animation: none; } }
+        .prof-avatar img { width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 1; }
+        .prof-meta { flex: 1; min-width: 240px; padding-bottom: 4px; }
+        .prof-name-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 2px; }
+        .prof-name-row h1 {
+            font-size: 1.7rem; margin: 0; font-weight: 900; letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #fff 0%, #ffd400 50%, #ff9a00 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .prof-badge {
+            font-size: 0.64rem; font-weight: 800; letter-spacing: .07em;
+            padding: 3px 8px; border-radius: 5px; text-transform: uppercase;
+            border: 1px solid currentColor;
+        }
+        .prof-badge.role-owner { color: #ffd400; background: rgba(255,212,0,0.10); }
+        .prof-badge.role-admin { color: #ff5b5b; background: rgba(255,91,91,0.10); }
+        .prof-badge.role-mod { color: #5bc0ff; background: rgba(91,192,255,0.10); }
+        .prof-badge.role-user { color: #888; }
+        .prof-badge.plan-exo { color: #111; background: #ffd400; border-color: #ffd400; }
+        .prof-handle { color: rgba(255,255,255,0.45); font-size: 0.83rem; margin-top: 1px; letter-spacing: 0.01em; }
+        .prof-stats {
+            display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+            color: rgba(255,255,255,0.6); font-size: 0.82rem;
+        }
+        .prof-stats span { display: inline-flex; align-items: center; }
+        .prof-bio {
+            margin-top: 10px; font-size: 0.9rem; color: rgba(255,255,255,0.75);
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
+            padding: 9px 13px; max-width: 580px; line-height: 1.55;
+            backdrop-filter: blur(4px);
+        }
+
+        .prof-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+        .prof-act {
+            background: rgba(255,255,255,0.05); color: var(--text-primary, #eaeaea);
+            border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 8px; padding: 7px 16px; font-size: 0.84rem;
+            cursor: pointer; font-weight: 700;
+            transition: background 0.15s, border-color 0.15s, transform 0.1s;
+        }
+        .prof-act:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.18); transform: translateY(-1px); }
+        .prof-act:active { transform: scale(0.97); }
+        .prof-act.primary { background: #ffd400; color: #111; border-color: #ffd400; }
+        .prof-act.primary:hover { background: #ffe04d; border-color: #ffe04d; }
+        .prof-act.danger { color: #ff6060; border-color: rgba(255,91,91,0.25); background: rgba(255,91,91,0.06); }
+        .prof-act.danger:hover { background: rgba(255,91,91,0.14); border-color: rgba(255,91,91,0.4); }
+        .prof-act.small { padding: 4px 10px; font-size: 0.74rem; }
+        .prof-act:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+        .prof-composer {
+            margin: 16px 0; background: var(--bg-elev, #0c0c0c); border: 2px solid #ffd400;
+            border-radius: 12px; padding: 12px;
+        }
+        .prof-composer textarea {
+            width: 100%; min-height: 90px; resize: vertical;
+            background: var(--bg-base, #0a0a0a); color: var(--text-primary, #eaeaea); border: 1px solid var(--border, #2a2a2a);
+            border-radius: 8px; padding: 10px; font-family: inherit; font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+        .prof-composer-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+        .prof-composer-row input[type="file"] { color: #aaa; font-size: 0.8rem; flex: 1; min-width: 0; }
+        .prof-char-count { color: #666; font-size: 0.75rem; }
+
+        .prof-feed { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+        .prof-post {
+            background: var(--bg-card, #0c0c0c); border: 1px solid var(--border, #1c1c1c); border-radius: 12px;
+            padding: 12px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .prof-post header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .prof-post-author { display: flex; align-items: center; gap: 10px; }
+        .prof-tiny {
+            width: 36px; height: 36px; border-radius: 50%; object-fit: cover;
+            background: var(--bg-card, #1a1a1a); display: inline-flex; align-items: center; justify-content: center;
+            font-weight: 800; color: #ffd400; font-size: 0.8rem;
+        }
+        .tiny-fallback { border: 2px solid #ffd400; }
+        .prof-post-author .strong { color: #eaeaea; text-decoration: none; font-weight: 700; }
+        .prof-post-author .strong:hover { color: #ffd400; }
+        .prof-post-author .muted { color: #888; font-size: 0.7rem; }
+
+        .prof-post-text { color: #eaeaea; word-wrap: break-word; line-height: 1.5; }
+        .prof-post-text br + br { display: block; content: ""; margin-top: 4px; }
+
+        /* Inline + fenced code blocks (parity with dashboard renderer) */
+        .code-inline {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 4px;
+            font-size: 0.85em;
+        }
+        .code-wrap { position: relative; margin: 8px 0; }
+        .code-block {
+            display: block; padding: 28px 12px 10px; margin: 0;
+            background: #0c0d10; color: #e0e3e8;
+            border-radius: 8px; border: 1px solid #2a2d33;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 0.78rem; overflow-x: auto; white-space: pre;
+            position: relative;
+        }
+        .code-block::before {
+            content: attr(data-lang); position: absolute; top: 6px; left: 10px;
+            font-size: 0.6rem; color: #8b8f96; text-transform: uppercase;
+            letter-spacing: 0.05em; pointer-events: none;
+        }
+        .code-block .tk-kw  { color: #f9d34a; font-weight: 700; }
+        .code-block .tk-str { color: #6ee7b7; }
+        .code-block .tk-cmt { color: #6b7280; font-style: italic; }
+        .code-block .tk-num { color: #f87171; }
+        .code-block .tk-fn  { color: #93c5fd; }
+        .code-copy-btn {
+            position: absolute; top: 4px; right: 4px; z-index: 2;
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 8px; border-radius: 6px;
+            background: rgba(255, 212, 0, 0.10); color: #e0e3e8;
+            border: 1px solid #2a2d33; cursor: pointer;
+            font: inherit; font-size: 0.66rem; font-weight: 700;
+            letter-spacing: 0.04em; text-transform: uppercase;
+            transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s;
+        }
+        .code-copy-btn:hover { background: #ffd400; color: #111; border-color: #ffd400; }
+        .code-copy-btn:active { transform: scale(0.96); }
+        .code-copy-btn.is-copied { background: #34d399; color: #000; border-color: #34d399; }
+        .code-copy-btn.is-failed { background: #f87171; color: #000; border-color: #f87171; }
+        .code-copy-icon { font-size: 0.85rem; line-height: 1; }
+        @media (max-width: 480px) {
+            .code-copy-label { display: none; }
+            .code-copy-btn { padding: 4px 6px; }
+        }
+        .prof-post-image { border-radius: 8px; overflow: hidden; background: #000; display: flex; justify-content: center; }
+        .prof-post-image img { max-width: 100%; max-height: 480px; }
+        .prof-post footer { border-top: 1px solid var(--border, #1c1c1c); padding-top: 8px; }
+        .prof-link-btn { background: transparent; color: #aaa; border: 0; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+        .prof-link-btn:hover { color: #ffd400; }
+
+        .prof-comments {
+            margin-top: 8px; padding: 8px; background: var(--bg-elev, #080808); border-radius: 8px;
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .prof-comment { display: flex; gap: 6px; align-items: baseline; font-size: 0.85rem; flex-wrap: wrap; }
+        .prof-comment .strong { color: #ffd400; text-decoration: none; font-weight: 700; }
+        .prof-comment .deleted { color: #666; font-style: italic; }
+        .muted.small, .small { font-size: 0.7rem; color: #666; }
+        .prof-comment-input { display: flex; gap: 6px; margin-top: 6px; }
+        .prof-comment-input input {
+            flex: 1; background: var(--bg-base, #0a0a0a); color: var(--text-primary, #eaeaea); border: 1px solid var(--border, #2a2a2a);
+            border-radius: 6px; padding: 6px 10px; font-size: 0.85rem;
+        }
+        .prof-comment-input button {
+            background: #ffd400; color: #111; border: 0; border-radius: 6px;
+            padding: 4px 10px; font-weight: 800; cursor: pointer;
+        }
+
+        .prof-xpbar {
+            position: relative; margin-top: 12px; height: 16px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,229,0,0.18); border-radius: 8px; overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+        }
+        .prof-xpbar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff9900 0%, #ffd400 50%, #ffe680 100%);
+            transition: width 800ms cubic-bezier(0.22,1,0.36,1);
+            position: relative; overflow: hidden;
+        }
+        .prof-xpbar-fill::after {
+            content: ""; position: absolute; inset: 0;
+            background: linear-gradient(90deg, transparent 40%, rgba(255,255,255,0.22) 70%, transparent 100%);
+            animation: xpShimmer 2.2s linear infinite;
+        }
+        @keyframes xpShimmer { from { transform: translateX(-100%); } to { transform: translateX(200%); } }
+        .prof-xpbar-text {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            font-size: 0.68rem; font-weight: 800; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); letter-spacing: 0.03em;
+        }
+        .prof-achievements { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+        .prof-ach {
+            display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,229,0,0.18); border-radius: 999px;
+            font-size: 0.72rem; color: var(--text-primary, #ddd);
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .prof-ach:hover { background: rgba(255,229,0,0.08); border-color: rgba(255,229,0,0.35); }
+        .prof-ach-icon { font-size: 1rem; line-height: 1; }
+        .prof-ach-name { font-weight: 700; }
+
+        .prof-meta-grid { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }
+        .prof-meta-chip {
+            display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09); font-size: 0.74rem;
+            transition: background 0.15s;
+        }
+        .prof-meta-chip:hover { background: rgba(255,255,255,0.07); }
+        .prof-meta-chip .k { color: rgba(255,255,255,0.45); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.62rem; }
+        .prof-meta-chip .v { color: #eaeaea; font-weight: 700; }
+        .prof-meta-chip .v.mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-weight: 600; }
+
+        /* Posts — refreshed card style */
+        .prof-feed { display: flex; flex-direction: column; gap: 14px; margin-top: 20px; }
+        .prof-post {
+            background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px;
+            padding: 14px; display: flex; flex-direction: column; gap: 10px;
+            transition: border-color 0.15s;
+        }
+        .prof-post:hover { border-color: rgba(255,229,0,0.2); }
+        .prof-back {
+            display: inline-flex; align-items: center; gap: 6px;
+            margin: 18px 0 10px; color: rgba(255,212,0,0.85); text-decoration: none;
+            font-weight: 700; font-size: 0.85rem;
+            padding: 5px 12px; border-radius: 8px;
+            background: rgba(255,212,0,0.07); border: 1px solid rgba(255,212,0,0.18);
+            transition: background 0.15s;
+        }
+        .prof-back:hover { background: rgba(255,212,0,0.14); text-decoration: none; }
+
+        @media (max-width: 600px) {
+            .prof-page { padding: 0 12px 64px; }
+            .prof-cover { height: 140px; border-radius: 14px; }
+            .prof-meta { padding-top: 0; min-width: 0; }
+            .prof-avatar { width: 78px; height: 78px; border-width: 3px; font-size: 1.2rem; }
+            .prof-head { margin-top: -32px; gap: 12px; padding: 0 8px 14px; }
+            .prof-name-row h1 { font-size: 1.25rem; }
+            .prof-handle { font-size: 0.78rem; }
+            .prof-stats { font-size: 0.78rem; gap: 4px; }
+            .prof-bio { font-size: 0.85rem; padding: 7px 11px; }
+            .prof-actions { gap: 6px; margin-top: 10px; }
+            .prof-act { padding: 6px 12px; font-size: 0.8rem; }
+            .prof-composer { padding: 10px; border-radius: 10px; }
+            .prof-composer textarea { min-height: 70px; font-size: 0.88rem; padding: 8px; }
+            .prof-post { padding: 10px; border-radius: 10px; gap: 8px; }
+            .prof-post-text { font-size: 0.9rem; }
+            .prof-tiny { width: 30px; height: 30px; font-size: 0.7rem; }
+            .prof-xpbar { height: 13px; }
+            .prof-xpbar-text { font-size: 0.62rem; }
+            .prof-ach { padding: 3px 7px; font-size: 0.67rem; }
+            .prof-back { font-size: 0.8rem; margin: 12px 0 8px; }
+            .prof-meta-glass { padding: 10px 14px 8px; }
+        }
+
+        /* ════════════════════════════════════════════════════════
+         * Profile — 2026 upgrade: sticky header + tab system
+         * ════════════════════════════════════════════════════════ */
+        .prof-sticky {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+            display: flex; align-items: center; gap: 12px;
+            padding: 8px 20px;
+            background: rgba(8,8,10,0.88);
+            backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            transform: translateY(-100%); opacity: 0;
+            transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.28s;
+            pointer-events: none;
+        }
+        .prof-sticky.is-visible { transform: translateY(0); opacity: 1; pointer-events: auto; }
+        .prof-sticky-ava {
+            width: 34px; height: 34px; border-radius: 50%; overflow: hidden;
+            border: 2px solid rgba(255,212,0,0.55); flex-shrink: 0;
+            background: #161616; display: flex; align-items: center;
+            justify-content: center; font-weight: 800; font-size: 0.8rem; color: #ffd400;
+        }
+        .prof-sticky-ava img { width: 100%; height: 100%; object-fit: cover; }
+        .prof-sticky-info { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+        .prof-sticky-name {
+            font-weight: 800; font-size: 0.9rem;
+            background: linear-gradient(90deg, #fff, #ffd400);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .prof-sticky-handle { font-size: 0.7rem; color: rgba(255,255,255,0.4); }
+        .prof-sticky-spacer { flex: 1; }
+        .prof-sticky-back {
+            padding: 5px 12px; border-radius: 8px; font-size: 0.74rem; font-weight: 700;
+            background: rgba(255,212,0,0.1); color: #ffd400;
+            border: 1px solid rgba(255,212,0,0.25); cursor: pointer; text-decoration: none;
+            white-space: nowrap;
+        }
+        .prof-sticky-back:hover { background: rgba(255,212,0,0.18); }
+
+        .prof-tabs {
+            display: flex; gap: 0;
+            border-bottom: 1px solid rgba(255,255,255,0.09);
+            margin: 20px 0 0;
+            position: sticky; top: 0; z-index: 10;
+            background: var(--bg-base, #0a0a0a);
+            backdrop-filter: blur(14px);
+        }
+        .prof-tab {
+            padding: 11px 20px; font-size: 0.82rem; font-weight: 700;
+            color: rgba(255,255,255,0.42); background: transparent; border: 0;
+            cursor: pointer; position: relative; letter-spacing: 0.03em;
+            transition: color 0.15s; font-family: inherit;
+        }
+        .prof-tab::after {
+            content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px;
+            background: #ffd400; border-radius: 2px 2px 0 0;
+            transform: scaleX(0); transition: transform 0.2s cubic-bezier(0.4,0,0.2,1);
+        }
+        .prof-tab:hover { color: rgba(255,255,255,0.75); }
+        .prof-tab.active { color: #ffd400; }
+        .prof-tab.active::after { transform: scaleX(1); }
+        .prof-tab-panel { display: none; padding-top: 4px; }
+        .prof-tab-panel.active { display: block; }
+
+        .prof-about-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px; padding: 16px 18px; margin-top: 16px;
+        }
+        .prof-about-card-title {
+            font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em;
+            color: rgba(255,255,255,0.35); font-weight: 700; margin: 0 0 12px;
+        }
+        .prof-about-row {
+            display: flex; gap: 10px; padding: 8px 0; align-items: flex-start;
+            border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem;
+        }
+        .prof-about-row:first-of-type { border-top: 0; padding-top: 0; }
+        .prof-about-row .k {
+            width: 90px; flex-shrink: 0; color: rgba(255,255,255,0.38);
+            font-size: 0.73rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.06em; padding-top: 1px;
+        }
+        .prof-about-row .v { flex: 1; color: #eaeaea; word-break: break-word; }
+        .prof-about-row .v.mono { font-family: ui-monospace,monospace; font-size: 0.8rem; color: #aaa; }
+
+        .prof-stats-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr));
+            gap: 10px; margin-top: 16px;
+        }
+        .prof-stat-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px; padding: 18px 12px; text-align: center;
+            transition: border-color 0.15s, background 0.15s;
+        }
+        .prof-stat-card:hover { border-color: rgba(255,229,0,0.28); background: rgba(255,229,0,0.03); }
+        .prof-stat-card .n { font-size: 1.9rem; font-weight: 900; color: #ffd400; line-height: 1; }
+        .prof-stat-card .l { font-size: 0.67rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 5px; }
+
+        html[data-mode="aero"] .prof-sticky {
+            background: rgba(207,233,255,0.88);
+            border-bottom-color: rgba(255,255,255,0.5);
+        }
+        html[data-mode="aero"] .prof-sticky-name {
+            -webkit-text-fill-color: unset; background: none; color: #03253c;
+        }
+        html[data-mode="aero"] .prof-sticky-handle { color: rgba(3,37,60,0.5); }
+        html[data-mode="aero"] .prof-sticky-back {
+            background: rgba(3,37,60,0.08); color: #1a5a9a; border-color: rgba(3,37,60,0.2);
+        }
+        html[data-mode="aero"] .prof-tabs {
+            background: rgba(207,233,255,0.85); border-bottom-color: rgba(3,37,60,0.12);
+        }
+        html[data-mode="aero"] .prof-tab { color: rgba(3,37,60,0.45); }
+        html[data-mode="aero"] .prof-tab:hover { color: rgba(3,37,60,0.8); }
+        html[data-mode="aero"] .prof-tab.active { color: #1a5a9a; }
+        html[data-mode="aero"] .prof-tab::after { background: #1a5a9a; }
+        html[data-mode="aero"] .prof-about-card,
+        html[data-mode="aero"] .prof-stat-card {
+            background: rgba(255,255,255,0.58); border-color: rgba(255,255,255,0.72);
+            backdrop-filter: blur(10px);
+        }
+        html[data-mode="aero"] .prof-about-row .v { color: #03253c; }
+        html[data-mode="aero"] .prof-about-row .k { color: rgba(3,37,60,0.42); }
+        html[data-mode="aero"] .prof-stat-card .n { color: #1a5a9a; }
+        html[data-mode="aero"] .prof-stat-card .l { color: rgba(3,37,60,0.45); }
+
+        @media (max-width: 600px) {
+            .prof-tabs { position: static; }
+            .prof-tab { padding: 9px 14px; font-size: 0.78rem; }
+            .prof-stats-grid { grid-template-columns: repeat(3, 1fr); }
+            .prof-stat-card { padding: 14px 8px; }
+            .prof-stat-card .n { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <main class="prof-page" id="root">
+        <div class="prof-loading">Loading…</div>
+    </main>
+
+    <!-- Phase 3.M: ExoStorage replaces localStorage. Token is now
+         persisted in IndexedDB; the inline script below awaits the
+         hydrate before reading it. -->
+    <script src="/exocore/_shared/exo-storage.js"></script>
+    <script src="/exocore/editor/scripts/themes.js"></script>
+    <script src="/exocore/_shared/exo-theme-apply.js"></script>
+    <script>
+        (function () {
+            var ROLE_LABEL = { owner: 'OWNER', admin: 'ADMIN', mod: 'MOD', user: 'USER' };
+
+            var pathname = location.pathname.replace(/\/+$/, '');
+            var m = pathname.match(/\/exocore\/u\/([^/]+)/);
+            var username = m ? decodeURIComponent(m[1]) : '';
+
+            /* Phase 3.M: token lives in IndexedDB. We can't synchronously
+             * read it before ExoStorage.ready, but the cache hydrate
+             * happens in ~1 RAF, and the entire profile page only
+             * makes its first network request from inside boot()
+             * (see the .then() below). */
+            var token = null;
+            window.ExoStorage.ready.then(function () {
+                try { token = ExoStorage.getItem('exo_token'); } catch (e) {}
+            });
+
+            var root = document.getElementById('root');
+            var data = null;
+            var achCatalog = {};
+            var openComments = {};
+            var commentDraft = {};
+            var composerOpen = false;
+            var postText = '';
+            var postFile = null;
+            var busy = false;
+
+            function esc(s) {
+                return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+                });
+            }
+            // Strip leading "@" from a handle so links / display never double up.
+            function cleanU(u) { return String(u || '').replace(/^@+/, ''); }
+
+            // Lightweight syntax highlighter for fenced ``` blocks. Mirror of
+            // the dashboard implementation so the same posts look identical
+            // on both the static profile page and the inline dashboard view.
+            var KW_TABLE = {
+                c:    /\b(int|char|float|double|void|long|short|signed|unsigned|return|if|else|for|while|do|switch|case|default|break|continue|struct|union|typedef|enum|static|const|extern|sizeof|include|define|printf|scanf|malloc|free|NULL)\b/g,
+                cpp:  /\b(int|char|float|double|void|long|short|bool|return|if|else|for|while|do|switch|case|default|break|continue|class|struct|union|public|private|protected|virtual|namespace|using|template|typename|const|static|new|delete|this|std|cout|cin|endl|nullptr|true|false|auto|try|catch|throw)\b/g,
+                js:   /\b(var|let|const|function|return|if|else|for|while|do|switch|case|default|break|continue|class|extends|new|this|null|undefined|true|false|async|await|import|export|from|as|try|catch|finally|throw|typeof|instanceof|of|in|yield)\b/g,
+                py:   /\b(def|class|return|if|elif|else|for|while|in|not|and|or|is|import|from|as|pass|break|continue|try|except|finally|raise|with|yield|lambda|None|True|False|self|print|global|nonlocal)\b/g,
+                java: /\b(public|private|protected|class|interface|extends|implements|new|return|if|else|for|while|do|switch|case|break|continue|null|true|false|void|int|long|float|double|char|boolean|byte|short|static|final|abstract|this|super|try|catch|finally|throw|throws|import|package)\b/g,
+                sh:   /\b(if|then|else|elif|fi|for|in|do|done|while|case|esac|function|return|echo|exit|cd|export|source|local|read|set|unset)\b/g,
+                sql:  /\b(SELECT|FROM|WHERE|INSERT|INTO|UPDATE|DELETE|CREATE|DROP|ALTER|TABLE|INDEX|JOIN|LEFT|RIGHT|INNER|OUTER|FULL|ON|AS|AND|OR|NOT|NULL|IS|IN|LIKE|ORDER|BY|GROUP|HAVING|LIMIT|OFFSET|UNION|VALUES|SET|PRIMARY|KEY|FOREIGN|REFERENCES|CASCADE|DEFAULT|UNIQUE|CHECK|DISTINCT|COUNT|SUM|AVG|MIN|MAX)\b/gi,
+            };
+            var LANG_ALIAS = {
+                javascript: 'js', typescript: 'js', ts: 'js', node: 'js',
+                python: 'py', python3: 'py',
+                bash: 'sh', shell: 'sh', zsh: 'sh',
+                'c++': 'cpp', cplusplus: 'cpp', cxx: 'cpp',
+                postgres: 'sql', postgresql: 'sql', mysql: 'sql'
+            };
+            function highlightCode(code, lang) {
+                var langKey = LANG_ALIAS[String(lang || '').toLowerCase()] || String(lang || '').toLowerCase();
+                var kw = KW_TABLE[langKey];
+                var out = esc(code);
+                var STR_OPEN = '\u0000S', STR_CLOSE = '\u0000';
+                var CMT_OPEN = '\u0000C', CMT_CLOSE = '\u0000';
+                var strings = [], comments = [];
+                out = out.replace(/(&quot;)([\s\S]*?)\1|(&#39;)([\s\S]*?)\3/g, function (m) {
+                    strings.push(m); return STR_OPEN + (strings.length - 1) + STR_CLOSE;
+                });
+                out = out.replace(/\/\*[\s\S]*?\*\//g, function (m) { comments.push(m); return CMT_OPEN + (comments.length - 1) + CMT_CLOSE; });
+                out = out.replace(/\/\/[^\n]*/g, function (m) { comments.push(m); return CMT_OPEN + (comments.length - 1) + CMT_CLOSE; });
+                if (langKey === 'sh' || langKey === 'py') {
+                    out = out.replace(/#[^\n]*/g, function (m) { comments.push(m); return CMT_OPEN + (comments.length - 1) + CMT_CLOSE; });
+                }
+                out = out.replace(/\b\d+(?:\.\d+)?\b/g, '<span class="tk-num">$&</span>');
+                if (kw) out = out.replace(kw, '<span class="tk-kw">$&</span>');
+                out = out.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/g, '<span class="tk-fn">$1</span>(');
+                out = out.replace(new RegExp(STR_OPEN + '(\\d+)' + STR_CLOSE, 'g'),
+                    function (_, i) { return '<span class="tk-str">' + strings[+i] + '</span>'; });
+                out = out.replace(new RegExp(CMT_OPEN + '(\\d+)' + CMT_CLOSE, 'g'),
+                    function (_, i) { return '<span class="tk-cmt">' + comments[+i] + '</span>'; });
+                return out;
+            }
+            function b64encUtf8(s) {
+                try { return btoa(unescape(encodeURIComponent(String(s == null ? '' : s)))); } catch (e) { return ''; }
+            }
+            function b64decUtf8(s) {
+                try { return decodeURIComponent(escape(atob(String(s || '')))); } catch (e) { return ''; }
+            }
+            // Render post / comment body: escape, fenced code blocks with copy
+            // button, inline `code`, and newlines preserved as <br>.
+            function formatPostBody(raw) {
+                if (raw == null) return '';
+                var s = String(raw);
+                var parts = [];
+                var last = 0;
+                var fence = /```([a-zA-Z0-9_+#.-]*)\n?([\s\S]*?)```/g;
+                var m;
+                while ((m = fence.exec(s)) !== null) {
+                    if (m.index > last) parts.push({ kind: 'text', value: s.slice(last, m.index) });
+                    parts.push({ kind: 'code', lang: m[1] || 'plain', value: m[2] });
+                    last = fence.lastIndex;
+                }
+                if (last < s.length) parts.push({ kind: 'text', value: s.slice(last) });
+                return parts.map(function (p) {
+                    if (p.kind === 'code') {
+                        return '<div class="code-wrap">'
+                            + '<button type="button" class="code-copy-btn" data-code-src="' + b64encUtf8(p.value) + '" title="Copy code" aria-label="Copy code">'
+                            +   '<span class="code-copy-icon">⧉</span><span class="code-copy-label">Copy</span>'
+                            + '</button>'
+                            + '<pre class="code-block" data-lang="' + esc(p.lang) + '"><code>'
+                            +   highlightCode(p.value, p.lang)
+                            + '</code></pre>'
+                            + '</div>';
+                    }
+                    var t = esc(p.value);
+                    t = t.replace(/`([^`\n]+)`/g, function (_, c) { return '<code class="code-inline">' + c + '</code>'; });
+                    t = t.replace(/\n/g, '<br>');
+                    return t;
+                }).join('');
+            }
+            // Single delegated handler for any rendered .code-copy-btn.
+            document.addEventListener('click', function (e) {
+                var btn = e.target && e.target.closest && e.target.closest('.code-copy-btn');
+                if (!btn) return;
+                e.preventDefault();
+                var src = b64decUtf8(btn.getAttribute('data-code-src') || '');
+                function done(ok) {
+                    btn.classList.toggle('is-copied', ok);
+                    btn.classList.toggle('is-failed', !ok);
+                    var label = btn.querySelector('.code-copy-label');
+                    var prev = label ? label.textContent : '';
+                    if (label) label.textContent = ok ? 'Copied!' : 'Failed';
+                    setTimeout(function () {
+                        btn.classList.remove('is-copied', 'is-failed');
+                        if (label) label.textContent = prev || 'Copy';
+                    }, 1400);
+                }
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(src).then(function () { done(true); }, function () { done(false); });
+                } else {
+                    try {
+                        var ta = document.createElement('textarea');
+                        ta.value = src; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                        document.body.appendChild(ta); ta.select();
+                        var ok = document.execCommand('copy');
+                        document.body.removeChild(ta);
+                        done(ok);
+                    } catch (err) { done(false); }
+                }
+            });
+            function titleForLevel(lv) {
+                var v = Math.max(0, Math.min(1000, Math.floor(lv || 0)));
+                if (v < 10) return 'Beginner';
+                if (v < 25) return 'Novice';
+                if (v < 50) return 'Apprentice';
+                if (v < 100) return 'Adept';
+                if (v < 200) return 'Expert';
+                if (v < 350) return 'Veteran';
+                if (v < 500) return 'Elite';
+                if (v < 700) return 'Master';
+                if (v < 900) return 'Grandmaster';
+                if (v < 1000) return 'Legend';
+                return 'Mythic';
+            }
+            function timeAgo(ts) {
+                var s = Math.max(1, Math.floor((Date.now() - ts) / 1000));
+                if (s < 60) return s + 's';
+                var mm = Math.floor(s / 60); if (mm < 60) return mm + 'm';
+                var h = Math.floor(mm / 60); if (h < 24) return h + 'h';
+                var d = Math.floor(h / 24); if (d < 30) return d + 'd';
+                try { return new Date(ts).toLocaleDateString(); } catch (e) { return ''; }
+            }
+
+            if (!username) {
+                root.innerHTML = '<div class="prof-err">No user specified.</div>'
+                    + '<a class="prof-back" href="/exocore/dashboard">← Back to dashboard</a>';
+                return;
+            }
+
+            function fetchJson(url, opts) {
+                return fetch(url, opts).then(function (r) {
+                    return r.json().then(function (j) { return { ok: r.ok, j: j }; }).catch(function () {
+                        return { ok: r.ok, j: {} };
+                    });
+                });
+            }
+
+            function load() {
+                root.innerHTML = '<div class="prof-loading">Loading…</div>';
+                var qs = '?username=' + encodeURIComponent(username);
+                if (token) qs += '&token=' + encodeURIComponent(token);
+                fetchJson('/exocore/api/posts/profile' + qs)
+                    .then(function (res) {
+                        if (!res.ok || !res.j || res.j.success === false) {
+                            data = null;
+                            renderError(res.j && res.j.message);
+                            return;
+                        }
+                        data = res.j;
+                        render();
+                    })
+                    .catch(function (e) {
+                        data = null;
+                        renderError((e && e.message) || 'Failed to load');
+                    });
+            }
+
+            function loadAchCatalog() {
+                fetchJson('/exocore/api/xp/catalog')
+                    .then(function (res) {
+                        if (!res.ok || !res.j || !res.j.success) return;
+                        var map = {};
+                        var list = res.j.achievements || [];
+                        for (var i = 0; i < list.length; i++) {
+                            var a = list[i];
+                            map[a.id] = { name: a.name, desc: a.desc, icon: a.icon };
+                        }
+                        achCatalog = map;
+                        if (data) render();
+                    })
+                    .catch(function () {});
+            }
+
+            function renderError(msg) {
+                root.innerHTML = '<div class="prof-err">' + esc(msg || 'User not found.') + '</div>'
+                    + '<a class="prof-back" href="/exocore/dashboard">← Back to dashboard</a>';
+            }
+
+            function isSelf() { return !!(data && data.relation && data.relation.isSelf); }
+
+            function actionsHtml(p) {
+                var parts = [];
+                var rel = data.relation;
+                if (rel && !rel.isSelf && token) {
+                    if (rel.isFriend) {
+                        parts.push('<button class="prof-act" data-friend="remove">Unfriend</button>');
+                    } else if (rel.incoming) {
+                        parts.push('<button class="prof-act primary" data-friend="accept">Accept request</button>');
+                    } else if (rel.outgoing) {
+                        parts.push('<button class="prof-act" data-friend="cancel">Cancel request</button>');
+                    } else {
+                        parts.push('<button class="prof-act primary" data-friend="request">Add friend</button>');
+                    }
+                    parts.push('<button class="prof-act" data-act="dm">Open DM</button>');
+                }
+                if (isSelf()) {
+                    parts.push('<button class="prof-act primary" data-act="composer">'
+                        + (composerOpen ? 'Cancel' : '+ New post')
+                        + '</button>');
+                }
+                return parts.join('');
+            }
+
+            function composerHtml() {
+                if (!isSelf() || !composerOpen) return '';
+                var fname = postFile ? postFile.name : '';
+                return '<div class="prof-composer">'
+                    + '<textarea id="composer-text" placeholder="What\'s on your mind?  (≤ 500 chars)" maxlength="500">' + esc(postText) + '</textarea>'
+                    + '<div class="prof-composer-row">'
+                    +   '<input id="composer-file" type="file" accept="image/*">'
+                    +   '<span class="prof-char-count" id="composer-count">' + (postText.length) + '/500</span>'
+                    +   '<button class="prof-act primary" id="composer-submit"' + (busy || (!postText.trim() && !postFile) ? ' disabled' : '') + '>'
+                    +     (busy ? 'Posting…' : 'Post')
+                    +   '</button>'
+                    + '</div>'
+                    + '</div>';
+            }
+
+            function postHtml(post, p) {
+                // Posts always belong to `p` (the profile owner) on this page.
+                // Use the owner's avatar/nickname; fall back to post.author so
+                // we never render an empty handle or "?" initial.
+                var ownerHandle = cleanU(p.username) || cleanU(post.author);
+                var ownerName = p.nickname || ownerHandle || '?';
+                // Per-post avatar takes priority (route now enriches each
+                // post). Fall back to the profile-level avatar so legacy
+                // payloads still render a real PFP instead of initials.
+                var avatarUrl = post.avatarUrl
+                    || data.avatarUrl
+                    || (data.profile && data.profile.avatarUrl)
+                    || (data.user && data.user.avatarUrl)
+                    || null;
+                var ini = (ownerName || '?').slice(0, 2).toUpperCase();
+                var avatar = avatarUrl
+                    ? '<img class="prof-tiny" src="' + esc(avatarUrl) + '" alt="">'
+                    : '<span class="prof-tiny tiny-fallback">' + esc(ini) + '</span>';
+                var deleteBtn = isSelf()
+                    ? '<button class="prof-act danger small" data-del="' + esc(post.id) + '">Delete</button>'
+                    : '';
+                var image = post.imageUrl
+                    ? '<div class="prof-post-image"><img src="' + esc(post.imageUrl) + '" alt="post" loading="lazy"></div>'
+                    : '';
+                var text = post.text ? '<div class="prof-post-text">' + formatPostBody(post.text) + '</div>' : '';
+                var openCount = (post.comments || []).filter(function (c) { return !c.deleted; }).length;
+                var commentsBlock = '';
+                if (openComments[post.id]) {
+                    var rows = '';
+                    if (!post.comments || post.comments.length === 0) {
+                        rows = '<div class="muted small">Be the first to comment.</div>';
+                    } else {
+                        rows = post.comments.map(function (c) {
+                            return '<div class="prof-comment">'
+                                + '<a class="strong" href="/exocore/u/' + encodeURIComponent(c.author) + '">@' + esc(c.author) + '</a>'
+                                + '<span class="' + (c.deleted ? 'deleted' : '') + '">'
+                                + (c.deleted ? '[deleted]' : esc(c.text))
+                                + '</span>'
+                                + '<span class="muted small">· ' + timeAgo(c.ts) + '</span>'
+                                + '</div>';
+                        }).join('');
+                    }
+                    var input = token
+                        ? '<div class="prof-comment-input">'
+                            + '<input data-comment-input="' + esc(post.id) + '" placeholder="Write a comment…" value="' + esc(commentDraft[post.id] || '') + '">'
+                            + '<button data-comment-send="' + esc(post.id) + '">Send</button>'
+                          + '</div>'
+                        : '';
+                    commentsBlock = '<div class="prof-comments">' + rows + input + '</div>';
+                }
+                return '<article class="prof-post">'
+                    + '<header>'
+                    +   '<div class="prof-post-author">'
+                    +     avatar
+                    +     '<div>'
+                    +       '<a href="/exocore/u/' + encodeURIComponent(ownerHandle) + '" class="strong">' + esc(ownerName) + '</a>'
+                    +       '<div class="muted">@' + esc(ownerHandle || '?') + ' · ' + timeAgo(post.ts) + '</div>'
+                    +     '</div>'
+                    +   '</div>'
+                    +   deleteBtn
+                    + '</header>'
+                    + text
+                    + image
+                    + '<footer>'
+                    +   '<button class="prof-link-btn" data-toggle="' + esc(post.id) + '">💬 ' + openCount + ' comments</button>'
+                    + '</footer>'
+                    + commentsBlock
+                    + '</article>';
+            }
+
+            function stickyHtml(p, avatarUrl) {
+                var ini = (p.nickname || p.username || '?').slice(0, 2).toUpperCase();
+                var avaInner = avatarUrl
+                    ? '<img src="' + esc(avatarUrl) + '" alt="">'
+                    : esc(ini);
+                return '<div class="prof-sticky" id="profSticky">'
+                    + '<div class="prof-sticky-ava">' + avaInner + '</div>'
+                    + '<div class="prof-sticky-info">'
+                    +   '<div class="prof-sticky-name">' + esc(p.nickname || p.username) + '</div>'
+                    +   '<div class="prof-sticky-handle">@' + esc(String(p.username || '').replace(/^@+/, '')) + '</div>'
+                    + '</div>'
+                    + '<span class="prof-sticky-spacer"></span>'
+                    + '<a href="/exocore/dashboard" class="prof-sticky-back">← Dashboard</a>'
+                    + '</div>';
+            }
+            function tabsHtml() {
+                return '<div class="prof-tabs" role="tablist">'
+                    + '<button class="prof-tab active" role="tab" data-panel="panelPosts" aria-selected="true">Posts</button>'
+                    + '<button class="prof-tab" role="tab" data-panel="panelAbout" aria-selected="false">About</button>'
+                    + '<button class="prof-tab" role="tab" data-panel="panelStats" aria-selected="false">Stats</button>'
+                    + '</div>';
+            }
+            function aboutPanelHtml(p) {
+                var rows = '';
+                if (p.bio) rows += '<div class="prof-about-row"><span class="k">Bio</span><span class="v">' + esc(p.bio) + '</span></div>';
+                if (p.country) rows += '<div class="prof-about-row"><span class="k">Country</span><span class="v">' + esc(p.country) + '</span></div>';
+                if (p.id != null) rows += '<div class="prof-about-row"><span class="k">User ID</span><span class="v mono">' + esc(String(p.id)) + '</span></div>';
+                var planLabel = p.plan === 'exo' ? '★ EXO' : 'Free';
+                rows += '<div class="prof-about-row"><span class="k">Plan</span>'
+                    + '<span class="v" style="color:' + (p.plan === 'exo' ? '#ffd400' : '#888') + '">' + esc(planLabel) + '</span></div>';
+                rows += '<div class="prof-about-row"><span class="k">Verified</span>'
+                    + '<span class="v" style="color:' + (p.verified ? '#2ecc71' : '#888') + '">'
+                    + (p.verified ? '✓ Yes' : 'No') + '</span></div>';
+                return '<div class="prof-tab-panel" id="panelAbout">'
+                    + '<div class="prof-about-card">'
+                    + '<p class="prof-about-card-title">Profile Info</p>'
+                    + (rows || '<span style="color:rgba(255,255,255,0.38);font-size:0.85rem;">No info to display.</span>')
+                    + '</div></div>';
+            }
+            function statsPanelHtml(p, d) {
+                var lv = p.level || 0;
+                var xp = p.xp || 0;
+                var fc = (d && d.friendsCount) || 0;
+                var pc = (d && d.postsCount) || 0;
+                var achs = Array.isArray(p.achievements) ? p.achievements.length : 0;
+                var xpNext = 12 * (lv + 1) * (lv + 1);
+                return '<div class="prof-tab-panel" id="panelStats">'
+                    + '<div class="prof-stats-grid">'
+                    + '<div class="prof-stat-card"><div class="n">' + esc(String(lv)) + '</div><div class="l">Level</div></div>'
+                    + '<div class="prof-stat-card"><div class="n">' + esc(xp.toLocaleString()) + '</div><div class="l">XP</div></div>'
+                    + '<div class="prof-stat-card"><div class="n">' + esc(String(fc)) + '</div><div class="l">Friends</div></div>'
+                    + '<div class="prof-stat-card"><div class="n">' + esc(String(pc)) + '</div><div class="l">Posts</div></div>'
+                    + '<div class="prof-stat-card"><div class="n">' + esc(String(achs)) + '</div><div class="l">Badges</div></div>'
+                    + '<div class="prof-stat-card"><div class="n">' + esc(String(Math.max(0, xpNext - xp))) + '</div><div class="l">XP to Lv ' + esc(String(lv + 1)) + '</div></div>'
+                    + '</div></div>';
+            }
+
+            function render() {
+                if (!data) return;
+                var p = data.profile || {};
+                var role = (p.role || 'user').toLowerCase();
+                var lv = p.level || 0;
+                var xp = p.xp || 0;
+                var plan = p.plan || 'free';
+                var achievements = Array.isArray(p.achievements) ? p.achievements : [];
+
+                var xpForLevel = function (L) { return 12 * L * L; };
+                var curStart = xpForLevel(lv);
+                var nextStart = xpForLevel(lv + 1);
+                var into = Math.max(0, xp - curStart);
+                var span = Math.max(1, nextStart - curStart);
+                var pct = Math.min(100, Math.round((into / span) * 100));
+
+                document.title = (p.nickname || p.username || 'Profile') + ' · Exocore';
+
+                // Cover/avatar can live at top-level or nested under
+                // `data.profile`/`data.user` depending on the backend
+                // payload shape. Resolve a single canonical URL for each so
+                // OTHER users' PFP/cover render the same way as our own.
+                var coverUrl  = data.coverUrl
+                    || (data.profile && data.profile.coverUrl)
+                    || (data.user && data.user.coverUrl)
+                    || null;
+                var avatarUrl = data.avatarUrl
+                    || (data.profile && data.profile.avatarUrl)
+                    || (data.user && data.user.avatarUrl)
+                    || null;
+
+                // Cover: prefer an actual <img> overlay so we can detect load
+                // failures and clear the inline background gracefully. Keeps
+                // the gradient placeholder when there's no URL.
+                var coverImg = coverUrl
+                    ? '<img src="' + esc(coverUrl) + '" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;" onerror="this.remove();">'
+                    : '';
+                var coverStyle = '';
+                var avatarIni = (p.nickname || p.username || '?').slice(0, 2).toUpperCase();
+                var avatarFallback = '<span>' + esc(avatarIni) + '</span>';
+                var avatar = avatarUrl
+                    ? '<img src="' + esc(avatarUrl) + '" alt="' + esc(p.username) + '" onerror="this.outerHTML=' + JSON.stringify(avatarFallback).replace(/"/g, '&quot;') + '">'
+                    : avatarFallback;
+
+                var frameCls = window.ExoLevelFrames ? (' ' + ExoLevelFrames.tierClass(lv)) : '';
+                var tierBadge = window.ExoLevelFrames ? (' ' + ExoLevelFrames.tierBadgeHtml(lv)) : '';
+
+                var nameRow = '<div class="prof-name-row">'
+                    + '<h1>' + esc(p.nickname || p.username) + '</h1>'
+                    + '<span class="prof-badge role-' + esc(role) + '">' + esc(ROLE_LABEL[role] || role.toUpperCase()) + '</span>'
+                    + (plan === 'exo' ? '<span class="prof-badge plan-exo">EXO</span>' : '')
+                    + '</div>';
+
+                var stats = '<div class="prof-stats">'
+                    + '<span><b>Lv ' + lv + '</b> · ' + esc(titleForLevel(lv)) + tierBadge + '</span>'
+                    + '<span>· ' + (data.friendsCount || 0) + ' friends</span>'
+                    + '<span>· ' + (data.postsCount || 0) + ' posts</span>'
+                    + (p.country ? '<span>· 🌍 ' + esc(p.country) + '</span>' : '')
+                    + '</div>';
+
+                var chips = '<div class="prof-meta-grid">';
+                if (p.id != null) {
+                    chips += '<span class="prof-meta-chip"><span class="k">ID</span><span class="v mono">' + esc(String(p.id)) + '</span></span>';
+                }
+                // Plan chip: only render when worth showing. EXO
+                // supporters get a gold chip; FREE is the default and
+                // showing it everywhere just looked like visual
+                // clutter (especially on staff profiles where the
+                // role badge already carries the identity). Hiding
+                // the FREE chip is intentional — both staff and
+                // normal users now get a cleaner meta row.
+                if (plan === 'exo') {
+                    chips += '<span class="prof-meta-chip"><span class="k">Plan</span>'
+                        + '<span class="v" style="color:#ffd400">★ EXO</span>'
+                        + '</span>';
+                }
+                chips += '<span class="prof-meta-chip"><span class="k">Status</span>'
+                    + '<span class="v" style="color:' + (p.verified ? '#2ecc71' : '#888') + '">'
+                    + (p.verified ? '✓ Verified' : 'Unverified')
+                    + '</span></span>';
+                if (isSelf()) {
+                    chips += '<span class="prof-meta-chip"><span class="k">Presence</span>'
+                        + '<span class="v" style="color:#2ecc71">● Online</span></span>';
+                }
+                chips += '</div>';
+
+                var bio = p.bio ? '<div class="prof-bio">' + esc(p.bio) + '</div>' : '';
+
+                var xpBar = '<div class="prof-xpbar" title="' + xp + ' / ' + nextStart + ' XP">'
+                    + '<div class="prof-xpbar-fill" style="width:' + pct + '%"></div>'
+                    + '<span class="prof-xpbar-text">' + xp + ' XP · ' + (nextStart - xp) + ' to Lv ' + (lv + 1) + '</span>'
+                    + '</div>';
+
+                var achHtml = '';
+                if (achievements.length > 0) {
+                    achHtml = '<div class="prof-achievements">' + achievements.map(function (id) {
+                        var a = achCatalog[id];
+                        return '<span class="prof-ach" title="' + esc((a && a.desc) || id) + '">'
+                            + '<span class="prof-ach-icon">' + esc((a && a.icon) || '🏅') + '</span>'
+                            + '<span class="prof-ach-name">' + esc((a && a.name) || id) + '</span>'
+                            + '</span>';
+                    }).join('') + '</div>';
+                }
+
+                var actions = '<div class="prof-actions">' + actionsHtml(p) + '</div>';
+
+                var head = '<div class="prof-cover"' + coverStyle + '>' + coverImg + '<div class="prof-cover-shade"></div></div>'
+                    + '<div class="prof-head">'
+                    +   '<div class="prof-avatar' + frameCls + '">' + avatar + '</div>'
+                    +   '<div class="prof-meta prof-meta-glass">'
+                    +     nameRow
+                    +     '<div class="prof-handle">@' + esc(String(p.username || '').replace(/^@+/, '')) + '</div>'
+                    +     stats
+                    +     chips
+                    +     bio
+                    +     xpBar
+                    +     achHtml
+                    +     actions
+                    +   '</div>'
+                    + '</div>';
+
+                var feed = '<div class="prof-feed">';
+                if (!data.posts || data.posts.length === 0) {
+                    feed += '<div class="prof-empty">No posts yet.</div>';
+                } else {
+                    feed += data.posts.map(function (post) { return postHtml(post, p); }).join('');
+                }
+                feed += '</div>';
+
+                root.innerHTML = '<a class="prof-back" href="/exocore/dashboard">← Dashboard</a>'
+                    + stickyHtml(p, avatarUrl)
+                    + head
+                    + tabsHtml()
+                    + '<div id="panelPosts" class="prof-tab-panel active">'
+                    + composerHtml()
+                    + feed
+                    + '</div>'
+                    + aboutPanelHtml(p)
+                    + statsPanelHtml(p, data);
+
+                bindEvents();
+            }
+
+            function bindEvents() {
+                root.querySelectorAll('[data-friend]').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        var action = btn.getAttribute('data-friend');
+                        friendCall(action);
+                    });
+                });
+                var dm = root.querySelector('[data-act="dm"]');
+                if (dm) dm.addEventListener('click', function () { location.assign('/exocore/dashboard'); });
+
+                var comp = root.querySelector('[data-act="composer"]');
+                if (comp) comp.addEventListener('click', function () {
+                    if (!token) { location.assign('/exocore/login'); return; }
+                    composerOpen = !composerOpen;
+                    if (!composerOpen) { postText = ''; postFile = null; }
+                    render();
+                });
+
+                var ta = document.getElementById('composer-text');
+                if (ta) {
+                    ta.addEventListener('input', function () {
+                        postText = ta.value;
+                        var c = document.getElementById('composer-count');
+                        if (c) c.textContent = postText.length + '/500';
+                        var btn = document.getElementById('composer-submit');
+                        if (btn) btn.disabled = busy || (!postText.trim() && !postFile);
+                    });
+                }
+                var fi = document.getElementById('composer-file');
+                if (fi) {
+                    fi.addEventListener('change', function () {
+                        postFile = fi.files && fi.files[0] ? fi.files[0] : null;
+                        var btn = document.getElementById('composer-submit');
+                        if (btn) btn.disabled = busy || (!postText.trim() && !postFile);
+                    });
+                }
+                var sub = document.getElementById('composer-submit');
+                if (sub) sub.addEventListener('click', submitPost);
+
+                root.querySelectorAll('[data-del]').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        deletePost(btn.getAttribute('data-del'));
+                    });
+                });
+                root.querySelectorAll('[data-toggle]').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        var id = btn.getAttribute('data-toggle');
+                        openComments[id] = !openComments[id];
+                        render();
+                    });
+                });
+                root.querySelectorAll('[data-comment-input]').forEach(function (inp) {
+                    var id = inp.getAttribute('data-comment-input');
+                    inp.addEventListener('input', function () {
+                        commentDraft[id] = inp.value;
+                    });
+                    inp.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter') { e.preventDefault(); addComment(id); }
+                    });
+                });
+                root.querySelectorAll('[data-comment-send]').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        addComment(btn.getAttribute('data-comment-send'));
+                    });
+                });
+
+                // ── Tab switching ─────────────────────────────────────────
+                root.querySelectorAll('.prof-tab').forEach(function (tab) {
+                    tab.addEventListener('click', function () {
+                        root.querySelectorAll('.prof-tab').forEach(function (t) {
+                            t.classList.remove('active'); t.setAttribute('aria-selected', 'false');
+                        });
+                        root.querySelectorAll('.prof-tab-panel').forEach(function (panel) {
+                            panel.classList.remove('active');
+                        });
+                        tab.classList.add('active');
+                        tab.setAttribute('aria-selected', 'true');
+                        var panel = document.getElementById(tab.getAttribute('data-panel'));
+                        if (panel) panel.classList.add('active');
+                    });
+                });
+
+                // ── Sticky mini-header via IntersectionObserver ───────────
+                (function () {
+                    var cover = root.querySelector('.prof-cover');
+                    var sticky = document.getElementById('profSticky');
+                    if (!cover || !sticky || !('IntersectionObserver' in window)) return;
+                    if (window._profStickyObs) window._profStickyObs.disconnect();
+                    window._profStickyObs = new IntersectionObserver(function (entries) {
+                        sticky.classList.toggle('is-visible', !entries[0].isIntersecting);
+                    }, { threshold: 0 });
+                    window._profStickyObs.observe(cover);
+                })();
+            }
+
+            function submitPost() {
+                if (!token) { location.assign('/exocore/login'); return; }
+                var text = (postText || '').trim();
+                if (!text && !postFile) return;
+                busy = true;
+                render();
+                var fd = new FormData();
+                fd.append('token', token);
+                fd.append('text', text);
+                if (postFile) fd.append('file', postFile);
+                fetch('/exocore/api/posts/create', { method: 'POST', body: fd })
+                    .then(function (r) { return r.json().catch(function () { return {}; }); })
+                    .then(function (j) {
+                        busy = false;
+                        if (j && j.success === false) {
+                            alert(j.message || 'failed to post');
+                            render();
+                            return;
+                        }
+                        postText = ''; postFile = null; composerOpen = false;
+                        load();
+                    })
+                    .catch(function (e) {
+                        busy = false;
+                        alert((e && e.message) || 'failed to post');
+                        render();
+                    });
+            }
+
+            function deletePost(id) {
+                if (!token || !confirm('Delete this post?')) return;
+                fetch('/exocore/api/posts/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: token, postId: id }),
+                })
+                    .then(function (r) { return r.json().catch(function () { return {}; }); })
+                    .then(function (j) {
+                        if (j && j.success === false) { alert(j.message || 'failed'); return; }
+                        load();
+                    })
+                    .catch(function (e) { alert((e && e.message) || 'failed'); });
+            }
+
+            function addComment(postId) {
+                if (!token) { location.assign('/exocore/login'); return; }
+                var text = (commentDraft[postId] || '').trim();
+                if (!text) return;
+                fetch('/exocore/api/posts/comment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: token, postId: postId, text: text }),
+                })
+                    .then(function (r) { return r.json().catch(function () { return {}; }); })
+                    .then(function (j) {
+                        if (j && j.success === false) { alert(j.message || 'failed'); return; }
+                        commentDraft[postId] = '';
+                        load();
+                    })
+                    .catch(function (e) { alert((e && e.message) || 'failed'); });
+            }
+
+            function friendCall(action) {
+                fetch('/exocore/api/social/friend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: token, action: action, target: username }),
+                })
+                    .then(function (r) { return r.json().catch(function () { return {}; }); })
+                    .then(function (j) {
+                        if (j && j.success === false) { alert(j.message || 'failed'); return; }
+                        load();
+                    })
+                    .catch(function (e) { alert((e && e.message) || 'failed'); });
+            }
+
+            load();
+            loadAchCatalog();
+        })();
+    </script>
+</body>
+</html>

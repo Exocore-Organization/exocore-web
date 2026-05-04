@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title class="notranslate" translate="no">Check your inbox · Exocore</title>
+<link rel="icon" type="image/png" href="/exocore/exo-icon.png">
+<!-- Per-theme structural visual overlays (scoped to html[data-theme="<id>"]). -->
+<link rel="stylesheet" href="/exocore/_shared/exo-theme-skins.css">
+<script>
+/* Pre-paint theme bootstrap — stamps data-theme, restores CSS vars, handles Aero. */
+(function () {
+    try {
+        var html = document.documentElement;
+        var id = localStorage.getItem('exo:theme') || '';
+        if (id) html.dataset.theme = id;
+        try {
+            var vars = JSON.parse(localStorage.getItem('exo:theme-vars') || 'null');
+            if (vars) {
+                var cs = vars['color-scheme'];
+                if (cs) html.style.setProperty('color-scheme', cs);
+                var keys = Object.keys(vars);
+                for (var i = 0; i < keys.length; i++) {
+                    var k = keys[i];
+                    if (k !== 'color-scheme' && vars[k]) html.style.setProperty(k, vars[k]);
+                }
+            }
+        } catch (_) {}
+        if (['frutiger-aero'].indexOf(id) !== -1) {
+            html.dataset.mode = 'aero';
+            html.classList.add('exo-booting');
+            var t = setTimeout(function () { html.classList.remove('exo-booting'); }, 500);
+            var l = document.createElement('link');
+            l.rel = 'stylesheet';
+            l.href = '/exocore/_shared/exo-frutiger-aero.css';
+            l.setAttribute('data-exo-aero', '1');
+            l.onload = function () { clearTimeout(t); html.classList.remove('exo-booting'); };
+            l.onerror = function () { clearTimeout(t); html.classList.remove('exo-booting'); };
+            document.head.appendChild(l);
+        }
+    } catch (e) {
+        try { document.documentElement.classList.remove('exo-booting'); } catch (_) {}
+    }
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+          html.exo-booting body { visibility: hidden !important; }
+:root {
+    --font-ui:   'IBM Plex Sans', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --bg-base:   #0a0a0a;
+    --bg-surf:   #111;
+    --text-pri:  #f0f0f0;
+    --text-sec:  #a0a0a0;
+    --text-mut:  #666;
+    /* See note in home.html — accent wired to theme so the
+     * "verify your email" page tracks the picked theme.
+     * `--green` stays a real green (success state when the
+     * email is verified). */
+    --yellow:    var(--accent, #FFE500);
+    --green:     #43d473;
+    --pink:      var(--accent, #FF2D78);
+    --cyan:      var(--accent, #00D4FF);
+    --red:       #ff5555;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-ui); background: var(--bg-base); color: var(--text-pri);
+    min-height: 100vh; overflow-x: hidden; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .auth-page {
+    position: relative; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem; overflow: hidden;
+  }
+  .auth-glow {
+    position: absolute; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0;
+  }
+  .auth-glow-1 { width: 420px; height: 420px; background: rgba(255,229,0,0.06); top: -120px; left: -100px; }
+  .auth-glow-2 { width: 360px; height: 360px; background: rgba(67,212,115,0.05); bottom: -100px; right: -80px; }
+
+  .auth-card {
+    position: relative; z-index: 1; width: 100%; max-width: 460px;
+    background: var(--bg-surf); border: 2px solid var(--border, #333);
+    box-shadow: 6px 6px 0 0 var(--yellow); padding: 1.75rem;
+    display: flex; flex-direction: column; gap: 1.25rem;
+    animation: fadeUp 0.3s ease both;
+  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes spin   { to { transform: rotate(360deg); } }
+  @keyframes pulse  { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.04); opacity: 0.9; } }
+
+  .auth-logo-text {
+    font-size: 0.85rem; font-weight: 800; letter-spacing: 0.2em;
+    color: var(--yellow); font-family: var(--font-mono); text-transform: uppercase;
+  }
+  .auth-title {
+    font-size: 1.65rem; font-weight: 800; line-height: 1.15;
+    letter-spacing: -0.01em; color: var(--text-pri);
+  }
+  .auth-subtitle { font-size: 0.9rem; color: var(--text-sec); margin-top: 0.35rem; }
+
+  .vp-card {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; gap: 1rem;
+  }
+  /* Defensive: any `display: flex` ancestor would otherwise clobber the
+     UA `[hidden] { display: none }` rule (e.g. on the resend hint). */
+  [hidden] { display: none !important; }
+  .vp-icon {
+    width: 76px; height: 76px;
+    background: var(--yellow); color: #000;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.4rem; font-weight: 900;
+    border: 2px solid #000; box-shadow: 4px 4px 0 #000;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  .vp-text { font-size: 0.95rem; color: var(--text-pri); line-height: 1.6; }
+  .vp-email {
+    color: var(--yellow); font-family: var(--font-mono);
+    font-weight: 700; word-break: break-all;
+  }
+  .vp-text-sub { font-size: 0.85rem; color: var(--text-sec); line-height: 1.6; }
+  .vp-text-sub em {
+    color: var(--text-pri); font-style: normal; font-weight: 700;
+    background: rgba(255,229,0,0.08); padding: 1px 6px;
+    border: 1px solid var(--border, #333);
+  }
+
+  .vp-divider {
+    display: flex; align-items: center; gap: 0.75rem;
+    width: 100%; color: var(--text-mut); font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.18em; font-weight: 700;
+  }
+  .vp-divider::before, .vp-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border, #222);
+  }
+
+  .vp-hint {
+    font-size: 0.78rem; color: var(--text-mut); line-height: 1.5;
+  }
+  .vp-footnote {
+    font-size: 0.8rem; color: var(--text-mut); margin-top: 0.25rem;
+  }
+  .vp-footnote a { color: var(--yellow); font-weight: 700; text-decoration: none; }
+  .vp-footnote a:hover { text-decoration: underline; }
+
+  .btn {
+    width: 100%; display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px; padding: 0.85rem 1rem;
+    font-size: 0.85rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; border: 2px solid #000; transition: 0.1s ease; font-family: var(--font-ui);
+  }
+  .btn-primary { background: var(--yellow); color: #000; box-shadow: 4px 4px 0 0 #000; }
+  .btn-primary:hover:not(:disabled)  { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #000; }
+  .btn-primary:active:not(:disabled) { transform: translate(2px, 2px);   box-shadow: 2px 2px 0 0 #000; }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-secondary {
+    background: var(--bg-card, #1a1a1a); color: var(--text-pri); border-color: var(--border, #333);
+  }
+  .btn-secondary:hover:not(:disabled)  { border-color: var(--yellow); color: var(--yellow); }
+  .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .form-error, .form-success {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 0.65rem 0.85rem; font-size: 0.82rem; font-weight: 600;
+    border: 2px solid; width: 100%;
+  }
+  .form-error   { background: rgba(255, 60, 60, 0.08); border-color: #d44; color: #ff8a8a; }
+  .form-success { background: rgba(67, 212, 115, 0.08); border-color: var(--green); color: var(--green); }
+
+  .spinner { width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.25); border-top-color: #000; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
+
+  .auth-footer {
+    padding-top: 1rem; margin-top: 0.25rem;
+    border-top: 1px solid #222; text-align: center;
+    color: var(--text-mut); font-size: 0.85rem;
+  }
+  .auth-footer a { color: var(--yellow); font-weight: 700; text-decoration: none; }
+  .auth-footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 480px) {
+    .auth-page { padding: 0; align-items: stretch; }
+    .auth-card {
+      max-width: 100%; min-height: 100vh;
+      box-shadow: none; border: none; border-bottom: 4px solid var(--yellow);
+      padding: 1.25rem; justify-content: center;
+    }
+    .btn { padding: 1rem; min-height: 52px; }
+  }
+</style>
+<script src="/exocore/_shared/vendor/msgpack.min.js"></script>
+<!-- Phase 3.M: ExoStorage loads first (see other auth pages). -->
+<script src="/exocore/_shared/exo-storage.js"></script>
+<script src="/exocore/_shared/exo-rpc.js"></script>
+<script src="/exocore/editor/scripts/themes.js"></script>
+<script src="/exocore/_shared/exo-theme-apply.js"></script>
+</head>
+<body class="theme-modern">
+
+<div class="auth-page">
+  <div class="auth-glow auth-glow-1"></div>
+  <div class="auth-glow auth-glow-2"></div>
+
+  <div class="auth-card">
+    <span class="auth-logo-text">EXOCORE</span>
+
+    <div>
+      <h1 class="auth-title">Check your inbox</h1>
+      <p class="auth-subtitle" id="page-subtitle">One last step to activate your account.</p>
+    </div>
+
+    <div class="vp-card">
+      <div class="vp-icon">✉</div>
+
+      <p class="vp-text">
+        We sent a verification link to<br />
+        <strong class="vp-email" id="email-display">your email</strong>
+      </p>
+
+      <p class="vp-text-sub">
+        Open that email and click <em>Verify my email</em>. We’ll bring you straight back here, signed in and ready to go.
+      </p>
+
+      <button id="btn-open" class="btn btn-primary" type="button">Open my inbox →</button>
+
+      <p id="opened-hint" class="vp-hint" hidden>
+        Inbox opened in a new tab. Once you click the verify link, return here — you’ll be auto-logged in.
+      </p>
+
+      <div class="vp-divider"><span>didn’t get it?</span></div>
+
+      <button id="btn-resend" class="btn btn-secondary" type="button">
+        <span id="lbl-resend">Resend verification email</span>
+      </button>
+
+      <div id="resend-status" style="display:none;width:100%;"></div>
+
+      <p class="vp-footnote">
+        Wrong email? <a href="/exocore/register">Use a different one →</a>
+      </p>
+    </div>
+
+    <div class="auth-footer">
+      <a href="/exocore/login">← Back to sign in</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    /* Phase 3.M: wait for the IDB cache hydrate before we touch
+     * theme / token / settings keys. */
+    window.ExoStorage.ready.then(function () { boot(); });
+
+    function boot() {
+    // ---- Theme + already-logged-in redirect ----
+    try {
+      var settings = JSON.parse(ExoStorage.getItem('exo_settings') || '{}');
+      if (!settings.theme) {
+        settings.theme = 'modern';
+        ExoStorage.setItem('exo_settings', JSON.stringify(settings));
+      }
+      document.body.className = 'theme-' + (settings.theme || 'modern');
+      if (ExoStorage.getItem('exo_token')) {
+        window.location.replace('/exocore/dashboard');
+        return;
+      }
+    } catch (e) { console.error('init failed:', e); }
+
+    // ---- Pull verification context: sessionStorage > query string ----
+    var ctx = { email: '', nickname: '', username: '' };
+    try {
+      var stored = sessionStorage.getItem('exo_pending_verify');
+      if (stored) ctx = Object.assign(ctx, JSON.parse(stored));
+    } catch (_) {}
+    var params = new URLSearchParams(window.location.search);
+    if (!ctx.email) ctx.email = params.get('email') || '';
+
+    var subtitle  = document.getElementById('page-subtitle');
+    var emailDisp = document.getElementById('email-display');
+    var btnOpen   = document.getElementById('btn-open');
+    var btnResend = document.getElementById('btn-resend');
+    var lblResend = document.getElementById('lbl-resend');
+    var openedHint= document.getElementById('opened-hint');
+    var statusBox = document.getElementById('resend-status');
+
+    if (ctx.nickname) subtitle.textContent = 'One last step, ' + ctx.nickname + '.';
+    if (ctx.email)    emailDisp.textContent = ctx.email;
+    btnOpen.disabled  = !ctx.email;
+
+    // ---- Inbox URL guesser (mirrors React `gmailUrlFor`) ----
+    function inboxUrl(email) {
+      var domain = (email.split('@')[1] || '').toLowerCase();
+      if (!domain) return 'https://mail.google.com';
+      if (domain.indexOf('gmail') !== -1 || domain.indexOf('googlemail') !== -1) return 'https://mail.google.com';
+      if (domain.indexOf('outlook') !== -1 || domain.indexOf('hotmail') !== -1 || domain.indexOf('live') !== -1) return 'https://outlook.live.com/mail/0/inbox';
+      if (domain.indexOf('yahoo') !== -1)  return 'https://mail.yahoo.com';
+      if (domain.indexOf('proton') !== -1) return 'https://mail.proton.me';
+      if (domain.indexOf('icloud') !== -1) return 'https://www.icloud.com/mail';
+      return 'https://' + domain;
+    }
+
+    btnOpen.addEventListener('click', function () {
+      if (!ctx.email) return;
+      window.open(inboxUrl(ctx.email), '_blank', 'noopener,noreferrer');
+      openedHint.hidden = false;
+    });
+
+    // ---- Resend (with cooldown timer) ----
+    var resendTimer = 0;
+    var resendInt   = 0;
+
+    function setResendCooldown(secs) {
+      resendTimer = secs;
+      btnResend.disabled = true;
+      lblResend.textContent = 'Resend in ' + resendTimer + 's';
+      clearInterval(resendInt);
+      resendInt = setInterval(function () {
+        resendTimer--;
+        if (resendTimer <= 0) {
+          clearInterval(resendInt);
+          btnResend.disabled = false;
+          lblResend.textContent = 'Resend verification email';
+          return;
+        }
+        lblResend.textContent = 'Resend in ' + resendTimer + 's';
+      }, 1000);
+    }
+    function showStatus(ok, msg) {
+      statusBox.style.display = '';
+      statusBox.className = ok ? 'form-success' : 'form-error';
+      statusBox.textContent = msg;
+    }
+    function hideStatus() { statusBox.style.display = 'none'; statusBox.textContent = ''; }
+
+    btnResend.addEventListener('click', async function () {
+      if (!ctx.email) {
+        showStatus(false, 'No email on record. Please go back and register again.');
+        return;
+      }
+      hideStatus();
+      btnResend.disabled = true;
+      lblResend.innerHTML = '<span class="spinner"></span> Sending…';
+      try {
+        // Full WSS — same backend hop the legacy auth.verify.resend RPC did.
+        var data = await window.ExoRPC.call('auth.verify.resend', {
+          username: ctx.username || ctx.email,
+          host:     window.location.origin,
+        });
+        if (!data || data.success === false) {
+          throw new Error((data && data.message) || 'Could not resend. Try again in a moment.');
+        }
+        showStatus(true, 'Verification link sent to ' + ctx.email);
+        setResendCooldown(45);
+      } catch (err) {
+        showStatus(false, (err && err.message) || 'Could not resend. Try again in a moment.');
+        btnResend.disabled = false;
+        lblResend.textContent = 'Resend verification email';
+      }
+    });
+    } /* end boot() */
+  })();
+</script>
+</body>
+</html>

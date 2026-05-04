@@ -1,0 +1,5529 @@
+/* =========================================================
+ * shell.css — vanilla-shell additions on top of editor.css
+ * (which is copied verbatim from client/editor/editor.css).
+ *
+ * Only rules that don't exist in the React editor.css live
+ * here: file-tree styling, vanilla toast, project picker,
+ * loader spinner, etc. Everything else must come from
+ * editor.css so the look stays in lockstep with the React
+ * source.
+ * ======================================================= */
+
+/* default theme tokens (replit-dark palette) — React sets
+   these via inline style on .vscode-layout, but the vanilla
+   shell pins them here so editor.css renders correctly. */
+.vscode-layout {
+    --bg: #0e1525;
+    --surface: #1c2333;
+    --text-main: #f5f9f9;
+    --text-muted: rgba(245,249,249,0.4);
+    --accent: #00a1ff;
+    --accent-rgb: 0, 161, 255;
+    background: var(--bg);
+    color: var(--text-main);
+}
+
+/* The HTML `hidden` attribute MUST win over class-based display:flex/grid.
+ * Without this, `<div hidden class="loader-screen-shell">` stays visible
+ * because `.loader-screen-shell { display:flex }` shadows the UA `[hidden]
+ * { display:none }` rule (same specificity → author stylesheet wins). */
+[hidden] { display: none !important; }
+
+/* ----- LOADER (full-screen on first paint) ----- */
+.loader-screen-shell {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    background: #0e1525;
+    color: #f5f9f9;
+    z-index: 9999;
+}
+.loader-spinner {
+    width: 28px;
+    height: 28px;
+    border: 2.5px solid rgba(255,255,255,0.12);
+    border-top-color: var(--accent, #00a1ff);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ----- HEADER OVERRIDES (mirror Layout.tsx inline <style> at line 562-578)
+ * editor.css declares .main-header at 48 px, but Layout.tsx's inline style
+ * shrinks it to 44 px and changes padding/gap. We mirror that here so the
+ * vanilla shell pixel-matches the React shell. */
+.main-header {
+    height: 44px !important;
+    padding: 0 10px !important;
+    gap: 6px !important;
+}
+
+/* .hdr-btn — copied from Layout.tsx line 568-577 (was inline-styled in React,
+ * never written to editor.css; we own it here). */
+.hdr-btn {
+    background: transparent;
+    border: 1px solid var(--hairline);
+    color: inherit;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: 0.12s ease;
+    opacity: 0.85;
+    white-space: nowrap;
+    min-height: 28px;
+}
+.hdr-btn:hover {
+    opacity: 1;
+    border-color: var(--accent, #00a1ff);
+    color: var(--accent, #00a1ff);
+}
+.hdr-btn:active { transform: scale(0.96); }
+.hdr-btn-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+@media (max-width: 640px) {
+    .hdr-btn-label { display: none; }
+}
+
+/* ── Run / Stop button ────────────────────────────────────────
+ * Prominent green play button visible on all screen sizes.
+ * Turns red + shows "Stop" while the runtime is active.
+ * On mobile the label hides (same as other .hdr-btn) but the
+ * icon stays — 44 px tap target for comfortable touch use. */
+.hdr-run-btn {
+    background: rgba(80, 250, 123, 0.12);
+    border-color: rgba(80, 250, 123, 0.4);
+    color: #50fa7b;
+    min-width: 36px;
+    gap: 5px;
+    padding: 5px 10px;
+}
+.hdr-run-btn:hover {
+    background: rgba(80, 250, 123, 0.22);
+    border-color: #50fa7b;
+    color: #50fa7b;
+}
+.hdr-run-btn.is-running {
+    background: rgba(255, 85, 85, 0.12);
+    border-color: rgba(255, 85, 85, 0.4);
+    color: #ff5555;
+}
+.hdr-run-btn.is-running:hover {
+    background: rgba(255, 85, 85, 0.22);
+    border-color: #ff5555;
+    color: #ff5555;
+}
+.hdr-run-btn.is-loading {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+.hdr-run-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* The header is laid out as: left button | centered title | right actions.
+ * `.header-title` is `flex: 1; text-align: center` from editor.css (line 109),
+ * so the actions group naturally hugs the right edge. */
+.header-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Auto-save indicator (mirrors Layout.tsx line 524-536). 10 px,
+ * uppercase, tracks the saving / saved / error state. */
+.auto-save {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0 6px;
+}
+.auto-save.saved { color: var(--accent, #00a1ff); }
+.auto-save.saving { color: var(--text-soft); }
+.auto-save.error { color: #ff8888; }
+.auto-save .spin { animation: spin 0.9s linear infinite; }
+
+/* ----- SIDEBAR (mirror Sidebar.tsx inline <style> at line 430-498)
+ *
+ * The React Sidebar styles itself with an inline <style> block — those
+ * rules never made it into editor.css. We copy them verbatim here so
+ * the file explorer pixel-matches. */
+.exocore-sidebar-container {
+    height: 100%; display: flex; flex-direction: column;
+    background: transparent; user-select: none; color: inherit;
+    overflow: hidden;
+}
+.sidebar-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: linear-gradient(180deg, rgba(255,255,255,0.025), transparent);
+}
+.toolbar-title {
+    font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
+    opacity: 0.9; text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+}
+.title-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent, #00a1ff);
+    box-shadow: 0 0 8px rgba(0, 161, 255, 0.6);
+}
+.toolbar-actions { display: flex; align-items: center; gap: 4px; opacity: 0.85; }
+.toolbar-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; border-radius: 5px;
+    transition: background 0.15s, transform 0.1s;
+    cursor: pointer;
+}
+.toolbar-icon:hover { background: rgba(255,255,255,0.08); }
+.toolbar-icon:active { transform: scale(0.92); }
+.toolbar-actions .divider {
+    width: 1px; height: 14px;
+    background: rgba(255,255,255,0.12);
+    margin: 0 4px;
+}
+.sidebar-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding-top: 8px; }
+
+/* ---- File tree rows (overrides the older simpler rules above) ---- */
+.tree-root { padding: 0; }
+.tree-empty {
+    padding: 12px 14px; opacity: 0.5; font-size: 12px;
+}
+.tree-row {
+    display: flex; align-items: center;
+    padding: 4px 12px; height: 28px;
+    cursor: pointer; transition: background 0.1s;
+    border-left: 2px solid transparent; gap: 6px;
+    touch-action: none; color: inherit;
+}
+.tree-row:hover { background: rgba(255,255,255,0.05); }
+.tree-row.active {
+    background: rgba(255,255,255,0.08);
+    border-left-color: currentColor;
+    font-weight: 600;
+}
+.tree-row.drag-source { opacity: 0.4; }
+.tree-row.drop-target {
+    background: rgba(99,102,241,0.18);
+    border-left-color: #6366f1;
+    outline: 1px dashed rgba(99,102,241,0.55);
+}
+.chevron-icon {
+    width: 16px;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.7;
+}
+.file-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 16px; height: 16px;
+}
+.folder-icon { color: #f29e1d; }
+.folder-icon.open { color: #ffd866; }
+.file-name {
+    font-size: 13px; color: inherit; opacity: 0.9;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tree-row.active .file-name { opacity: 1; }
+.row-actions { display: none; margin-left: auto; opacity: 0.6; padding: 4px; }
+.tree-row:hover .row-actions { display: flex; }
+.row-actions:hover { opacity: 1; }
+.hidden-item-style { opacity: 0.5; }
+.exo-tree-input {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid currentColor; color: inherit;
+    font-size: 12px; padding: 4px 8px;
+    border-radius: 4px; outline: none;
+    width: calc(100% - 20px); font-family: inherit;
+}
+.spin { animation: spin 0.8s linear infinite; }
+
+.sidebar-pane-placeholder {
+    height: 100%;
+    display: flex; align-items: center; justify-content: center;
+}
+
+/* ---- Bottom-panel internal layout (panel-tabs row + buttons inside) ---- */
+.panel-tabs {
+    display: flex; align-items: center; gap: 4px; flex: 1;
+}
+.panel-tabs .status-btn { font-size: 11px; }
+.panel-tabs .status-btn.active {
+    background: var(--surface-active);
+    opacity: 1;
+}
+
+/* ---- Status-bar separator dot ---- */
+.status-btn .sep {
+    margin: 0 4px;
+    opacity: 0.45;
+}
+.header-status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transition: background 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+}
+.header-status-pill.running .header-status-dot {
+    background: #4ade80;
+    box-shadow: 0 0 0 4px rgba(74,222,128,0.18);
+}
+.header-status-pill.starting .header-status-dot,
+.header-status-pill.stopping .header-status-dot {
+    background: #f5b342;
+    box-shadow: 0 0 0 4px rgba(245,179,66,0.18);
+    animation: pulse 1s ease-in-out infinite;
+}
+@keyframes pulse {
+    50% { transform: scale(1.18); opacity: 0.7; }
+}
+
+.icon-btn-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid var(--hairline);
+    color: inherit;
+    cursor: pointer;
+    border-radius: var(--r-md);
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.85;
+    transition: all 0.18s var(--ease-out);
+    text-decoration: none;
+    min-height: 32px;
+}
+.icon-btn-text:hover { opacity: 1; background: var(--surface-hover); }
+.icon-btn-text.primary {
+    background: var(--accent, #00a1ff);
+    color: #fff !important;
+    border-color: transparent;
+    opacity: 1;
+}
+.icon-btn-text.primary:hover { filter: brightness(1.1); }
+.icon-btn-text.danger {
+    background: rgba(255,90,90,0.16);
+    border-color: rgba(255,90,90,0.3);
+    color: #ff7070 !important;
+    opacity: 1;
+}
+.icon-btn-text.danger:hover { background: rgba(255,90,90,0.26); }
+
+/* ----- FILE TREE ----- */
+.tree-root {
+    padding: 2px 0 80px;
+    font-family: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+    font-size: 13px;
+}
+.tree-empty {
+    padding: 24px 16px;
+    text-align: center;
+    opacity: 0.5;
+    font-size: 12px;
+}
+
+/* ── VS Code-style tree rows ─────────────────────────────────────
+ * Full-width rows, no border-radius, no margin — exactly like VS Code.
+ * Active file gets a 2px blue left border + very subtle blue tint.
+ * The .vsc-actions group appears only on :hover / :focus-within.
+ * position:relative is required for the .tree-guide absolute children. */
+.tree-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 6px 1px 0;
+    min-height: 22px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.08s;
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    border-left: 2px solid transparent;
+    box-sizing: border-box;
+    /* Reset editor.css legacy values */
+    border-radius: 0;
+    margin: 0;
+    opacity: 1;
+}
+.tree-row:hover { background: var(--surface-hover, rgba(255,255,255,.05)); }
+.tree-row.active {
+    background: rgba(0, 120, 212, 0.12);
+    border-left-color: #0078d4;
+}
+.tree-row.folder { }
+.tree-row .tree-icon {
+    flex-shrink: 0;
+}
+
+/* ── Indent guide lines (absolutely positioned within each row) ── */
+.tree-guide {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: rgba(255,255,255,0.07);
+    pointer-events: none;
+}
+.tree-row:hover .tree-guide { background: rgba(255,255,255,0.13); }
+
+/* ── VS Code chevrons ────────────────────────────────────────────  */
+.vsc-chevron {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+    display: block;
+    opacity: 0.65;
+    color: var(--text-sec, #aaa);
+    transition: opacity 0.1s;
+}
+.tree-row:hover .vsc-chevron { opacity: 0.9; }
+.vsc-chevron-blank {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+    display: inline-block;
+}
+
+/* ── VS Code-style hover action buttons ──────────────────────────
+ * Hidden by default, revealed on row hover (desktop) or always
+ * visible on touch (coarse pointer). The .row-more class is kept
+ * on the "more" button so mobile long-press context menu still fires. */
+.vsc-actions {
+    margin-left: auto;
+    flex-shrink: 0;
+    display: none;
+    align-items: center;
+    gap: 1px;
+}
+.tree-row:hover .vsc-actions,
+.tree-row:focus-within .vsc-actions,
+.tree-row.active .vsc-actions { display: flex; }
+@media (hover: none) and (pointer: coarse) {
+    .vsc-actions { display: flex; }
+}
+.vsc-act {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px; height: 20px;
+    background: transparent;
+    border: 0;
+    color: var(--text-sec, #aaa);
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 0;
+    opacity: 0.75;
+    transition: background 0.1s, opacity 0.1s, color 0.1s;
+    flex-shrink: 0;
+}
+.vsc-act svg { display: block; pointer-events: none; }
+.vsc-act:hover {
+    background: rgba(255,255,255,0.12);
+    opacity: 1;
+    color: var(--text-pri, #eee);
+}
+
+/* ----- WELCOME / EMPTY EDITOR ----- */
+.welcome-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 32px;
+    text-align: center;
+    user-select: none;
+    opacity: 0.85;
+}
+.welcome-emoji { font-size: 48px; }
+.welcome-pane h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+.welcome-pane p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    opacity: 0.6;
+    max-width: 320px;
+}
+.welcome-pane kbd {
+    background: var(--surface-hover);
+    border: 1px solid var(--hairline);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 11px;
+}
+
+/* ----- MONACO HOST (Phase 1 — replaces v1 textarea + gutter) -----
+ * Single full-bleed div that scripts/code.js mounts the Monaco
+ * editor into. Monaco draws its own gutter / scrollbars / cursor,
+ * so all we have to do here is give it a flexbox child with no
+ * padding and a guaranteed `min-height: 0` so it can shrink
+ * inside the editor-area column.
+ * ----------------------------------------------------------- */
+.monaco-host {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    background: var(--bg);
+    overflow: hidden;
+}
+.monaco-host .monaco-editor,
+.monaco-host .monaco-editor .overflow-guard {
+    border-radius: 0;
+}
+
+/* Legacy textarea pane styles — kept (commented so we remember
+ * what was here) and replaced by .monaco-host above.            */
+.code-pane {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    background: var(--bg);
+    font-family: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    font-size: 13px;
+    line-height: 1.55;
+}
+.code-gutter {
+    flex-shrink: 0;
+    padding: 10px 10px 10px 14px;
+    text-align: right;
+    color: var(--text-muted);
+    background: var(--bg);
+    border-right: 1px solid var(--hairline);
+    overflow: hidden;
+    white-space: pre;
+    user-select: none;
+    min-width: 44px;
+    font-variant-numeric: tabular-nums;
+}
+.code-textarea {
+    flex: 1;
+    border: none;
+    outline: none;
+    resize: none;
+    background: var(--bg);
+    color: var(--text-main);
+    padding: 10px 16px;
+    font: inherit;
+    line-height: 1.55;
+    tab-size: 4;
+    white-space: pre;
+    overflow: auto;
+    caret-color: var(--accent, #00a1ff);
+}
+
+/* ----- TABS BAR (above the editor) ----- */
+.tabs-bar {
+    display: flex;
+    align-items: stretch;
+    overflow-x: auto;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--hairline);
+    background: var(--bg);
+    scrollbar-width: thin;
+    height: 36px;
+}
+.tabs-bar::-webkit-scrollbar { height: 4px; }
+.tabs-bar:empty { display: none; }
+.tab-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: inherit;
+    opacity: 0.65;
+    transition: all 0.15s var(--ease-out);
+    border-right: 1px solid var(--hairline);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.tab-chip:hover { opacity: 1; background: var(--surface-hover); }
+.tab-chip.active {
+    opacity: 1;
+    background: var(--surface);
+    box-shadow: inset 0 -2px 0 var(--accent, #00a1ff);
+}
+.tab-chip .tab-close {
+    opacity: 0.5;
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 1;
+}
+.tab-chip:hover .tab-close { opacity: 0.85; }
+.tab-chip .tab-close:hover { background: rgba(255,90,90,0.2); color: #ff7070; opacity: 1; }
+.tab-chip .tab-dirty {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent, #00a1ff);
+    flex-shrink: 0;
+}
+
+/* ----- TOAST ----- */
+.toast-wrap {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 9000;
+    pointer-events: none;
+}
+.toast {
+    pointer-events: auto;
+    background: rgba(28,35,51,0.96);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--hairline-strong);
+    border-left: 3px solid var(--accent, #00a1ff);
+    color: var(--text-main);
+    padding: 10px 14px;
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-lg);
+    min-width: 240px;
+    max-width: 360px;
+    font-size: 12px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.success { border-left-color: #4ade80; }
+.toast.error   { border-left-color: #ff5a5a; }
+.toast.warning { border-left-color: #f5b342; }
+
+/* =========================================================
+ * Phase 2 — context menu + command palette.
+ * ========================================================= */
+
+/* ----- CONTEXT MENU (sidebar / tabs right-click) ----- */
+.exo-context-menu {
+    position: fixed;
+    z-index: 10000;
+    min-width: 180px;
+    max-width: 280px;
+    background: var(--surface, #1a1b26);
+    border: 1px solid var(--hairline-strong, rgba(122, 162, 247, 0.3));
+    border-radius: 8px;
+    padding: 4px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    animation: exoCtxFadeIn 0.12s ease-out;
+    user-select: none;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-size: 12px;
+}
+@keyframes exoCtxFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.exo-context-menu .ctx-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    color: var(--text-main, #c9d1d9);
+    transition: background 0.15s, color 0.15s;
+}
+.exo-context-menu .ctx-item:hover {
+    background: rgba(122, 162, 247, 0.12);
+    color: var(--accent, #7aa2f7);
+}
+.exo-context-menu .ctx-item.danger { color: #f7768e; }
+.exo-context-menu .ctx-item.danger:hover {
+    background: rgba(247, 118, 142, 0.12);
+    color: #f7768e;
+}
+.exo-context-menu .ctx-icon {
+    width: 18px;
+    text-align: center;
+    font-size: 13px;
+    opacity: 0.85;
+}
+.exo-context-menu .ctx-label { flex: 1; }
+
+/* ----- COMMAND PALETTE (Ctrl+P / Ctrl+Shift+P) ----- */
+.cmdk-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10001;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 12vh;
+    animation: exoCmdkFadeIn 0.15s ease-out;
+}
+@keyframes exoCmdkFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+.cmdk-panel {
+    width: min(640px, 90vw);
+    max-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface, #1a1b26);
+    border: 1px solid var(--hairline-strong, rgba(122, 162, 247, 0.3));
+    border-radius: 12px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+    color: var(--text-main, #c9d1d9);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+}
+.cmdk-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
+}
+.cmdk-search-icon { font-size: 14px; opacity: 0.5; }
+.cmdk-input {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: inherit;
+    font-size: 14px;
+    font-family: inherit;
+}
+.cmdk-input::placeholder { color: var(--text-muted, #6b7280); }
+.cmdk-kbd {
+    font-size: 10px;
+    padding: 2px 6px;
+    border: 1px solid var(--hairline, rgba(255, 255, 255, 0.15));
+    border-radius: 4px;
+    color: var(--text-muted, #6b7280);
+    font-family: 'IBM Plex Mono', monospace;
+}
+.cmdk-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 0;
+}
+.cmdk-section {
+    padding: 6px 14px 4px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted, #6b7280);
+    font-weight: 600;
+}
+.cmdk-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 13px;
+}
+.cmdk-item.selected,
+.cmdk-item:hover {
+    background: rgba(122, 162, 247, 0.12);
+    color: var(--accent, #7aa2f7);
+}
+.cmdk-icon { width: 20px; display: inline-flex; align-items: center; justify-content: center; opacity: 0.85; flex-shrink: 0; }
+.cmdk-icon svg { display: block; }
+.cmdk-icon img.file-icon { width: 14px; height: 14px; }
+.cmdk-label { flex: 1; }
+.cmdk-hint {
+    font-size: 11px;
+    color: var(--text-muted, #6b7280);
+    font-family: 'IBM Plex Mono', monospace;
+    opacity: 0.7;
+}
+.cmdk-empty {
+    padding: 18px 14px;
+    text-align: center;
+    color: var(--text-muted, #6b7280);
+    font-size: 12px;
+}
+
+/* =========================================================
+ * Phase 3 — bottom panel + console + webview.
+ * ========================================================= */
+
+/* The editor section now stacks: tabs / monaco / bottom-panel / status-bar.
+ * `.content-split` keeps the welcome+monaco area as a flex column so the
+ * panel can sit beneath it without breaking layout. */
+.content-split {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+.monaco-container {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+}
+
+/* ----- BOTTOM PANEL (Console / Webview / Problems) ----- */
+.bottom-panel {
+    display: flex;
+    flex-direction: column;
+    height: 320px;
+    min-height: 120px;
+    max-height: 75vh;
+    border-top: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
+    background: var(--surface, #1a1b26);
+    overflow: hidden;
+}
+.bottom-panel-tabs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: var(--bg, #0a0a0a);
+    border-bottom: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
+    user-select: none;
+}
+.bp-tab {
+    background: transparent;
+    border: 0;
+    color: var(--text-muted, #6b7280);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    transition: background 0.15s, color 0.15s;
+}
+.bp-tab:hover {
+    color: var(--text-main, #c9d1d9);
+    background: rgba(255, 255, 255, 0.04);
+}
+.bp-tab.active {
+    color: var(--accent, #7aa2f7);
+    background: rgba(122, 162, 247, 0.12);
+}
+.bp-close {
+    background: transparent;
+    border: 0;
+    color: var(--text-muted, #6b7280);
+    font-size: 18px;
+    line-height: 1;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.bp-close:hover {
+    color: #f7768e;
+    background: rgba(247, 118, 142, 0.1);
+}
+.bottom-panel-host {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ----- Status-bar quick-toggle pills (Phase 3) ----- */
+.status-btn.panel-pill {
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+}
+.status-btn.panel-pill:hover {
+    color: var(--accent, #7aa2f7);
+}
+.status-btn.panel-pill.active {
+    color: var(--accent, #7aa2f7);
+    background: rgba(122, 162, 247, 0.12);
+    border-radius: 4px;
+}
+
+/* ----- CONSOLE pane ----- */
+.console-pane {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #0a0a0a;
+    color: #e2e8f0;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+}
+.con-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    background: var(--surface, #1a1b26);
+    border-bottom: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
+    flex-shrink: 0;
+}
+.con-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--text-muted, #6b7280);
+}
+.con-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 6px;
+}
+.con-status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #ff5555;
+    box-shadow: 0 0 6px rgba(255, 85, 85, 0.5);
+}
+.con-status-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #ff5555;
+    letter-spacing: 0.05em;
+}
+.con-btn {
+    background: transparent;
+    border: 0;
+    color: #c9d1d9;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.15s;
+}
+.con-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.06); }
+.con-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.con-btn.start   { color: #50fa7b; }
+.con-btn.restart { color: #8be9fd; }
+.con-btn.stop    { color: #ff5555; }
+.con-btn.clear       { color: var(--text-muted, #6b7280); margin-left: auto; }
+.con-btn.agent-fix   { color: #bd93f9; border: 1px solid rgba(189,147,249,0.25); }
+.con-term {
+    flex: 1;
+    min-height: 0;
+    padding: 6px 8px;
+    overflow: hidden;
+}
+.con-term .xterm,
+.con-term .xterm-viewport { height: 100% !important; }
+
+/* =========================================================
+ * Item 26 — Console + Terminal: mobile / iOS / tablet friendly
+ * ========================================================= */
+
+/* Prevent iOS from auto-zooming on input focus (font < 16px triggers zoom) */
+.con-cmd-input,
+.terminal-pane .term-cmd-input {
+    font-size: 16px !important;
+    -webkit-text-size-adjust: 100%;
+}
+
+/* Safe-area insets so nothing hides behind iPhone home bar */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .bottom-panel.mobile-panel {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
+
+/* ----- Console mobile extras (#26) ----- */
+.con-keys {
+    display: flex;
+    gap: 5px;
+    padding: 5px 8px;
+    background: var(--surface, #1a1b26);
+    border-bottom: 1px solid var(--hairline, rgba(255,255,255,0.08));
+    overflow-x: auto;
+    flex-shrink: 0;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+.con-keys::-webkit-scrollbar { display: none; }
+.con-key {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #e2e8f0;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    min-width: 38px;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    transition: background 0.12s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+.con-key:active { background: rgba(255,255,255,0.15); }
+.con-key-danger { color: #ff5555; border-color: rgba(255,85,85,0.3); }
+
+.con-cmd-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    background: var(--surface, #1a1b26);
+    border-bottom: 1px solid var(--hairline, rgba(255,255,255,0.08));
+    flex-shrink: 0;
+}
+.con-cmd-input {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 7px;
+    color: #e2e8f0;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 13px;
+    padding: 7px 10px;
+    outline: none;
+    min-width: 0;
+    -webkit-appearance: none;
+}
+.con-cmd-input:focus { border-color: var(--accent, #00a1ff); background: rgba(0,161,255,0.06); }
+.con-cmd-paste, .con-cmd-send {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #e2e8f0;
+    border-radius: 7px;
+    padding: 7px 12px;
+    font-size: 16px;
+    cursor: pointer;
+    min-height: 38px;
+    min-width: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+.con-cmd-send { color: #50fa7b; border-color: rgba(80,250,123,0.25); }
+.con-cmd-paste:active, .con-cmd-send:active { opacity: 0.7; }
+
+/* Mobile big buttons */
+.console-mobile .con-btn.mobile-big {
+    min-width: 40px; min-height: 40px;
+    font-size: 18px; padding: 6px 10px;
+    border-radius: 8px;
+}
+.console-mobile .con-toolbar { padding: 5px 8px; gap: 6px; }
+.console-mobile .con-title { display: none; }
+
+/* On touch devices make con-btn bigger & prevent double-tap zoom */
+@media (hover: none) and (pointer: coarse) {
+    .con-btn {
+        min-height: 40px;
+        min-width: 40px;
+        font-size: 13px;
+        padding: 6px 10px;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    .con-cmd-input {
+        min-height: 42px;
+        padding: 0 12px;
+        border-radius: 9px;
+    }
+    .con-cmd-paste,
+    .con-cmd-send {
+        min-height: 42px;
+        min-width: 46px;
+        font-size: 18px;
+    }
+    .con-key {
+        min-height: 40px;
+        min-width: 44px;
+        font-size: 12px;
+    }
+    .terminal-pane .term-key {
+        height: 40px;
+        min-width: 48px;
+        font-size: 12px;
+    }
+    .terminal-pane .term-cmd-input {
+        height: 42px;
+        border-radius: 9px;
+    }
+    .terminal-pane .term-cmd-send {
+        width: 48px;
+        height: 42px;
+        font-size: 16px;
+        border-radius: 9px;
+    }
+    .terminal-pane .term-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
+/* ----- WEBVIEW pane ----- */
+.webview-pane {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--bg, #0a0a0a);
+}
+.wv-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--surface, #1a1b26);
+    border-bottom: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
+    flex-shrink: 0;
+}
+.wv-icon { font-size: 14px; color: var(--accent, #7aa2f7); }
+.wv-mode {
+    padding: 4px 10px;
+    border-radius: 5px;
+    border: 0;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-muted, #6b7280);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: 0.15s;
+}
+.wv-mode:hover:not(.disabled):not(.active) { color: var(--text-main, #c9d1d9); }
+.wv-mode.active {
+    background: var(--accent, #7aa2f7);
+    color: #fff;
+    box-shadow: 0 0 8px rgba(122, 162, 247, 0.35);
+}
+.wv-mode.disabled,
+.wv-mode:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+.wv-url {
+    flex: 1;
+    font-size: 11px;
+    color: var(--text-muted, #6b7280);
+    background: rgba(0, 0, 0, 0.25);
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'IBM Plex Mono', monospace;
+}
+.wv-url.connecting { color: #f1fa8c; font-style: italic; }
+.wv-btn {
+    background: none;
+    border: 0;
+    color: var(--text-muted, #6b7280);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: 0.15s;
+}
+.wv-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main, #c9d1d9);
+}
+.wv-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.wv-frame {
+    flex: 1;
+    min-height: 0;
+    background: #fff;
+    position: relative;
+}
+.wv-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+.wv-empty {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    background: var(--bg, #0a0a0a);
+    gap: 10px;
+    font-size: 13px;
+}
+.wv-empty .wv-emoji { font-size: 42px; opacity: 0.3; }
+.wv-empty p { margin: 0; }
+.wv-empty .muted { font-size: 11px; opacity: 0.55; }
+.wv-spin {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+}
+.wv-spin.big { font-size: 32px; opacity: 0.4; }
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* =========================================================
+ * THEME BRIDGE — settings.js writes --exo-* on <html>;
+ * we re-export them as the editor.css token names so a
+ * single theme switch repaints the whole shell.
+ * ========================================================= */
+:root[data-exo-theme] .vscode-layout {
+    --bg:         var(--exo-bg,        #0e1525);
+    --surface:    var(--exo-surface,   #1c2333);
+    --text-main:  var(--exo-text,      #f5f9f9);
+    --text-muted: var(--exo-muted,     rgba(245,249,249,0.4));
+    --accent:     var(--exo-accent,    #00a1ff);
+}
+
+/* =========================================================
+ * SETTINGS MODAL — port of client/editor/Settings.tsx.
+ * ========================================================= */
+/* The settings overlay MUST use IBM Plex Sans regardless of active theme.
+ * Minecraft / Windows 95 / Persona5 etc. set font-family with !important on
+ * body which inherits into modals — override it here with !important so the
+ * theme picker stays readable no matter what theme is active. */
+.exo-settings-overlay,
+.exo-settings-overlay * {
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    image-rendering: auto !important;
+    letter-spacing: normal !important;
+    border-radius: 0 !important;
+}
+.exo-settings-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(2px);
+}
+.exo-settings-overlay[hidden] { display: none !important; }
+
+.exo-settings-card {
+    background: #111;
+    border: 2px solid #2a2a2a;
+    box-shadow: 6px 6px 0 0 var(--exo-accent, #00a1ff);
+    width: min(440px, 95vw);
+    max-height: 86vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 0;
+}
+
+.exo-settings-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid #1e1e1e;
+    flex-shrink: 0;
+    background: #0d0d0d;
+}
+.exo-settings-title {
+    font-weight: 900;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #f0f0f0;
+}
+.exo-settings-close {
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    transition: color 0.1s;
+    border-radius: 0;
+}
+.exo-settings-close:hover { color: #ff3b3b; }
+
+.exo-settings-body {
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+
+.exo-settings-section { border-bottom: 1px solid #1a1a1a; }
+.exo-settings-prefs   { border-bottom: 0; padding: 14px 18px 18px; }
+
+.exo-settings-section-head {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #888;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: color 0.1s;
+    border-radius: 0;
+}
+.exo-settings-section-head:hover { color: #bbb; }
+.exo-chevron {
+    color: #555;
+    transition: transform 0.15s;
+}
+
+.exo-settings-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #444;
+    margin-bottom: 12px;
+}
+
+.exo-settings-themes { padding-bottom: 8px; }
+
+.exo-settings-group-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 18px 4px;
+    color: #444;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+.exo-settings-group-light {
+    padding: 12px 18px 4px;
+    border-top: 1px solid #1a1a1a;
+    margin-top: 4px;
+}
+
+.exo-theme-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 12px;
+    background: transparent;
+    border: none;
+    border-left: 3px solid transparent;
+    color: #777;
+    cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    text-align: left;
+    transition: color 0.1s, background 0.1s;
+    gap: 10px;
+    border-radius: 0;
+}
+.exo-theme-row:hover { color: #bbb; }
+.exo-theme-row.is-active {
+    background: rgba(255, 255, 255, 0.04);
+    border-left-color: var(--row-accent, var(--exo-accent, #00a1ff));
+    color: #f0f0f0;
+    font-weight: 700;
+}
+.exo-theme-row-meta {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex: 1;
+    min-width: 0;
+}
+.exo-theme-swatch {
+    width: 9px;
+    height: 9px;
+    flex-shrink: 0;
+    border: 1px solid;
+    border-radius: 0;
+}
+.exo-theme-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.exo-theme-light-pill {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #555;
+    background: #1a1a1a;
+    padding: 1px 5px;
+    border: 1px solid #2a2a2a;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+/* Distinguish the Exocore-category pill (currently Frutiger Aero) from
+ * the plain LIGHT pill so the user can tell at a glance that the row
+ * lives in its own group rather than the Light list. */
+.exo-theme-exo-pill {
+    color: #9ed8ff;
+    background: #0e2a3d;
+    border-color: #155778;
+}
+/* Lock pill + dimmed row state for themes that the current user
+ * is not entitled to (Exo Plan / staff-only). The cursor and
+ * opacity are the visual cue; the click handler in settings.js
+ * shows a toast instead of switching to the locked theme. */
+.exo-theme-lock-pill {
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.12);
+    border-color: rgba(245, 158, 11, 0.45);
+    margin-left: 4px;
+}
+.exo-theme-row.is-locked {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+.exo-theme-row.is-locked:hover { color: inherit; }
+.exo-settings-group-exocore {
+    /* The first group head shouldn't have the light-group divider; it
+     * sits at the top of the panel. */
+    padding: 12px 18px 4px;
+}
+
+.exo-settings-toggle {
+    width: 100%;
+    padding: 11px 14px;
+    background: transparent;
+    border: 2px solid #222;
+    color: #888;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    transition: 0.1s;
+    border-radius: 0;
+}
+.exo-settings-toggle:hover { border-color: #444; color: #bbb; }
+.exo-settings-toggle.is-on { border-color: #333; }
+
+.exo-settings-pill {
+    font-size: 9px;
+    padding: 2px 8px;
+    background: #1a1a1a;
+    color: #555;
+    border: 1px solid #2a2a2a;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.exo-settings-pill.is-on {
+    background: rgba(0, 255, 148, 0.1);
+    color: #00ff94;
+    border-color: rgba(0, 255, 148, 0.25);
+}
+
+.exo-settings-apply {
+    width: 100%;
+    padding: 12px;
+    background: var(--exo-accent, #00a1ff);
+    border: 2px solid var(--exo-accent, #00a1ff);
+    box-shadow: 4px 4px 0 rgba(0, 161, 255, 0.2);
+    color: #000;
+    font-weight: 900;
+    cursor: pointer;
+    font-size: 11px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    transition: transform 0.1s, box-shadow 0.1s;
+    border-radius: 0;
+}
+.exo-settings-apply:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 6px 6px 0 rgba(0, 161, 255, 0.2);
+}
+
+/* =========================================================
+ * MOBILE / RESPONSIVE — phone, tablet, desktop.
+ * Mirrors the isMobile breakpoint (≤768) used in coding.tsx.
+ * ========================================================= */
+
+/* Tablet — hide the verbose labels in header buttons. */
+@media (max-width: 900px) {
+    .hdr-btn-label { display: none; }
+    .hdr-btn { padding: 6px 8px; }
+    .header-title { font-size: 11px; letter-spacing: 0.18em; }
+}
+
+/* Phone — sidebar becomes a slide-over drawer; the bottom
+   panel becomes a fixed sheet above the status bar; header
+   trims to essentials. The sidebar drawer itself is positioned
+   in editor.css (`.sidebar-fixed.open`) — we only add the
+   backdrop and the editor-area / panel adjustments here so
+   the two stylesheets don't disagree on transforms. */
+@media (max-width: 768px) {
+    .main-header {
+        padding: 0 6px;
+        height: 44px;
+        gap: 4px !important;
+    }
+    /* EXOCORE wordmark — hidden on phones. The previous `position:
+       absolute; left: 50%` trick was visually overlapping the
+       "Saved" auto-save pill and the Dashboard back-button on
+       narrow screens (the absolutely-positioned title sat on top
+       of those functional controls, making them look like one
+       jumbled glyph). The wordmark is purely decorative — the
+       Dashboard button + the project name in the sidebar give the
+       user enough context, so we drop it entirely below 768 px. */
+    .header-title { display: none !important; }
+
+    /* Backdrop while the sidebar drawer is open. Uses :has() so
+       we don't need a coordinator class on the layout root. */
+    .vscode-layout:has(.sidebar-fixed.open)::before {
+        content: '';
+        position: fixed;
+        inset: 48px 0 56px 0;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 159;
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+    }
+
+    /* The sidebar resizer is a desktop-only affordance — it would
+       collide with the slide-over drawer on phones (and steal the
+       4 px of width the editor desperately needs). */
+    .resizer { display: none !important; }
+
+    /* Editor area takes the FULL width of the workspace on mobile —
+       the sidebar is fixed-overlaid so it must NOT contribute to the
+       editor's flex sizing. We force an explicit 100% so a stray
+       inline `width:` on the sidebar can't squeeze the editor. */
+    .workspace-container { width: 100%; }
+    .editor-area {
+        width: 100% !important;
+        min-width: 0;
+        flex: 1 1 100% !important;
+    }
+    .content-split,
+    .monaco-container,
+    .editor-wrapper,
+    .monaco-host { width: 100%; min-width: 0; }
+    /* The file-header sits above the editor: keep tab pill on the LEFT
+       so the open-file name is the first thing the eye lands on. */
+    .file-header { padding: 0 10px; }
+
+    /* Status bar — keep editor.css's 56-px touch-friendly height
+       (we used to crush it to 28 px which made the buttons
+       impossible to hit on a phone). Just trim font + drop
+       long-form labels here. */
+    .status-bar { font-size: 11px; }
+    .status-bar .status-label-long { display: none; }
+
+    /* Bottom panel sheet: fixed above the status bar, ~55vh tall,
+       so the editor remains visible behind it. `mobile-panel` is
+       added by panels.js on mount (and removed on hide). */
+    .bottom-panel.mobile-panel {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 56px;
+        height: 55vh;
+        max-height: calc(100vh - 110px);
+        z-index: 158;
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.45);
+        border-top: 1px solid var(--hairline-strong);
+        background: var(--surface);
+    }
+
+    /* Empty-state shrinks so it doesn't dominate small screens. */
+    .empty-state-circle { width: 80px; height: 80px; }
+    .empty-state-title  { font-size: 16px; }
+    .empty-state-sub    { font-size: 11px; }
+}
+
+/* Very small phones — collapse the sidebar toolbar icons gap. */
+@media (max-width: 420px) {
+    .sidebar-toolbar { padding: 8px 10px; }
+    .sidebar-toolbar .toolbar-icon { padding: 4px; }
+    .toolbar-title  { font-size: 11px; }
+    .tab-btn .tab-label { display: none; }   /* show icon-only tabs */
+    .tab-btn { padding: 8px; }
+}
+
+/* =========================================================
+ * Sidebar tabs — tighten padding so all 4 (Files / npm /
+ * GitHub / Cloud) fit in the default sidebar width without
+ * horizontal overflow.
+ * ========================================================= */
+/* ── 2026 sidebar tab bar — larger icons, cleaner layout ─────────────────── */
+.sidebar-tabs .tab-btn {
+    padding: 6px 7px 5px;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 6px;
+    margin: 0 1px;
+    position: relative;
+    transition: background .12s, color .12s;
+}
+.sidebar-tabs .tab-btn svg { display: block; width: 16px; height: 16px; flex-shrink: 0; }
+.sidebar-tabs .tab-btn span { line-height: 1; opacity: .7; transition: opacity .12s; }
+.sidebar-tabs .tab-btn.active span { opacity: 1; }
+.sidebar-tabs .tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 20%;
+    right: 20%;
+    height: 2px;
+    border-radius: 2px 2px 0 0;
+    background: var(--yellow, #ffe600);
+}
+
+/* Item 27 — on mobile/tablet the tab strip itself is scrollable
+ * horizontally so the user can swipe the TAB BAR (not the panel
+ * content) to reach hidden tabs without triggering a panel switch.
+ * Mouse/trackpad on desktop intentionally gets no scroll (overflow
+ * hidden) — pointer-event swipe is already blocked in main.js. */
+@media (hover: none) and (pointer: coarse) {
+    .sidebar-tabs {
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+    }
+    .sidebar-tabs::-webkit-scrollbar { display: none; }
+    .sidebar-tabs .tab-btn {
+        flex-shrink: 0;
+        scroll-snap-align: start;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
+/* =========================================================
+ * TERMINAL PANE (terminal.js)
+ * Mirrors the layout of KittyTerminal.tsx — toolbar, optional
+ * mobile keys row + input bar, then the xterm host that fills
+ * the remaining height.
+ * ========================================================= */
+.terminal-pane {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #0a0a0a;
+    color: #f8f8f2;
+    font-family: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace;
+}
+.terminal-pane .term-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.02);
+    flex-shrink: 0;
+}
+.terminal-pane .term-icon {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #f8f8f2;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.15s;
+}
+.terminal-pane .term-icon:hover { background: rgba(255,255,255,0.1); }
+.terminal-pane .term-font-indicator {
+    font-size: 10px;
+    opacity: 0.55;
+    min-width: 32px;
+    text-align: center;
+}
+.terminal-pane .term-status {
+    margin-left: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.terminal-pane .term-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff5555;
+    box-shadow: 0 0 6px currentColor;
+}
+.terminal-pane .term-keys {
+    display: flex;
+    gap: 4px;
+    padding: 6px 8px;
+    overflow-x: auto;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.015);
+    flex-shrink: 0;
+    scrollbar-width: none;
+}
+.terminal-pane .term-keys::-webkit-scrollbar { display: none; }
+.terminal-pane .term-key {
+    flex-shrink: 0;
+    min-width: 44px;
+    height: 34px;
+    padding: 0 10px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #f8f8f2;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+.terminal-pane .term-key:active { background: rgba(255,255,255,0.18); transform: scale(0.97); }
+.terminal-pane .term-key-danger { color: #ff5555; border-color: rgba(255,85,85,0.4); }
+.terminal-pane .term-cmd-bar {
+    display: flex;
+    gap: 6px;
+    padding: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.02);
+}
+.terminal-pane .term-cmd-input {
+    flex: 1;
+    min-width: 0;
+    height: 38px;
+    padding: 0 12px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    color: #f8f8f2;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+}
+.terminal-pane .term-cmd-input:focus { border-color: #00a1ff; }
+.terminal-pane .term-cmd-send {
+    width: 44px;
+    height: 38px;
+    background: #00a1ff;
+    color: #000;
+    border: 0;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+}
+.terminal-pane .term-cmd-send:active { transform: scale(0.97); }
+.terminal-pane .term-host {
+    flex: 1;
+    min-height: 0;
+    padding: 6px 8px 0 8px;
+    overflow: hidden;
+}
+.terminal-pane .term-host .xterm,
+.terminal-pane .term-host .xterm-viewport,
+.terminal-pane .term-host .xterm-screen {
+    height: 100% !important;
+    width: 100% !important;
+}
+
+/* =========================================================
+ * PROBLEMS PANE (problems.js)
+ * ========================================================= */
+.problems-pane {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+.problems-pane .prob-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--hairline);
+    flex-shrink: 0;
+    font-size: 11px;
+}
+.problems-pane .prob-title {
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    opacity: 0.7;
+}
+.problems-pane .prob-count.err  { color: #ff5a5a; }
+.problems-pane .prob-count.warn { color: #f1c40f; }
+.problems-pane .prob-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 24px;
+    text-align: center;
+    opacity: 0.7;
+}
+.problems-pane .prob-empty-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(80, 250, 123, 0.12);
+    color: #50fa7b;
+    font-size: 22px;
+    margin-bottom: 6px;
+}
+.problems-pane .prob-empty-title { font-size: 13px; font-weight: 600; }
+.problems-pane .prob-empty-sub   { font-size: 11px; opacity: 0.6; max-width: 320px; line-height: 1.5; }
+.problems-pane .prob-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 0;
+}
+.problems-pane .prob-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 12px;
+    border-bottom: 1px solid var(--hairline);
+}
+.problems-pane .prob-row:hover { background: var(--surface-hover); }
+.problems-pane .prob-sev {
+    flex-shrink: 0;
+    width: 18px;
+    text-align: center;
+    font-weight: 700;
+}
+.problems-pane .prob-sev.err   { color: #ff5a5a; }
+.problems-pane .prob-sev.warn  { color: #f1c40f; }
+.problems-pane .prob-sev.info  { color: #7aa2f7; }
+.problems-pane .prob-sev.hint  { opacity: 0.5; }
+.problems-pane .prob-msg { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.problems-pane .prob-loc { opacity: 0.55; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; flex-shrink: 0; }
+
+/* On phones the terminal toolbar gets bigger touch targets. */
+@media (max-width: 768px) {
+    .terminal-pane .term-icon { width: 36px; height: 36px; font-size: 16px; }
+    .terminal-pane .term-status { font-size: 11px; }
+    .terminal-pane .term-key { min-width: 50px; height: 38px; font-size: 12px; }
+}
+
+/* ==============================================================
+   Phase 5 — Responsive status bar (Lucide icons + mobile-only icons)
+   --------------------------------------------------------------
+   Goal: on phones (<= 768 px) the bottom status bar shows ONE row of
+   icons only (Sidebar / Problems / Console / Preview / Terminal /
+   Cursor) so it doesn't overflow horizontally and doesn't get
+   clipped under the system gesture bar. Tablets and desktops keep
+   the original `icon + label` look.
+   ============================================================== */
+
+/* Lucide injects an <svg class="lucide ..."> in place of <i data-lucide>.
+   Both selectors below match either the placeholder OR the rendered SVG
+   so layout stays identical even before the CDN script finishes loading. */
+.status-ico,
+.status-btn .lucide,
+.status-btn svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    stroke-width: 2;
+    color: currentColor;
+}
+
+/* Tighten the spacing between icon and label so the bar doesn't feel
+   crowded once we add a couple more buttons. */
+.status-btn { gap: 6px; }
+
+/* Mobile-only count badge (Problems → "3" when there are 3 issues).
+   Hidden by default; renderProblemsCount() flips `hidden` off when needed. */
+.status-badge {
+    display: none;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+    margin-left: 2px;
+}
+.status-badge.error    { background: #ff5a5a; color: #fff; }
+.status-badge.warning  { background: #ffb84d; color: #1a1a1a; }
+.status-btn.has-warning { color: #ffb84d; opacity: 1; }
+
+/* The cursor pill (Ln/Col) is desktop-luxury — hide it on small screens
+   where every pixel counts. */
+.status-btn.status-cursor { display: inline-flex; }
+
+/* LSP status chip — three states: connecting (amber pulse), ready (green), error (red) */
+.lsp-chip { display: inline-flex; align-items: center; gap: 5px; cursor: default; pointer-events: none; }
+.lsp-dot {
+    width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    background: #64748b;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+.lsp-chip.lsp-connecting .lsp-dot {
+    background: #f59e0b;
+    box-shadow: 0 0 5px rgba(245,158,11,.65);
+    animation: lspPulse 1.1s ease-in-out infinite;
+}
+.lsp-chip.lsp-ready .lsp-dot {
+    background: #9ece6a;
+    box-shadow: 0 0 5px rgba(158,206,106,.7);
+}
+.lsp-chip.lsp-error .lsp-dot {
+    background: #fb7185;
+    box-shadow: 0 0 5px rgba(251,113,133,.6);
+}
+@keyframes lspPulse {
+    0%, 100% { transform: scale(1);   opacity: 1; }
+    50%       { transform: scale(1.4); opacity: 0.6; }
+}
+
+/* User nickname chip */
+.user-chip { display: inline-flex; align-items: center; cursor: default; pointer-events: none; }
+.user-chip-label {
+    font-size: 11px; font-weight: 600; letter-spacing: .02em;
+    color: #7aa2f7; text-transform: uppercase;
+}
+
+/* ----- TABLET / DESKTOP (≥ 769 px): full icon + label ----- */
+@media (min-width: 769px) {
+    /* Badge is mobile-only; never show it on desktop where the
+       expanded "0 Errors · 0 Warnings" labels are visible. */
+    .status-badge { display: none !important; }
+}
+
+/* ----- MOBILE (≤ 768 px): icons only, tap-friendly ----- */
+@media (max-width: 768px) {
+    /* Hide every text label inside the status bar. */
+    .status-bar .status-label { display: none !important; }
+    /* The "·" separator is also a label, hide it too. */
+    .status-bar .status-btn .sep { display: none !important; }
+
+    /* Make the bar a single horizontal scrollable row that hugs the
+       bottom of the viewport. Center the icons vertically. */
+    .status-bar {
+        height: 52px;
+        padding: 0 4px;
+        padding-bottom: env(safe-area-inset-bottom, 0);
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .status-bar::-webkit-scrollbar { display: none; }
+
+    .desktop-status,
+    .status-left,
+    .status-right {
+        gap: 2px;
+    }
+    .desktop-status { justify-content: space-between; width: 100%; }
+
+    /* Each button becomes a square 44 × 44 tap target (Apple HIG /
+       Material guideline minimum). The icon grows to 20 px so it's
+       legible at arm's length on a phone. */
+    .status-btn {
+        min-width: 44px;
+        height: 44px;
+        padding: 0;
+        border-radius: 10px;
+        justify-content: center;
+        position: relative;
+    }
+    .status-ico,
+    .status-btn .lucide,
+    .status-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Show the combined error/warning badge (renderProblemsCount sets
+       its `hidden` attribute based on the count). */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        margin: 0;
+        font-size: 9px;
+        height: 14px;
+        min-width: 14px;
+        padding: 0 4px;
+        line-height: 14px;
+    }
+
+    /* Drop the divider on mobile (it's pure visual chrome). */
+    .status-divider { display: none; }
+
+    /* Cursor "Ln 1, Col 1" → just the icon on mobile (label hidden
+       above). The button still toggles the Go-To-Line palette when
+       wired, so keep it tappable. */
+    .status-btn.status-cursor { min-width: 44px; }
+
+    /* Active panel button gets a stronger highlight on mobile so the
+       small icon-only state still reads. */
+    .status-btn.panel-pill.active,
+    .status-btn[data-toggle-panel].active {
+        background: rgba(122, 162, 247, 0.18);
+        color: var(--accent, #7aa2f7);
+        opacity: 1;
+    }
+}
+
+/* ----- VERY-SMALL phones (≤ 360 px) ----- */
+@media (max-width: 360px) {
+    .status-btn {
+        min-width: 40px;
+        height: 40px;
+    }
+    .status-bar { height: 48px; }
+}
+
+/* =====================================================================
+ * Phase 5.1 — slim panel header, inline status SVGs, empty-state
+ * centering. Replaces the removed `.panel-tabs` row and ensures the
+ * status bar icons render reliably on mobile.
+ * ===================================================================== */
+
+/* ---- Inline SVG icons in the status bar ----
+ * We dropped the Lucide CDN. The `<svg class="status-ico">` elements
+ * use stroke="currentColor" so they inherit the button text color and
+ * stay visible in both light and dark themes. */
+.status-ico {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    display: inline-block;
+    color: currentColor;
+    stroke: currentColor;
+    pointer-events: none;
+}
+
+/* ---- Slim panel header (replaces the old `.panel-tabs` row) ---- */
+.panel-header.panel-header-slim {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 36px;
+    padding: 0 10px 0 12px;
+    border-bottom: 1px solid var(--hairline, rgba(255,255,255,0.06));
+    background: var(--surface-2, rgba(255,255,255,0.02));
+    flex: 0 0 36px;
+}
+.panel-title-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--text, #cdd6f4);
+    opacity: 0.92;
+    text-transform: capitalize;
+    user-select: none;
+}
+.panel-title-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent, #7aa2f7);
+}
+.panel-title-icon svg { display: block; }
+.panel-title-text { line-height: 1; }
+
+/* Close button on the slim header — round, hover-aware, large enough
+ * to tap on mobile. */
+.panel-header-slim .close-panel {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 0;
+    background: transparent;
+    color: var(--text, #cdd6f4);
+    opacity: 0.6;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease, opacity 0.15s ease;
+}
+.panel-header-slim .close-panel:hover {
+    background: var(--surface-hover, rgba(255,255,255,0.06));
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .panel-header.panel-header-slim {
+        height: 40px;
+        flex: 0 0 40px;
+        padding: 0 8px 0 12px;
+    }
+    .panel-header-slim .close-panel { width: 36px; height: 36px; }
+    .panel-title-pill { font-size: 13px; }
+}
+
+/* ---- Empty-state centering ----
+ * `.empty-state-wrap` sits inside `.monaco-container` (a flex column).
+ * `height: 100%` doesn't always resolve in nested flex children, so we
+ * use `flex: 1` instead — that fills the remaining vertical space and
+ * lets `align-items: center / justify-content: center` actually center
+ * the icon + title + subtitle stack on every viewport. */
+.monaco-container > .empty-state-wrap {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+}
+
+/* =====================================================================
+ * Phase 5.2 — Bulletproof empty-state centering + Go-to-line dialog
+ * ===================================================================== */
+
+/* ---- Bulletproof empty-state centering ----
+ * Phase 5.1 used `flex: 1 1 auto`. That works on most desktops but on
+ * mobile Chrome the visual viewport jiggles when the URL bar collapses
+ * / the soft keyboard slides in / the bottom panel toggles. A flex
+ * child can momentarily resolve to an "auto" height that's smaller
+ * than expected, leaving the `<>` icon sitting near the top.
+ *
+ * Fix: pin the empty-state to its parent with `position: absolute;
+ * inset: 0`. The parent (`.monaco-container`) becomes the positioning
+ * context and the empty state always fills it edge-to-edge, so the
+ * inner flex centering math is finally stable. The icon stays
+ * visually locked to the middle of the editor area on every viewport. */
+.monaco-container { position: relative; }
+
+.monaco-container > .empty-state-wrap {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    pointer-events: none;       /* don't eat clicks meant for the editor */
+}
+.monaco-container > .empty-state-wrap[hidden] { display: none; }
+
+.empty-state-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    text-align: center;
+    pointer-events: auto;       /* re-enable for the icon ring hover */
+    max-width: 380px;
+}
+
+@media (max-width: 768px) {
+    .monaco-container > .empty-state-wrap { padding: 16px; }
+    .empty-state-inner { gap: 12px; }
+}
+
+/* ---- Go-to-line dialog (Phase 5.2) ----
+ * Tiny modal triggered by clicking the cursor button in the status bar.
+ * We render it as a fullscreen overlay so the input is the only thing
+ * the user can interact with — no backdrop click-through. On mobile the
+ * card is bottom-anchored so the soft keyboard doesn't push it
+ * offscreen; on desktop it floats centered. */
+.goto-line-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 18vh;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    animation: gotoFade 0.12s ease-out;
+}
+.goto-line-overlay[hidden] { display: none; }
+@keyframes gotoFade { from { opacity: 0; } to { opacity: 1; } }
+
+.goto-line-card {
+    width: min(420px, calc(100% - 32px));
+    background: var(--surface-2, #1a1b26);
+    border: 1px solid var(--hairline, rgba(255,255,255,0.08));
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Without box-sizing the inner 100%-width input + its 12px side
+     * padding pushes past the card's content box, clipping the right
+     * border under the card's border-radius (mobile + desktop both). */
+    box-sizing: border-box;
+    animation: gotoSlide 0.18s var(--ease-out, cubic-bezier(.2,.8,.2,1));
+}
+@keyframes gotoSlide {
+    from { transform: translateY(-8px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+.goto-line-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text, #cdd6f4);
+    opacity: 0.6;
+}
+.goto-line-input {
+    /* CRITICAL: border-box so the input's own padding/border live
+     * INSIDE the 100% width — without it the right border gets
+     * clipped by the card's rounded corner (visible bug on both
+     * mobile and desktop, see Phase 3.J.3c screenshot). */
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    margin: 0;
+    background: var(--surface, rgba(255,255,255,0.04));
+    border: 1px solid var(--hairline, rgba(255,255,255,0.1));
+    border-radius: 8px;
+    color: var(--text, #cdd6f4);
+    font-size: 16px;            /* ≥16px stops iOS from auto-zooming */
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    outline: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+.goto-line-input::-webkit-outer-spin-button,
+.goto-line-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.goto-line-input:focus {
+    border-color: var(--accent, #7aa2f7);
+    background: var(--surface-hover, rgba(255,255,255,0.06));
+}
+.goto-line-hint {
+    font-size: 11px;
+    color: var(--text, #cdd6f4);
+    opacity: 0.5;
+    letter-spacing: 0.02em;
+}
+
+@media (max-width: 768px) {
+    .goto-line-overlay {
+        align-items: flex-end;          /* dock above the keyboard */
+        padding: 0 12px 24px;
+    }
+    .goto-line-card {
+        width: 100%;
+        padding: 14px 16px;
+    }
+}
+
+/* =====================================================================
+ * Phase 3.J.3a — NPM packages pane
+ * ===================================================================== */
+
+#npmPane {
+    /* Inherit the same column shell every sidebar pane uses so it
+     * fills the available height and clips its own scroller. */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+#npmPane[hidden] { display: none; }
+
+.npm-pane {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    color: var(--text, #cdd6f4);
+    font-size: 12px;
+}
+
+/* ---- Toolbar ---- */
+.npm-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 36px;
+    padding: 0 10px;
+    border-bottom: 1px solid var(--hairline, rgba(255,255,255,0.06));
+    flex: 0 0 36px;
+}
+.npm-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 11px;
+    opacity: 0.85;
+}
+.npm-title svg { color: var(--accent, #7aa2f7); }
+.npm-actions { display: inline-flex; gap: 4px; }
+
+.npm-icon-btn {
+    width: 26px;
+    height: 26px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text, #cdd6f4);
+    opacity: 0.65;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.12s ease, opacity 0.12s ease, color 0.12s ease;
+}
+.npm-icon-btn:hover {
+    background: var(--surface-hover, rgba(255,255,255,0.06));
+    opacity: 1;
+}
+.npm-icon-btn.danger:hover { color: var(--danger, #f7768e); }
+
+/* ---- Auth strip ---- */
+.npm-auth {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--hairline, rgba(255,255,255,0.06));
+    background: var(--surface-2, rgba(255,255,255,0.02));
+}
+.npm-auth-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+}
+.npm-auth-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--text, #cdd6f4);
+    opacity: 0.4;
+    flex: 0 0 auto;
+}
+.npm-auth-dot.ok { background: var(--success, #9ece6a); opacity: 1; }
+.npm-auth-label { flex: 1; opacity: 0.8; }
+.npm-link-btn {
+    border: 0; background: transparent;
+    color: var(--accent, #7aa2f7);
+    font-size: 11px; cursor: pointer;
+    padding: 2px 6px; border-radius: 4px;
+}
+.npm-link-btn:hover { background: var(--surface-hover, rgba(255,255,255,0.06)); }
+
+.npm-auth-form {
+    display: flex; flex-direction: column;
+    gap: 6px; margin-top: 8px;
+}
+.npm-auth-form-actions {
+    display: flex; gap: 6px;
+}
+.npm-help {
+    font-size: 10px;
+    opacity: 0.55;
+    line-height: 1.5;
+    margin-top: 2px;
+}
+.npm-mono {
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    background: var(--surface-hover, rgba(255,255,255,0.06));
+    padding: 0 4px; border-radius: 3px;
+}
+
+/* ---- Install bar ---- */
+.npm-install-bar {
+    display: flex;
+    gap: 6px;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--hairline, rgba(255,255,255,0.06));
+    flex: 0 0 auto;
+}
+
+.npm-input {
+    flex: 1;
+    height: 30px;
+    padding: 0 10px;
+    background: var(--surface, rgba(255,255,255,0.04));
+    border: 1px solid var(--hairline, rgba(255,255,255,0.1));
+    border-radius: 6px;
+    color: var(--text, #cdd6f4);
+    font-size: 12px;
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    outline: none;
+    transition: border-color 0.12s ease, background 0.12s ease;
+    min-width: 0;
+}
+.npm-input:focus {
+    border-color: var(--accent, #7aa2f7);
+    background: var(--surface-hover, rgba(255,255,255,0.06));
+}
+.npm-input::placeholder { opacity: 0.5; }
+
+.npm-btn {
+    height: 30px;
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
+    white-space: nowrap;
+}
+.npm-btn.primary {
+    background: var(--accent, #7aa2f7);
+    color: #0b0f1a;
+    border-color: transparent;
+}
+.npm-btn.primary:hover  { filter: brightness(1.08); }
+.npm-btn.primary:active { filter: brightness(0.95); }
+.npm-btn.ghost {
+    background: transparent;
+    color: var(--text, #cdd6f4);
+    border-color: var(--hairline, rgba(255,255,255,0.1));
+}
+.npm-btn.ghost:hover { background: var(--surface-hover, rgba(255,255,255,0.06)); }
+
+/* ---- Info card (npm.info preview) ---- */
+.npm-info-card {
+    margin: 8px 10px 0;
+    padding: 10px;
+    background: var(--surface-2, rgba(255,255,255,0.03));
+    border: 1px solid var(--hairline, rgba(255,255,255,0.08));
+    border-radius: 8px;
+    font-size: 11.5px;
+}
+.npm-info-name {
+    font-weight: 700;
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+}
+.npm-info-ver { font-weight: 400; opacity: 0.6; }
+.npm-info-desc { margin-top: 4px; opacity: 0.75; line-height: 1.45; }
+
+/* ---- Installed list ---- */
+.npm-list-wrap {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 6px 0 12px;
+    min-height: 0;
+}
+.npm-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px 6px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.55;
+}
+.npm-count {
+    background: var(--surface-hover, rgba(255,255,255,0.06));
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-size: 10px;
+}
+.npm-list { display: flex; flex-direction: column; }
+
+.npm-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px 6px 12px;
+    border-radius: 6px;
+    margin: 1px 6px;
+    transition: background 0.1s ease;
+}
+.npm-row:hover { background: var(--surface-hover, rgba(255,255,255,0.04)); }
+.npm-row-icon {
+    width: 14px; height: 14px;
+    flex: 0 0 auto;
+    object-fit: contain;
+}
+.npm-row-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+.npm-row-name {
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 12px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+}
+.npm-row-ver {
+    font-size: 10.5px;
+    opacity: 0.55;
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    flex: 0 0 auto;
+}
+
+.npm-empty {
+    padding: 24px 16px;
+    text-align: center;
+    opacity: 0.55;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.npm-empty.err { color: var(--danger, #f7768e); opacity: 0.85; }
+
+/* Busy state — dim + disable interaction */
+.npm-busy .npm-toolbar,
+.npm-busy .npm-install-bar,
+.npm-busy .npm-row {
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+/* Mobile tweaks: bigger tap targets, slightly larger input. */
+@media (max-width: 768px) {
+    .npm-icon-btn { width: 32px; height: 32px; }
+    .npm-input    { height: 36px; font-size: 14px; }
+    .npm-input.lg { height: 44px; font-size: 16px; }
+    .npm-btn      { height: 36px; padding: 0 14px; font-size: 13px; }
+    .npm-row      { padding: 8px 10px 8px 12px; }
+    .npm-row-name { font-size: 13px; }
+}
+
+/* ----- Phase 3.J.3a token input + classification badges ----- */
+
+/* The npm token field used to inherit the 30px install-bar input
+ * height which is way too small for tapping / typing a long
+ * `npm_xxxxxxxxxxxxxxxx` string. The `.lg` modifier bumps height
+ * + font-size, and adds a wrapper that keeps a "show / hide" eye
+ * button inline so users can verify what they pasted. */
+.npm-input.lg {
+    height: 38px;
+    font-size: 13.5px;
+    padding: 0 12px;
+}
+.npm-token-wrap { position: relative; display: block; }
+.npm-token-wrap .npm-input { padding-right: 36px; }
+.npm-eye {
+    position: absolute;
+    top: 50%; right: 6px;
+    transform: translateY(-50%);
+    width: 28px; height: 28px;
+    border: 0; background: transparent;
+    color: var(--text, #cdd6f4); opacity: 0.55;
+    border-radius: 6px; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+}
+.npm-eye:hover { opacity: 1; background: var(--surface-hover, rgba(255,255,255,0.06)); }
+.npm-eye.on { color: var(--accent, #7aa2f7); opacity: 1; }
+
+/* Classification pill on installed package rows.
+ *   .dep   — listed in package.json `dependencies`  (active runtime)
+ *   .dev   — listed in package.json `devDependencies`
+ *   .extra — installed but missing from package.json (orphan / unused) */
+.npm-tag {
+    flex: 0 0 auto;
+    font-size: 9.5px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 3px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    margin-right: 4px;
+}
+.npm-tag.dep   { color: #9ece6a; background: rgba(158,206,106,0.12); }
+.npm-tag.dev   { color: #7aa2f7; background: rgba(122,162,247,0.12); }
+.npm-tag.extra { color: #f7768e; background: rgba(247,118,142,0.12); }
+
+/* =========================================================
+ * Phase 3.J.3b — GitHub pane
+ * ========================================================= */
+#githubPane {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+#githubPane[hidden] { display: none; }
+
+.gh-pane {
+    display: flex; flex-direction: column;
+    height: 100%; min-height: 0;
+    color: var(--text, #cdd6f4);
+    font-size: 12px;
+}
+.gh-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 36px;
+    padding: 0 10px;
+    border-bottom: 1px solid var(--hairline, rgba(255,255,255,0.06));
+    flex: 0 0 36px;
+}
+.gh-title {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase; font-size: 11px; opacity: 0.85;
+}
+.gh-title svg { color: var(--accent, #7aa2f7); }
+.gh-actions { display: inline-flex; gap: 4px; }
+.gh-icon-btn {
+    width: 26px; height: 26px;
+    border: 0; border-radius: 6px;
+    background: transparent;
+    color: var(--text, #cdd6f4); opacity: 0.65;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background 0.12s ease, opacity 0.12s ease;
+}
+.gh-icon-btn:hover { background: var(--surface-hover, rgba(255,255,255,0.06)); opacity: 1; }
+
+.gh-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--hairline, rgba(255,255,255,0.06));
+    flex: 0 0 auto;
+}
+.gh-tab {
+    flex: 1;
+    padding: 10px 0;
+    background: transparent;
+    border: 0;
+    color: var(--text, #cdd6f4);
+    opacity: 0.55;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: opacity 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+.gh-tab:hover { background: var(--surface-hover, rgba(255,255,255,0.04)); opacity: 0.85; }
+.gh-tab.active {
+    opacity: 1;
+    color: var(--accent, #7aa2f7);
+    border-bottom-color: var(--accent, #7aa2f7);
+}
+
+.gh-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.gh-card {
+    background: var(--surface, rgba(255,255,255,0.03));
+    border: 1px solid var(--hairline, rgba(255,255,255,0.06));
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.gh-card.success {
+    background: rgba(158,206,106,0.05);
+    border-color: rgba(158,206,106,0.2);
+}
+.gh-card-h {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700;
+    color: var(--accent, #7aa2f7);
+    margin-bottom: 2px;
+}
+.gh-card-h.between { justify-content: space-between; }
+
+.gh-input {
+    width: 100%;
+    background: var(--surface-2, rgba(255,255,255,0.04));
+    border: 1px solid var(--hairline, rgba(255,255,255,0.1));
+    color: var(--text, #cdd6f4);
+    font-size: 12px;
+    padding: 0 10px;
+    height: 30px;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.12s ease, background 0.12s ease;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+.gh-input.lg { height: 38px; font-size: 13.5px; padding: 0 12px; }
+textarea.gh-input { padding: 8px 10px; height: auto; resize: vertical; min-height: 70px; line-height: 1.4; }
+.gh-input:focus {
+    border-color: var(--accent, #7aa2f7);
+    background: var(--surface-hover, rgba(255,255,255,0.06));
+}
+.gh-input::placeholder { opacity: 0.5; }
+
+.gh-token-wrap { position: relative; display: block; }
+.gh-token-wrap .gh-input { padding-right: 38px; }
+.gh-eye {
+    position: absolute;
+    top: 50%; right: 6px;
+    transform: translateY(-50%);
+    width: 28px; height: 28px;
+    border: 0; background: transparent;
+    color: var(--text, #cdd6f4); opacity: 0.55;
+    border-radius: 6px; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+}
+.gh-eye:hover { opacity: 1; background: var(--surface-hover, rgba(255,255,255,0.06)); }
+.gh-eye.on { color: var(--accent, #7aa2f7); opacity: 1; }
+
+.gh-btn {
+    height: 34px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: transparent;
+    color: var(--text, #cdd6f4);
+    transition: background 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
+    text-decoration: none;
+}
+.gh-btn.block { width: 100%; }
+.gh-btn.primary { background: var(--accent, #7aa2f7); color: #0b0f1a; border-color: transparent; }
+.gh-btn.primary:hover { filter: brightness(1.08); }
+.gh-btn.ghost {
+    border-color: var(--hairline, rgba(255,255,255,0.12));
+    background: var(--surface-2, rgba(255,255,255,0.03));
+}
+.gh-btn.ghost:hover { background: var(--surface-hover, rgba(255,255,255,0.06)); }
+.gh-btn.danger { color: #f7768e; }
+.gh-btn.danger.ghost { border-color: rgba(247,118,142,0.3); }
+
+.gh-link-btn {
+    background: transparent; border: 0;
+    color: var(--accent, #7aa2f7);
+    font-size: 11px; cursor: pointer;
+    padding: 2px 6px; border-radius: 4px;
+}
+.gh-link-btn:hover { background: var(--surface-hover, rgba(255,255,255,0.06)); }
+.gh-link-btn.danger { color: #f7768e; }
+
+.gh-divider {
+    text-align: center;
+    font-size: 10px;
+    opacity: 0.5;
+    margin: 6px 0;
+    position: relative;
+}
+.gh-divider::before, .gh-divider::after {
+    content: ''; position: absolute; top: 50%;
+    height: 1px; width: 30%;
+    background: var(--hairline, rgba(255,255,255,0.12));
+}
+.gh-divider::before { left: 0; }
+.gh-divider::after  { right: 0; }
+
+.gh-help { font-size: 11px; opacity: 0.65; margin: 0 0 6px; line-height: 1.5; }
+
+.gh-row-2 { display: flex; gap: 8px; }
+.gh-row-2 > * { flex: 1; min-width: 0; }
+
+.gh-toggle {
+    height: 32px; padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid var(--hairline, rgba(255,255,255,0.12));
+    background: transparent;
+    color: var(--text, #cdd6f4);
+    font-size: 11px; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+}
+.gh-toggle.active {
+    border-color: var(--accent, #7aa2f7);
+    background: rgba(122,162,247,0.1);
+}
+
+.gh-check {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11.5px; cursor: pointer; opacity: 0.85;
+}
+.gh-check input { accent-color: var(--accent, #7aa2f7); }
+
+/* Auth — connected card */
+.gh-auth-ok {
+    display: flex; flex-direction: column; gap: 12px;
+    background: rgba(158,206,106,0.05);
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(158,206,106,0.2);
+}
+.gh-auth-ok-row { display: flex; align-items: center; gap: 12px; }
+.gh-auth-ok-sub { font-size: 10.5px; opacity: 0.6; }
+.gh-auth-ok-user { font-size: 14px; font-weight: 700; color: #9ece6a; }
+.gh-auth-ok-email { font-size: 10.5px; opacity: 0.55; margin-top: 1px; }
+.gh-auth-ok-actions {
+    display: flex; justify-content: flex-end;
+    border-top: 1px dashed rgba(255,255,255,0.08);
+    padding-top: 10px;
+}
+
+/* Device-flow card */
+.gh-device { text-align: center; }
+.gh-device-code {
+    font-size: 22px; font-weight: 700;
+    letter-spacing: 5px;
+    background: rgba(0,0,0,0.35);
+    padding: 12px;
+    border-radius: 6px;
+    margin: 6px 0 12px;
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+}
+.gh-device-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(122,162,247,0.18);
+    color: #7aa2f7; text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 6px; font-weight: 700; font-size: 11.5px;
+    margin-bottom: 12px;
+}
+.gh-device-row {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 10.5px;
+}
+.gh-waiting { color: #9ece6a; }
+
+/* Repo / file lists inside cards */
+.gh-repo-list, .gh-file-list {
+    max-height: 170px;
+    overflow-y: auto; overflow-x: hidden;
+    background: var(--surface-2, rgba(255,255,255,0.02));
+    border: 1px solid var(--hairline, rgba(255,255,255,0.06));
+    border-radius: 6px;
+    padding: 4px;
+}
+.gh-repo-row {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 8px;
+    font-size: 11.5px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.gh-repo-row:hover { background: var(--surface-hover, rgba(255,255,255,0.05)); }
+.gh-repo-icon {
+    width: 14px; height: 14px;
+    flex: 0 0 auto;
+    object-fit: contain;
+}
+.gh-repo-name {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    flex: 1; min-width: 0; padding-right: 4px;
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+}
+.gh-repo-lang {
+    flex: 0 0 auto;
+    font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    padding: 2px 6px; border-radius: 999px;
+    line-height: 1; white-space: nowrap;
+    max-width: 80px; overflow: hidden; text-overflow: ellipsis;
+}
+.gh-repo-vis { font-size: 12px; opacity: 0.6; flex: 0 0 auto; }
+
+.gh-file-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 8px; font-size: 11.5px;
+    border-radius: 4px; cursor: pointer;
+    user-select: none;
+}
+.gh-file-row.static { cursor: default; }
+.gh-file-row:hover { background: var(--surface-hover, rgba(255,255,255,0.05)); }
+.gh-file-row input[type="checkbox"] { margin: 0; flex: 0 0 auto; accent-color: var(--accent, #7aa2f7); }
+.gh-file-name {
+    flex: 1; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+}
+
+.gh-badge {
+    flex: 0 0 auto;
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.04em;
+    padding: 2px 6px; border-radius: 4px;
+}
+.gh-badge.danger { color: #f7768e; background: rgba(247,118,142,0.12); }
+.gh-badge.warn   { color: #e0af68; background: rgba(224,175,104,0.12); }
+.gh-badge.ok     { color: #9ece6a; background: rgba(158,206,106,0.12); }
+
+.gh-remote-row {
+    display: flex; align-items: center; gap: 10px;
+}
+.gh-remote-info { min-width: 0; flex: 1; }
+.gh-remote-sub { font-size: 10px; opacity: 0.6; }
+.gh-remote-url {
+    font-size: 11.5px; font-weight: 600; color: #9ece6a;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+}
+
+.gh-empty {
+    padding: 20px 12px;
+    text-align: center; opacity: 0.55; font-size: 12px;
+}
+.gh-empty.sm { padding: 10px; font-size: 11px; }
+
+/* Mobile bumps for the GitHub pane */
+@media (max-width: 768px) {
+    .gh-icon-btn { width: 32px; height: 32px; }
+    .gh-input    { height: 38px; font-size: 14px; }
+    .gh-input.lg { height: 44px; font-size: 16px; }
+    .gh-btn      { height: 40px; font-size: 13px; }
+    .gh-tab      { padding: 12px 0; font-size: 11.5px; }
+    .gh-toggle   { height: 38px; font-size: 12px; }
+}
+
+/* =========================================================
+ * Phase 3.J.3c — Cloud (Google Drive) pane
+ *
+ * Mirrors the GitHub pane's visual language so the third
+ * sidebar tab feels native — same toolbar height, same card
+ * padding, same button/eye conventions. The pane shares the
+ * `.gh-input.lg`, `.gh-card`, `.gh-btn`, `.gh-divider`,
+ * `.gh-help`, `.gh-row-2` rules from Phase 3.J.3b above and
+ * only adds cloud-specific bits (auth status row, project
+ * row, backup row, project chip).
+ * ========================================================= */
+#cloudPane {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+#cloudPane[hidden] { display: none; }
+
+.cl-pane {
+    display: flex; flex-direction: column;
+    height: 100%; min-height: 0;
+    color: var(--text, #cdd6f4);
+    font-size: 12px;
+}
+.cl-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 36px; padding: 0 10px;
+    border-bottom: 1px solid var(--hairline, rgba(255,255,255,0.06));
+    flex: 0 0 36px;
+}
+.cl-title {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase; font-size: 11px; opacity: 0.85;
+}
+.cl-title svg { color: var(--accent, #7aa2f7); }
+.cl-actions { display: inline-flex; gap: 4px; }
+
+.cl-body {
+    flex: 1; min-height: 0;
+    overflow-y: auto; overflow-x: hidden;
+    padding: 12px;
+    display: flex; flex-direction: column; gap: 12px;
+}
+
+/* Tiny pill that shows the active project name on the
+ * "This project" card so the user knows what they're acting on. */
+.cl-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 2px 7px; border-radius: 999px;
+    background: rgba(122,162,247,0.12);
+    color: var(--accent, #7aa2f7);
+    text-transform: none;
+    max-width: 180px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* Status banner (connected / disconnected / pending). */
+.cl-status {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--surface-2, rgba(255,255,255,0.03));
+    border: 1px solid var(--hairline, rgba(255,255,255,0.06));
+    font-size: 11.5px;
+}
+.cl-status.ok { background: rgba(158,206,106,0.06); border-color: rgba(158,206,106,0.2); }
+.cl-status .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--text, #cdd6f4); opacity: 0.4;
+    flex: 0 0 auto;
+}
+.cl-status.ok .dot { background: #9ece6a; opacity: 1; }
+.cl-status .info { flex: 1; min-width: 0; }
+.cl-status .sub  { font-size: 10px; opacity: 0.6; }
+.cl-status .who  { font-weight: 700; }
+
+/* Backup row (project name + size + restore/delete). */
+.cl-backup-list {
+    max-height: 260px;
+    overflow-y: auto; overflow-x: hidden;
+    background: var(--surface-2, rgba(255,255,255,0.02));
+    border: 1px solid var(--hairline, rgba(255,255,255,0.06));
+    border-radius: 6px;
+    padding: 4px;
+}
+.cl-backup-row {
+    display: grid;
+    grid-template-columns: 16px 1fr auto;
+    gap: 6px 10px;
+    align-items: center;
+    padding: 8px;
+    border-radius: 6px;
+}
+.cl-backup-icon {
+    width: 16px; height: 16px;
+    object-fit: contain;
+    grid-row: 1;
+}
+.cl-backup-row .cl-backup-meta { grid-column: 1 / -1; }
+.cl-backup-row + .cl-backup-row { margin-top: 2px; border-top: 1px solid var(--hairline, rgba(255,255,255,0.04)); }
+.cl-backup-row:hover { background: var(--surface-hover, rgba(255,255,255,0.04)); }
+.cl-backup-name {
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 12px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    min-width: 0;
+}
+.cl-backup-meta {
+    grid-column: 1 / -1;
+    font-size: 10px; opacity: 0.55;
+    display: flex; gap: 8px; flex-wrap: wrap;
+}
+.cl-backup-actions { display: inline-flex; gap: 4px; flex: 0 0 auto; }
+.cl-backup-actions .gh-icon-btn { width: 28px; height: 28px; }
+
+/* Same device-flow look as GitHub but with a "G" feel. */
+.cl-device-code {
+    font-size: 22px; font-weight: 700;
+    letter-spacing: 5px;
+    background: rgba(0,0,0,0.35);
+    padding: 12px;
+    border-radius: 6px;
+    margin: 6px 0 12px;
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    text-align: center;
+}
+.cl-device-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(122,162,247,0.18);
+    color: #7aa2f7; text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 6px; font-weight: 700; font-size: 11.5px;
+    margin-bottom: 12px;
+}
+
+/* Mobile bumps so taps are comfortable on phones too. */
+@media (max-width: 768px) {
+    .cl-backup-row { padding: 10px 8px; }
+    .cl-backup-actions .gh-icon-btn { width: 34px; height: 34px; }
+}
+
+/* ==============================================================
+   Phase 3.O — Console / Terminal polish
+   --------------------------------------------------------------
+   • .con-jump-bottom    — pill that appears in the console pane
+                           when the user scrolls back through
+                           history. Click → jump to live tail.
+   • .term-icon[data-act="paste"], .term-cmd-paste
+                         — clipboard paste buttons (mobile + desktop).
+   • .console-pane needs `position: relative` so the jump pill can
+     pin to it.
+   ============================================================== */
+.console-pane { position: relative; }
+.con-jump-bottom {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    background: rgba(0, 161, 255, 0.92);
+    color: #001827;
+    border: 0;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font: 600 11px/1.2 'IBM Plex Sans', system-ui, sans-serif;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+    z-index: 5;
+    transition: transform 0.12s ease, opacity 0.12s ease;
+}
+.con-jump-bottom:hover  { background: #00b4ff; }
+.con-jump-bottom:active { transform: translateY(1px) scale(0.98); }
+
+/* Paste button blends in with the existing term-icon row. */
+.terminal-pane .term-icon[data-act="paste"] { font-size: 14px; }
+.terminal-pane .term-cmd-paste {
+    width: 38px;
+    height: 38px;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-main, #e2e8f0);
+    border: 1px solid var(--hairline, rgba(255, 255, 255, 0.10));
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.terminal-pane .term-cmd-paste:active { transform: scale(0.97); }
+
+/* Bigger tap target on phones (paste-button only — keys row already
+   gets its own bump in the @media block above). */
+@media (max-width: 768px) {
+    .terminal-pane .term-cmd-paste { width: 42px; height: 40px; font-size: 16px; }
+    .con-jump-bottom { right: 10px; bottom: 10px; padding: 8px 14px; font-size: 12px; }
+}
+
+/* =========================================================================
+ * PHASE 3.P  —  theme-aware syntax + UX wishlist (Tier 1+2)
+ * -------------------------------------------------------------------------
+ * Header glyphs, sidebar v2 toolbar (title separated), find/replace bar,
+ * project rename modal, dotfile hide toggle. The actual theme repaint
+ * happens through the --exo-syn-* CSS vars set in settings.js#applyTheme;
+ * only structural / chrome styles live here.
+ * ========================================================================= */
+
+/* --- Header icon buttons ------------------------------------------------- *
+ * The header buttons (back, search, palette, history, settings) host an
+ * inline SVG inside `.hdr-glyph`. We keep the original `.ascii` class
+ * styles for any callers that still pass text glyphs, but the new `.icon`
+ * variant is sized for SVG and tints via `currentColor` on hover. */
+.hdr-btn.ascii, .hdr-btn.icon { padding: 0 8px; }
+.hdr-glyph {
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--exo-text, #E2E8F0);
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+.hdr-glyph svg { display: block; width: 14px; height: 14px; }
+#backBtn .hdr-glyph    { color: var(--exo-accent, #FFE500); }
+.hdr-btn.ascii:hover .hdr-glyph,
+.hdr-btn.icon:hover  .hdr-glyph { color: var(--exo-accent, #FFE500); }
+@media (max-width: 768px) {
+    .hdr-btn.ascii .hdr-btn-label,
+    .hdr-btn.icon  .hdr-btn-label { display: none; }
+}
+
+/* --- Sidebar v2 toolbar -------------------------------------------------- *
+ * Title row separated above the action row so long project names never
+ * crowd the +file / +folder / upload buttons. Title is its OWN button:
+ * tap to open the rename modal. */
+.sidebar-toolbar.v2 {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+}
+/* Title row: project name button + optional mobile close button on one line */
+.sidebar-toolbar.v2 .toolbar-title-row {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--exo-line, rgba(255,255,255,0.06));
+}
+.sidebar-toolbar.v2 .toolbar-title-btn {
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    border: 0;
+    color: var(--exo-text, #E2E8F0);
+    font: 700 11px/1.2 'IBM Plex Sans', system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+    transition: background 0.12s ease;
+}
+.sidebar-toolbar.v2 .toolbar-title-btn:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+.sidebar-toolbar.v2 .toolbar-title-btn .title-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--exo-text, #E2E8F0);
+}
+.sidebar-toolbar.v2 .title-edit-glyph {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--exo-muted, #64748b);
+    opacity: 0.6;
+    transition: opacity 0.15s ease, color 0.15s ease;
+}
+.sidebar-toolbar.v2 .toolbar-title-btn:hover .title-edit-glyph {
+    opacity: 1;
+    color: var(--exo-accent, #FFE500);
+}
+.sidebar-toolbar.v2 .toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--exo-line, rgba(255,255,255,0.06));
+}
+.sidebar-toolbar.v2 .toolbar-icon.ascii,
+.sidebar-toolbar.v2 .toolbar-icon.icon {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 6px;
+    border-radius: 4px;
+    color: var(--exo-muted, #94a3b8);
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 22px;
+}
+.sidebar-toolbar.v2 .toolbar-icon.icon svg { display: block; width: 14px; height: 14px; }
+.sidebar-toolbar.v2 .toolbar-icon.ascii:hover,
+.sidebar-toolbar.v2 .toolbar-icon.icon:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--exo-accent, #FFE500);
+}
+:root[data-show-hidden] .sidebar-toolbar.v2 #toggleHiddenBtn {
+    color: var(--exo-accent, #FFE500);
+    background: rgba(255, 229, 0, 0.10);
+}
+.sidebar-toolbar.v2 .title-edit-glyph svg {
+    display: block; width: 11px; height: 11px;
+}
+.sidebar-toolbar.v2 .divider {
+    width: 1px;
+    height: 16px;
+    background: var(--exo-line, rgba(255,255,255,0.10));
+    margin: 0 4px;
+}
+
+/* --- Dotfile hide (default) / show toggle (toggleHiddenBtn) -------------- */
+:root:not([data-show-hidden]) .tree-row[data-hidden="1"] { display: none; }
+
+/* --- Find / Replace bar -------------------------------------------------- */
+.find-bar {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    z-index: 50;
+    background: var(--exo-surface, #0d0e15);
+    border: 1px solid var(--exo-line, rgba(255,255,255,0.10));
+    border-radius: 6px;
+    padding: 6px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    min-width: 320px;
+    max-width: calc(100vw - 32px);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: var(--exo-text, #E2E8F0);
+    font: 12px/1.4 'IBM Plex Sans', system-ui, sans-serif;
+}
+.find-bar .find-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.find-bar .find-input {
+    flex: 1;
+    min-width: 0;
+    background: var(--exo-bg, #0a0a0a);
+    border: 1px solid var(--exo-line, rgba(255,255,255,0.10));
+    color: var(--exo-text, #E2E8F0);
+    border-radius: 4px;
+    padding: 6px 8px;
+    font: 12px/1.4 'IBM Plex Mono', monospace;
+    outline: none;
+    transition: border-color 0.12s ease;
+}
+.find-bar .find-input:focus {
+    border-color: var(--exo-accent, #FFE500);
+}
+.find-bar .find-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--exo-muted, #94a3b8);
+    border-radius: 4px;
+    padding: 4px 6px;
+    font: 700 11px/1.2 'IBM Plex Mono', monospace;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+}
+.find-bar .find-btn:hover {
+    background: rgba(255,255,255,0.06);
+    color: var(--exo-accent, #FFE500);
+}
+.find-bar .find-count {
+    font: 600 11px/1.2 'IBM Plex Mono', monospace;
+    color: var(--exo-muted, #94a3b8);
+    padding: 0 6px;
+    min-width: 36px;
+    text-align: center;
+}
+@media (max-width: 768px) {
+    .find-bar { left: 8px; right: 8px; min-width: 0; }
+}
+
+/* --- Project search overlay --------------------------------------------- *
+ * Slides down from the top-center of the viewport when the header search
+ * button (or Ctrl/Cmd+Shift+F) is pressed. Backdrop is transparent so the
+ * editor stays visible underneath; clicking outside the card closes. */
+.search-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background: rgba(0,0,0,0.35);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 56px;
+}
+.search-overlay[hidden] { display: none; }
+.search-card {
+    width: min(720px, calc(100vw - 24px));
+    max-height: calc(100vh - 96px);
+    background: var(--exo-surface, #0d0e15);
+    border: 1px solid var(--exo-line, rgba(255,255,255,0.10));
+    border-radius: 8px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+    color: var(--exo-text, #E2E8F0);
+    font: 12px/1.4 'IBM Plex Sans', system-ui, sans-serif;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.search-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 8px 8px 10px;
+    border-bottom: 1px solid var(--exo-line, rgba(255,255,255,0.08));
+}
+.search-input-wrap {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--exo-bg, #0a0a0a);
+    border: 1px solid var(--exo-line, rgba(255,255,255,0.10));
+    border-radius: 6px;
+    padding: 0 8px;
+    transition: border-color 0.12s ease;
+}
+.search-input-wrap:focus-within {
+    border-color: var(--exo-accent, #FFE500);
+}
+.search-input-icon {
+    display: inline-flex;
+    align-items: center;
+    color: var(--exo-muted, #94a3b8);
+}
+.search-input-icon svg { display: block; width: 14px; height: 14px; }
+.search-input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: 0;
+    color: var(--exo-text, #E2E8F0);
+    padding: 8px 0;
+    font: 13px/1.4 'IBM Plex Mono', monospace;
+    outline: none;
+}
+.search-toggle {
+    background: transparent;
+    border: 1px solid var(--exo-line, rgba(255,255,255,0.10));
+    border-radius: 4px;
+    color: var(--exo-muted, #94a3b8);
+    padding: 4px 6px;
+    font: 700 11px/1 'IBM Plex Mono', monospace;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+    min-width: 28px;
+    height: 26px;
+}
+.search-toggle:hover { color: var(--exo-text, #E2E8F0); }
+.search-toggle[aria-pressed="true"] {
+    background: rgba(255, 229, 0, 0.14);
+    color: var(--exo-accent, #FFE500);
+    border-color: rgba(255, 229, 0, 0.45);
+}
+.search-close {
+    background: transparent;
+    border: 0;
+    color: var(--exo-muted, #94a3b8);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.12s ease, color 0.12s ease;
+}
+.search-close:hover {
+    background: rgba(255,255,255,0.08);
+    color: var(--exo-accent, #FFE500);
+}
+.search-close svg { display: block; }
+.search-status {
+    padding: 6px 12px;
+    color: var(--exo-muted, #94a3b8);
+    font: 600 11px/1.4 'IBM Plex Mono', monospace;
+    border-bottom: 1px solid var(--exo-line, rgba(255,255,255,0.06));
+    background: rgba(255,255,255,0.015);
+}
+.search-results {
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1;
+    min-height: 0;
+    max-height: 60vh;
+}
+.search-file {
+    display: block;
+    border-bottom: 1px solid var(--exo-line, rgba(255,255,255,0.04));
+}
+.search-file-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.02);
+    color: var(--exo-text, #E2E8F0);
+    font: 600 11px/1.2 'IBM Plex Mono', monospace;
+    cursor: pointer;
+    user-select: none;
+}
+.search-file-head:hover { background: rgba(255,255,255,0.05); }
+.search-file-icon { display: inline-flex; align-items: center; justify-content: center; width: 14px; flex-shrink: 0; }
+.search-file-icon img.file-icon { width: 14px; height: 14px; display: block; }
+.search-file-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-file-count {
+    color: var(--exo-muted, #94a3b8);
+    font-size: 10px;
+    background: rgba(255,255,255,0.06);
+    padding: 1px 6px;
+    border-radius: 8px;
+}
+.search-file-chev {
+    color: var(--exo-muted, #64748b);
+    transition: transform 0.12s ease;
+}
+.search-file[data-collapsed="1"] .search-file-chev { transform: rotate(-90deg); }
+.search-file[data-collapsed="1"] .search-hits { display: none; }
+.search-hits { padding: 2px 0 6px; }
+.search-hit {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 3px 12px 3px 28px;
+    cursor: pointer;
+    font: 12px/1.4 'IBM Plex Mono', monospace;
+    color: var(--exo-text, #cbd5e1);
+    border-left: 2px solid transparent;
+}
+.search-hit:hover {
+    background: rgba(255, 229, 0, 0.06);
+    border-left-color: var(--exo-accent, #FFE500);
+}
+.search-hit-line {
+    color: var(--exo-muted, #64748b);
+    font-size: 10px;
+    min-width: 32px;
+    text-align: right;
+    flex-shrink: 0;
+}
+.search-hit-preview {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.search-hit-match {
+    background: rgba(255, 229, 0, 0.30);
+    color: var(--exo-text, #E2E8F0);
+    border-radius: 2px;
+    padding: 0 1px;
+    font-weight: 700;
+}
+.search-empty {
+    padding: 18px 14px;
+    color: var(--exo-muted, #94a3b8);
+    text-align: center;
+    font: 12px/1.5 'IBM Plex Sans', system-ui, sans-serif;
+}
+@media (max-width: 768px) {
+    .search-overlay { padding-top: 12px; }
+    .search-card { width: calc(100vw - 16px); max-height: calc(100vh - 24px); }
+    .search-results { max-height: 70vh; }
+}
+
+/* --- Rename modal -------------------------------------------------------- */
+.rename-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    backdrop-filter: blur(2px);
+}
+.rename-card {
+    background: var(--exo-surface, #0d0e15);
+    border: 1px solid var(--exo-line, rgba(255,255,255,0.10));
+    border-radius: 8px;
+    padding: 16px;
+    width: 320px;
+    max-width: calc(100vw - 24px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    color: var(--exo-text, #E2E8F0);
+    font: 12px/1.4 'IBM Plex Sans', system-ui, sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.rename-label {
+    font: 700 12px/1.2 'IBM Plex Sans', system-ui, sans-serif;
+    color: var(--exo-text, #E2E8F0);
+}
+.rename-input {
+    background: var(--exo-bg, #0a0a0a);
+    border: 1px solid var(--exo-line, rgba(255,255,255,0.10));
+    border-radius: 4px;
+    padding: 8px 10px;
+    color: var(--exo-text, #E2E8F0);
+    font: 13px/1.4 'IBM Plex Mono', monospace;
+    outline: none;
+}
+.rename-input:focus { border-color: var(--exo-accent, #FFE500); }
+.rename-row {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+.rename-btn {
+    border: 1px solid var(--exo-line, rgba(255,255,255,0.10));
+    border-radius: 4px;
+    padding: 6px 14px;
+    font: 600 11px/1.2 'IBM Plex Sans', system-ui, sans-serif;
+    cursor: pointer;
+    background: transparent;
+    color: var(--exo-text, #E2E8F0);
+    transition: background 0.12s ease, color 0.12s ease;
+}
+.rename-btn.cancel:hover { background: rgba(255,255,255,0.06); }
+.rename-btn.primary {
+    background: var(--exo-accent, #FFE500);
+    color: #0a0a0a;
+    border-color: var(--exo-accent, #FFE500);
+}
+.rename-btn.primary:hover { filter: brightness(1.1); }
+.rename-hint {
+    color: var(--exo-muted, #64748b);
+    font-size: 11px;
+}
+
+/* =====================================================================
+ * Phase 3.Q — colored language badges, drag-drop overlay, sidebar resize
+ * handle, smart-console process pill.
+ * ===================================================================== */
+
+/* ----- Real Material file-type icons (Material Icon Theme via jsDelivr
+ * CDN — see sidebar.js#fileIcon / folderIcon). Each icon is a 16x16 SVG
+ * served from the PKief repo, identical to the set VS Code uses. */
+.file-icon {
+    width: 16px;
+    height: 16px;
+    display: block;
+    flex-shrink: 0;
+    /* Crisp on HiDPI / pixel-grid screens. */
+    image-rendering: -webkit-optimize-contrast;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+.tree-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    /* Override the dim 0.7 opacity for the colored Material icons —
+     * the file-type colors are part of the visual signal. */
+    opacity: 1;
+}
+
+/* ----- Drag-and-drop upload overlay on #fileTree. Shown while a file
+ * is being dragged from the OS into the explorer. Uses the ASCII glyph
+ * aesthetic the rest of the editor follows. */
+.tree-root { position: relative; }
+.tree-drop-overlay {
+    position: absolute;
+    inset: 4px;
+    background: rgba(15, 15, 22, 0.78);
+    border: 1.5px dashed var(--exo-accent, #ffc83d);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--exo-accent, #ffc83d);
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s ease-out;
+    z-index: 5;
+}
+.tree-drop-inner span {
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    color: var(--exo-muted, #94a3b8);
+    text-transform: lowercase;
+}
+.tree-root.drag-over .tree-drop-overlay { opacity: 1; }
+
+/* ----- Sidebar resize handle. A 4 px hot-zone on the right edge of
+ * the sidebar with a 1 px visible accent that brightens on hover.
+ *
+ * IMPORTANT (2026-04 mobile fix): the resize handle is `position:
+ * absolute` so its parent must be a positioning context — but only
+ * on DESKTOP. On mobile (≤ 768 px), `editor.css` makes
+ * `.sidebar-fixed` `position: fixed; transform: translateX(-100%)`
+ * so it can slide in/out as a drawer. Re-declaring
+ * `position: relative` for it here without a media query used to
+ * override that mobile rule (this stylesheet loads after editor.css)
+ * which kept the sidebar in flex flow on phones, squeezing the
+ * editor area to ~50 % width and pushing every editor child to the
+ * right of the screen. The `min-width:769px` guard restores the
+ * mobile slide-over and lets the editor take the full viewport. */
+@media (min-width: 769px) {
+    .sidebar-fixed { position: relative; }
+}
+.sidebar-resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    cursor: col-resize;
+    background: transparent;
+    transition: background 0.12s ease-out;
+    z-index: 30;
+    touch-action: none;
+}
+.sidebar-resize-handle:hover,
+.exo-resizing .sidebar-resize-handle {
+    background: var(--exo-accent, #ffc83d);
+    box-shadow: 0 0 6px rgba(255, 200, 61, 0.55);
+}
+.exo-resizing,
+.exo-resizing * {
+    cursor: col-resize !important;
+    user-select: none !important;
+}
+@media (max-width: 768px) {
+    /* The sidebar is a fixed slide-over on phones — resize would just
+     * collide with the touch swipe-to-close gesture. */
+    .sidebar-resize-handle { display: none; }
+}
+
+/* ----- Smart console process kind pill. Shown when the stdout sniffer
+ * in console.js detects a known runtime (Discord/Telegram bot, Vite,
+ * Flask, …). Color is derived from the data-kind attribute so the
+ * pill's accent matches the runtime's brand. */
+.con-kind {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 9px;
+    margin-left: 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--exo-muted, #cbd5e1);
+}
+.con-kind .con-kind-icon { font-size: 11px; line-height: 1; }
+.con-kind[data-kind="discord"]  { background: rgba(88,101,242,0.18);  border-color: #5865F2; color: #C7CEFF; }
+.con-kind[data-kind="telegram"] { background: rgba(34,158,217,0.18);  border-color: #229ED9; color: #B7E3F4; }
+.con-kind[data-kind="vite"]     { background: rgba(255,200,61,0.16);  border-color: #FFC83D; color: #FFE0A0; }
+.con-kind[data-kind="next"]     { background: rgba(255,255,255,0.10); border-color: #FFFFFF; color: #FFFFFF; }
+.con-kind[data-kind="fastapi"]  { background: rgba(0,150,136,0.18);   border-color: #009688; color: #B2DFDB; }
+.con-kind[data-kind="django"]   { background: rgba(9,46,32,0.30);     border-color: #092E20; color: #6FAA8E; }
+.con-kind[data-kind="flask"]    { background: rgba(0,0,0,0.30);       border-color: #777777; color: #E2E8F0; }
+.con-kind[data-kind="express"]  { background: rgba(67,56,202,0.18);   border-color: #4338CA; color: #C7D2FE; }
+.con-kind[data-kind="http"]     { background: rgba(80,90,110,0.20);   border-color: #6B7280; color: #D1D5DB; }
+
+/* =========================================================
+ * Phase 3.R — Per-row 3-dots button, inline create/rename
+ * input, custom confirm modal, mobile size bumps.
+ * ========================================================= */
+
+/* The visible 3-dots affordance on every tree row. Always
+ * shown so mobile users have an obvious entry point to the
+ * file menu (rename / move / delete / etc.). On desktop it
+ * still gets a hover-bright treatment. */
+/* .row-more is now inside .vsc-actions — keep it as a plain .vsc-act
+ * so no extra styles are needed. The old .tree-row .row-more rules are
+ * replaced by the .vsc-act rules added above (near tree-row definition). */
+.tree-row .tree-name {
+    flex: 1; min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-pri, #cdd6f4);
+}
+.tree-row.active .tree-name { color: var(--text-pri, #e2e8f0); }
+
+/* VS Code-style section headers inside the explorer scroll area */
+.tree-section-hdr {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 5px 8px 4px 2px;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    color: var(--text-sec, #888);
+    text-transform: uppercase;
+    user-select: none;
+    cursor: pointer;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+.tree-section-hdr:first-child { border-top: none; }
+.tree-section-hdr:hover { color: var(--text-pri, #ccc); }
+.tree-section-hdr .vsc-chevron { opacity: 0.5; }
+.tree-section-hdr:hover .vsc-chevron { opacity: 0.85; }
+.tree-section-label { flex: 1; }
+.tree-section-count {
+    font-size: 10px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 0 5px;
+    font-weight: 600;
+    color: var(--text-mut, #666);
+}
+
+/* Inline TODO badge — VS Code-style pill badge */
+.tree-todo-badge {
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 1px 5px;
+    border-radius: 10px;
+    background: rgba(255, 193, 7, 0.18);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    flex-shrink: 0;
+    letter-spacing: 0;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+}
+
+/* Open Editors rows — same full-width VS Code style as tree rows */
+.tree-open-editor-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 6px 1px 6px;
+    min-height: 22px;
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: background 0.08s;
+    user-select: none;
+    box-sizing: border-box;
+}
+.tree-open-editor-row:hover { background: var(--surface-hover, rgba(255,255,255,.05)); }
+.tree-open-editor-row.active {
+    background: rgba(0, 120, 212, 0.12);
+    border-left-color: #0078d4;
+}
+.tree-open-editor-row .tree-name {
+    flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+    color: var(--text-pri, #cdd6f4);
+}
+.tree-open-editor-row.active .tree-name { color: var(--text-pri, #e2e8f0); }
+.oe-close {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: none; border: none; cursor: pointer;
+    color: var(--text-mut, #666);
+    width: 18px; height: 18px;
+    border-radius: 3px; opacity: 0; flex-shrink: 0;
+    transition: opacity .1s, color .1s, background .1s;
+    padding: 0;
+}
+.oe-close svg { display: block; pointer-events: none; }
+.tree-open-editor-row:hover .oe-close,
+.tree-open-editor-row.active .oe-close { opacity: 1; }
+.oe-close:hover { color: var(--text-pri, #eee); background: rgba(255,255,255,.10); }
+
+/* Inline create / rename input. Sits inside a `.tree-row` and
+ * looks like a row that's about to become real. Slim, focused
+ * border, no vertical jump when it appears. */
+.tree-row.tree-row-input { background: rgba(122, 162, 247, 0.08); }
+.tree-inline-input {
+    flex: 1; min-width: 0;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--accent, #7aa2f7);
+    color: inherit;
+    font: inherit;
+    font-size: 12.5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(122, 162, 247, 0.2);
+}
+.tree-inline-input::placeholder { opacity: 0.5; }
+
+/* Custom confirm modal (ExoConfirm). Replaces the ugly
+ * window.confirm with a dark-themed card centered on screen
+ * and backdrop-blurred. */
+.exo-modal-overlay {
+    position: fixed; inset: 0;
+    z-index: 11000;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px;
+    animation: exoModalIn 0.16s var(--ease-out, ease-out);
+}
+@keyframes exoModalIn { from { opacity: 0; } to { opacity: 1; } }
+.exo-modal-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--surface, #14151a);
+    border: 1px solid var(--hairline-strong, rgba(255, 255, 255, 0.12));
+    border-radius: 12px;
+    padding: 18px 20px 14px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55),
+                0 0 0 1px rgba(255, 255, 255, 0.04);
+    color: var(--text, #cdd6f4);
+    transform: translateY(0);
+    animation: exoModalCardIn 0.18s var(--ease-out, ease-out);
+}
+@keyframes exoModalCardIn {
+    from { transform: translateY(8px) scale(0.985); opacity: 0; }
+    to   { transform: translateY(0)   scale(1);     opacity: 1; }
+}
+.exo-modal-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.005em;
+    margin-bottom: 6px;
+}
+.exo-modal-body {
+    font-size: 12.5px;
+    line-height: 1.55;
+    opacity: 0.78;
+    word-break: break-word;
+    margin-bottom: 14px;
+}
+.exo-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+.exo-modal-btn {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 1px solid var(--hairline, rgba(255, 255, 255, 0.1));
+    background: rgba(255, 255, 255, 0.03);
+    color: inherit;
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    padding: 8px 14px;
+    min-height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s var(--ease-out, ease-out),
+                border-color 0.15s var(--ease-out, ease-out),
+                transform 0.05s ease-out;
+}
+.exo-modal-btn:hover { background: rgba(255, 255, 255, 0.08); }
+.exo-modal-btn:active { transform: translateY(1px); }
+.exo-modal-btn.primary {
+    background: var(--accent, #7aa2f7);
+    border-color: transparent;
+    color: #0b0b10;
+}
+.exo-modal-btn.primary:hover { filter: brightness(1.08); background: var(--accent, #7aa2f7); }
+.exo-modal-btn.danger {
+    background: rgba(247, 118, 142, 0.18);
+    border-color: rgba(247, 118, 142, 0.4);
+    color: #ff7a92;
+}
+.exo-modal-btn.danger:hover { background: rgba(247, 118, 142, 0.28); }
+
+@media (max-width: 768px) {
+    .exo-modal-card { max-width: 92vw; padding: 16px 16px 12px; }
+    .exo-modal-title { font-size: 15px; }
+    .exo-modal-body  { font-size: 13.5px; }
+    .exo-modal-btn   { font-size: 14px; min-height: 44px; padding: 10px 18px; }
+}
+
+/* =========================================================
+ * Mobile size bumps — make the editor actually usable on a
+ * phone. Larger tap targets, bigger text in the file tree,
+ * roomier sidebar tabs and toolbar icons.
+ * ========================================================= */
+@media (max-width: 768px) {
+    /* Sidebar tabs — Files / npm / GitHub / Cloud. Bigger touch
+     * targets, slightly larger label, more breathing room. */
+    .sidebar-tabs .tab-btn {
+        padding: 12px 10px;
+        gap: 7px;
+        font-size: 12.5px;
+        min-height: 44px;
+    }
+    .sidebar-tabs .tab-btn svg { width: 14px; height: 14px; }
+
+    /* Sidebar toolbar (per-project actions): the +file / +folder
+     * / upload / download / hide-dotfiles icons. Bigger glyphs +
+     * touch-friendly hit area. */
+    .sidebar-toolbar .toolbar-icon {
+        width: 44px; height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+    }
+    .sidebar-toolbar .toolbar-icon svg { width: 18px; height: 18px; }
+    /* v2 toolbar — override the desktop 22px height with proper touch targets */
+    /* v2 toolbar actions: stretch icons evenly so all fit without scrolling */
+    .sidebar-toolbar.v2 .toolbar-actions {
+        gap: 0;
+        padding: 4px 6px;
+        overflow: hidden;
+        flex-wrap: nowrap;
+        justify-content: space-evenly;
+        align-items: center;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .sidebar-toolbar.v2 .toolbar-icon.ascii,
+    .sidebar-toolbar.v2 .toolbar-icon.icon {
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: 52px;
+        height: 44px;
+        border-radius: 10px;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .sidebar-toolbar.v2 .toolbar-icon.icon svg { width: 18px; height: 18px; }
+    .sidebar-toolbar.v2 .divider { display: none; }
+    .toolbar-title-btn { font-size: 14px; padding: 12px 12px; min-height: 48px; }
+
+    /* File tree rows — taller for fingers, slightly bigger text,
+     * bigger 3-dots hit area. */
+    .tree-row {
+        height: auto;
+        min-height: 40px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        font-size: 14px;
+    }
+    .tree-row .file-icon,
+    .tree-row .tree-icon img.file-icon { width: 18px; height: 18px; }
+    .tree-row { min-height: 40px; font-size: 14px; }
+    .vsc-actions { display: flex; }
+    .vsc-act { width: 36px; height: 36px; }
+    .vsc-act svg { width: 17px; height: 17px; }
+    .tree-inline-input { font-size: 14px; padding: 6px 8px; }
+}
+
+/* =====================================================================
+ * Mobile move-mode (Replit-style long-press to drag a file/folder).
+ * sidebar.js sets `.exo-mobile-moving` on <body> while a move is in
+ * progress and renders a fixed `.exo-move-ghost` element that follows
+ * the finger. Folders highlight with `.tree-row.move-target` while
+ * the finger is over them; releasing on a folder moves the source
+ * inside it. Releasing on the tree background area or the dedicated
+ * `.exo-move-root-zone` strip moves the source to the project root.
+ * ===================================================================== */
+body.exo-mobile-moving { cursor: grabbing; touch-action: none; }
+body.exo-mobile-moving .tree-row { transition: background 0.12s var(--ease-out); }
+body.exo-mobile-moving .tree-row.move-source {
+    opacity: 0.35;
+    background: rgba(122, 162, 247, 0.10);
+}
+body.exo-mobile-moving .tree-row.folder.move-target {
+    background: rgba(122, 162, 247, 0.28);
+    outline: 2px solid var(--accent, #7aa2f7);
+    outline-offset: -2px;
+    border-radius: 6px;
+}
+.exo-move-ghost {
+    position: fixed;
+    pointer-events: none;
+    z-index: 10000;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: rgba(20, 22, 30, 0.95);
+    color: #fff;
+    font: 600 13px/1.2 'IBM Plex Mono', ui-monospace, monospace;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45),
+                0 0 0 1px rgba(122, 162, 247, 0.6);
+    transform: translate(-50%, -120%);
+    white-space: nowrap;
+    max-width: 70vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.exo-move-ghost svg { width: 14px; height: 14px; flex: 0 0 14px; }
+/* The "drop here to move to root" landing strip — sticky banner pinned
+ * to the top of the file list while a move is in progress.
+ *
+ * 2026-04-29 — Bumped padding + made the armed state pulse so the user
+ * can't miss it. With the matching JS change in `exoUpdateMoveTarget`,
+ * dropping ANYWHERE inside the file tree (not just on this strip) now
+ * counts as a root-drop and arms this banner — so the pulsing label
+ * also doubles as confirmation that "release now = move to root". */
+.exo-move-root-zone {
+    display: none;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    margin: 0 6px 6px;
+    padding: 12px 10px;
+    border-radius: 10px;
+    border: 1.5px dashed rgba(122, 162, 247, 0.55);
+    background: rgba(122, 162, 247, 0.08);
+    color: var(--accent, #7aa2f7);
+    font: 600 13px/1.2 'IBM Plex Sans', system-ui, sans-serif;
+    text-align: center;
+    user-select: none;
+}
+body.exo-mobile-moving .exo-move-root-zone { display: block; }
+body.exo-mobile-moving .exo-move-root-zone.move-target {
+    background: rgba(122, 162, 247, 0.28);
+    border-style: solid;
+    color: #fff;
+    box-shadow: 0 0 0 2px rgba(122, 162, 247, 0.55),
+                0 0 18px rgba(122, 162, 247, 0.45);
+    animation: exo-root-pulse 0.9s ease-in-out infinite;
+}
+@keyframes exo-root-pulse {
+    0%, 100% { transform: scale(1);    }
+    50%      { transform: scale(1.02); }
+}
+
+/* The header-title was tiny + center-positioned. Bump it so
+ * the EXOCORE wordmark actually reads on a phone. */
+@media (max-width: 768px) {
+    .header-title { font-size: 12px; letter-spacing: 0.16em; opacity: 0.7; }
+}
+
+/* =========================================================
+ * Phase 3.X — header polish (cleaner mobile spacing) +
+ * History modal (vanilla port of CodeHistoryModal).
+ * ========================================================= */
+
+/* Header — give the icon group consistent sizing across viewports
+ * so the EXOCORE wordmark stops sharing edges with the icons.
+ * Desktop already has 36-px buttons via .icon-btn, but the .hdr-btn.icon
+ * variant was only 28 px tall, which looked awkward next to the wordmark. */
+.main-header .hdr-btn.icon {
+    width: 32px;
+    height: 30px;
+    padding: 0;
+    justify-content: center;
+}
+.main-header .hdr-btn .hdr-glyph {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+.header-actions { gap: 4px; padding-right: 2px; }
+
+@media (max-width: 480px) {
+    .main-header .hdr-btn.icon { width: 30px; height: 28px; }
+    .header-actions { gap: 2px; }
+    /* The Back button on the left can drop the chevron to icon-only
+     * on tiny screens — its label is already hidden by the rule above. */
+    .main-header > .hdr-btn:first-child { width: 30px; padding: 0; justify-content: center; }
+    .main-header > .hdr-btn:first-child .hdr-btn-label { display: none; }
+}
+
+/* =========================================================
+ * History modal — see editor/scripts/history.js. Built fully
+ * dynamically (mounted on first open) so the markup lives in
+ * JS; this stylesheet owns the look. Mirrors CodeHistoryModal
+ * (client/editor/coding.tsx ~line 869).
+ * ========================================================= */
+.exo-hist-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    -webkit-tap-highlight-color: transparent;
+}
+.exo-hist-overlay[hidden] { display: none !important; }
+body.exo-hist-locked { overflow: hidden; }
+
+.exo-hist-modal {
+    background: var(--exo-surface, #161b22);
+    color: var(--exo-text, #c9d1d9);
+    border: 1px solid var(--hairline, rgba(255,255,255,0.1));
+    border-radius: 12px;
+    width: 100%;
+    max-width: 920px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.exo-hist-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--hairline, rgba(255,255,255,0.1));
+}
+.exo-hist-ico { color: var(--exo-accent, #58a6ff); flex-shrink: 0; }
+.exo-hist-title {
+    font-weight: 700;
+    font-size: 13px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.exo-hist-file { color: var(--exo-muted, #8b949e); font-weight: 500; margin-left: 4px; }
+.exo-hist-x {
+    background: transparent;
+    color: inherit;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.exo-hist-x:hover { background: rgba(255, 255, 255, 0.08); }
+
+.exo-hist-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: filter 0.15s ease, background 0.15s ease;
+}
+.exo-hist-btn.ghost {
+    background: transparent;
+    color: var(--exo-text, #c9d1d9);
+    border: 1px solid var(--hairline, rgba(255,255,255,0.18));
+}
+.exo-hist-btn.ghost:hover { background: rgba(255,255,255,0.06); }
+.exo-hist-btn.ghost.danger { color: #ef4444; border-color: rgba(239, 68, 68, 0.4); }
+.exo-hist-btn.ghost.danger:hover { background: rgba(239, 68, 68, 0.1); }
+.exo-hist-btn.ghost:disabled,
+.exo-hist-btn.primary:disabled { opacity: 0.4; cursor: not-allowed; }
+.exo-hist-btn.primary {
+    background: var(--exo-accent, #58a6ff);
+    color: #000;
+    border: none;
+}
+.exo-hist-btn.primary:hover:not(:disabled) { filter: brightness(1.08); }
+
+.exo-hist-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.exo-hist-scrub {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--hairline, rgba(255,255,255,0.1));
+    background: var(--exo-bg, #0d1117);
+}
+.exo-hist-slider {
+    width: 100%;
+    accent-color: var(--exo-accent, #58a6ff);
+    cursor: pointer;
+    margin: 0;
+}
+.exo-hist-slider:disabled { cursor: not-allowed; opacity: 0.5; }
+.exo-hist-transport {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+.exo-hist-flex { flex: 1; }
+.exo-hist-icobtn {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: inherit;
+    border: 1px solid var(--hairline, rgba(255,255,255,0.18));
+    border-radius: 6px;
+    cursor: pointer;
+}
+.exo-hist-icobtn:hover { background: rgba(255,255,255,0.06); }
+.exo-hist-icobtn:disabled { opacity: 0.4; cursor: not-allowed; }
+.exo-hist-counter {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--exo-text, #c9d1d9);
+    min-width: 56px;
+    text-align: center;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+}
+.exo-hist-ago {
+    font-size: 12px;
+    color: var(--exo-muted, #8b949e);
+    white-space: nowrap;
+}
+
+.exo-hist-view {
+    flex: 1;
+    overflow: auto;
+    background: var(--exo-bg, #0d1117);
+    -webkit-overflow-scrolling: touch;
+}
+.exo-hist-empty {
+    padding: 36px 20px;
+    text-align: center;
+    color: var(--exo-muted, #8b949e);
+    font-size: 13px;
+    line-height: 1.6;
+}
+.exo-hist-empty code {
+    background: var(--exo-surface, #161b22);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 11px;
+}
+
+.exo-hist-preview {
+    padding: 12px 0;
+    color: var(--exo-text, #c9d1d9);
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    line-height: 1.55;
+}
+.exo-hist-preview pre { margin: 0; }
+.exo-hist-row {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 10px;
+}
+.exo-hist-gutter {
+    color: var(--exo-muted, #8b949e);
+    text-align: right;
+    user-select: none;
+    padding-right: 6px;
+    opacity: 0.6;
+}
+.exo-hist-line {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.exo-hist-diff-head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--exo-bg, #0d1117);
+    border-bottom: 1px solid var(--hairline, rgba(255,255,255,0.1));
+    font-size: 10px;
+    font-weight: 700;
+}
+.exo-hist-diff-head .dh { padding: 6px 14px; }
+.exo-hist-diff-head .dh-left { color: #ef4444; border-right: 1px solid var(--hairline, rgba(255,255,255,0.1)); }
+.exo-hist-diff-head .dh-right { color: #22c55e; }
+.exo-hist-trunc {
+    padding: 6px 14px;
+    font-size: 10px;
+    color: var(--exo-muted, #8b949e);
+    background: var(--exo-bg, #0d1117);
+    border-bottom: 1px solid var(--hairline, rgba(255,255,255,0.1));
+}
+
+.exo-hist-diff {
+    color: var(--exo-text, #c9d1d9);
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    line-height: 1.55;
+}
+.exo-hist-diff .drs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.exo-hist-diff .dc {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    border-right: 1px solid var(--hairline, rgba(255,255,255,0.06));
+}
+.exo-hist-diff .dc:last-child { border-right: none; }
+.exo-hist-diff .dr {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+}
+.exo-hist-diff .ds {
+    color: var(--exo-muted, #8b949e);
+    text-align: center;
+    user-select: none;
+    font-weight: 700;
+}
+.exo-hist-diff .dl {
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding-right: 8px;
+}
+.exo-hist-diff .add { background: rgba(34, 197, 94, 0.15); }
+.exo-hist-diff .del { background: rgba(239, 68, 68, 0.15); }
+.exo-hist-diff .faded { background: rgba(255, 255, 255, 0.025); }
+.exo-hist-diff.narrow .dr.add .ds { color: #22c55e; }
+.exo-hist-diff.narrow .dr.del .ds { color: #ef4444; }
+.exo-hist-gap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 10px;
+    font-size: 10px;
+    font-style: italic;
+    color: var(--exo-muted, #8b949e);
+    background: rgba(255, 255, 255, 0.025);
+    border-top: 1px dashed var(--hairline, rgba(255,255,255,0.1));
+    border-bottom: 1px dashed var(--hairline, rgba(255,255,255,0.1));
+}
+
+.exo-hist-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 12px 16px;
+    border-top: 1px solid var(--hairline, rgba(255,255,255,0.1));
+    background: var(--exo-surface, #161b22);
+}
+.exo-hist-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--hairline, rgba(255,255,255,0.18));
+    cursor: pointer;
+    user-select: none;
+    font-size: 11px;
+    font-weight: 600;
+}
+.exo-hist-toggle input { accent-color: var(--exo-accent, #58a6ff); margin: 0; cursor: pointer; }
+.exo-hist-stats { display: inline-flex; gap: 8px; font-size: 11px; font-weight: 700; }
+.exo-hist-stats .add { color: #22c55e; }
+.exo-hist-stats .del { color: #ef4444; }
+
+/* Mobile — full-screen modal, single-column diff. */
+@media (max-width: 720px) {
+    .exo-hist-overlay { padding: 0; align-items: stretch; }
+    .exo-hist-modal {
+        max-width: 100%;
+        max-height: 100%;
+        height: 100%;
+        border-radius: 0;
+        border: none;
+    }
+    .exo-hist-head { padding: 10px 12px; }
+    .exo-hist-scrub { padding: 12px 12px 8px; }
+    .exo-hist-toolbar { padding: 10px 12px; }
+    .exo-hist-diff-head { grid-template-columns: 1fr; }
+    .exo-hist-diff-head .dh-left { border-right: none; padding-bottom: 4px; }
+    .exo-hist-diff-head .dh-right { padding-top: 0; padding-bottom: 6px; }
+    .exo-hist-diff .drs { grid-template-columns: 1fr; }
+    .exo-hist-diff .dc:first-child { display: none; }
+    .exo-hist-row { grid-template-columns: 36px 1fr; gap: 6px; }
+    /* Hide the verbose ago label on tight phones; the counter
+     * already tells the user where they are in the timeline. */
+    .exo-hist-ago { display: none; }
+}
+
+/* =====================================================================
+ * Theme-aware text overrides — fixes the unreadable greyish copy users
+ * complained about on both the light theme (text was a muddy slate on
+ * a white card) and the dark / Frutiger Aero themes (text was a low-
+ * contrast grey on a dark / glassy background).
+ *
+ * The base theme variables are written by `_shared/exo-theme-apply.js`
+ * (`--text-primary`, `--text-secondary` etc., derived from the theme
+ * preset). Those defaults look fine on a marketing landing page but
+ * fail WCAG on dense editor chrome. We pin them here:
+ *   • Light, non-Aero  → pure black text (#000)
+ *   • Anything else (dark schemes, Aero) → pure white text (#fff)
+ *
+ * !important is used deliberately because `exo-theme-apply.js` writes
+ * inline custom-property values on the document root that would
+ * otherwise win the cascade. Scope is intentionally global so every
+ * pane (npm, pylib, github, problems, etc.) benefits without needing
+ * per-component patches.
+ * ===================================================================== */
+/* The user explicitly wants BLACK text on both the light theme AND
+ * the Frutiger Aero theme (Aero has light glassy / pastel backgrounds,
+ * so the "white text on aero" we previously shipped washed everything
+ * out). Only the true dark scheme keeps white text.
+ *
+ * We have to override a *lot* of variables because different pane
+ * stylesheets read different ones — `--text` (npm/pylib/github panes),
+ * `--text-pri` (some legacy code), `--exo-text` (theme system),
+ * `--text-primary` / `--text-secondary` / `--text-muted` (newer code).
+ * Pinning all of them keeps every pane on-message regardless of
+ * which variable it happens to read. */
+html[data-scheme="light"],
+:root[data-scheme="light"],
+html[data-mode="aero"],
+:root[data-mode="aero"] {
+    --text-primary:   #000 !important;
+    --text-secondary: #000 !important;
+    --text-muted:     #1a1a1a !important;
+    --text:           #000 !important;
+    --text-pri:       #000 !important;
+    --text-sec:       #000 !important;
+    --text-mut:       #1a1a1a !important;
+    --exo-text:       #000 !important;
+    --exo-muted:      #1a1a1a !important;
+}
+html[data-scheme="dark"]:not([data-mode="aero"]),
+:root[data-scheme="dark"]:not([data-mode="aero"]) {
+    --text-primary:   #fff !important;
+    --text-secondary: #fff !important;
+    --text-muted:     #e8e8e8 !important;
+    --text:           #fff !important;
+    --text-pri:       #fff !important;
+    --text-sec:       #fff !important;
+    --text-mut:       #e8e8e8 !important;
+    --exo-text:       #fff !important;
+    --exo-muted:      #e8e8e8 !important;
+}
+
+/* In the light + Aero schemes, the various pane stylesheets sprinkle
+ * `opacity: 0.5/0.6/0.7/0.8/0.85` on labels, helpers and meta lines —
+ * which in dark mode looks like a normal "secondary text" softening,
+ * but on a near-white background turns the text into unreadable grey.
+ * Bump the most common offenders back to full opacity so the text
+ * stays solid black. Dark mode is unaffected because the selectors
+ * are scoped to light + aero only. */
+html[data-scheme="light"] .npm-pane,
+html[data-scheme="light"] .npm-pane *,
+html[data-mode="aero"]    .npm-pane,
+html[data-mode="aero"]    .npm-pane *,
+html[data-scheme="light"] .gh-pane,
+html[data-scheme="light"] .gh-pane *,
+html[data-mode="aero"]    .gh-pane,
+html[data-mode="aero"]    .gh-pane *,
+html[data-scheme="light"] .cloud-pane,
+html[data-scheme="light"] .cloud-pane *,
+html[data-mode="aero"]    .cloud-pane,
+html[data-mode="aero"]    .cloud-pane *,
+html[data-scheme="light"] .sidebar-pane,
+html[data-scheme="light"] .sidebar-pane *,
+html[data-mode="aero"]    .sidebar-pane,
+html[data-mode="aero"]    .sidebar-pane * {
+    color: #000 !important;
+}
+html[data-scheme="light"] .sidebar-pane [class*="opacity"],
+html[data-mode="aero"]    .sidebar-pane [class*="opacity"] {
+    opacity: 1 !important;
+}
+/* The most common inline opacity values pane code uses for labels. */
+html[data-scheme="light"] .npm-pane [style*="opacity"],
+html[data-mode="aero"]    .npm-pane [style*="opacity"],
+html[data-scheme="light"] .gh-pane  [style*="opacity"],
+html[data-mode="aero"]    .gh-pane  [style*="opacity"],
+html[data-scheme="light"] .cloud-pane [style*="opacity"],
+html[data-mode="aero"]    .cloud-pane [style*="opacity"] {
+    opacity: 1 !important;
+}
+/* Class-based softeners (.npm-help, .npm-auth-label, .npm-list-header,
+ * .npm-empty, .npm-info-desc, etc.) — same story: dial them back to 1
+ * so labels stay readable on the light glassy backgrounds. Accent
+ * brand color is still respected via inline color on those rules. */
+html[data-scheme="light"] .npm-help,
+html[data-mode="aero"]    .npm-help,
+html[data-scheme="light"] .npm-auth-label,
+html[data-mode="aero"]    .npm-auth-label,
+html[data-scheme="light"] .npm-list-header,
+html[data-mode="aero"]    .npm-list-header,
+html[data-scheme="light"] .npm-empty,
+html[data-mode="aero"]    .npm-empty,
+html[data-scheme="light"] .npm-info-desc,
+html[data-mode="aero"]    .npm-info-desc,
+html[data-scheme="light"] .npm-info-ver,
+html[data-mode="aero"]    .npm-info-ver,
+html[data-scheme="light"] .npm-row-ver,
+html[data-mode="aero"]    .npm-row-ver,
+html[data-scheme="light"] .npm-suggest-desc,
+html[data-mode="aero"]    .npm-suggest-desc,
+html[data-scheme="light"] .npm-suggest-ver,
+html[data-mode="aero"]    .npm-suggest-ver {
+    opacity: 1 !important;
+    color: #000 !important;
+}
+/* The dropdown / info-card backgrounds were tuned for dark mode
+ * (`var(--bg-elevated, #1f1f23)`). Force a translucent light surface
+ * on light + aero so the now-black text has actual contrast against
+ * the panel rather than sitting on a near-black box. */
+html[data-scheme="light"] .npm-suggest,
+html[data-mode="aero"]    .npm-suggest,
+html[data-scheme="light"] .npm-info-card,
+html[data-mode="aero"]    .npm-info-card {
+    background: rgba(255,255,255,0.92) !important;
+    border-color: rgba(0,0,0,0.18) !important;
+    color: #000 !important;
+}
+
+/* Back-to-Dashboard button — keep its label always visible (so mobile
+ * users still see "Dashboard"), but undo the `.hdr-btn.icon` 32×30
+ * square sizing that was making the button render as a giant pill
+ * once we forced the label back in. The button now sizes naturally
+ * around its icon + short label, matching the other header buttons.
+ * The :first-child mobile rule that hid the label is also reverted. */
+#backBtn {
+    width: auto !important;
+    height: auto !important;
+    min-height: 28px !important;
+    padding: 4px 10px !important;
+    gap: 4px;
+    justify-content: flex-start !important;
+    /* `.hdr-btn.icon .hdr-glyph { width:100%; height:100% }` would
+     * stretch the chevron weirdly when the button auto-grows; pin
+     * the glyph back to its intrinsic 14×14 footprint. */
+}
+#backBtn .hdr-glyph {
+    width: 14px !important;
+    height: 14px !important;
+    flex: 0 0 auto;
+}
+#backBtn .hdr-btn-label {
+    display: inline !important;
+    font-size: 11px;
+    line-height: 1;
+}
+@media (max-width: 480px) {
+    /* On very tight phones, label still shows but we tighten spacing. */
+    #backBtn { padding: 4px 8px !important; }
+    #backBtn .hdr-btn-label { font-size: 10px; }
+}
+
+/* =====================================================================
+ * NPM / PyLib autocomplete dropdown — shared styles for both panes.
+ * `.npm-search-wrap` wraps the input so the absolutely-positioned
+ * suggestions list anchors directly under it without disturbing the
+ * horizontal layout of the install bar.
+ * ===================================================================== */
+.npm-search-wrap {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.npm-search-wrap > .npm-input { width: 100%; box-sizing: border-box; }
+
+.npm-suggest {
+    position: absolute;
+    z-index: 60;
+    left: 0;
+    right: 0;
+    top: calc(100% + 4px);
+    max-height: 280px;
+    overflow-y: auto;
+    background: var(--bg-elevated, #1f1f23);
+    border: 1px solid var(--border-color, rgba(255,255,255,0.12));
+    border-radius: 6px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.35);
+    padding: 4px;
+    color: var(--text-primary, #fff);
+}
+.npm-suggest-row {
+    display: block;
+    padding: 6px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    line-height: 1.25;
+    border: 1px solid transparent;
+}
+.npm-suggest-row:hover,
+.npm-suggest-row.active {
+    background: rgba(255, 229, 0, 0.10);
+    border-color: rgba(255, 229, 0, 0.35);
+}
+.npm-suggest-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+}
+.npm-suggest-name {
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--text-primary, #fff);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.npm-suggest-ver {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    color: var(--text-secondary, #fff);
+    flex-shrink: 0;
+}
+.npm-suggest-desc {
+    font-size: 0.72rem;
+    margin-top: 2px;
+    opacity: 0.85;
+    color: var(--text-secondary, #fff);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Info-card additions: meta block + version picker layout. The card
+ * itself was already in the npm-pane CSS; we're only adding the new
+ * sub-elements introduced by the autocomplete wiring. */
+.npm-info-meta {
+    margin-top: 6px;
+    font-size: 0.74rem;
+    line-height: 1.5;
+    color: var(--text-secondary, #fff);
+}
+.npm-info-meta a { color: var(--exo-accent, #FFE500); }
+.npm-info-versions {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 0.74rem;
+}
+
+/* =====================================================================
+ * Phase 3.J.4 — Active/Unused split + README block (npm + pylib panes).
+ * Adds visual styling for the summary pills, section headers, and the
+ * collapsible README markdown body that the panes now render.
+ * ===================================================================== */
+.npm-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 12px 4px;
+}
+.npm-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+.npm-pill.ok    { background: rgba(34,197,94,0.16);  color: #22c55e; }
+.npm-pill.dev   { background: rgba(139,233,253,0.14); color: #8be9fd; }
+.npm-pill.warn  { background: rgba(251,191,36,0.16); color: #fbbf24; }
+
+.npm-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px 4px;
+    margin-top: 4px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-top: 1px dashed var(--hairline, rgba(255,255,255,0.06));
+}
+.npm-section:first-of-type { border-top: 0; margin-top: 0; }
+.npm-section.extra { color: #fbbf24; }
+.npm-section.dep   { color: #22c55e; }
+.npm-section.dev   { color: #8be9fd; }
+.npm-section-count {
+    background: var(--surface-hover, rgba(255,255,255,0.06));
+    color: inherit;
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-size: 10px;
+    opacity: 0.85;
+}
+
+/* README block — collapsible <details>/<summary>. */
+.npm-readme {
+    margin-top: 12px;
+    border-top: 1px dashed var(--hairline, rgba(255,255,255,0.08));
+    padding-top: 10px;
+}
+.npm-readme > summary {
+    cursor: pointer;
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent, #7aa2f7);
+    padding: 4px 0;
+    user-select: none;
+}
+.npm-readme > summary::-webkit-details-marker { display: none; }
+.npm-readme > summary::before {
+    content: '▸';
+    display: inline-block;
+    transition: transform 0.15s ease;
+    color: currentColor;
+}
+.npm-readme[open] > summary::before { transform: rotate(90deg); }
+
+.md-body {
+    margin-top: 8px;
+    font-size: 12.5px;
+    line-height: 1.55;
+    max-height: 460px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+.md-body h1,
+.md-body h2 { font-size: 1.15em; margin: 14px 0 6px; padding-bottom: 4px; border-bottom: 1px solid var(--hairline, rgba(255,255,255,0.08)); }
+.md-body h3 { font-size: 1.05em; margin: 12px 0 4px; }
+.md-body h4,
+.md-body h5,
+.md-body h6 { font-size: 1em; margin: 10px 0 4px; }
+.md-body p  { margin: 6px 0; }
+.md-body ul,
+.md-body ol { margin: 6px 0 6px 20px; padding: 0; }
+.md-body li { margin: 2px 0; }
+.md-body a  { color: var(--accent, #7aa2f7); text-decoration: none; }
+.md-body a:hover { text-decoration: underline; }
+.md-body img { max-width: 100%; border-radius: 4px; }
+.md-body hr  { border: 0; border-top: 1px dashed var(--hairline, rgba(255,255,255,0.1)); margin: 10px 0; }
+.md-inline-code {
+    background: var(--surface-hover, rgba(255,255,255,0.08));
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    font-size: 0.92em;
+}
+.md-pre {
+    background: var(--surface, rgba(255,255,255,0.04));
+    border: 1px solid var(--hairline, rgba(255,255,255,0.08));
+    padding: 10px 12px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 8px 0;
+    font-size: 0.88em;
+    line-height: 1.45;
+}
+.md-pre .md-code {
+    font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    background: transparent;
+    padding: 0;
+}
+
+/* Light + Aero contrast for the new bits. The earlier `.npm-pane *`
+ * black-text override would have wiped the colored badge text, so we
+ * restore semantic colors here scoped to those schemes. */
+html[data-scheme="light"] .npm-pill.ok,
+html[data-mode="aero"]    .npm-pill.ok    { color: #047a3a !important; background: rgba(34,197,94,0.20) !important; }
+html[data-scheme="light"] .npm-pill.dev,
+html[data-mode="aero"]    .npm-pill.dev   { color: #0b5fa0 !important; background: rgba(11,95,160,0.14) !important; }
+html[data-scheme="light"] .npm-pill.warn,
+html[data-mode="aero"]    .npm-pill.warn  { color: #8a5a00 !important; background: rgba(251,191,36,0.24) !important; }
+html[data-scheme="light"] .npm-section.extra,
+html[data-mode="aero"]    .npm-section.extra { color: #8a5a00 !important; }
+html[data-scheme="light"] .npm-section.dep,
+html[data-mode="aero"]    .npm-section.dep   { color: #047a3a !important; }
+html[data-scheme="light"] .npm-section.dev,
+html[data-mode="aero"]    .npm-section.dev   { color: #0b5fa0 !important; }
+html[data-scheme="light"] .npm-readme > summary,
+html[data-mode="aero"]    .npm-readme > summary { color: #0b5fa0 !important; }
+html[data-scheme="light"] .md-body a,
+html[data-mode="aero"]    .md-body a { color: #0b5fa0 !important; }
+html[data-scheme="light"] .md-pre,
+html[data-mode="aero"]    .md-pre,
+html[data-scheme="light"] .md-inline-code,
+html[data-mode="aero"]    .md-inline-code { background: rgba(0,0,0,0.06) !important; border-color: rgba(0,0,0,0.12) !important; }
+
+/* ---------- Phase 4.B: Browse-first npm/pylib panes ----------
+ * Tab toggle (Browse/Installed), package cards in scrollable
+ * list, filesystem tree for the detail view, and a thin "back"
+ * link in the detail header. The existing .npm-* tokens still
+ * cover colors, spacing, hover, etc — these rules just add the
+ * new layout primitives the redesigned pane needs. */
+
+.npm-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 6px 10px 0;
+    border-bottom: 1px solid var(--border, rgba(255,255,255,0.06));
+}
+.npm-tab {
+    background: transparent;
+    color: var(--text-dim, rgba(255,255,255,0.6));
+    border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 7px 10px;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.npm-tab:hover { color: var(--text, #d4d4d4); background: var(--surface-hover, rgba(255,255,255,0.04)); }
+.npm-tab.active {
+    color: var(--accent, #7aa2f7);
+    border-bottom-color: var(--accent, #7aa2f7);
+}
+.npm-tab-count {
+    display: inline-block;
+    min-width: 18px;
+    text-align: center;
+    padding: 1px 6px;
+    border-radius: 9px;
+    background: rgba(255,255,255,0.08);
+    font-size: 10px;
+    line-height: 1.4;
+    color: var(--text-dim, rgba(255,255,255,0.7));
+}
+
+.npm-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px 0;
+}
+.npm-card {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    color: inherit;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 8px 10px;
+    cursor: pointer;
+    font: inherit;
+}
+.npm-card:hover {
+    background: var(--surface-hover, rgba(255,255,255,0.05));
+    border-color: var(--border, rgba(255,255,255,0.08));
+}
+.npm-card-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+.npm-card-name {
+    font-weight: 600;
+    color: var(--text, #d4d4d4);
+}
+.npm-card-ver {
+    font-size: 11px;
+    opacity: 0.55;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+}
+.npm-card-desc {
+    font-size: 12px;
+    opacity: 0.7;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.npm-detail-head {
+    padding: 8px 10px 0;
+}
+.npm-info-versions {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+}
+.npm-row-link {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    font: inherit;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+}
+.npm-row-link:hover { color: var(--accent, #7aa2f7); text-decoration: underline; }
+
+/* File / folder tree (jsdelivr-sourced) */
+.npm-tree {
+    font-size: 12px;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+    line-height: 1.5;
+    padding: 4px 6px;
+    max-height: 320px;
+    overflow: auto;
+}
+.npm-tree-dir > summary {
+    list-style: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    color: var(--accent, #7aa2f7);
+}
+.npm-tree-dir > summary:hover { background: var(--surface-hover, rgba(255,255,255,0.04)); }
+.npm-tree-dir > summary::-webkit-details-marker { display: none; }
+.npm-tree-children { padding-left: 14px; border-left: 1px dashed var(--border, rgba(255,255,255,0.06)); margin-left: 5px; }
+.npm-tree-file {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 4px;
+    color: var(--text, #d4d4d4);
+}
+.npm-tree-name { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.npm-tree-size { opacity: 0.45; font-size: 10px; }
+
+html[data-scheme="light"] .npm-tab.active,
+html[data-mode="aero"]    .npm-tab.active { color: #0b5fa0 !important; border-bottom-color: #0b5fa0 !important; }
+html[data-scheme="light"] .npm-tree-dir > summary,
+html[data-mode="aero"]    .npm-tree-dir > summary { color: #0b5fa0 !important; }
+
+/* ===================================================================
+ * Mobile + Aero — code-area readability fix (Apr 29, 2026).
+ *
+ * Bug: on phones the editor renders via ExoSimpleCode (a vanilla
+ * Prism-based editor) instead of Monaco. SimpleCode reads its
+ * colors from `--exo-bg`, `--exo-text`, and the `--exo-syn-*`
+ * family which `settings.js#applyTheme` writes from whatever Monaco
+ * theme the user last picked. The Aero override block above pinned
+ * `--exo-text` to BLACK so plain text reads on the glassy light
+ * background — but it left the syntax-token vars alone. Dark
+ * themes set those tokens to LIGHT pastel colors (cyan strings,
+ * pale yellow keywords, etc.), which become invisible against the
+ * white Aero `.monaco-host` background. Result: line numbers
+ * showed up but the actual code text was washed out — the
+ * "sa sobra white di makita code syntax" the user reported.
+ *
+ * Fix: re-pin `--exo-bg` to transparent (so the Aero glass shows
+ * through) AND give every `--exo-syn-*` token a dark, saturated
+ * value picked for legibility on a near-white surface (a
+ * GitHub-Light-ish palette). Desktop Monaco is unaffected — Monaco
+ * paints from its own JS-defined theme, never from these CSS vars.
+ *
+ * Also: SimpleCode's textarea has `color: transparent` because the
+ * visible glyphs come from the highlighted <pre> underneath, but
+ * we still nudge `caret-color` to a dark accent so the cursor is
+ * visible while typing on Aero.
+ * =================================================================== */
+html[data-mode="aero"],
+:root[data-mode="aero"] {
+    /* Let the Aero glass show through the SimpleCode container. */
+    --exo-bg:           transparent !important;
+    --exo-surface:      rgba(255,255,255,0.55) !important;
+    --exo-line:         rgba(11,58,102,0.06) !important;
+    --exo-selection:    rgba(26,143,214,0.22) !important;
+    --exo-accent:       #1a8fd6 !important;
+
+    /* Syntax tokens — dark + saturated so they read on white. */
+    --exo-syn-comment:  #6a737d !important;
+    --exo-syn-keyword:  #d73a49 !important;
+    --exo-syn-string:   #032f62 !important;
+    --exo-syn-number:   #005cc5 !important;
+    --exo-syn-fn:       #6f42c1 !important;
+    --exo-syn-builtin:  #005cc5 !important;
+    --exo-syn-attr:     #22863a !important;
+    --exo-syn-tag:      #22863a !important;
+    --exo-syn-property: #005cc5 !important;
+    --exo-syn-operator: #d73a49 !important;
+    --exo-syn-variable: #24292e !important;
+    --exo-syn-invalid:  #b31d28 !important;
+}
+
+/* SimpleCode-specific tweaks for the Aero light surface. The
+ * textarea itself stays transparent (Prism paints the visible
+ * glyphs in the <pre> behind it), but we give it a dark caret +
+ * a readable selection highlight. The `.scv-pre code` rule pins
+ * the *un-tokenised* fallback color to black so any text Prism
+ * doesn't tokenise (rare languages, fallthrough) is still
+ * visible. */
+html[data-mode="aero"] .scv-wrap {
+    background: transparent !important;
+    color: #000 !important;
+    caret-color: #1a8fd6 !important;
+}
+html[data-mode="aero"] .scv-pre,
+html[data-mode="aero"] .scv-pre code {
+    color: #000 !important;
+}
+html[data-mode="aero"] .scv-ta {
+    caret-color: #1a8fd6 !important;
+}
+html[data-mode="aero"] .scv-gutter {
+    color: rgba(11,58,102,0.55) !important;
+    opacity: 1 !important;
+}
+
+/* Same fix for the pure light scheme (no Aero) — same logic, just
+ * a slightly cooler palette to match the flat light look. */
+html[data-scheme="light"]:not([data-mode="aero"]),
+:root[data-scheme="light"]:not([data-mode="aero"]) {
+    --exo-syn-comment:  #6a737d !important;
+    --exo-syn-keyword:  #d73a49 !important;
+    --exo-syn-string:   #032f62 !important;
+    --exo-syn-number:   #005cc5 !important;
+    --exo-syn-fn:       #6f42c1 !important;
+    --exo-syn-builtin:  #005cc5 !important;
+    --exo-syn-attr:     #22863a !important;
+    --exo-syn-tag:      #22863a !important;
+    --exo-syn-property: #005cc5 !important;
+    --exo-syn-operator: #d73a49 !important;
+    --exo-syn-variable: #24292e !important;
+    --exo-syn-invalid:  #b31d28 !important;
+}
+html[data-scheme="light"]:not([data-mode="aero"]) .scv-pre,
+html[data-scheme="light"]:not([data-mode="aero"]) .scv-pre code {
+    color: #000 !important;
+}
+html[data-scheme="light"]:not([data-mode="aero"]) .scv-gutter {
+    color: rgba(0,0,0,0.55) !important;
+    opacity: 1 !important;
+}
+
+/* =====================================================================
+ * Tablet responsive — 769 px … 1024 px.
+ *
+ * The mobile breakpoint (≤ 768 px) already covers phones; this block
+ * makes the editor genuinely comfortable on iPad-class devices, small
+ * laptops, and landscape phones.  Changes are intentionally additive:
+ * we nudge sizes and spacing without restructuring the layout.
+ * ===================================================================== */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+    /* ── Sidebar ── */
+    /* Slightly narrower default sidebar so the code area gets more room. */
+    .sidebar { min-width: 200px; max-width: 260px; }
+
+    /* Tab labels shrink a touch — still readable, saves horizontal space. */
+    .sidebar-tabs .tab-btn {
+        padding: 10px 8px;
+        font-size: 11.5px;
+        gap: 6px;
+        min-height: 40px;
+    }
+
+    /* Toolbar icons — comfortable 34 px tap targets. */
+    .sidebar-toolbar .toolbar-icon { width: 34px; height: 34px; }
+    .sidebar-toolbar .toolbar-icon svg { width: 16px; height: 16px; }
+
+    /* File-tree rows — slightly taller than desktop, smaller than phone. */
+    .tree-row { min-height: 36px; font-size: 13px; }
+    .vsc-actions { display: flex; }
+
+    /* ── Header ── */
+    .main-header { padding: 0 10px; gap: 6px; }
+    .header-actions { gap: 3px; }
+    .main-header .hdr-btn { padding: 0 10px; font-size: 12px; min-height: 36px; }
+    .main-header .hdr-btn.icon { width: 34px; }
+
+    /* ── Editor area ── */
+    /* Keep line numbers legible without wasting space. */
+    .monaco-editor .margin { min-width: 40px !important; }
+
+    /* Status bar — shrink labels slightly so it fits without wrapping. */
+    .status-bar { font-size: 11px; gap: 8px; padding: 0 10px; }
+
+    /* ── Panels (bottom console / problems) ── */
+    .panel-tabs .panel-tab { padding: 6px 12px; font-size: 12px; }
+    .panel-body { font-size: 12.5px; }
+
+    /* ── Context menu / popover ── */
+    .context-menu { font-size: 13px; }
+    .context-menu-item { padding: 7px 12px; min-height: 36px; }
+
+    /* ── Tab bar ── */
+    .editor-tab { max-width: 160px; font-size: 12px; padding: 0 10px; min-height: 36px; }
+
+    /* ── Modals ── */
+    .exo-modal-card { max-width: 480px; }
+
+    /* ── Empty state centring ── */
+    .empty-state-title { font-size: 1.1rem; }
+    .empty-state-sub   { font-size: 0.82rem; }
+}
+
+/* ── Touch-tablet: always show action buttons in the sidebar. */
+@media (hover: none) and (pointer: coarse) and (min-width: 769px) {
+    .vsc-actions { display: flex; }
+}
+
+/* =====================================================================
+ * LSP Diagnostic Marker Contrast — Phase 8 (May 2026)
+ *
+ * Monaco's squiggle underlines and gutter icons are now coloured by
+ * the per-theme `editorError/Warning/Info.foreground` tokens set in
+ * monaco.js::defineFromExoTheme() — dark themes get bright squiggles,
+ * light/Aero themes get saturated dark-on-light colours.
+ *
+ * The shell UI (Problems pane, status bar) still needs its own theme-
+ * aware overrides because it renders plain HTML/CSS, not Monaco canvas.
+ *
+ * Rule: every selector pair covers [data-scheme="light"] and
+ * [data-mode="aero"] so BOTH flat-light and Frutiger Aero themes are
+ * fixed. Dark themes already look correct with the default values.
+ * ===================================================================== */
+
+/* ── Status bar has-error button (dark themes) ─────────────────────── */
+.status-btn.has-error { color: #f74747; opacity: 1; }
+
+/* ── Problems pane severity colours — dark (default) ───────────────── */
+.problems-pane .prob-count.err { color: #f74747; }
+.problems-pane .prob-sev.err   { color: #f74747; }
+
+/* ── Light + Aero: Problems pane ────────────────────────────────────── */
+html[data-scheme="light"] .problems-pane .prob-count.err,
+html[data-mode="aero"]    .problems-pane .prob-count.err,
+html[data-scheme="light"] .problems-pane .prob-sev.err,
+html[data-mode="aero"]    .problems-pane .prob-sev.err   { color: #cc0000 !important; }
+
+html[data-scheme="light"] .problems-pane .prob-count.warn,
+html[data-mode="aero"]    .problems-pane .prob-count.warn,
+html[data-scheme="light"] .problems-pane .prob-sev.warn,
+html[data-mode="aero"]    .problems-pane .prob-sev.warn  { color: #b85c00 !important; }
+
+html[data-scheme="light"] .problems-pane .prob-sev.info,
+html[data-mode="aero"]    .problems-pane .prob-sev.info  { color: #0057cc !important; }
+
+html[data-scheme="light"] .problems-pane .prob-sev.hint,
+html[data-mode="aero"]    .problems-pane .prob-sev.hint  { color: #1a7a1a !important; opacity: 1; }
+
+/* ── Light + Aero: status bar error/warning buttons ─────────────────── */
+html[data-scheme="light"] .status-btn.has-error,
+html[data-mode="aero"]    .status-btn.has-error  { color: #cc0000 !important; opacity: 1; }
+
+html[data-scheme="light"] .status-btn.has-warning,
+html[data-mode="aero"]    .status-btn.has-warning { color: #b85c00 !important; opacity: 1; }
+
+/* ── Light + Aero: mobile badge colours ─────────────────────────────── */
+html[data-scheme="light"] .status-badge.error,
+html[data-mode="aero"]    .status-badge.error   { background: #cc0000 !important; color: #fff !important; }
+
+html[data-scheme="light"] .status-badge.warning,
+html[data-mode="aero"]    .status-badge.warning  { background: #b85c00 !important; color: #fff !important; }
+
+/* ── Light + Aero: toast borders ────────────────────────────────────── */
+html[data-scheme="light"] .toast.error,
+html[data-mode="aero"]    .toast.error   { border-left-color: #cc0000 !important; }
+
+html[data-scheme="light"] .toast.warning,
+html[data-mode="aero"]    .toast.warning { border-left-color: #b85c00 !important; }
+
+/* ── Monaco glyph-margin decoration area ────────────────────────────── */
+/* When glyphMargin is enabled Monaco injects a column to the left of
+ * line-numbers for diagnostic icons. Give it a slim visual separation
+ * that respects the current surface colour. */
+.monaco-editor .glyph-margin {
+    opacity: 0.9;
+}
+
+/* ── Monaco inlay hints (type annotations, param names) ──────────────── */
+/* Frutiger Aero + light themes: inlay hint text must contrast against
+ * the light editor background. Dark themes inherit Monaco's built-in
+ * inlay hint styling which is already styled by the theme colours. */
+html[data-scheme="light"] .monaco-editor .inlay-hint,
+html[data-mode="aero"]    .monaco-editor .inlay-hint {
+    color: #3a6a9a !important;
+    background: rgba(26, 143, 214, 0.10) !important;
+    border-radius: 3px;
+}
+
+/* ── Problems pane row: error/warning background tints ──────────────── */
+html[data-scheme="light"] .problems-pane .prob-row:has(.prob-sev.err),
+html[data-mode="aero"]    .problems-pane .prob-row:has(.prob-sev.err) {
+    border-left: 2px solid #cc0000;
+}
+html[data-scheme="light"] .problems-pane .prob-row:has(.prob-sev.warn),
+html[data-mode="aero"]    .problems-pane .prob-row:has(.prob-sev.warn) {
+    border-left: 2px solid #b85c00;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * ExoShell — fish-like smart input bar (exo-shell.js)
+ * Always-visible command input with ghost/shadow autocompletion, sits at the
+ * very bottom of the terminal pane (below xterm, above panel resize handle).
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+.exosh-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 8px 5px 6px;
+    background: #0e1117;
+    border-top: 1px solid rgba(0,161,255,0.18);
+    flex-shrink: 0;
+    min-height: 38px;
+    user-select: none;
+    position: relative;
+    z-index: 2;
+}
+
+/* Prompt: @exocore ~/path › */
+.exosh-prompt {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1;
+}
+.exosh-at   { color: #00a1ff; font-weight: 700; }
+.exosh-path { color: #f1fa8c; opacity: 0.9; }
+.exosh-arr  { color: #50fa7b; font-weight: 700; font-size: 14px; line-height: 1; }
+
+/* Input wrapper: ghost layer + real input stacked */
+.exosh-input-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    height: 26px;
+    display: flex;
+    align-items: center;
+}
+
+/* Ghost layer — grayed-out completion text shown behind the cursor */
+.exosh-ghost-layer {
+    position: absolute;
+    inset: 0;
+    padding: 0 4px;
+    font-family: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12.5px;
+    line-height: 26px;
+    white-space: pre;
+    overflow: hidden;
+    color: rgba(248,248,242,0.28);
+    pointer-events: none;
+    letter-spacing: 0.01em;
+}
+
+/* Real input — transparent bg so ghost shows through */
+.exosh-input {
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    caret-color: #00a1ff;
+    color: #f8f8f2;
+    font-family: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12.5px;
+    line-height: 26px;
+    padding: 0 4px;
+    letter-spacing: 0.01em;
+    width: 100%;
+    min-width: 0;
+}
+.exosh-input::placeholder { color: rgba(248,248,242,0.2); font-style: italic; }
+
+/* Wrapper border & focus glow */
+.exosh-input-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(0,161,255,0.18);
+    border-radius: 5px;
+    pointer-events: none;
+    transition: border-color 0.15s;
+}
+.exosh-input-wrap:focus-within::before {
+    border-color: rgba(0,161,255,0.55);
+    box-shadow: 0 0 0 2px rgba(0,161,255,0.10);
+}
+
+/* Action buttons */
+.exosh-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(248,248,242,0.7);
+    border-radius: 5px;
+    width: 28px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    flex-shrink: 0;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+    padding: 0;
+}
+.exosh-btn:hover  { background: rgba(0,161,255,0.15); border-color: rgba(0,161,255,0.4); color: #00a1ff; }
+.exosh-btn:active { transform: scale(0.95); }
+.exosh-send  { color: #50fa7b; border-color: rgba(80,250,123,0.3); }
+.exosh-send:hover { background: rgba(80,250,123,0.12); border-color: rgba(80,250,123,0.6); color: #50fa7b; }
+.exosh-clear { color: rgba(255,85,85,0.7); }
+.exosh-clear:hover { background: rgba(255,85,85,0.12); border-color: rgba(255,85,85,0.4); color: #ff5555; }
+
+/* Make xterm host shrink to allow room for the exosh bar */
+.terminal-pane .term-host {
+    /* override the hard flex:1 so it shares space with exosh-bar */
+    flex: 1 1 0;
+    min-height: 0;
+}
+
+/* Mobile: slightly taller bar + bigger font */
+@media (max-width: 768px) {
+    .exosh-bar { min-height: 44px; padding: 6px 8px; gap: 8px; }
+    .exosh-prompt { font-size: 11px; }
+    .exosh-input, .exosh-ghost-layer { font-size: 13px; }
+    .exosh-btn { width: 34px; height: 32px; font-size: 14px; }
+    .exosh-input-wrap { height: 32px; }
+    .exosh-ghost-layer, .exosh-input { line-height: 32px; }
+}
+
+/* Light / Aero theme overrides */
+html[data-scheme="light"] .exosh-bar,
+html[data-mode="aero"]    .exosh-bar {
+    background: rgba(240,244,252,0.97);
+    border-top-color: rgba(0,100,200,0.15);
+}
+html[data-scheme="light"] .exosh-input,
+html[data-mode="aero"]    .exosh-input    { color: #1a1a2e; }
+html[data-scheme="light"] .exosh-ghost-layer,
+html[data-mode="aero"]    .exosh-ghost-layer { color: rgba(26,26,46,0.3); }
+html[data-scheme="light"] .exosh-input-wrap::before,
+html[data-mode="aero"]    .exosh-input-wrap::before { border-color: rgba(0,100,200,0.2); }
+html[data-scheme="light"] .exosh-at,
+html[data-mode="aero"]    .exosh-at  { color: #0057cc; }
+html[data-scheme="light"] .exosh-arr,
+html[data-mode="aero"]    .exosh-arr { color: #0a7a0a; }
+}
+
+/* ── Multi-select delete (sidebar.js injects buttons into toolbar-actions) ── */
+.toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--text-muted, rgba(245,249,249,0.4));
+    transition: color 0.12s, background 0.1s;
+    flex-shrink: 0;
+    user-select: none;
+}
+.toolbar-btn:hover { color: var(--text-main, #f5f9f9); background: rgba(255,255,255,0.06); }
+.toolbar-btn svg { pointer-events: none; }
+
+/* Delete-selected button — red accent + count badge */
+.exo-del-sel-btn {
+    width: auto;
+    padding: 0 7px;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #f87171;
+}
+.exo-del-sel-btn:hover { color: #fca5a5; background: rgba(248,113,113,0.1); }
+.exo-del-sel-btn #exoDeleteSelectedCount { font-variant-numeric: tabular-nums; }
+
+/* Selected tree row highlight */
+.tree-row.exo-selected {
+    background: rgba(0, 161, 255, 0.12) !important;
+    outline: 1px solid rgba(0, 161, 255, 0.3);
+    outline-offset: -1px;
+}
+/* Checkbox-style check indicator on selected rows */
+.tree-row.exo-selected::before {
+    content: '✓';
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: var(--accent, #00a1ff);
+    pointer-events: none;
+}
+/* Make sure tree-row is position:relative for the ::before to work */
+.tree-row { position: relative; }
+
+/* ── Extension status bar button icon (Item 19 / Canvas) ─────────── */
+.exo-ext-status-btn { display: inline-flex; align-items: center; gap: 5px; }
+.exo-ext-ico { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.exo-ext-ico svg { width: 14px; height: 14px; }
+
+/* Accent (Canvas) button — yellow bg, black text/icon */
+.status-btn.accent {
+    background: var(--yellow, #ffe600);
+    color: #000;
+    border-radius: 6px;
+    padding: 0 8px;
+    font-weight: 700;
+    font-size: 11px;
+}
+.status-btn.accent:hover { filter: brightness(1.08); }
+.status-btn.accent .exo-ext-ico svg { stroke: #000; }
+
+/* On mobile: show the icon, hide the text label — square tap target */
+@media (hover: none) and (pointer: coarse) {
+    .status-btn.accent {
+        min-width: 44px;
+        width: 44px;
+        padding: 0;
+        border-radius: 10px;
+    }
+    .status-btn.accent .status-label { display: none; }
+    .status-btn.accent .exo-ext-ico { width: 20px; height: 20px; }
+    .status-btn.accent .exo-ext-ico svg { width: 20px; height: 20px; }
+}

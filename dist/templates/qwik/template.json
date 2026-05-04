@@ -1,0 +1,11 @@
+{
+  "name": "Qwik",
+  "description": "Resumable web app with O(1) load",
+  "language": "tsx",
+  "runtime": "node",
+  "run": "npm run dev",
+  "port": 5173,
+  "install": true,
+  "category": "web",
+  "icon": "qwik"
+}

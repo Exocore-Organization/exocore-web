@@ -1,0 +1,1730 @@
+/* Press Start 2P — pixel font used by Minecraft / minecraft-dark themes.
+ * Loaded here once; only applied when the selector is active. */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* =========================================================
+ * exo-theme-skins.css — per-theme structural visual overlays.
+ *
+ * Each block is scoped to html[data-theme="<id>"] so this
+ * sheet is completely inert for any other active theme.
+ * Loaded once via <link> in every page <head>.
+ * exo-theme-apply.js sets html.dataset.theme on every apply().
+ * The pre-paint inline script sets it synchronously on load
+ * so there is no first-paint flash.
+ * ========================================================= */
+
+/* ═══════════════════════════════════════════════════════════════
+ * WINDOWS 95 — classic grey chrome, 3-D bevel, teal desktop
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="windows95"] {
+    --bg-base:      #008080 !important;
+    --bg-elev:      #c0c0c0 !important;
+    --bg-card:      #c0c0c0 !important;
+    --text-primary: #000000 !important;
+    --text-secondary: #333333 !important;
+    --text-muted:   #555555 !important;
+    --border:       #808080 !important;
+    --border-strong:#000000 !important;
+    --accent:       #000080 !important;
+    --accent-soft:  rgba(0,0,128,0.12) !important;
+    color-scheme: light !important;
+}
+html[data-theme="windows95"] body {
+    font-family: 'MS Sans Serif', 'Microsoft Sans Serif', Arial, sans-serif !important;
+    background: #008080 !important;
+    color: #000 !important;
+    image-rendering: pixelated;
+}
+html[data-theme="windows95"] .dash-header {
+    background: linear-gradient(90deg, #000080 0%, #1084d0 100%) !important;
+    border-bottom: 2px solid #000 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+html[data-theme="windows95"] .dash-header-name { color: #fff !important; font-weight: 700 !important; }
+html[data-theme="windows95"] .dash-header-user,
+html[data-theme="windows95"] .dash-header-kebab {
+    border-radius: 0 !important;
+    background: #c0c0c0 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    color: #000 !important;
+}
+html[data-theme="windows95"] .dash-header-kebab span {
+    background: #000 !important;
+}
+html[data-theme="windows95"] .dash-header-menu {
+    background: #c0c0c0 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    border-radius: 0 !important;
+    color: #000 !important;
+}
+html[data-theme="windows95"] .dash-header-menu button {
+    color: #000 !important;
+    border-radius: 0 !important;
+}
+html[data-theme="windows95"] .dash-header-menu button:hover {
+    background: #000080 !important;
+    color: #fff !important;
+}
+html[data-theme="windows95"] .exo-plan-btn,
+html[data-theme="windows95"] .exo-owner-btn,
+html[data-theme="windows95"] .logout-btn {
+    background: #c0c0c0 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    border-radius: 0 !important;
+    color: #000 !important;
+}
+html[data-theme="windows95"] .dash-main { background: transparent !important; }
+html[data-theme="windows95"] .dash-section,
+html[data-theme="windows95"] .dash-welcome {
+    background: #c0c0c0 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    box-shadow: 2px 2px 0 #000 !important;
+    border-radius: 0 !important;
+    padding: 12px;
+    color: #000 !important;
+}
+html[data-theme="windows95"] .dash-section-title,
+html[data-theme="windows95"] .dash-welcome-title,
+html[data-theme="windows95"] .dash-welcome-eyebrow,
+html[data-theme="windows95"] .dash-welcome-sub {
+    color: #000 !important;
+}
+html[data-theme="windows95"] .dash-welcome-title span { color: #000080 !important; }
+html[data-theme="windows95"] .stat-card,
+html[data-theme="windows95"] .project-node-card,
+html[data-theme="windows95"] .quick-action-card,
+html[data-theme="windows95"] .account-view,
+html[data-theme="windows95"] .social-card {
+    background: #c0c0c0 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    border-radius: 0 !important;
+    color: #000 !important;
+}
+html[data-theme="windows95"] .stat-card-label,
+html[data-theme="windows95"] .stat-card-sub,
+html[data-theme="windows95"] .stat-card-value,
+html[data-theme="windows95"] .pnc-desc,
+html[data-theme="windows95"] .pnc-run,
+html[data-theme="windows95"] .quick-action-desc,
+html[data-theme="windows95"] .dash-section-badge,
+html[data-theme="windows95"] .stat-chip,
+html[data-theme="windows95"] .stat-chip-val {
+    color: #000 !important;
+}
+html[data-theme="windows95"] .stat-card-value { color: #000080 !important; }
+html[data-theme="windows95"] .stat-chip {
+    background: #c0c0c0 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+}
+html[data-theme="windows95"] .pnc-icon {
+    background: #c0c0c0 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    color: #000080 !important;
+}
+html[data-theme="windows95"] .dash-empty-state {
+    background: #c0c0c0 !important;
+    border: 2px dashed #808080 !important;
+    color: #555 !important;
+    border-radius: 0 !important;
+}
+html[data-theme="windows95"] .btn,
+html[data-theme="windows95"] .dash-section-action {
+    background: #c0c0c0 !important;
+    color: #000 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    font-family: inherit !important;
+}
+html[data-theme="windows95"] .btn:active,
+html[data-theme="windows95"] .dash-section-action:active {
+    border-color: #808080 #fff #fff #808080 !important;
+}
+html[data-theme="windows95"] .exo-theme-box,
+html[data-theme="windows95"] .modal-card {
+    background: #c0c0c0 !important;
+    border-radius: 0 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    box-shadow: 4px 4px 0 #000 !important;
+    color: #000 !important;
+}
+html[data-theme="windows95"] .exo-theme-head,
+html[data-theme="windows95"] .modal-head {
+    background: linear-gradient(90deg, #000080, #1084d0) !important;
+    color: #fff !important;
+    border-radius: 0 !important;
+}
+html[data-theme="windows95"] input,
+html[data-theme="windows95"] textarea,
+html[data-theme="windows95"] select {
+    border-radius: 0 !important;
+    border: 2px inset #808080 !important;
+    background: #fff !important;
+    color: #000 !important;
+    font-family: inherit !important;
+}
+html[data-theme="windows95"] a { color: #000080 !important; }
+/* profile cover / banner area — hardcoded dark gradient */
+html[data-theme="windows95"] .prof-cover,
+html[data-theme="windows95"] .prof-cover-empty {
+    background: #c0c0c0 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    border-radius: 0 !important;
+}
+html[data-theme="windows95"] .prof-cover-empty::after { display: none !important; }
+/* "Change theme" / cover edit button — rgba(0,0,0,0.55) dark */
+html[data-theme="windows95"] .prof-photo-edit-cover {
+    background: #c0c0c0 !important;
+    color: #000 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    border-radius: 0 !important;
+    backdrop-filter: none !important;
+}
+html[data-theme="windows95"] .prof-photo-edit-cover:hover {
+    background: #000080 !important;
+    color: #fff !important;
+}
+/* file manager — row icon hardcoded #1a1a1a */
+html[data-theme="windows95"] .fm-row-icon {
+    background: #c0c0c0 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    border-radius: 0 !important;
+}
+html[data-theme="windows95"] .fm-row {
+    border-bottom-color: #808080 !important;
+}
+html[data-theme="windows95"] .fm-row.selected {
+    background: #000080 !important;
+    color: #fff !important;
+}
+/* file manager action buttons */
+html[data-theme="windows95"] .fm-act {
+    background: #c0c0c0 !important;
+    color: #000 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    border-radius: 0 !important;
+}
+html[data-theme="windows95"] .fm-act.start { color: #006400 !important; }
+html[data-theme="windows95"] .fm-act.stop  { color: #8b0000 !important; }
+html[data-theme="windows95"] .fm-act.delete { color: #8b0000 !important; }
+html[data-theme="windows95"] .fm-act.logs  { color: #000080 !important; }
+/* logs modal body — keep dark terminal look (authentic Win95 DOS prompt) */
+html[data-theme="windows95"] .logs-modal-body {
+    background: #000 !important;
+    color: #c0c0c0 !important;
+}
+/* code blocks in DMs — keep dark (authentic terminal) */
+html[data-theme="windows95"] .code-block {
+    background: #000 !important;
+    color: #c0c0c0 !important;
+    border: 2px inset #808080 !important;
+    border-radius: 0 !important;
+}
+/* post cards and DM bubbles */
+html[data-theme="windows95"] .post-card {
+    background: #c0c0c0 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    border-radius: 0 !important;
+    color: #000 !important;
+}
+/* home page feature tiles */
+html[data-theme="windows95"] .home-feature-item {
+    background: #c0c0c0 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    color: #000 !important;
+}
+html[data-theme="windows95"] .home-feature-item:hover {
+    box-shadow: 2px 2px 0 #000 !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    transform: none !important;
+}
+html[data-theme="windows95"] .home-feature-label { color: #000 !important; }
+/* home page buttons */
+html[data-theme="windows95"] .btn-home-primary,
+html[data-theme="windows95"] .btn-home-secondary {
+    background: #c0c0c0 !important;
+    color: #000 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    box-shadow: none !important;
+}
+html[data-theme="windows95"] .btn-home-primary:hover,
+html[data-theme="windows95"] .btn-home-secondary:hover {
+    box-shadow: none !important;
+}
+/* home page body/text */
+html[data-theme="windows95"] .home-scene { color: #000 !important; }
+html[data-theme="windows95"] .home-tagline,
+html[data-theme="windows95"] .home-sub { color: #1a1a1a !important; }
+html[data-theme="windows95"] .home-badge { color: #000 !important; border-color: #808080 !important; }
+/* home page title — remove black text-shadow */
+html[data-theme="windows95"] .home-title {
+    color: #000080 !important;
+    text-shadow: 3px 3px 0 #808080 !important;
+}
+/* hide glow orbs (they turn navy/dark with Win95 accent color) */
+html[data-theme="windows95"] .home-glow { display: none !important; }
+/* secondary button — hardcoded #1a1a1a */
+html[data-theme="windows95"] .btn-home-secondary {
+    background: #c0c0c0 !important;
+    color: #000 !important;
+    border-color: #fff #808080 #808080 #fff !important;
+}
+/* subtitle text */
+html[data-theme="windows95"] .home-subtitle { color: #111 !important; }
+/* scrollbar overrides for home page (hardcoded #111/#333) */
+html[data-theme="windows95"] ::-webkit-scrollbar-track { background: #c0c0c0 !important; border: 1px solid #808080 !important; }
+html[data-theme="windows95"] ::-webkit-scrollbar-thumb { background: #c0c0c0 !important; border: 2px solid !important; border-color: #fff #808080 #808080 #fff !important; }
+/* auth pages — card, inputs, button */
+html[data-theme="windows95"] .auth-card {
+    background: #c0c0c0 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    box-shadow: 4px 4px 0 #000 !important;
+    color: #000 !important;
+}
+html[data-theme="windows95"] .auth-brand-name,
+html[data-theme="windows95"] .auth-title,
+html[data-theme="windows95"] .auth-sub,
+html[data-theme="windows95"] .field-label,
+html[data-theme="windows95"] .field-label-link,
+html[data-theme="windows95"] .auth-footer {
+    color: #000 !important;
+}
+html[data-theme="windows95"] .auth-brand-name { color: #000080 !important; }
+html[data-theme="windows95"] .field-input {
+    background: #fff !important;
+    color: #000 !important;
+    border: 2px inset #808080 !important;
+    border-radius: 0 !important;
+}
+html[data-theme="windows95"] .field-input::placeholder { color: #888 !important; }
+html[data-theme="windows95"] .field-input:focus {
+    border-color: #000080 !important;
+    box-shadow: none !important;
+    outline: 1px dotted #000080 !important;
+}
+html[data-theme="windows95"] .btn-primary {
+    background: #c0c0c0 !important;
+    color: #000 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+html[data-theme="windows95"] .btn-primary:hover:not(:disabled) {
+    transform: none !important;
+    box-shadow: none !important;
+}
+html[data-theme="windows95"] .btn-primary:active:not(:disabled) {
+    border-color: #808080 #fff #fff #808080 !important;
+    transform: none !important;
+}
+html[data-theme="windows95"] .pass-toggle { color: #555 !important; }
+html[data-theme="windows95"] .auth-divider { border-color: #808080 !important; }
+html[data-theme="windows95"] .auth-footer a { color: #000080 !important; }
+html[data-theme="windows95"] .form-error {
+    background: #ffcccc !important;
+    color: #800000 !important;
+    border: 1px solid #ff0000 !important;
+}
+/* scrollbar chrome */
+html[data-theme="windows95"] ::-webkit-scrollbar { width: 14px; height: 14px; }
+html[data-theme="windows95"] ::-webkit-scrollbar-track { background: #c0c0c0; border: 1px solid #808080; }
+html[data-theme="windows95"] ::-webkit-scrollbar-thumb {
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #fff #808080 #808080 #fff;
+}
+html[data-theme="windows95"] ::-webkit-scrollbar-button {
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #fff #808080 #808080 #fff;
+    display: block; height: 14px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * PERSONA 5 — phantom-thief: diagonal red slash, Impact, jet black
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="persona5"] body {
+    background: #0a0a0a !important;
+    font-family: inherit;
+}
+/* Diagonal red stripe on header */
+html[data-theme="persona5"] .dash-header {
+    background: linear-gradient(
+        -15deg,
+        #0a0a0a 0%, #0a0a0a 45%,
+        #ff0000 45%, #ff0000 55%,
+        #0a0a0a 55%, #0a0a0a 100%
+    ) !important;
+    border-bottom: 2px solid #ff0000 !important;
+    border-radius: 0 !important;
+}
+html[data-theme="persona5"] .dash-header-name {
+    font-family: 'Impact', 'Arial Black', sans-serif !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    font-size: 1rem !important;
+}
+/* All cards get a left red border slash */
+html[data-theme="persona5"] .dash-section {
+    border-left: 4px solid #ff0000 !important;
+    border-radius: 0 !important;
+    box-shadow: 4px 4px 0 #ff0000 !important;
+}
+html[data-theme="persona5"] .dash-welcome-title {
+    font-family: 'Impact', 'Arial Black', sans-serif !important;
+    letter-spacing: -0.01em !important;
+    text-transform: uppercase !important;
+}
+/* Background: subtle diagonal hatch pattern */
+html[data-theme="persona5"] .dash-main::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+        -45deg,
+        transparent 0px, transparent 8px,
+        rgba(255,0,0,0.04) 8px, rgba(255,0,0,0.04) 9px
+    );
+    pointer-events: none; z-index: 0;
+}
+html[data-theme="persona5"] .dash-main { position: relative; }
+html[data-theme="persona5"] .dash-main > * { position: relative; z-index: 1; }
+html[data-theme="persona5"] .btn {
+    border-radius: 0 !important;
+    font-family: 'Impact', 'Arial Black', sans-serif !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+}
+html[data-theme="persona5"] .exo-theme-box,
+html[data-theme="persona5"] .modal-card {
+    border-radius: 0 !important;
+    border-top: 4px solid #ff0000 !important;
+    box-shadow: 6px 6px 0 #ff0000 !important;
+}
+html[data-theme="persona5"] .exo-theme-head {
+    background: linear-gradient(-15deg, #0a0a0a 0% 40%, #ff0000 40% 60%, #0a0a0a 60% 100%) !important;
+    border-radius: 0 !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * PIP-BOY — Fallout phosphor CRT: scanlines, terminal font, glow
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="pip-boy"] body {
+    background: #080d08 !important;
+    font-family: 'Courier New', 'Lucida Console', monospace !important;
+}
+/* CRT scanlines over entire page */
+html[data-theme="pip-boy"] body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent 0px, transparent 2px,
+        rgba(0,0,0,0.35) 2px, rgba(0,0,0,0.35) 3px
+    );
+    pointer-events: none; z-index: 9999;
+}
+/* CRT vignette */
+html[data-theme="pip-boy"] body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none; z-index: 9998;
+}
+html[data-theme="pip-boy"] .dash-header {
+    background: #0d160d !important;
+    border-bottom: 1px solid #5eff6c !important;
+    box-shadow: 0 0 20px rgba(94,255,108,0.25) !important;
+    border-radius: 0 !important;
+}
+html[data-theme="pip-boy"] .dash-header-name {
+    font-family: 'Courier New', monospace !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.14em !important;
+    color: #5eff6c !important;
+    text-shadow: 0 0 10px rgba(94,255,108,0.8) !important;
+}
+html[data-theme="pip-boy"] .dash-section {
+    border: 1px solid #5eff6c !important;
+    border-radius: 4px !important;
+    box-shadow: 0 0 12px rgba(94,255,108,0.2), inset 0 0 8px rgba(94,255,108,0.05) !important;
+}
+html[data-theme="pip-boy"] .dash-welcome-title,
+html[data-theme="pip-boy"] .dash-section-title {
+    font-family: 'Courier New', monospace !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    text-shadow: 0 0 12px rgba(94,255,108,0.7) !important;
+}
+html[data-theme="pip-boy"] .btn {
+    font-family: 'Courier New', monospace !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    border-radius: 2px !important;
+    box-shadow: 0 0 8px rgba(94,255,108,0.4) !important;
+}
+html[data-theme="pip-boy"] input,
+html[data-theme="pip-boy"] textarea {
+    font-family: 'Courier New', monospace !important;
+    border-radius: 2px !important;
+}
+html[data-theme="pip-boy"] *:focus {
+    outline: 1px solid #5eff6c !important;
+    box-shadow: 0 0 8px rgba(94,255,108,0.6) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * LCARS — Star Trek computer: rounded panels, colored bars
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="lcars"] body {
+    background: #000 !important;
+    font-family: 'Arial Narrow', Arial, sans-serif !important;
+}
+html[data-theme="lcars"] .dash-layout {
+    border-left: 48px solid #ff9900;
+}
+html[data-theme="lcars"] .dash-header {
+    background: #000 !important;
+    border-bottom: 4px solid #ff9900 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding-left: 16px !important;
+}
+html[data-theme="lcars"] .dash-header::before {
+    content: '│ LCARS';
+    position: absolute; left: -44px; top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    font-size: 0.6rem; font-weight: 700;
+    letter-spacing: 0.2em; color: #000;
+    white-space: nowrap;
+}
+html[data-theme="lcars"] .dash-header { position: relative; }
+html[data-theme="lcars"] .dash-header-name {
+    font-family: 'Arial Narrow', Arial, sans-serif !important;
+    letter-spacing: 0.2em !important;
+    text-transform: uppercase !important;
+    color: #ff9900 !important;
+    font-size: 0.85rem !important;
+}
+html[data-theme="lcars"] .dash-section {
+    border-left: 8px solid #ff9900 !important;
+    border-radius: 0 32px 32px 0 !important;
+    box-shadow: none !important;
+}
+html[data-theme="lcars"] .dash-section-title {
+    font-family: 'Arial Narrow', Arial, sans-serif !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase !important;
+    color: #ff9900 !important;
+}
+html[data-theme="lcars"] .btn {
+    border-radius: 999px !important;
+    font-family: 'Arial Narrow', Arial, sans-serif !important;
+    letter-spacing: 0.14em !important;
+    text-transform: uppercase !important;
+}
+html[data-theme="lcars"] .dash-welcome-title {
+    font-family: 'Arial Narrow', Arial, sans-serif !important;
+    letter-spacing: 0.08em !important;
+}
+html[data-theme="lcars"] .exo-theme-box,
+html[data-theme="lcars"] .modal-card {
+    border-left: 8px solid #ff9900 !important;
+    border-radius: 0 24px 24px 0 !important;
+}
+html[data-theme="lcars"] .exo-theme-head {
+    background: #ff9900 !important;
+    color: #000 !important;
+    font-family: 'Arial Narrow', Arial, sans-serif !important;
+    letter-spacing: 0.15em !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * NEO-TOKYO — cyberpunk neon grid, scanlines, condensed font
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="neo-tokyo"] body {
+    background: #06040f !important;
+    font-family: inherit;
+}
+/* Neon grid background */
+html[data-theme="neo-tokyo"] body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+        linear-gradient(rgba(255,45,120,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,212,0.07) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+}
+/* Horizontal scanline shimmer */
+html[data-theme="neo-tokyo"] body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent 0px, transparent 3px,
+        rgba(0,0,0,0.15) 3px, rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none; z-index: 1;
+}
+html[data-theme="neo-tokyo"] .dash-layout,
+html[data-theme="neo-tokyo"] .dash-main,
+html[data-theme="neo-tokyo"] .dash-section,
+html[data-theme="neo-tokyo"] .dash-welcome { position: relative; z-index: 2; }
+html[data-theme="neo-tokyo"] .dash-header {
+    background: rgba(6,4,15,0.95) !important;
+    border-bottom: 1px solid #ff2d78 !important;
+    box-shadow: 0 2px 20px rgba(255,45,120,0.3), 0 0 40px rgba(0,245,212,0.1) !important;
+    border-radius: 0 !important;
+    position: relative; z-index: 2;
+    backdrop-filter: blur(8px);
+}
+html[data-theme="neo-tokyo"] .dash-header-name {
+    color: #ff2d78 !important;
+    text-shadow: 0 0 10px rgba(255,45,120,0.9) !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+}
+html[data-theme="neo-tokyo"] .dash-section {
+    border: 1px solid rgba(255,45,120,0.35) !important;
+    box-shadow: 0 0 16px rgba(255,45,120,0.12), inset 0 0 16px rgba(0,245,212,0.03) !important;
+    border-radius: 6px !important;
+}
+html[data-theme="neo-tokyo"] .dash-section-title {
+    color: #ff2d78 !important;
+    text-shadow: 0 0 8px rgba(255,45,120,0.7) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+}
+html[data-theme="neo-tokyo"] .btn {
+    border-radius: 2px !important;
+    box-shadow: 0 0 10px rgba(255,45,120,0.4) !important;
+}
+html[data-theme="neo-tokyo"] .dash-welcome-title {
+    text-shadow: 0 0 30px rgba(255,45,120,0.5) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * GLASSMORPHISM — frosted glass: blur, translucency, soft borders
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="glassmorphism"] body {
+    background:
+        radial-gradient(circle at 20% 20%, rgba(126,184,247,0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(200,151,245,0.25) 0%, transparent 50%),
+        linear-gradient(135deg, #0d1829 0%, #0a1020 100%) !important;
+    background-attachment: fixed !important;
+}
+html[data-theme="glassmorphism"] .dash-header {
+    background: rgba(255,255,255,0.05) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    backdrop-filter: blur(20px) saturate(1.4) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(1.4) !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+html[data-theme="glassmorphism"] .dash-section {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3) !important;
+    border-radius: 16px !important;
+}
+html[data-theme="glassmorphism"] .btn {
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    backdrop-filter: blur(8px) !important;
+    box-shadow: none !important;
+    border-radius: 999px !important;
+}
+html[data-theme="glassmorphism"] .exo-theme-box,
+html[data-theme="glassmorphism"] .modal-card {
+    background: rgba(15,24,45,0.7) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    backdrop-filter: blur(24px) saturate(1.6) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(1.6) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5) !important;
+}
+html[data-theme="glassmorphism"] input,
+html[data-theme="glassmorphism"] textarea {
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    backdrop-filter: blur(6px) !important;
+    border-radius: 10px !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * K-POP PASTEL — bubbly cute: ultra-round, soft shadows, playful
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="kpop-pastel"] body {
+    background: linear-gradient(135deg, #fef0f6 0%, #f5eeff 100%) !important;
+    background-attachment: fixed !important;
+}
+html[data-theme="kpop-pastel"] .dash-header {
+    background: linear-gradient(90deg, #ffb3d1 0%, #d4b3ff 100%) !important;
+    border-bottom: none !important;
+    border-radius: 0 0 24px 24px !important;
+    box-shadow: 0 4px 20px rgba(255,133,179,0.3) !important;
+}
+html[data-theme="kpop-pastel"] .dash-header-name { color: #3a2040 !important; }
+html[data-theme="kpop-pastel"] .dash-section {
+    border-radius: 20px !important;
+    border: 2px solid rgba(255,133,179,0.3) !important;
+    box-shadow: 4px 4px 0 rgba(255,133,179,0.4) !important;
+}
+html[data-theme="kpop-pastel"] .dash-section-title { color: #d94f8b !important; }
+html[data-theme="kpop-pastel"] .btn {
+    border-radius: 999px !important;
+    box-shadow: 2px 2px 0 rgba(217,79,139,0.3) !important;
+}
+html[data-theme="kpop-pastel"] .dash-welcome-title span { color: #d94f8b !important; }
+html[data-theme="kpop-pastel"] .exo-theme-box,
+html[data-theme="kpop-pastel"] .modal-card {
+    border-radius: 24px !important;
+    border: 2px solid rgba(255,133,179,0.25) !important;
+    box-shadow: 6px 6px 0 rgba(217,79,139,0.2) !important;
+}
+html[data-theme="kpop-pastel"] .exo-theme-head {
+    background: linear-gradient(90deg, #ffb3d1, #d4b3ff) !important;
+    color: #3a2040 !important;
+    border-radius: 22px 22px 0 0 !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * VALORANT TACTICAL — military HUD: sharp angles, red crosshair
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="valorant"] body { background: #0f1923 !important; }
+html[data-theme="valorant"] .dash-header {
+    background: #0f1923 !important;
+    border-bottom: 2px solid #ff4655 !important;
+    border-radius: 0 !important;
+    box-shadow: 0 2px 0 rgba(255,70,85,0.4) !important;
+}
+html[data-theme="valorant"] .dash-header-name {
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    color: #ff4655 !important;
+    font-size: 0.8rem !important;
+}
+html[data-theme="valorant"] .dash-section {
+    border-radius: 4px !important;
+    border-top: 2px solid #ff4655 !important;
+    box-shadow: 4px 4px 0 rgba(255,70,85,0.25) !important;
+}
+html[data-theme="valorant"] .btn { border-radius: 2px !important; }
+html[data-theme="valorant"] .dash-section-title {
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    font-size: 0.78rem !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * PERSONA 5 already done above — skip
+ *
+ * MIDNIGHT CITY — film-noir skyline: sharp, warm gold on navy
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="midnight-city"] body { background: #0b0f1a !important; }
+html[data-theme="midnight-city"] .dash-header {
+    background: linear-gradient(180deg, #131929 0%, #0b0f1a 100%) !important;
+    border-bottom: 1px solid rgba(245,200,66,0.3) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+html[data-theme="midnight-city"] .dash-header-name { color: #f5c842 !important; }
+html[data-theme="midnight-city"] .dash-section {
+    border-radius: 8px !important;
+    border-bottom: 2px solid rgba(245,200,66,0.2) !important;
+    box-shadow: 0 4px 0 rgba(245,200,66,0.1) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * AURORA BOREALIS — dark sky: soft glow, green/violet shimmer
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="aurora"] body {
+    background:
+        radial-gradient(ellipse at 30% 0%, rgba(0,229,160,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 20%, rgba(192,96,255,0.1) 0%, transparent 50%),
+        #030c12 !important;
+    background-attachment: fixed !important;
+}
+html[data-theme="aurora"] .dash-header {
+    background: rgba(3,12,18,0.9) !important;
+    border-bottom: 1px solid rgba(0,229,160,0.3) !important;
+    box-shadow: 0 0 30px rgba(0,229,160,0.1) !important;
+    border-radius: 0 !important;
+    backdrop-filter: blur(8px) !important;
+}
+html[data-theme="aurora"] .dash-section {
+    border: 1px solid rgba(0,229,160,0.15) !important;
+    box-shadow: 0 0 20px rgba(0,229,160,0.07) !important;
+    border-radius: 12px !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * SOLARPUNK — natural optimism: green/gold, organic shapes
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="solarpunk"] body {
+    background: linear-gradient(160deg, #f7f4ed 0%, #edf5e4 100%) !important;
+    background-attachment: fixed !important;
+}
+html[data-theme="solarpunk"] .dash-header {
+    background: linear-gradient(90deg, #e8a820 0%, #1a7a3a 100%) !important;
+    border-bottom: none !important;
+    border-radius: 0 0 16px 16px !important;
+    box-shadow: 0 4px 16px rgba(26,122,58,0.2) !important;
+}
+html[data-theme="solarpunk"] .dash-header-name { color: #fff !important; }
+html[data-theme="solarpunk"] .dash-section {
+    border-radius: 16px !important;
+    border: 2px solid rgba(26,122,58,0.2) !important;
+    box-shadow: 3px 3px 0 rgba(232,168,32,0.4) !important;
+}
+html[data-theme="solarpunk"] .dash-section-title { color: #1a7a3a !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * CYBER-INDUSTRIAL — hard black, hazard yellow, no softness
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="cyber-industrial"] body { background: #0c0c0c !important; }
+html[data-theme="cyber-industrial"] .dash-header {
+    background: #111 !important;
+    border-bottom: 3px solid #ffe500 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+html[data-theme="cyber-industrial"] .dash-header-name {
+    color: #ffe500 !important;
+    letter-spacing: 0.15em !important;
+    text-transform: uppercase !important;
+}
+html[data-theme="cyber-industrial"] .dash-section {
+    border-radius: 0 !important;
+    border-left: 4px solid #ffe500 !important;
+    box-shadow: 4px 4px 0 #ffe500 !important;
+}
+html[data-theme="cyber-industrial"] .btn {
+    border-radius: 0 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+}
+/* Hazard stripe pattern on header bottom */
+html[data-theme="cyber-industrial"] .dash-header::after {
+    content: '';
+    position: absolute; bottom: -6px; left: 0; right: 0; height: 6px;
+    background: repeating-linear-gradient(
+        90deg,
+        #ffe500 0px, #ffe500 12px,
+        #0c0c0c 12px, #0c0c0c 24px
+    );
+}
+html[data-theme="cyber-industrial"] .dash-header { position: relative; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * JEEPNEY POP — Filipino street art: vibrant neon, bold outlines
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="jeepney-pop"] body { background: #0a0a14 !important; }
+html[data-theme="jeepney-pop"] .dash-header {
+    background: linear-gradient(90deg, #ff2200, #ffe600, #00ccff, #ff2200) !important;
+    background-size: 300% !important;
+    border-bottom: 3px solid #ffe600 !important;
+    border-radius: 0 !important;
+    box-shadow: 0 4px 0 #ff2200 !important;
+}
+html[data-theme="jeepney-pop"] .dash-header-name { color: #000 !important; font-weight: 900 !important; }
+html[data-theme="jeepney-pop"] .dash-section {
+    border-radius: 6px !important;
+    border: 2px solid #ffe600 !important;
+    box-shadow: 4px 4px 0 #ff2200 !important;
+}
+html[data-theme="jeepney-pop"] .dash-section-title { color: #ffe600 !important; }
+html[data-theme="jeepney-pop"] .btn {
+    border-radius: 4px !important;
+    box-shadow: 2px 2px 0 #ff2200 !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * FINAL FANTASY — RPG deep blue, crystal white, menu amber
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="ff-menu"] body { background: #040e1f !important; }
+html[data-theme="ff-menu"] .dash-header {
+    background: linear-gradient(180deg, #0a1e3a 0%, #040e1f 100%) !important;
+    border-bottom: 2px solid rgba(154,212,245,0.4) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 2px 16px rgba(154,212,245,0.1) !important;
+}
+html[data-theme="ff-menu"] .dash-header-name { color: #9ad4f5 !important; }
+html[data-theme="ff-menu"] .dash-section {
+    border-radius: 10px !important;
+    border: 1px solid rgba(154,212,245,0.2) !important;
+    box-shadow: 0 4px 20px rgba(154,212,245,0.08) !important;
+    background: linear-gradient(180deg, #0a1e3a 0%, #040e1f 100%) !important;
+}
+html[data-theme="ff-menu"] .dash-section-title {
+    color: #9ad4f5 !important;
+    letter-spacing: 0.08em !important;
+}
+/* Crystal corner decoration */
+html[data-theme="ff-menu"] .dash-section::before {
+    content: '◆';
+    position: absolute; top: -1px; left: 12px;
+    color: #9ad4f5; font-size: 0.5rem; opacity: 0.6;
+}
+html[data-theme="ff-menu"] .dash-section { position: relative; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * ELDEN RING — ashen stone, aged gold, worn parchment
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="elden-ring"] body {
+    background: #0e0c0a !important;
+    font-family: 'Georgia', 'Times New Roman', serif !important;
+}
+html[data-theme="elden-ring"] .dash-header {
+    background: linear-gradient(180deg, #1a1612 0%, #0e0c0a 100%) !important;
+    border-bottom: 1px solid rgba(200,168,75,0.4) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 1px 0 rgba(200,168,75,0.2) !important;
+}
+html[data-theme="elden-ring"] .dash-header-name {
+    color: #c8a84b !important;
+    font-family: 'Georgia', serif !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    font-size: 0.8rem !important;
+}
+html[data-theme="elden-ring"] .dash-section {
+    border-radius: 2px !important;
+    border: 1px solid rgba(200,168,75,0.25) !important;
+    box-shadow: none !important;
+}
+html[data-theme="elden-ring"] .dash-section-title {
+    font-family: 'Georgia', serif !important;
+    color: #c8a84b !important;
+    letter-spacing: 0.08em !important;
+}
+html[data-theme="elden-ring"] .dash-welcome-title {
+    font-family: 'Georgia', serif !important;
+}
+html[data-theme="elden-ring"] .btn {
+    border-radius: 2px !important;
+    font-family: 'Georgia', serif !important;
+    letter-spacing: 0.06em !important;
+}
+/* Aged texture overlay */
+html[data-theme="elden-ring"] body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='none'/%3E%3Ccircle cx='1' cy='1' r='0.5' fill='rgba(200,168,75,0.04)'/%3E%3C/svg%3E") repeat;
+    pointer-events: none; z-index: 0;
+}
+html[data-theme="elden-ring"] .dash-layout { position: relative; z-index: 1; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * APEX LEGENDS — gritty titanium, battle-worn, orange heat
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="apex-legends"] body { background: #100e0c !important; }
+html[data-theme="apex-legends"] .dash-header {
+    background: #1c1916 !important;
+    border-bottom: 2px solid #cd4200 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+html[data-theme="apex-legends"] .dash-header-name {
+    color: #cd4200 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+}
+html[data-theme="apex-legends"] .dash-section {
+    border-radius: 4px !important;
+    border-top: 2px solid rgba(205,66,0,0.4) !important;
+    box-shadow: 0 4px 0 rgba(205,66,0,0.15) !important;
+}
+html[data-theme="apex-legends"] .btn { border-radius: 2px !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * DREAMCORE — liminal yellow, backroom corridors, unsettling warm
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="dreamcore"] body {
+    background: #0c0c06 !important;
+}
+/* Liminal vignette */
+html[data-theme="dreamcore"] body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%);
+    pointer-events: none; z-index: 0;
+}
+html[data-theme="dreamcore"] .dash-layout { position: relative; z-index: 1; }
+html[data-theme="dreamcore"] .dash-header {
+    background: #18180e !important;
+    border-bottom: 1px solid rgba(240,224,96,0.2) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 0 40px rgba(240,224,96,0.05) !important;
+}
+html[data-theme="dreamcore"] .dash-header-name {
+    color: #f0e060 !important;
+    letter-spacing: 0.08em !important;
+}
+html[data-theme="dreamcore"] .dash-section {
+    border-radius: 0 !important;
+    border: 1px solid rgba(240,224,96,0.15) !important;
+    box-shadow: none !important;
+    border-left: 3px solid rgba(240,224,96,0.3) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * LO-FI BEATS — warm amber study lamp, cozy, grainy
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="lo-fi"] body {
+    background: #100c08 !important;
+}
+/* Film grain noise */
+html[data-theme="lo-fi"] body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.4;
+}
+html[data-theme="lo-fi"] .dash-layout { position: relative; z-index: 1; }
+html[data-theme="lo-fi"] .dash-header {
+    background: linear-gradient(180deg, #1e1610 0%, #100c08 100%) !important;
+    border-bottom: 1px solid rgba(232,160,96,0.25) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 2px 16px rgba(232,160,96,0.08) !important;
+}
+html[data-theme="lo-fi"] .dash-header-name { color: #e8a060 !important; }
+html[data-theme="lo-fi"] .dash-section {
+    border-radius: 12px !important;
+    border: 1px solid rgba(232,160,96,0.15) !important;
+    box-shadow: 2px 2px 0 rgba(232,160,96,0.15) !important;
+}
+html[data-theme="lo-fi"] .dash-section-title { color: #e8a060 !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * HONKAI: STAR RAIL — sci-fi glass panel, blue+gold HUD
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="hsr"] body {
+    background:
+        radial-gradient(circle at 50% -10%, rgba(91,200,245,0.15) 0%, transparent 50%),
+        #06101e !important;
+    background-attachment: fixed !important;
+}
+html[data-theme="hsr"] .dash-header {
+    background: rgba(6,16,30,0.9) !important;
+    border-bottom: 1px solid rgba(91,200,245,0.35) !important;
+    box-shadow: 0 1px 20px rgba(91,200,245,0.1) !important;
+    border-radius: 0 !important;
+    backdrop-filter: blur(12px) !important;
+}
+html[data-theme="hsr"] .dash-header-name {
+    color: #5bc8f5 !important;
+    letter-spacing: 0.1em !important;
+}
+html[data-theme="hsr"] .dash-section {
+    border: 1px solid rgba(91,200,245,0.2) !important;
+    border-top: 2px solid rgba(91,200,245,0.4) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 20px rgba(91,200,245,0.06) !important;
+    background: linear-gradient(180deg, rgba(13,30,50,0.8) 0%, rgba(6,16,30,0.4) 100%) !important;
+}
+html[data-theme="hsr"] .dash-section-title { color: #5bc8f5 !important; }
+html[data-theme="hsr"] .btn { border-radius: 6px !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * HOLOGRAPHIC NEON — rainbow iridescent, prismatic, space black
+ * ═══════════════════════════════════════════════════════════════ */
+html[data-theme="holographic"] body { background: #050508 !important; }
+html[data-theme="holographic"] .dash-header {
+    background: linear-gradient(90deg,
+        rgba(255,128,255,0.15),
+        rgba(128,255,238,0.15),
+        rgba(128,232,255,0.15),
+        rgba(255,128,255,0.15)
+    ) !important;
+    background-size: 300% !important;
+    border-bottom: 1px solid rgba(255,128,255,0.4) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 0 30px rgba(255,128,255,0.15) !important;
+    backdrop-filter: blur(12px) !important;
+}
+html[data-theme="holographic"] .dash-header-name {
+    background: linear-gradient(90deg, #ff80ff, #80ffee, #80e8ff, #ff80ff) !important;
+    background-size: 300% !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+html[data-theme="holographic"] .dash-section {
+    border: 1px solid rgba(255,128,255,0.25) !important;
+    border-radius: 12px !important;
+    box-shadow:
+        0 0 0 1px rgba(128,255,238,0.1),
+        0 4px 20px rgba(255,128,255,0.08) !important;
+    position: relative;
+    overflow: hidden;
+}
+/* Iridescent shimmer on cards */
+html[data-theme="holographic"] .dash-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg,
+        rgba(255,128,255,0.04) 0%,
+        rgba(128,255,238,0.04) 33%,
+        rgba(255,128,128,0.04) 66%,
+        rgba(128,128,255,0.04) 100%
+    );
+    pointer-events: none; z-index: 0;
+}
+html[data-theme="holographic"] .dash-section > * { position: relative; z-index: 1; }
+html[data-theme="holographic"] .btn {
+    border-radius: 999px !important;
+    border: 1px solid rgba(255,128,255,0.4) !important;
+    box-shadow: 0 0 10px rgba(255,128,255,0.2) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * LSP DIAGNOSTIC CONTRAST — Task 13
+ *
+ * The default diagnostic colours (err=#ff5a5a, warn=#f1c40f,
+ * info=#7aa2f7) are chosen for dark editor backgrounds. On light
+ * themes those colours are either too pale (yellow on white) or
+ * clash with the hue (red-pink on a pink/green canvas). Frutiger
+ * Aero's high-brightness glass is borderline readable but still
+ * fails WCAG AA for small text.
+ *
+ * Rules apply to:
+ *   .prob-sev.err / .warn / .info / .hint  (Problems pane pills)
+ *   .status-btn.has-error / has-warning    (status-bar counts)
+ *   .status-badge.error / .warning         (mobile count badge)
+ *
+ * Light themes: kpop-pastel, solarpunk, windows95
+ * High-brightness glass: frutiger-aero (if present)
+ * ═══════════════════════════════════════════════════════════════ */
+
+/* ── Windows 95 (black-on-grey light theme) ─────────────────── */
+html[data-theme="windows95"] .problems-pane .prob-sev.err   { color: #b30000 !important; }
+html[data-theme="windows95"] .problems-pane .prob-sev.warn  { color: #7a4d00 !important; }
+html[data-theme="windows95"] .problems-pane .prob-sev.info  { color: #003da6 !important; }
+html[data-theme="windows95"] .status-btn.has-error          { color: #b30000 !important; }
+html[data-theme="windows95"] .status-btn.has-warning        { color: #7a4d00 !important; }
+html[data-theme="windows95"] .status-badge.error            { background: #b30000 !important; color: #fff !important; }
+html[data-theme="windows95"] .status-badge.warning          { background: #7a4d00 !important; color: #fff !important; }
+
+/* Monaco squiggle colours for Windows 95 */
+html[data-theme="windows95"] .monaco-editor .squiggly-error    { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 3' width='6' height='3'%3E%3Cpath d='M0 3 L1 1 L2 3 L3 1 L4 3 L5 1 L6 3' fill='none' stroke='%23b30000' stroke-width='1'/%3E%3C/svg%3E") repeat-x bottom !important; }
+html[data-theme="windows95"] .monaco-editor .squiggly-warning  { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 3' width='6' height='3'%3E%3Cpath d='M0 3 L1 1 L2 3 L3 1 L4 3 L5 1 L6 3' fill='none' stroke='%237a4d00' stroke-width='1'/%3E%3C/svg%3E") repeat-x bottom !important; }
+html[data-theme="windows95"] .monaco-editor .squiggly-info     { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 3' width='6' height='3'%3E%3Cpath d='M0 3 L1 1 L2 3 L3 1 L4 3 L5 1 L6 3' fill='none' stroke='%23003da6' stroke-width='1'/%3E%3C/svg%3E") repeat-x bottom !important; }
+
+/* ── K-Pop Pastel (very pale pink/lavender light theme) ─────── */
+html[data-theme="kpop-pastel"] .problems-pane .prob-sev.err   { color: #c0002a !important; }
+html[data-theme="kpop-pastel"] .problems-pane .prob-sev.warn  { color: #854d00 !important; }
+html[data-theme="kpop-pastel"] .problems-pane .prob-sev.info  { color: #2a3fa8 !important; }
+html[data-theme="kpop-pastel"] .status-btn.has-error          { color: #c0002a !important; }
+html[data-theme="kpop-pastel"] .status-btn.has-warning        { color: #854d00 !important; }
+html[data-theme="kpop-pastel"] .status-badge.error            { background: #c0002a !important; color: #fff !important; }
+html[data-theme="kpop-pastel"] .status-badge.warning          { background: #854d00 !important; color: #fff !important; }
+
+html[data-theme="kpop-pastel"] .monaco-editor .squiggly-error   { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 3' width='6' height='3'%3E%3Cpath d='M0 3 L1 1 L2 3 L3 1 L4 3 L5 1 L6 3' fill='none' stroke='%23c0002a' stroke-width='1'/%3E%3C/svg%3E") repeat-x bottom !important; }
+html[data-theme="kpop-pastel"] .monaco-editor .squiggly-warning { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 3' width='6' height='3'%3E%3Cpath d='M0 3 L1 1 L2 3 L3 1 L4 3 L5 1 L6 3' fill='none' stroke='%23854d00' stroke-width='1'/%3E%3C/svg%3E") repeat-x bottom !important; }
+html[data-theme="kpop-pastel"] .monaco-editor .squiggly-info    { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 3' width='6' height='3'%3E%3Cpath d='M0 3 L1 1 L2 3 L3 1 L4 3 L5 1 L6 3' fill='none' stroke='%232a3fa8' stroke-width='1'/%3E%3C/svg%3E") repeat-x bottom !important; }
+
+/* ── Solarpunk (warm off-white / sage green light theme) ────── */
+html[data-theme="solarpunk"] .problems-pane .prob-sev.err   { color: #ae1c00 !important; }
+html[data-theme="solarpunk"] .problems-pane .prob-sev.warn  { color: #7a4000 !important; }
+html[data-theme="solarpunk"] .problems-pane .prob-sev.info  { color: #1a3fa0 !important; }
+html[data-theme="solarpunk"] .status-btn.has-error          { color: #ae1c00 !important; }
+html[data-theme="solarpunk"] .status-btn.has-warning        { color: #7a4000 !important; }
+html[data-theme="solarpunk"] .status-badge.error            { background: #ae1c00 !important; color: #fff !important; }
+html[data-theme="solarpunk"] .status-badge.warning          { background: #7a4000 !important; color: #fff !important; }
+
+html[data-theme="solarpunk"] .monaco-editor .squiggly-error   { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 3' width='6' height='3'%3E%3Cpath d='M0 3 L1 1 L2 3 L3 1 L4 3 L5 1 L6 3' fill='none' stroke='%23ae1c00' stroke-width='1'/%3E%3C/svg%3E") repeat-x bottom !important; }
+html[data-theme="solarpunk"] .monaco-editor .squiggly-warning { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 3' width='6' height='3'%3E%3Cpath d='M0 3 L1 1 L2 3 L3 1 L4 3 L5 1 L6 3' fill='none' stroke='%237a4000' stroke-width='1'/%3E%3C/svg%3E") repeat-x bottom !important; }
+html[data-theme="solarpunk"] .monaco-editor .squiggly-info    { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 3' width='6' height='3'%3E%3Cpath d='M0 3 L1 1 L2 3 L3 1 L4 3 L5 1 L6 3' fill='none' stroke='%231a3fa0' stroke-width='1'/%3E%3C/svg%3E") repeat-x bottom !important; }
+
+/* ── Frutiger Aero (high-brightness glass — light-mode feel) ── */
+html[data-theme="frutiger-aero"] .problems-pane .prob-sev.err   { color: #c40000 !important; }
+html[data-theme="frutiger-aero"] .problems-pane .prob-sev.warn  { color: #7a4a00 !important; }
+html[data-theme="frutiger-aero"] .problems-pane .prob-sev.info  { color: #1648c2 !important; }
+html[data-theme="frutiger-aero"] .status-btn.has-error          { color: #c40000 !important; }
+html[data-theme="frutiger-aero"] .status-btn.has-warning        { color: #7a4a00 !important; }
+html[data-theme="frutiger-aero"] .status-badge.error            { background: #c40000 !important; color: #fff !important; }
+html[data-theme="frutiger-aero"] .status-badge.warning          { background: #7a4a00 !important; color: #fff !important; }
+
+html[data-theme="frutiger-aero"] .monaco-editor .squiggly-error   { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 3' width='6' height='3'%3E%3Cpath d='M0 3 L1 1 L2 3 L3 1 L4 3 L5 1 L6 3' fill='none' stroke='%23c40000' stroke-width='1'/%3E%3C/svg%3E") repeat-x bottom !important; }
+html[data-theme="frutiger-aero"] .monaco-editor .squiggly-warning { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 3' width='6' height='3'%3E%3Cpath d='M0 3 L1 1 L2 3 L3 1 L4 3 L5 1 L6 3' fill='none' stroke='%237a4a00' stroke-width='1'/%3E%3C/svg%3E") repeat-x bottom !important; }
+html[data-theme="frutiger-aero"] .monaco-editor .squiggly-info    { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 3' width='6' height='3'%3E%3Cpath d='M0 3 L1 1 L2 3 L3 1 L4 3 L5 1 L6 3' fill='none' stroke='%231648c2' stroke-width='1'/%3E%3C/svg%3E") repeat-x bottom !important; }
+
+/* ═══════════════════════════════════════════════════════════════
+ * MINECRAFT — authentic pixel UI: Press Start 2P font, no radii,
+ * beveled borders (lighter top-left / darker bottom-right),
+ * cobblestone-dark background, grass-green accent.
+ * Applies to both "minecraft" and "minecraft-dark" theme IDs.
+ * ═══════════════════════════════════════════════════════════════ */
+
+/* ── Shared base vars ── */
+html[data-theme="minecraft"],
+html[data-theme="minecraft-dark"] {
+    --mc-bg:      #1d1d1d;
+    --mc-surf:    #2d2d2d;
+    --mc-card:    #3c3c3c;
+    --mc-btn:     #555555;
+    --mc-btn-hi:  #8b8b8b;
+    --mc-btn-sh:  #141414;
+    --mc-green:   #55ff55;
+    --mc-gold:    #ffaa00;
+    --mc-white:   #ffffff;
+    --mc-shadow:  #3f3f3f;
+    --mc-border:  #000000;
+    image-rendering: pixelated;
+}
+
+/* ── Page & body ── */
+html[data-theme="minecraft"],
+html[data-theme="minecraft-dark"],
+html[data-theme="minecraft"] body,
+html[data-theme="minecraft-dark"] body {
+    font-family: 'Press Start 2P', 'Courier New', monospace !important;
+    background: var(--mc-bg) !important;
+    color: var(--mc-white) !important;
+    image-rendering: pixelated;
+}
+
+/* Minecraft dirt/stone texture behind the page — repeating gradient blocks */
+html[data-theme="minecraft"] body,
+html[data-theme="minecraft-dark"] body {
+    background-image:
+        repeating-linear-gradient(
+            0deg,
+            transparent 0px, transparent 15px,
+            rgba(0,0,0,0.06) 15px, rgba(0,0,0,0.06) 16px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px, transparent 15px,
+            rgba(0,0,0,0.06) 15px, rgba(0,0,0,0.06) 16px
+        ) !important;
+    background-size: 16px 16px !important;
+    background-attachment: fixed !important;
+}
+
+/* ── Global: zero border-radius, pixel text shadow ── */
+html[data-theme="minecraft"] *,
+html[data-theme="minecraft-dark"] * {
+    border-radius: 0 !important;
+    letter-spacing: 0.02em;
+}
+html[data-theme="minecraft"] h1, html[data-theme="minecraft"] h2,
+html[data-theme="minecraft"] h3, html[data-theme="minecraft"] h4,
+html[data-theme="minecraft-dark"] h1, html[data-theme="minecraft-dark"] h2,
+html[data-theme="minecraft-dark"] h3, html[data-theme="minecraft-dark"] h4 {
+    text-shadow: 2px 2px 0 var(--mc-shadow) !important;
+    color: var(--mc-green) !important;
+}
+
+/* ── Dashboard header ── */
+html[data-theme="minecraft"] .dash-header,
+html[data-theme="minecraft-dark"] .dash-header {
+    background: #2d2d2d !important;
+    border-bottom: 3px solid #000 !important;
+    box-shadow: 0 3px 0 var(--mc-btn-hi) inset, 0 -1px 0 var(--mc-btn-sh) !important;
+}
+html[data-theme="minecraft"] .dash-header-name,
+html[data-theme="minecraft-dark"] .dash-header-name {
+    font-family: 'Press Start 2P', monospace !important;
+    color: var(--mc-green) !important;
+    text-shadow: 2px 2px 0 #006600 !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.05em !important;
+}
+html[data-theme="minecraft"] .dash-header-user,
+html[data-theme="minecraft"] .dash-header-kebab,
+html[data-theme="minecraft-dark"] .dash-header-user,
+html[data-theme="minecraft-dark"] .dash-header-kebab {
+    background: var(--mc-btn) !important;
+    border: 2px solid !important;
+    border-color: var(--mc-btn-hi) var(--mc-btn-sh) var(--mc-btn-sh) var(--mc-btn-hi) !important;
+    color: var(--mc-white) !important;
+    box-shadow: none !important;
+}
+html[data-theme="minecraft"] .dash-header-menu,
+html[data-theme="minecraft-dark"] .dash-header-menu {
+    background: var(--mc-surf) !important;
+    border: 2px solid #000 !important;
+    box-shadow: 4px 4px 0 #000 !important;
+    color: var(--mc-white) !important;
+}
+html[data-theme="minecraft"] .dash-header-menu button,
+html[data-theme="minecraft-dark"] .dash-header-menu button {
+    color: var(--mc-white) !important;
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.55rem !important;
+}
+html[data-theme="minecraft"] .dash-header-menu button:hover,
+html[data-theme="minecraft-dark"] .dash-header-menu button:hover {
+    background: var(--mc-green) !important;
+    color: #000 !important;
+}
+
+/* ── Role/plan badges ── */
+html[data-theme="minecraft"] .exo-plan-btn,
+html[data-theme="minecraft"] .exo-owner-btn,
+html[data-theme="minecraft"] .logout-btn,
+html[data-theme="minecraft-dark"] .exo-plan-btn,
+html[data-theme="minecraft-dark"] .exo-owner-btn,
+html[data-theme="minecraft-dark"] .logout-btn {
+    background: var(--mc-btn) !important;
+    border: 2px solid !important;
+    border-color: var(--mc-btn-hi) var(--mc-btn-sh) var(--mc-btn-sh) var(--mc-btn-hi) !important;
+    color: var(--mc-white) !important;
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.5rem !important;
+    text-shadow: 1px 1px 0 #000 !important;
+}
+html[data-theme="minecraft"] .exo-owner-btn,
+html[data-theme="minecraft-dark"] .exo-owner-btn {
+    background: #5a3a00 !important;
+    border-color: var(--mc-gold) var(--mc-btn-sh) var(--mc-btn-sh) var(--mc-gold) !important;
+    color: var(--mc-gold) !important;
+    text-shadow: 1px 1px 0 #000 !important;
+}
+
+/* ── Main content area ── */
+html[data-theme="minecraft"] .dash-main,
+html[data-theme="minecraft-dark"] .dash-main {
+    background: transparent !important;
+}
+html[data-theme="minecraft"] .exo-theme-backdrop,
+html[data-theme="minecraft-dark"] .exo-theme-backdrop {
+    background: rgba(0,0,0,0.78) !important;
+}
+html[data-theme="minecraft"] .exo-theme-box,
+html[data-theme="minecraft-dark"] .exo-theme-box,
+html[data-theme="minecraft"] .minecraft-theme-box,
+html[data-theme="minecraft-dark"] .minecraft-theme-box {
+    background: var(--mc-surf) !important;
+    border: 2px solid #000 !important;
+    box-shadow: inset 1px 1px 0 var(--mc-btn-hi), inset -1px -1px 0 var(--mc-btn-sh), 4px 4px 0 #000 !important;
+    color: var(--mc-white) !important;
+}
+html[data-theme="minecraft"] .exo-theme-head,
+html[data-theme="minecraft-dark"] .exo-theme-head {
+    background: #2d2d2d !important;
+    border-bottom: 2px solid #000 !important;
+    padding: 12px 16px !important;
+}
+html[data-theme="minecraft"] .exo-theme-title,
+html[data-theme="minecraft-dark"] .exo-theme-title {
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.68rem !important;
+    color: var(--mc-green) !important;
+    text-shadow: 2px 2px 0 #006600 !important;
+}
+html[data-theme="minecraft"] .exo-theme-sub,
+html[data-theme="minecraft-dark"] .exo-theme-sub,
+html[data-theme="minecraft"] .exo-theme-search-count,
+html[data-theme="minecraft-dark"] .exo-theme-search-count {
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.45rem !important;
+    color: #aaaaaa !important;
+}
+html[data-theme="minecraft"] .exo-theme-search-row,
+html[data-theme="minecraft-dark"] .exo-theme-search-row {
+    background: #252525 !important;
+    border-bottom: 2px solid #000 !important;
+}
+html[data-theme="minecraft"] .exo-theme-search,
+html[data-theme="minecraft-dark"] .exo-theme-search {
+    background: #1d1d1d !important;
+    border: 2px solid #000 !important;
+    color: var(--mc-white) !important;
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.5rem !important;
+}
+html[data-theme="minecraft"] .exo-theme-search::placeholder,
+html[data-theme="minecraft-dark"] .exo-theme-search::placeholder {
+    color: #777 !important;
+}
+html[data-theme="minecraft"] .exo-theme-search-clear,
+html[data-theme="minecraft-dark"] .exo-theme-search-clear,
+html[data-theme="minecraft"] .exo-theme-close,
+html[data-theme="minecraft-dark"] .exo-theme-close {
+    background: var(--mc-btn) !important;
+    border: 2px solid #000 !important;
+    color: var(--mc-white) !important;
+    box-shadow: inset 1px 1px 0 var(--mc-btn-hi), inset -1px -1px 0 var(--mc-btn-sh) !important;
+}
+html[data-theme="minecraft"] .exo-theme-preview-bar,
+html[data-theme="minecraft-dark"] .exo-theme-preview-bar,
+html[data-theme="minecraft"] .exo-theme-body,
+html[data-theme="minecraft-dark"] .exo-theme-body {
+    background: #1d1d1d !important;
+    color: var(--mc-white) !important;
+}
+html[data-theme="minecraft"] .exo-theme-preview-bar,
+html[data-theme="minecraft-dark"] .exo-theme-preview-bar {
+    background: #252525 !important;
+    border-bottom: 2px solid #000 !important;
+}
+html[data-theme="minecraft"] .exo-theme-group-h,
+html[data-theme="minecraft-dark"] .exo-theme-group-h {
+    background: #2d2d2d !important;
+    color: var(--mc-green) !important;
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.42rem !important;
+}
+html[data-theme="minecraft"] .exo-theme-row,
+html[data-theme="minecraft-dark"] .exo-theme-row {
+    background: var(--mc-card) !important;
+    border: 2px solid #000 !important;
+    box-shadow: inset 1px 1px 0 var(--mc-btn-hi), inset -1px -1px 0 var(--mc-btn-sh), 2px 2px 0 #000 !important;
+    border-radius: 0 !important;
+}
+html[data-theme="minecraft"] .exo-theme-row:hover,
+html[data-theme="minecraft-dark"] .exo-theme-row:hover {
+    transform: translateY(-1px) !important;
+    border-color: var(--mc-green) !important;
+}
+html[data-theme="minecraft"] .exo-theme-row.active,
+html[data-theme="minecraft-dark"] .exo-theme-row.active {
+    box-shadow: 0 0 0 3px rgba(85,255,85,0.25), inset 1px 1px 0 var(--mc-btn-hi), inset -1px -1px 0 var(--mc-btn-sh), 2px 2px 0 #000 !important;
+}
+html[data-theme="minecraft"] .exo-theme-row span,
+html[data-theme="minecraft-dark"] .exo-theme-row span {
+    font-family: 'Press Start 2P', monospace !important;
+}
+html[data-theme="minecraft"] .exo-theme-row svg,
+html[data-theme="minecraft-dark"] .exo-theme-row svg {
+    filter: drop-shadow(1px 1px 0 #000) !important;
+}
+html[data-theme="minecraft"] .exo-theme-row span:last-child,
+html[data-theme="minecraft-dark"] .exo-theme-row span:last-child {
+    color: #aaaaaa !important;
+    font-size: 0.42rem !important;
+}
+html[data-theme="minecraft"] .exo-theme-row-meta,
+html[data-theme="minecraft-dark"] .exo-theme-row-meta {
+    gap: 8px !important;
+}
+html[data-theme="minecraft"] .exo-theme-swatch,
+html[data-theme="minecraft-dark"] .exo-theme-swatch {
+    width: 12px !important;
+    height: 12px !important;
+    border: 2px solid #000 !important;
+}
+html[data-theme="minecraft"] .exo-theme-del,
+html[data-theme="minecraft-dark"] .exo-theme-del {
+    background: #a00000 !important;
+    border: 2px solid #000 !important;
+}
+html[data-theme="minecraft"] .exo-theme-light-pill,
+html[data-theme="minecraft-dark"] .exo-theme-light-pill {
+    background: #3c3c3c !important;
+    border: 2px solid #000 !important;
+    color: #fff !important;
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.36rem !important;
+    padding: 2px 5px !important;
+    border-radius: 0 !important;
+}
+html[data-theme="minecraft"] .minecraft-theme-body,
+html[data-theme="minecraft-dark"] .minecraft-theme-body {
+    padding-top: 10px !important;
+}
+
+/* ── Stat cards, project cards, quick actions ── */
+html[data-theme="minecraft"] .stat-card,
+html[data-theme="minecraft"] .project-node-card,
+html[data-theme="minecraft"] .quick-action-card,
+html[data-theme="minecraft"] .account-view,
+html[data-theme="minecraft"] .social-card,
+html[data-theme="minecraft-dark"] .stat-card,
+html[data-theme="minecraft-dark"] .project-node-card,
+html[data-theme="minecraft-dark"] .quick-action-card,
+html[data-theme="minecraft-dark"] .account-view,
+html[data-theme="minecraft-dark"] .social-card {
+    background: var(--mc-card) !important;
+    border: 2px solid #000 !important;
+    box-shadow:
+        inset 1px 1px 0 var(--mc-btn-hi),
+        inset -1px -1px 0 var(--mc-btn-sh),
+        3px 3px 0 #000 !important;
+    color: var(--mc-white) !important;
+}
+html[data-theme="minecraft"] .stat-card-label,
+html[data-theme="minecraft"] .stat-card-sub,
+html[data-theme="minecraft"] .pnc-desc,
+html[data-theme="minecraft"] .quick-action-desc,
+html[data-theme="minecraft-dark"] .stat-card-label,
+html[data-theme="minecraft-dark"] .stat-card-sub,
+html[data-theme="minecraft-dark"] .pnc-desc,
+html[data-theme="minecraft-dark"] .quick-action-desc {
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.48rem !important;
+    color: #aaaaaa !important;
+    line-height: 1.8 !important;
+}
+html[data-theme="minecraft"] .stat-card-value,
+html[data-theme="minecraft-dark"] .stat-card-value {
+    font-family: 'Press Start 2P', monospace !important;
+    color: var(--mc-green) !important;
+    text-shadow: 2px 2px 0 #006600 !important;
+    font-size: 1.1rem !important;
+}
+html[data-theme="minecraft"] .pnc-icon,
+html[data-theme="minecraft-dark"] .pnc-icon {
+    background: var(--mc-btn) !important;
+    border: 2px solid !important;
+    border-color: var(--mc-btn-hi) var(--mc-btn-sh) var(--mc-btn-sh) var(--mc-btn-hi) !important;
+    color: var(--mc-green) !important;
+}
+html[data-theme="minecraft"] .stat-chip,
+html[data-theme="minecraft-dark"] .stat-chip {
+    background: var(--mc-btn) !important;
+    border: 2px solid !important;
+    border-color: var(--mc-btn-hi) var(--mc-btn-sh) var(--mc-btn-sh) var(--mc-btn-hi) !important;
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.42rem !important;
+}
+
+/* ── Buttons — Minecraft GUI button style ── */
+html[data-theme="minecraft"] .btn,
+html[data-theme="minecraft"] .dash-section-action,
+html[data-theme="minecraft"] button:not(.exo-owner-btn):not(.exo-plan-btn),
+html[data-theme="minecraft-dark"] .btn,
+html[data-theme="minecraft-dark"] .dash-section-action,
+html[data-theme="minecraft-dark"] button:not(.exo-owner-btn):not(.exo-plan-btn) {
+    background: var(--mc-btn) !important;
+    color: var(--mc-white) !important;
+    border: 2px solid #000 !important;
+    border-color: var(--mc-btn-hi) var(--mc-btn-sh) var(--mc-btn-sh) var(--mc-btn-hi) !important;
+    box-shadow: none !important;
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.55rem !important;
+    text-shadow: 1px 1px 0 #000 !important;
+    transition: none !important;
+    cursor: pointer;
+}
+html[data-theme="minecraft"] .btn:hover,
+html[data-theme="minecraft"] .dash-section-action:hover,
+html[data-theme="minecraft"] button:not(.exo-owner-btn):not(.exo-plan-btn):hover,
+html[data-theme="minecraft-dark"] .btn:hover,
+html[data-theme="minecraft-dark"] .dash-section-action:hover,
+html[data-theme="minecraft-dark"] button:not(.exo-owner-btn):not(.exo-plan-btn):hover {
+    background: #6a6a6a !important;
+    color: var(--mc-green) !important;
+    text-shadow: 1px 1px 0 #006600 !important;
+}
+html[data-theme="minecraft"] .btn:active,
+html[data-theme="minecraft-dark"] .btn:active {
+    border-color: var(--mc-btn-sh) var(--mc-btn-hi) var(--mc-btn-hi) var(--mc-btn-sh) !important;
+}
+
+/* Primary / accent buttons */
+html[data-theme="minecraft"] .btn-primary,
+html[data-theme="minecraft"] .pnc-run,
+html[data-theme="minecraft-dark"] .btn-primary,
+html[data-theme="minecraft-dark"] .pnc-run {
+    background: #2d5a1b !important;
+    border-color: #55aa33 var(--mc-btn-sh) var(--mc-btn-sh) #55aa33 !important;
+    color: var(--mc-green) !important;
+    text-shadow: 1px 1px 0 #004400 !important;
+}
+html[data-theme="minecraft"] .btn-primary:hover,
+html[data-theme="minecraft"] .pnc-run:hover,
+html[data-theme="minecraft-dark"] .btn-primary:hover,
+html[data-theme="minecraft-dark"] .pnc-run:hover {
+    background: #3a7020 !important;
+    color: #aaffaa !important;
+}
+
+/* ── Modals / theme picker ── */
+html[data-theme="minecraft"] .exo-theme-box,
+html[data-theme="minecraft"] .modal-card,
+html[data-theme="minecraft-dark"] .exo-theme-box,
+html[data-theme="minecraft-dark"] .modal-card {
+    background: var(--mc-surf) !important;
+    border: 3px solid #000 !important;
+    box-shadow:
+        inset 1px 1px 0 var(--mc-btn-hi),
+        inset -2px -2px 0 var(--mc-btn-sh),
+        6px 6px 0 #000 !important;
+    color: var(--mc-white) !important;
+}
+html[data-theme="minecraft"] .exo-theme-head,
+html[data-theme="minecraft"] .modal-head,
+html[data-theme="minecraft-dark"] .exo-theme-head,
+html[data-theme="minecraft-dark"] .modal-head {
+    background: #1a1a1a !important;
+    border-bottom: 2px solid #000 !important;
+    color: var(--mc-green) !important;
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.6rem !important;
+    text-shadow: 2px 2px 0 #006600 !important;
+}
+html[data-theme="minecraft"] .exo-theme-title,
+html[data-theme="minecraft-dark"] .exo-theme-title {
+    font-family: 'Press Start 2P', monospace !important;
+    color: var(--mc-green) !important;
+    text-shadow: 2px 2px 0 #006600 !important;
+}
+
+/* ── Form inputs ── */
+html[data-theme="minecraft"] input,
+html[data-theme="minecraft"] textarea,
+html[data-theme="minecraft"] select,
+html[data-theme="minecraft-dark"] input,
+html[data-theme="minecraft-dark"] textarea,
+html[data-theme="minecraft-dark"] select {
+    background: #111 !important;
+    color: var(--mc-white) !important;
+    border: 2px solid !important;
+    border-color: var(--mc-btn-sh) var(--mc-btn-hi) var(--mc-btn-hi) var(--mc-btn-sh) !important;
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.55rem !important;
+}
+html[data-theme="minecraft"] input:focus,
+html[data-theme="minecraft"] textarea:focus,
+html[data-theme="minecraft-dark"] input:focus,
+html[data-theme="minecraft-dark"] textarea:focus {
+    border-color: var(--mc-green) var(--mc-btn-sh) var(--mc-btn-sh) var(--mc-green) !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* ── Scrollbars ── */
+html[data-theme="minecraft"] ::-webkit-scrollbar,
+html[data-theme="minecraft-dark"] ::-webkit-scrollbar { width: 10px; height: 10px; }
+html[data-theme="minecraft"] ::-webkit-scrollbar-track,
+html[data-theme="minecraft-dark"] ::-webkit-scrollbar-track { background: #1a1a1a; }
+html[data-theme="minecraft"] ::-webkit-scrollbar-thumb,
+html[data-theme="minecraft-dark"] ::-webkit-scrollbar-thumb {
+    background: var(--mc-btn) !important;
+    border: 2px solid #000 !important;
+}
+html[data-theme="minecraft"] ::-webkit-scrollbar-thumb:hover,
+html[data-theme="minecraft-dark"] ::-webkit-scrollbar-thumb:hover {
+    background: #777 !important;
+}
+
+/* ── Empty state ── */
+html[data-theme="minecraft"] .dash-empty-state,
+html[data-theme="minecraft-dark"] .dash-empty-state {
+    background: var(--mc-card) !important;
+    border: 2px dashed #555 !important;
+    color: #888 !important;
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.5rem !important;
+}
+
+/* ── Sidebar / file tree (editor) ── */
+html[data-theme="minecraft"] .vscode-sidebar,
+html[data-theme="minecraft-dark"] .vscode-sidebar {
+    background: var(--mc-surf) !important;
+    border-right: 2px solid #000 !important;
+}
+html[data-theme="minecraft"] .tree-row,
+html[data-theme="minecraft-dark"] .tree-row {
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.5rem !important;
+}
+html[data-theme="minecraft"] .tree-row:hover,
+html[data-theme="minecraft-dark"] .tree-row:hover {
+    background: rgba(85,255,85,0.08) !important;
+}
+html[data-theme="minecraft"] .tree-row.active,
+html[data-theme="minecraft-dark"] .tree-row.active {
+    background: rgba(85,255,85,0.15) !important;
+    border-left: 3px solid var(--mc-green) !important;
+}
+
+/* ── Status bar (editor bottom bar) ── */
+html[data-theme="minecraft"] .status-bar,
+html[data-theme="minecraft-dark"] .status-bar {
+    background: #1a3a0a !important;
+    border-top: 2px solid #000 !important;
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.42rem !important;
+}
+
+/* ── Tab bar ── */
+html[data-theme="minecraft"] .tab-bar,
+html[data-theme="minecraft-dark"] .tab-bar {
+    background: var(--mc-surf) !important;
+    border-bottom: 2px solid #000 !important;
+}
+html[data-theme="minecraft"] .editor-tab,
+html[data-theme="minecraft-dark"] .editor-tab {
+    font-family: 'Press Start 2P', monospace !important;
+    font-size: 0.45rem !important;
+    border-right: 1px solid #000 !important;
+}
+html[data-theme="minecraft"] .editor-tab.active,
+html[data-theme="minecraft-dark"] .editor-tab.active {
+    background: #1d1d1d !important;
+    border-top: 2px solid var(--mc-green) !important;
+}
+
+/* ── Profile page ── */
+html[data-theme="minecraft"] .prof-cover,
+html[data-theme="minecraft"] .prof-cover-empty,
+html[data-theme="minecraft-dark"] .prof-cover,
+html[data-theme="minecraft-dark"] .prof-cover-empty {
+    background: #2d5a1b !important;
+    border: 2px solid #000 !important;
+    box-shadow: inset 0 -4px 0 #1a3a0a, 3px 3px 0 #000 !important;
+}
+
+/* ── Error/warning squiggles ── */
+html[data-theme="minecraft"] .problems-pane .prob-sev.err,
+html[data-theme="minecraft-dark"] .problems-pane .prob-sev.err   { color: #ff5555 !important; }
+html[data-theme="minecraft"] .problems-pane .prob-sev.warn,
+html[data-theme="minecraft-dark"] .problems-pane .prob-sev.warn  { color: var(--mc-gold) !important; }
+html[data-theme="minecraft"] .problems-pane .prob-sev.info,
+html[data-theme="minecraft-dark"] .problems-pane .prob-sev.info  { color: #55ffff !important; }
+
+/* ── Generic colour-scheme: light override (safety net) ─────── */
+/* Any theme with color-scheme: light that doesn't have explicit
+   overrides above will inherit these — keeps squiggles accessible
+   on any future light theme without touching this file again. */
+@media (prefers-color-scheme: light) {
+    html:not([data-theme]) .problems-pane .prob-sev.err   { color: #c40000; }
+    html:not([data-theme]) .problems-pane .prob-sev.warn  { color: #7a4000; }
+    html:not([data-theme]) .problems-pane .prob-sev.info  { color: #1648c2; }
+}

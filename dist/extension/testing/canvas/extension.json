@@ -1,0 +1,12 @@
+{
+    "name": "Canvas",
+    "version": "1.3.0",
+    "author": "Exocore Team",
+    "description": "Drag-and-drop visual canvas. Add rectangles, circles, text & images, then emit equivalent HTML / JS / TS / Node-canvas code straight into the active file.",
+    "date": "2026-04-29",
+    "team": true,
+    "entry": "canvas.js",
+    "status": "both",
+    "access": "free",
+    "supportedFiles": [".html", ".htm", ".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts"]
+}

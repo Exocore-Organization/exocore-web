@@ -1,0 +1,11 @@
+{
+  "name": "Deno",
+  "description": "Secure runtime for JavaScript and TypeScript",
+  "language": "ts",
+  "runtime": "deno",
+  "run": "deno run --allow-all index.ts",
+  "port": 3000,
+  "install": false,
+  "category": "backend",
+  "icon": "deno"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Elixir",
+  "description": "Concurrent, functional language on BEAM",
+  "language": "ex",
+  "runtime": "elixir",
+  "run": "elixir main.exs",
+  "port": 0,
+  "install": false,
+  "category": "language",
+  "icon": "elixir"
+}

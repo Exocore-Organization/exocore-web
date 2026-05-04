@@ -1,0 +1,11 @@
+{
+  "name": "Django",
+  "description": "Batteries-included Python web framework",
+  "language": "py",
+  "runtime": "python",
+  "run": "python manage.py runserver 0.0.0.0:8000",
+  "port": 8000,
+  "install": true,
+  "category": "backend",
+  "icon": "python"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Nuxt.js",
+  "description": "Nuxt 3 Vue framework",
+  "language": "vue",
+  "runtime": "node",
+  "run": "npm run dev",
+  "port": 3000,
+  "install": true,
+  "category": "web",
+  "icon": "nuxt"
+}

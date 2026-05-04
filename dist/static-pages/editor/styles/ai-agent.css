@@ -1,0 +1,1130 @@
+/* =========================================================
+ * ai-agent.css — Exocore AI chathead + agent message panel.
+ *
+ * Phase: floating chat button (bottom-right) + slide-out
+ * panel on the right edge. Inside the panel lives a
+ * VS Code/Replit-dark agent transcript — the same look as
+ * the cli-exocore output (icon-pills, collapsible action
+ * groups, terminal blocks) but rendered in the browser.
+ *
+ * All identifiers are namespaced `.exo-ai-*` so this file
+ * never collides with the rest of the editor stylesheet.
+ * ========================================================= */
+
+/* ---------- Floating chathead (FAB) ---------- */
+.exo-ai-fab {
+    position: fixed;
+    right: 16px;
+    bottom: 22px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #333333;
+    background: linear-gradient(135deg, #2a2a2c 0%, #1e1e1e 100%);
+    color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(163, 113, 247, 0.18);
+    z-index: 9000;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s, opacity 0.18s;
+    -webkit-tap-highlight-color: transparent;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+.exo-ai-fab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 255, 255, 0.35);
+}
+.exo-ai-fab:active { transform: translateY(0); }
+/* Hide the FAB whenever the panel is open — it was overlapping the
+   send button. The panel header has its own close button. */
+.exo-ai-fab.is-open {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.85);
+}
+.exo-ai-fab .exo-ai-fab-mark {
+    background: linear-gradient(90deg, #a371f7 0%, cyan 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    line-height: 1;
+}
+.exo-ai-fab .exo-ai-fab-dot {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4caf50;
+    border: 2px solid #1e1e1e;
+    display: none;
+}
+.exo-ai-fab.is-online .exo-ai-fab-dot { display: block; }
+.exo-ai-fab.is-busy .exo-ai-fab-dot {
+    display: block;
+    background: #fbbf24;
+    animation: exo-ai-pulse 1.2s ease-in-out infinite;
+}
+@keyframes exo-ai-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50%      { transform: scale(1.4); opacity: 0.6; }
+}
+
+/* ---------- Slide-out panel ---------- */
+.exo-ai-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 460px;
+    max-width: 100vw;
+    background: #1e1e1e;
+    color: #cccccc;
+    border-left: 1px solid #2d2d2d;
+    box-shadow: -8px 0 28px rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+    z-index: 8990;
+    transform: translateX(100%);
+    transition: transform 0.22s cubic-bezier(0.2, 0.7, 0.25, 1);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+}
+.exo-ai-panel.is-open { transform: translateX(0); }
+@media (max-width: 560px) {
+    .exo-ai-panel { width: 100vw; }
+}
+
+/* Panel header */
+.exo-ai-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 1px solid #2d2d2d;
+    background: #181818;
+    flex-shrink: 0;
+}
+.exo-ai-head-title {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.exo-ai-head-title .exo-ai-brand {
+    background: linear-gradient(90deg, #a371f7 0%, cyan 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+}
+/* Compact wordmark — replaces the oversized bot icon. "Exocore" gets the
+   gradient, "Ai" a soft mono-style suffix so the unique branding still
+   reads at a glance. */
+.exo-ai-head-title .exo-ai-brand-mark {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 1px;
+    font-size: 14px;
+    letter-spacing: 0.2px;
+    line-height: 1;
+}
+.exo-ai-head-title .exo-ai-brand-suffix {
+    color: #e0e0e0;
+    font-weight: 600;
+    font-size: 13px;
+    margin-left: 1px;
+    opacity: 0.85;
+}
+.exo-ai-head-status {
+    font-size: 11px;
+    color: #8b8b8b;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+.exo-ai-head-status.ok    { color: #4caf50; }
+.exo-ai-head-status.warn  { color: #fbbf24; }
+.exo-ai-head-status.err   { color: #f44336; }
+
+/* Active conversation pill — shows the short cid and links out to
+   gemini.google.com/app/<cid> so users can open the same thread in
+   the official Gemini UI. Hidden until a cid is known. */
+.exo-ai-cid-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px 3px 7px;
+    border-radius: 999px;
+    background: rgba(88, 166, 255, 0.12);
+    border: 1px solid rgba(88, 166, 255, 0.28);
+    color: #58a6ff;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-decoration: none;
+    line-height: 1;
+    max-width: 120px;
+    overflow: hidden;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.exo-ai-cid-pill:hover {
+    background: rgba(88, 166, 255, 0.22);
+    border-color: rgba(88, 166, 255, 0.55);
+    color: #82b8ff;
+}
+.exo-ai-cid-pill[hidden] { display: none; }
+.exo-ai-cid-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #58a6ff;
+    box-shadow: 0 0 6px rgba(88, 166, 255, 0.7);
+    flex-shrink: 0;
+}
+.exo-ai-cid-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── Auto-go badge ───────────────────────────────────────── */
+.exo-ai-autogo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px 3px 7px;
+    border-radius: 999px;
+    background: rgba(251, 191, 36, 0.13);
+    border: 1px solid rgba(251, 191, 36, 0.35);
+    color: #fbbf24;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    line-height: 1;
+    white-space: nowrap;
+    user-select: none;
+}
+.exo-ai-autogo-badge[hidden] { display: none; }
+.exo-ai-autogo-spin {
+    display: inline-block;
+    font-size: 12px;
+    animation: exo-autogo-spin 1.4s linear infinite;
+    line-height: 1;
+}
+.exo-ai-autogo-sep { opacity: 0.5; }
+@keyframes exo-autogo-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+.exo-ai-head-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #8b8b8b;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.exo-ai-head-btn:hover { background: #2a2a2c; color: #ffffff; }
+.exo-ai-head-btn svg { width: 14px; height: 14px; }
+
+/* ---------- Transcript ---------- */
+.exo-ai-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 14px 18px;
+    scroll-behavior: smooth;
+}
+.exo-ai-body::-webkit-scrollbar { width: 8px; }
+.exo-ai-body::-webkit-scrollbar-thumb {
+    background: #2d2d2d;
+    border-radius: 4px;
+}
+.exo-ai-body::-webkit-scrollbar-thumb:hover { background: #3e3e42; }
+
+.exo-ai-empty {
+    color: #6b6b6b;
+    font-size: 12.5px;
+    text-align: center;
+    padding: 28px 12px;
+}
+.exo-ai-empty .exo-ai-empty-title {
+    color: #cccccc;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+.exo-ai-empty kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: #252526;
+    border: 1px solid #333;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 11px;
+    color: #e0e0e0;
+}
+
+/* User message bubble */
+.exo-ai-msg-user {
+    display: flex;
+    justify-content: flex-end;
+    margin: 8px 0 14px;
+}
+.exo-ai-msg-user-bubble {
+    background: #2a2a2c;
+    border: 1px solid #333;
+    color: #e0e0e0;
+    border-radius: 12px 12px 4px 12px;
+    padding: 8px 12px;
+    max-width: 85%;
+    font-size: 13.5px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Checkpoint line */
+.exo-ai-checkpoint {
+    color: #8b8b8b;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0 10px;
+    padding-left: 4px;
+}
+.exo-ai-checkpoint-dot {
+    color: #4caf50;
+    border: 1px solid #2e4a2e;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+}
+
+/* Log text (between action groups) */
+.exo-ai-log {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #e0e0e0;
+    margin: 8px 0 14px;
+    padding-left: 4px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.exo-ai-log .hl {
+    color: cyan;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 12px;
+}
+
+/* Done badge */
+.exo-ai-done {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: rgba(76, 175, 80, 0.13);
+    color: #6dd66d;
+    font-size: 11.5px;
+    font-weight: 600;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+/* ---------- Icon pill (action group header) ---------- */
+.exo-ai-pill {
+    background: #252526;
+    border: 1px solid #333333;
+    border-radius: 16px;
+    padding: 4px 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    flex-wrap: wrap;
+}
+.exo-ai-pill .icon {
+    padding: 4px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8b8b8b;
+    transition: background 0.15s, color 0.15s;
+    user-select: none;
+}
+.exo-ai-pill .icon:hover { background: #3e3e42; color: #ffffff; }
+.exo-ai-pill .icon svg { width: 14px; height: 14px; }
+.exo-ai-pill .icon.dots {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    padding: 0 4px;
+}
+.exo-ai-pill .icon.dots:hover { background: transparent; }
+
+/* Action-group container */
+.exo-ai-grp { display: flex; flex-direction: column; }
+/* While the group is still building (live) — head is not yet clickable */
+.exo-ai-grp--live .exo-ai-grp-head { cursor: default; }
+.exo-ai-grp--live .exo-ai-grp-head:hover { background: transparent; }
+/* Show the body while building so actions appear immediately */
+.exo-ai-grp--live > .exo-ai-grp-body { display: flex; }
+.exo-ai-grp-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    padding: 4px;
+    border-radius: 8px;
+    width: fit-content;
+    transition: background 0.15s;
+}
+.exo-ai-grp-head:hover { background: #252526; }
+.exo-ai-count { color: #8b8b8b; font-size: 13px; }
+.exo-ai-chev {
+    width: 14px;
+    height: 14px;
+    color: #8b8b8b;
+    transition: transform 0.18s ease;
+}
+.exo-ai-grp.open > .exo-ai-grp-head .exo-ai-chev { transform: rotate(180deg); }
+.exo-ai-grp-body {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    margin: 8px 0 12px 20px;
+    padding-left: 16px;
+    border-left: 1px solid #333333;
+}
+.exo-ai-grp.open > .exo-ai-grp-body { display: flex; }
+
+/* Single action row */
+.exo-ai-act { display: flex; flex-direction: column; gap: 4px; }
+.exo-ai-act-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    padding: 4px 8px 4px 0;
+    border-radius: 4px;
+    width: fit-content;
+    max-width: 100%;
+    transition: background 0.15s;
+}
+.exo-ai-act-head:hover { background: #2a2a2b; }
+.exo-ai-act-icon {
+    background: #252526;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8b8b8b;
+    flex-shrink: 0;
+}
+.exo-ai-act-icon svg { width: 14px; height: 14px; }
+.exo-ai-act-text {
+    font-size: 13.5px;
+    color: #b8b8b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+.exo-ai-act-text.terminal { color: #bd93f9; }
+.exo-ai-act-text.create   { color: #58a6ff; }
+.exo-ai-act-text.edit     { color: #fbbf24; }
+.exo-ai-act-text.delete   { color: #ff6b6b; }
+.exo-ai-act-status {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    background: #2a2a2c;
+    color: #8b8b8b;
+    margin-left: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.exo-ai-act-status.done   { color: #6dd66d; background: rgba(76, 175, 80, 0.13); }
+.exo-ai-act-status.run    { color: #fbbf24; background: rgba(251, 191, 36, 0.13); }
+.exo-ai-act-status.fail   { color: #ff6b6b; background: rgba(244, 67, 54, 0.15); }
+.exo-ai-act-body {
+    display: none;
+    margin-left: 44px;
+    background: #181818;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    padding: 12px;
+    color: #d4d4d4;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-width: 95%;
+    max-height: 280px;
+    overflow-y: auto;
+}
+.exo-ai-act.open > .exo-ai-act-body { display: block; }
+.exo-ai-act.open > .exo-ai-act-head .exo-ai-chev { transform: rotate(180deg); }
+
+/* Bodyless action row: no chevron, no hover, no toggle. Used for
+   lightweight status pills like "Booting agent for katty…". */
+.exo-ai-act--bodyless > .exo-ai-act-head { cursor: default; }
+.exo-ai-act--bodyless > .exo-ai-act-head:hover { background: transparent; }
+
+/* Rich planning body — prose layout, NOT monospace. */
+.exo-ai-act-body.rich {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.55;
+    color: #d8d8d8;
+    word-break: normal;
+    overflow-wrap: anywhere;
+}
+.exo-ai-act-body.rich .exo-ai-plan-details {
+    color: #d8d8d8;
+    margin-bottom: 8px;
+}
+.exo-ai-act-body.rich .exo-ai-plan-steps {
+    margin: 6px 0 0;
+    padding-left: 22px;
+    color: #c0c0c0;
+}
+.exo-ai-act-body.rich .exo-ai-plan-steps li {
+    margin: 2px 0;
+}
+.exo-ai-act-body.rich .exo-ai-plan-steps li::marker {
+    color: #a371f7;
+    font-weight: 600;
+}
+
+/* Terminal block (full-width, borrowed from mockup) */
+.exo-ai-term {
+    background: #181818;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+.exo-ai-term-head {
+    background: #252526;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 12.5px;
+    color: #cccccc;
+    transition: background 0.15s;
+}
+.exo-ai-term-head:hover { background: #2d2d2d; }
+.exo-ai-term-head-l {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+}
+.exo-ai-term-head-l svg { width: 14px; height: 14px; flex-shrink: 0; }
+.exo-ai-term-head-l span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.exo-ai-term-body {
+    display: none;
+    padding: 12px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 12px;
+    color: #d4d4d4;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 320px;
+    overflow-y: auto;
+    background: #131313;
+}
+.exo-ai-term.open > .exo-ai-term-body { display: block; }
+.exo-ai-term.open .exo-ai-chev { transform: rotate(180deg); }
+.exo-ai-term .term-green  { color: #4caf50; }
+.exo-ai-term .term-cyan   { color: cyan;    }
+.exo-ai-term .term-red    { color: #f44336; }
+.exo-ai-term .term-dim    { color: #8b8b8b; }
+.exo-ai-term .term-accent { color: #ce915b; }
+
+/* Edit pill (file-edit confirmation) */
+.exo-ai-edit-pill {
+    background: #252526;
+    border: 1px solid #333333;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12.5px;
+    color: #cccccc;
+    width: fit-content;
+    margin-top: 8px;
+}
+.exo-ai-edit-pill svg { width: 14px; height: 14px; color: #a0a0a0; flex-shrink: 0; }
+
+/* Working spinner (matches mockup) */
+.exo-ai-working {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 4px;
+    margin: 8px 0 14px;
+}
+.exo-ai-working .exo-ai-pill .icon {
+    color: #8b8b8b;
+}
+.exo-ai-spinner {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+}
+.exo-ai-spinner::before, .exo-ai-spinner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1.5px solid #a371f7;
+    border-radius: 2px;
+    animation: exo-ai-spin-r 2.5s linear infinite;
+}
+.exo-ai-spinner::after {
+    border-color: cyan;
+    animation: exo-ai-spin-l 2.5s linear infinite;
+}
+@keyframes exo-ai-spin-r { to { transform: rotate(360deg); } }
+@keyframes exo-ai-spin-l { from { transform: rotate(0) scale(0.6); } to { transform: rotate(-360deg) scale(0.6); } }
+
+/* Suggestion chips */
+.exo-ai-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0 12px;
+}
+.exo-ai-chip {
+    background: #252526;
+    border: 1px solid #333;
+    color: #cccccc;
+    border-radius: 14px;
+    padding: 5px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+.exo-ai-chip:hover { background: #2d2d2d; border-color: #4a4a4a; color: #ffffff; }
+
+/* ---------- Composer ---------- */
+.exo-ai-foot {
+    border-top: 1px solid #2d2d2d;
+    padding: 8px 10px 10px;
+    background: #181818;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.exo-ai-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+.exo-ai-tool {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #8b8b8b;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 11.5px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: background 0.15s, color 0.15s;
+}
+.exo-ai-tool:hover { background: #2a2a2c; color: #ffffff; }
+.exo-ai-tool.active { color: cyan; background: rgba(0,255,255,0.07); }
+.exo-ai-tool svg { width: 12px; height: 12px; }
+
+.exo-ai-input-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    background: #252526;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 6px 8px 6px 10px;
+    transition: border-color 0.15s;
+}
+.exo-ai-input-row:focus-within { border-color: #a371f7; }
+.exo-ai-input {
+    flex: 1;
+    background: transparent;
+    color: #e0e0e0;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: inherit;
+    font-size: 13.5px;
+    line-height: 1.5;
+    max-height: 140px;
+    min-height: 22px;
+    padding: 4px 0;
+}
+.exo-ai-input::placeholder { color: #6b6b6b; }
+.exo-ai-send {
+    background: linear-gradient(135deg, #a371f7 0%, #6a3ed1 100%);
+    color: #ffffff;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: filter 0.15s;
+}
+.exo-ai-send:hover:not(:disabled) { filter: brightness(1.15); }
+.exo-ai-send:disabled { opacity: 0.4; cursor: not-allowed; }
+.exo-ai-send svg { width: 14px; height: 14px; }
+
+/* ---------- Slash-command menu (popup above composer) ---------- */
+.exo-ai-menu {
+    position: absolute;
+    bottom: 100%;
+    left: 10px;
+    right: 10px;
+    margin-bottom: 6px;
+    background: #1e1e1e;
+    border: 1px solid #2d2d2d;
+    border-radius: 10px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.55);
+    max-height: 380px;
+    overflow-y: auto;
+    z-index: 10;
+    display: none;
+}
+.exo-ai-menu.is-open { display: block; }
+.exo-ai-menu-section {
+    padding: 8px 4px 6px;
+    border-bottom: 1px solid #252526;
+}
+.exo-ai-menu-section:last-child { border-bottom: none; }
+.exo-ai-menu-title {
+    color: #6b6b6b;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    padding: 0 12px 4px;
+    text-transform: uppercase;
+}
+.exo-ai-menu-item {
+    display: grid;
+    grid-template-columns: minmax(0, 180px) 1fr;
+    gap: 12px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background 0.12s;
+    align-items: baseline;
+}
+.exo-ai-menu-item:hover, .exo-ai-menu-item.is-focus {
+    background: rgba(163, 113, 247, 0.10);
+}
+.exo-ai-menu-cmd {
+    color: cyan;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.exo-ai-menu-desc {
+    color: #a0a0a0;
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.exo-ai-foot {
+    position: relative; /* anchor for the menu */
+}
+
+/* ---------- Modal (cookies paste etc.) ---------- */
+.exo-ai-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 9100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+.exo-ai-modal.is-open { display: flex; }
+.exo-ai-modal-card {
+    width: 100%;
+    max-width: 520px;
+    background: #1e1e1e;
+    border: 1px solid #2d2d2d;
+    border-radius: 12px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+    color: #cccccc;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 32px);
+}
+.exo-ai-modal-head {
+    padding: 12px 16px;
+    border-bottom: 1px solid #2d2d2d;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.exo-ai-modal-head .title {
+    flex: 1;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #e0e0e0;
+}
+.exo-ai-modal-body {
+    padding: 14px 16px;
+    overflow-y: auto;
+    font-size: 12.5px;
+    color: #b8b8b8;
+}
+.exo-ai-modal-body p { margin: 0 0 8px; }
+.exo-ai-modal-body code {
+    background: #252526;
+    border: 1px solid #333;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 11.5px;
+    color: #e0e0e0;
+}
+.exo-ai-modal-body textarea {
+    width: 100%;
+    min-height: 160px;
+    background: #131313;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #e0e0e0;
+    padding: 10px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 12px;
+    resize: vertical;
+    outline: none;
+    box-sizing: border-box;
+}
+.exo-ai-modal-body textarea:focus { border-color: #a371f7; }
+.exo-ai-modal-foot {
+    padding: 10px 16px 14px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    border-top: 1px solid #2d2d2d;
+}
+.exo-ai-btn {
+    background: #2a2a2c;
+    border: 1px solid #3a3a3c;
+    color: #cccccc;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+.exo-ai-btn:hover { background: #333; border-color: #4a4a4a; color: #fff; }
+.exo-ai-btn.primary {
+    background: linear-gradient(135deg, #a371f7 0%, #6a3ed1 100%);
+    border-color: transparent;
+    color: #fff;
+}
+.exo-ai-btn.primary:hover { filter: brightness(1.12); }
+.exo-ai-btn.danger {
+    background: rgba(244, 67, 54, 0.12);
+    border-color: rgba(244, 67, 54, 0.45);
+    color: #ff8a80;
+}
+.exo-ai-btn.danger:hover { background: rgba(244, 67, 54, 0.22); color: #ffbcb6; }
+
+.exo-ai-cookie-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: #252526;
+    border: 1px solid #333;
+    margin-bottom: 6px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 12px;
+}
+.exo-ai-cookie-row .ok  { color: #4caf50; }
+.exo-ai-cookie-row .err { color: #f44336; }
+.exo-ai-cookie-row .name { flex: 1; color: #e0e0e0; overflow: hidden; text-overflow: ellipsis; }
+
+/* ─────────────────────────────────────────────────────────────────
+ * Responsive layout
+ *
+ * Mobile (≤640 px):  Bottom-sheet style — panel slides up from the
+ *   bottom with rounded top corners, fills the viewport, and the FAB
+ *   sits above the editor status bar so it's always tappable.
+ * Tablet (641-980 px): Right-anchored drawer (current desktop look)
+ *   but a touch narrower so the editor stays partially visible.
+ * Desktop (≥981 px):  Full 460 px right drawer (existing behaviour).
+ * ─────────────────────────────────────────────────────────────── */
+
+/* Tablet — keep right-drawer but trim width slightly. */
+@media (max-width: 980px) and (min-width: 641px) {
+    .exo-ai-panel {
+        width: 400px;
+    }
+}
+
+/* Mobile bottom-sheet ------------------------------------------------ */
+@media (max-width: 640px) {
+    .exo-ai-panel {
+        top: auto;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        max-width: 100vw;
+        height: 92vh;
+        max-height: 92vh;
+        border-left: none;
+        border-top: 1px solid #2d2d2d;
+        border-radius: 18px 18px 0 0;
+        box-shadow: 0 -10px 32px rgba(0, 0, 0, 0.55);
+        transform: translateY(100%);
+    }
+    .exo-ai-panel.is-open { transform: translateY(0); }
+
+    /* A subtle drag-handle hint at the top. */
+    .exo-ai-head {
+        position: relative;
+        padding-top: 16px;
+    }
+    .exo-ai-head::before {
+        content: "";
+        position: absolute;
+        top: 6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 36px;
+        height: 4px;
+        border-radius: 2px;
+        background: #3a3a3c;
+    }
+
+    /* Bigger tap targets and tighter padding. */
+    .exo-ai-head-btn { width: 32px; height: 32px; }
+    .exo-ai-body { padding: 14px 12px 16px; }
+    .exo-ai-foot { padding: 10px 10px calc(env(safe-area-inset-bottom, 8px) + 10px); }
+
+    /* Toolbar wraps onto two lines on phones — keep it scannable. */
+    .exo-ai-toolbar {
+        gap: 4px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 2px;
+        scrollbar-width: none;
+    }
+    .exo-ai-toolbar::-webkit-scrollbar { display: none; }
+    .exo-ai-tool {
+        flex-shrink: 0;
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+
+    .exo-ai-input { font-size: 14px; min-height: 26px; padding: 6px 0; }
+    .exo-ai-send  { width: 36px; height: 36px; }
+
+    /* Bring the FAB above the bottom status/nav bars. */
+    .exo-ai-fab {
+        right: 14px;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 76px);
+        width: 40px;
+        height: 40px;
+        font-size: 12px;
+    }
+    /* (is-open hide is handled globally above.) */
+
+    /* Action pills — slim margins so multi-step lists fit on screen. */
+    .exo-ai-grp-body {
+        margin: 6px 0 10px 14px;
+        padding-left: 12px;
+    }
+    .exo-ai-act-body { max-height: 240px; max-width: calc(100% - 12px); }
+
+    /* Slash-menu becomes a fuller bottom sheet on phones. */
+    .exo-ai-menu { left: 0; right: 0; max-height: 50vh; border-radius: 12px 12px 0 0; }
+    .exo-ai-menu-item {
+        grid-template-columns: minmax(110px, 0.45fr) 1fr;
+        gap: 8px;
+        padding: 8px 10px;
+    }
+}
+
+/* Extra-small phones — keep brand name short. */
+@media (max-width: 360px) {
+    .exo-ai-head-title { font-size: 12px; gap: 6px; }
+    .exo-ai-head-status { font-size: 10px; }
+    .exo-ai-tool span { display: none; }
+    .exo-ai-tool { padding: 6px; }
+}
+
+/* ── Inline code highlight in AI token stream ───────────────────────── */
+.exo-ai-log code.exo-ai-code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 12px;
+    color: #00d8d8;                   /* cyan */
+    background: rgba(0, 216, 216, 0.08);
+    border: 1px solid rgba(0, 216, 216, 0.22);
+    border-radius: 3px;
+    padding: 1px 5px;
+    white-space: nowrap;
+}
+
+/* ── Diff viewer ────────────────────────────────────────────────────── */
+.exo-ai-diff {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 12px;
+    line-height: 1.55;
+    overflow-x: auto;
+}
+.exo-ai-diff-add {
+    background: rgba(70, 185, 90, 0.13);
+    color: #80d880;
+    padding: 0 4px;
+    white-space: pre;
+    display: flex;
+    align-items: flex-start;
+}
+.exo-ai-diff-del {
+    background: rgba(220, 60, 60, 0.13);
+    color: #ff8a80;
+    padding: 0 4px;
+    white-space: pre;
+    display: flex;
+    align-items: flex-start;
+    text-decoration: line-through;
+    text-decoration-color: rgba(255, 100, 80, 0.35);
+}
+.exo-ai-diff-ctx {
+    color: #666;
+    padding: 0 4px;
+    white-space: pre;
+}
+.exo-ai-diff-sign {
+    flex: 0 0 10px;
+    opacity: .6;
+    user-select: none;
+}
+.exo-ai-diff-code {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ── Diff syntax highlights (theme-aware via data-ai-scheme) ─────────── */
+/* Default (dark scheme) */
+.exo-ai-hl-kw  { color: #569cd6; font-weight: 600; }
+.exo-ai-hl-str { color: #ce9178; }
+.exo-ai-hl-cmt { color: #6a9955; font-style: italic; }
+.exo-ai-hl-num { color: #b5cea8; }
+
+/* Light scheme overrides */
+[data-ai-scheme="light"] .exo-ai-hl-kw  { color: #0000ff; }
+[data-ai-scheme="light"] .exo-ai-hl-str { color: #a31515; }
+[data-ai-scheme="light"] .exo-ai-hl-cmt { color: #008000; }
+[data-ai-scheme="light"] .exo-ai-hl-num { color: #098658; }
+
+/* The rich act-body that wraps a diff doesn't need the normal prose font. */
+.exo-ai-act-body.rich:has(.exo-ai-diff) {
+    font-family: inherit;
+    font-size: inherit;
+    word-break: normal;
+    padding: 8px;
+}
+
+/* ── Preview button in edit pill ────────────────────────────────────── */
+.exo-ai-preview-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 6px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.06);
+    color: #8fbcf0;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+    vertical-align: middle;
+}
+.exo-ai-preview-btn:hover {
+    background: rgba(143,188,240,.18);
+    border-color: rgba(143,188,240,.4);
+}
+[data-ai-scheme="light"] .exo-ai-preview-btn {
+    color: #0969da;
+    border-color: rgba(0,0,0,.12);
+    background: rgba(0,100,210,.06);
+}
+
+/* ── Theme-aware AI panel ────────────────────────────────────────────── */
+/* Light scheme */
+[data-ai-scheme="light"].exo-ai-panel {
+    background: #f5f5f5;
+    color: #1f1f1f;
+    border-color: #d0d0d0;
+}
+[data-ai-scheme="light"] .exo-ai-header {
+    background: #ebebeb;
+    border-bottom-color: #d0d0d0;
+}
+[data-ai-scheme="light"] .exo-ai-edit-pill {
+    background: #ffffff;
+    border-color: #d0d0d0;
+    color: #333;
+}
+[data-ai-scheme="light"] .exo-ai-diff-add { color: #1a6b2a; background: rgba(50,160,70,.12); }
+[data-ai-scheme="light"] .exo-ai-diff-del { color: #b32020; background: rgba(200,40,40,.10); }
+[data-ai-scheme="light"] .exo-ai-diff-ctx { color: #555; }

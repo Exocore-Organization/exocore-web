@@ -1,0 +1,11 @@
+{
+  "name": "Flask",
+  "description": "Lightweight Python micro-framework",
+  "language": "py",
+  "runtime": "python",
+  "run": "python app.py",
+  "port": 5000,
+  "install": true,
+  "category": "backend",
+  "icon": "python"
+}

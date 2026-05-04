@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Exocore — Offline</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --accent: #ffe500;
+    --bg: #0a0a0f;
+    --card: #111118;
+    --border: rgba(255,255,255,0.08);
+    --text: #f8f8f2;
+    --sub: rgba(248,248,242,0.55);
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    gap: 32px;
+  }
+  .logo {
+    font-size: 2.4rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    text-shadow: 0 0 40px rgba(255,229,0,0.25);
+  }
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: .9rem;
+    color: var(--sub);
+  }
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #ff5555;
+    box-shadow: 0 0 8px #ff5555;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 32px;
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+  }
+  .card h2 { font-size: 1.2rem; margin-bottom: 8px; }
+  .card p  { font-size: .85rem; color: var(--sub); line-height: 1.6; }
+
+  /* Download section */
+  .dl-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .dl-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 12px;
+    text-decoration: none;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: background .15s, border-color .15s;
+    cursor: pointer;
+  }
+  .dl-card:hover {
+    background: rgba(255,229,0,0.07);
+    border-color: rgba(255,229,0,0.4);
+  }
+  .dl-icon { font-size: 1.8rem; line-height: 1; }
+  .dl-name { font-size: .8rem; font-weight: 700; }
+  .dl-sub  { font-size: .68rem; color: var(--sub); text-align: center; line-height: 1.4; }
+
+  .retry-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: .85rem;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 20px;
+    letter-spacing: .04em;
+    transition: opacity .15s;
+  }
+  .retry-btn:hover { opacity: .85; }
+
+  footer { font-size: .72rem; color: var(--sub); }
+</style>
+</head>
+<body>
+
+<div class="logo">EXOCORE</div>
+
+<div class="status">
+  <span class="dot" id="dot"></span>
+  <span id="statusText">You are offline</span>
+</div>
+
+<div class="card">
+  <h2>No internet connection</h2>
+  <p>
+    Exocore needs a connection to your server to run the editor and terminal.
+    Connect to the internet and click Retry, or install Exocore locally on your device.
+  </p>
+  <button class="retry-btn" onclick="retry()">↩ Retry Connection</button>
+</div>
+
+<!-- Download section (item 19 / item 20 offline installers) -->
+<div class="card" style="text-align:left;">
+  <h2 style="margin-bottom:6px;">Run Exocore locally</h2>
+  <p>Download the installer for your platform and run it offline — no internet required after setup.</p>
+
+  <div class="dl-grid">
+    <a class="dl-card" href="/linux.sh" download="linux.sh">
+      <span class="dl-icon">🐧</span>
+      <span class="dl-name">Linux</span>
+      <span class="dl-sub">Ubuntu · Debian · Arch · Fedora</span>
+    </a>
+    <a class="dl-card" href="/termux.sh" download="termux.sh">
+      <span class="dl-icon">🤖</span>
+      <span class="dl-name">Android</span>
+      <span class="dl-sub">Termux — runs in your terminal</span>
+    </a>
+    <a class="dl-card" id="iosCard" href="#">
+      <span class="dl-icon">🍎</span>
+      <span class="dl-name">iOS / iPadOS</span>
+      <span class="dl-sub">iSH shell or SSH to a server</span>
+    </a>
+    <a class="dl-card" href="/window.bat" download="window.bat">
+      <span class="dl-icon">🪟</span>
+      <span class="dl-name">Windows</span>
+      <span class="dl-sub">Double-click installer (.bat)</span>
+    </a>
+    <a class="dl-card" href="https://hub.docker.com" target="_blank" rel="noopener">
+      <span class="dl-icon">🐳</span>
+      <span class="dl-name">Docker</span>
+      <span class="dl-sub">docker run exocore</span>
+    </a>
+  </div>
+</div>
+
+<footer>Exocore v4.0.0 · Browser-based IDE</footer>
+
+<script>
+  function retry() {
+    fetch('/exocore/api/health', { cache: 'no-store' })
+      .then(() => { location.href = '/exocore'; })
+      .catch(() => {
+        const dot = document.getElementById('dot');
+        dot.style.background = '#ff5555';
+        dot.style.boxShadow = '0 0 8px #ff5555';
+        const st = document.getElementById('statusText');
+        st.textContent = 'Still offline — try again';
+        setTimeout(() => { st.textContent = 'You are offline'; }, 3000);
+      });
+  }
+
+  // Auto-redirect if we come back online
+  window.addEventListener('online', () => {
+    document.getElementById('dot').style.background = '#50fa7b';
+    document.getElementById('dot').style.boxShadow = '0 0 8px #50fa7b';
+    document.getElementById('statusText').textContent = 'Back online! Redirecting…';
+    setTimeout(() => { location.href = '/exocore'; }, 800);
+  });
+
+  // iOS card: show a helpful note instead of a download link
+  document.getElementById('iosCard').addEventListener('click', (e) => {
+    e.preventDefault();
+    alert('iOS / iPadOS\n\nExocore runs in Safari on iPad.\nFor local install:\n• Use iSH (App Store) to run the linux.sh script\n• Or SSH into a Mac/Linux server running Exocore');
+  });
+</script>
+</body>
+</html>

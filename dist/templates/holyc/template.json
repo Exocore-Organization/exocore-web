@@ -1,0 +1,11 @@
+{
+  "name": "HolyC",
+  "description": "Terry Davis's divine language — TempleOS systems programming",
+  "language": "hc",
+  "runtime": "hc",
+  "run": "hc main.HC && ./a.out",
+  "port": 0,
+  "install": true,
+  "category": "language",
+  "icon": "holyc"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Tauri",
+  "description": "Tiny secure desktop apps with Rust",
+  "language": "rs",
+  "runtime": "rust",
+  "run": "cargo tauri dev",
+  "port": 1420,
+  "install": true,
+  "category": "app",
+  "icon": "rust"
+}

@@ -1,0 +1,8 @@
+{
+  "name": "exocore-vite-solid",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": { "dev": "vite --host 0.0.0.0 --port 3000", "build": "vite build" },
+  "dependencies": { "solid-js": "^1.7.0" },
+  "devDependencies": { "vite": "^4.4.0", "vite-plugin-solid": "^2.7.0" }
+}

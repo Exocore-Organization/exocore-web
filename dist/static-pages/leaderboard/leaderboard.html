@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Leaderboard · Exocore</title>
+    <link rel="icon" href="/exocore/exo-icon.png" type="image/png">
+    <link rel="stylesheet" href="/exocore/_shared/exo-theme-skins.css">
+    <link rel="stylesheet" href="/exocore/_shared/exo-level-frames.css">
+    <script src="/exocore/_shared/exo-level-frames.js"></script>
+    <script>(function(){try{var h=document.documentElement;var id=localStorage.getItem('exo:theme')||'';if(id)h.dataset.theme=id;try{var v=JSON.parse(localStorage.getItem('exo:theme-vars')||'null');if(v){var cs=v['color-scheme'];if(cs)h.style.setProperty('color-scheme',cs);var ks=Object.keys(v);for(var i=0;i<ks.length;i++){var k=ks[i];if(k!=='color-scheme'&&v[k])h.style.setProperty(k,v[k]);}}}catch(_){}}catch(e){}}());</script>
+    <style>
+        :root { color-scheme: dark; }
+        html, body { margin: 0; padding: 0; background: var(--bg-base, #0a0a0a); color: var(--text-primary, #eaeaea); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+        [hidden] { display: none !important; }
+        a { color: inherit; }
+
+        .lb-page { max-width: 980px; margin: 0 auto; padding: 20px 16px 80px; }
+        .lb-back {
+            background: transparent; border: 1px solid var(--border, #444); color: var(--text-primary, #eaeaea);
+            padding: 6px 12px; border-radius: 6px; cursor: pointer;
+            font-size: 0.85rem; margin-bottom: 16px;
+        }
+        .lb-back:hover { background: var(--bg-card, #1a1a1a); }
+
+        .lb-header {
+            display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
+            padding: 18px 20px; border: 1px solid var(--border, #2a2a2a); border-radius: 12px;
+            background: linear-gradient(135deg, var(--bg-elev, #161616) 0%, var(--bg-base, #0e0e0e) 100%);
+        }
+        .lb-header-icon { font-size: 2.4rem; line-height: 1; }
+        .lb-title { margin: 0; font-size: 1.6rem; font-weight: 700; color: #ffd84a; }
+        .lb-sub { margin: 4px 0 0; font-size: 0.85rem; color: #888; }
+
+        .lb-controls { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 18px; }
+        .lb-tabs { display: flex; gap: 4px; padding: 4px; background: var(--bg-elev, #111); border-radius: 8px; border: 1px solid var(--border, #2a2a2a); }
+        .lb-tab {
+            background: transparent; border: 0; color: #aaa; padding: 6px 14px;
+            border-radius: 6px; font-size: 0.82rem; cursor: pointer; transition: all 0.15s;
+        }
+        .lb-tab:hover { color: #eaeaea; }
+        .lb-tab.on { background: #ffd84a; color: #111; font-weight: 600; }
+        .lb-search, .lb-limit {
+            background: var(--bg-elev, #111); border: 1px solid var(--border, #2a2a2a); color: var(--text-primary, #eaeaea);
+            padding: 8px 12px; border-radius: 8px; font-size: 0.85rem;
+        }
+        .lb-search { flex: 1; min-width: 180px; }
+        .lb-search:focus, .lb-limit:focus { outline: none; border-color: #ffd84a; }
+
+        .lb-state { text-align: center; color: #888; padding: 40px 0; font-size: 0.9rem; }
+        .lb-err { color: #f87171; }
+
+        .lb-podium {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;
+        }
+        .lb-podium-slot {
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            padding: 18px 12px; border-radius: 12px; background: var(--bg-card, #141414);
+            border: 1px solid var(--border, #2a2a2a); text-decoration: none; color: inherit;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+        .lb-podium-slot:hover { transform: translateY(-3px); border-color: #ffd84a; }
+        .lb-podium-slot.empty { background: transparent; border: 1px dashed var(--border, #2a2a2a); min-height: 200px; }
+        .lb-podium-slot.place-1 { background: linear-gradient(180deg, #2a2410 0%, #141414 100%); border-color: #ffd84a; transform: translateY(-12px); }
+        .lb-podium-slot.place-1:hover { transform: translateY(-15px); }
+        .lb-podium-slot.place-2 { background: linear-gradient(180deg, #1f1f22 0%, #141414 100%); border-color: #c4c4c4; }
+        .lb-podium-slot.place-3 { background: linear-gradient(180deg, #25180f 0%, #141414 100%); border-color: #cd7f32; }
+
+        .lb-medal { font-size: 1.8rem; margin-bottom: 6px; }
+        .lb-podium-name { margin-top: 8px; font-weight: 700; font-size: 0.95rem; }
+        .lb-podium-handle { font-size: 0.75rem; color: #888; }
+        .lb-podium-xp { margin-top: 8px; font-weight: 700; color: #ffd84a; font-size: 1rem; }
+        .lb-podium-meta { font-size: 0.75rem; color: #aaa; margin-top: 2px; }
+
+        .lb-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+        .lb-row {
+            display: grid;
+            grid-template-columns: 50px 46px 1fr auto auto auto auto auto auto;
+            align-items: center; gap: 10px; padding: 10px 14px;
+            background: var(--bg-elev, #121212); border: 1px solid var(--border, #222); border-radius: 8px;
+            transition: border-color 0.15s, background 0.15s;
+        }
+        .lb-row:hover { border-color: var(--border-strong, #3a3a3a); background: var(--bg-card, #161616); }
+        .lb-row.me { border-color: #ffd84a; background: #1a1608; }
+
+        .lb-rank { font-weight: 700; color: #888; font-size: 0.9rem; }
+        .lb-avatar { display: none; /* replaced by lb-av-ring */ }
+        .lb-av-ring-sm { display: inline-flex; }
+        .lb-av-ring-sm .lb-av-fallback {
+            font-size: 0.75rem; color: #ffd84a;
+        }
+        .lb-name { display: flex; flex-direction: column; text-decoration: none; color: inherit; min-width: 0; }
+        .lb-display { font-weight: 600; font-size: 0.9rem; }
+        .lb-handle { color: #888; font-size: 0.72rem; }
+        .lb-name:hover .lb-display { color: #ffd84a; }
+
+        .lb-badge {
+            font-size: 0.65rem; font-weight: 700; padding: 2px 7px;
+            border-radius: 4px; letter-spacing: 0.5px;
+        }
+        .lb-badge.role-owner { background: #ffd84a; color: #111; }
+        .lb-badge.role-admin { background: #f87171; color: #111; }
+        .lb-badge.role-mod   { background: #60a5fa; color: #111; }
+        .lb-badge.role-user  { background: var(--bg-card, #2a2a2a); color: var(--text-secondary, #888); }
+        .lb-badge.plan-exo   { background: linear-gradient(90deg, #ffd84a, #ff9f43); color: #111; }
+
+        .lb-stat { font-size: 0.78rem; color: #aaa; white-space: nowrap; }
+        .lb-stat.lb-xp { color: #ffd84a; font-weight: 700; }
+        .lb-stat.lb-level { color: #60a5fa; font-weight: 600; }
+
+        @media (max-width: 720px) {
+            .lb-podium { grid-template-columns: 1fr; }
+            .lb-podium-slot.place-1 { transform: none; order: -1; }
+            .lb-row { grid-template-columns: 36px 32px 1fr auto; row-gap: 4px; }
+            .lb-row .lb-badge, .lb-row .lb-stat.lb-title, .lb-row .lb-stat.lb-ach { display: none; }
+            .lb-row .lb-stat.lb-level { grid-column: 3; justify-self: end; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+    <main class="lb-page">
+        <button class="lb-back" id="back">← Back</button>
+
+        <header class="lb-header">
+            <div class="lb-header-icon">🏆</div>
+            <div>
+                <h1 class="lb-title">Leaderboard</h1>
+                <p class="lb-sub" id="sub">Top members across Exocore — 0 ranked</p>
+            </div>
+        </header>
+
+        <div class="lb-controls">
+            <div class="lb-tabs" id="tabs">
+                <button class="lb-tab on" data-sort="xp">XP</button>
+                <button class="lb-tab" data-sort="level">Level</button>
+                <button class="lb-tab" data-sort="achievements">Achievements</button>
+            </div>
+            <input class="lb-search" id="search" placeholder="Search username…" autocomplete="off">
+            <select class="lb-limit" id="limit">
+                <option value="25">Top 25</option>
+                <option value="50" selected>Top 50</option>
+                <option value="100">Top 100</option>
+                <option value="250">Top 250</option>
+            </select>
+        </div>
+
+        <div class="lb-state" id="loading">Loading…</div>
+        <div class="lb-state lb-err" id="err" hidden></div>
+        <div class="lb-podium" id="podium" hidden></div>
+        <ol class="lb-list" id="list" hidden></ol>
+        <div class="lb-state" id="empty" hidden>No members match.</div>
+    </main>
+
+    <!-- Phase 3.M: ExoStorage replaces localStorage. Loaded so the
+         "highlight my row" lookup of exo_username can read from IDB. -->
+    <script src="/exocore/_shared/exo-storage.js"></script>
+    <script src="/exocore/editor/scripts/themes.js"></script>
+    <script src="/exocore/_shared/exo-theme-apply.js"></script>
+    <script>
+        (function () {
+            var ROLE_LABEL = { owner: 'OWNER', admin: 'ADMIN', mod: 'MOD', user: 'USER' };
+            var entries = [];
+            var total = 0;
+            var sort = 'xp';
+            var limit = 50;
+            var query = '';
+            var myUsername = '';
+            try { myUsername = (window.ExoStorage && ExoStorage.getItem('exo_username')) || ''; } catch (e) {}
+
+            var elBack = document.getElementById('back');
+            var elTabs = document.getElementById('tabs');
+            var elSearch = document.getElementById('search');
+            var elLimit = document.getElementById('limit');
+            var elLoading = document.getElementById('loading');
+            var elErr = document.getElementById('err');
+            var elPodium = document.getElementById('podium');
+            var elList = document.getElementById('list');
+            var elEmpty = document.getElementById('empty');
+            var elSub = document.getElementById('sub');
+
+            function esc(s) {
+                return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+                });
+            }
+            function clean(u) {
+                // Backend sometimes returns "@username" — strip the leading @ so we don't render "@@".
+                return String(u == null ? '' : u).replace(/^@+/, '');
+            }
+            function initials(e) {
+                var src = e.nickname || clean(e.username) || '??';
+                return src.slice(0, 2).toUpperCase();
+            }
+            function fmtXp(n) {
+                try { return Number(n || 0).toLocaleString(); } catch (e) { return String(n || 0); }
+            }
+
+            function back() {
+                if (history.length > 1) history.back();
+                else location.assign('/exocore/dashboard');
+            }
+            elBack.addEventListener('click', back);
+
+            elTabs.addEventListener('click', function (ev) {
+                var btn = ev.target.closest('button[data-sort]');
+                if (!btn) return;
+                sort = btn.getAttribute('data-sort');
+                Array.prototype.forEach.call(elTabs.children, function (b) {
+                    b.classList.toggle('on', b === btn);
+                });
+                load();
+            });
+            elLimit.addEventListener('change', function () {
+                var v = parseInt(elLimit.value, 10);
+                if (Number.isFinite(v) && v > 0) { limit = v; load(); }
+            });
+            elSearch.addEventListener('input', function () {
+                query = elSearch.value || '';
+                render();
+            });
+
+            function load() {
+                elLoading.hidden = false;
+                elErr.hidden = true;
+                elPodium.hidden = true;
+                elList.hidden = true;
+                elEmpty.hidden = true;
+                fetch('/exocore/api/leaderboard?sort=' + encodeURIComponent(sort) + '&limit=' + encodeURIComponent(String(limit)))
+                    .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+                    .then(function (res) {
+                        elLoading.hidden = true;
+                        var j = res.j || {};
+                        if (!res.ok || !j.success) {
+                            elErr.textContent = j.message || 'Failed to load';
+                            elErr.hidden = false;
+                            return;
+                        }
+                        entries = Array.isArray(j.entries) ? j.entries : [];
+                        total = j.total || 0;
+                        elSub.textContent = 'Top members across Exocore — ' + total + ' ranked';
+                        render();
+                    })
+                    .catch(function (e) {
+                        elLoading.hidden = true;
+                        elErr.textContent = (e && e.message) || 'Failed to load';
+                        elErr.hidden = false;
+                    });
+            }
+
+            function filtered() {
+                var q = query.trim().toLowerCase();
+                if (!q) return entries;
+                return entries.filter(function (e) {
+                    return (e.username || '').toLowerCase().indexOf(q) >= 0
+                        || (e.nickname || '').toLowerCase().indexOf(q) >= 0;
+                });
+            }
+
+            function lbTier(level) {
+                return (window.ExoLevelFrames && level != null)
+                    ? ExoLevelFrames.tierClass(level) : '';
+            }
+
+            function podiumSlotHtml(e, place) {
+                if (!e) return '<div class="lb-podium-slot empty"></div>';
+                var uname = clean(e.username);
+                var medal = place === 1 ? '🥇' : place === 2 ? '🥈' : '🥉';
+                var tc = lbTier(e.level);
+                var inner = e.avatarUrl
+                    ? '<img class="lb-av-img" src="' + esc(e.avatarUrl) + '" alt="">'
+                    : '<div class="lb-av-fallback">' + esc(initials(e)) + '</div>';
+                var avatar = '<div class="lb-av-ring lb-av-ring-lg lf-ring ' + tc + '">' + inner + '</div>';
+                return '<a class="lb-podium-slot place-' + place + '" href="/exocore/u/' + encodeURIComponent(uname) + '">'
+                    + '<div class="lb-medal">' + medal + '</div>'
+                    + avatar
+                    + '<div class="lb-podium-name">' + esc(e.nickname || uname) + '</div>'
+                    + '<div class="lb-podium-handle">@' + esc(uname) + '</div>'
+                    + '<div class="lb-podium-xp">' + fmtXp(e.xp) + ' XP</div>'
+                    + '<div class="lb-podium-meta">Lv ' + (e.level || 0) + ' · ' + esc(e.title || '') + '</div>'
+                    + '</a>';
+            }
+
+            function rowHtml(e) {
+                var role = (e.role || 'user');
+                var uname = clean(e.username);
+                var tc = lbTier(e.level);
+                var inner = e.avatarUrl
+                    ? '<img class="lb-av-img" src="' + esc(e.avatarUrl) + '" alt="">'
+                    : '<div class="lb-av-fallback">' + esc(initials(e)) + '</div>';
+                var avatar = '<div class="lb-av-ring lb-av-ring-sm lf-ring ' + tc + '">' + inner + '</div>';
+                var planBadge = e.plan === 'exo' ? '<span class="lb-badge plan-exo">EXO</span>' : '';
+                return '<li class="lb-row' + (uname === clean(myUsername) ? ' me' : '') + '">'
+                    + '<span class="lb-rank">#' + (e.rank || 0) + '</span>'
+                    + avatar
+                    + '<a class="lb-name" href="/exocore/u/' + encodeURIComponent(uname) + '">'
+                    +     '<span class="lb-display">' + esc(e.nickname || uname) + '</span>'
+                    +     '<span class="lb-handle">@' + esc(uname) + '</span>'
+                    + '</a>'
+                    + '<span class="lb-badge role-' + esc(role) + '">' + esc(ROLE_LABEL[role] || 'USER') + '</span>'
+                    + planBadge
+                    + '<span class="lb-stat lb-level" title="Level">Lv ' + (e.level || 0) + '</span>'
+                    + '<span class="lb-stat lb-title" title="Title">' + esc(e.title || '') + '</span>'
+                    + '<span class="lb-stat lb-ach" title="Achievements">🏅 ' + (e.achievements || 0) + '</span>'
+                    + '<span class="lb-stat lb-xp" title="XP">' + fmtXp(e.xp) + ' XP</span>'
+                    + '</li>';
+            }
+
+            function render() {
+                var f = filtered();
+                var podium = f.slice(0, 3);
+                var rest = f.slice(3);
+
+                if (podium.length > 0) {
+                    var order = [1, 0, 2];
+                    elPodium.innerHTML = order.map(function (i, idx) {
+                        var place = i === 0 ? 1 : i === 1 ? 2 : 3;
+                        return podiumSlotHtml(podium[i], place);
+                    }).join('');
+                    elPodium.hidden = false;
+                } else {
+                    elPodium.hidden = true;
+                }
+
+                elList.innerHTML = rest.map(rowHtml).join('');
+                elList.hidden = rest.length === 0;
+                elEmpty.hidden = f.length !== 0;
+            }
+
+            load();
+        })();
+    </script>
+</body>
+</html>

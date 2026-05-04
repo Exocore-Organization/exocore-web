@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Exocore</title>
+    <link rel="icon" href="/exocore/exo-icon.png" type="image/png">
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('exo:theme');
+            } catch (_) {}
+        })();
+    </script>
+    <style>html.exo-booting body { visibility: hidden !important; }</style>
+    <!-- Pre-paint mode bootstrap (mirrors dashboard.html). If the
+         saved theme is Aero, set data-mode="aero" + inject the
+         Frutiger Aero overlay sheet BEFORE first paint so the
+         loader screen doesn't flash dark, then snap to aero. -->
+    <script>
+        (function () {
+            try {
+                var html = document.documentElement;
+                var id = localStorage.getItem('exo:theme') || '';
+                /* Stamp data-theme so exo-theme-skins.css activates
+                 * the correct visual skin before first paint. */
+                if (id) html.dataset.theme = id;
+
+                /* Restore cached CSS var values synchronously — eliminates
+                 * the ~1 s FOUC where the page paints with fallback dark
+                 * colours, then snaps to the user's theme once themes.js
+                 * finishes parsing. Written by exo-theme-apply.js on every
+                 * successful theme apply() call. */
+                try {
+                    var vars = JSON.parse(localStorage.getItem('exo:theme-vars') || 'null');
+                    if (vars) {
+                        var r = html.style;
+                        var cs = vars['color-scheme'];
+                        if (cs) r.setProperty('color-scheme', cs);
+                        var keys = Object.keys(vars);
+                        for (var i = 0; i < keys.length; i++) {
+                            var k = keys[i];
+                            if (k !== 'color-scheme' && vars[k]) r.setProperty(k, vars[k]);
+                        }
+                    }
+                } catch (_) {}
+
+                var AERO = ['frutiger-aero'];
+                if (AERO.indexOf(id) !== -1) {
+                    html.dataset.mode = 'aero';
+                    html.classList.add('exo-booting');
+                    var t = setTimeout(function () { html.classList.remove('exo-booting'); }, 500);
+                    var l = document.createElement('link');
+                    l.rel = 'stylesheet';
+                    l.href = '/exocore/_shared/exo-frutiger-aero.css';
+                    l.setAttribute('data-exo-aero', '1');
+                    l.onload = function () { clearTimeout(t); html.classList.remove('exo-booting'); };
+                    l.onerror = function () { clearTimeout(t); html.classList.remove('exo-booting'); };
+                    document.head.appendChild(l);
+                }
+            } catch (e) {
+                try { document.documentElement.classList.remove('exo-booting'); } catch (_) {}
+            }
+        })();
+    </script>
+    <!-- Per-theme structural visual overlays (scoped to html[data-theme="<id>"]). -->
+    <link rel="stylesheet" href="/exocore/_shared/exo-theme-skins.css">
+    <!-- Google Fonts: IBM Plex Sans + IBM Plex Mono (matches React's font stack). -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+    <!-- React-faithful editor.css (verbatim copy of client/editor/editor.css) -->
+    <link rel="stylesheet" href="/exocore/editor/styles/editor.css">
+    <!-- Vanilla-shell additions (loader, .hdr-btn from Layout.tsx inline style, etc.) -->
+    <link rel="stylesheet" href="/exocore/editor/styles/shell.css">
+    <link rel="stylesheet" href="/exocore/editor/styles/extensions.css">
+    <!-- Floating AI agent chathead (Phase: cli-exocore → web). Owns the
+         right-edge slide-out panel + slash-command menu wired to
+         /exocore/api/editor/ai/meta/* (cookies paste, agent chat,
+         conversation CRUD). Mounted automatically by ai-agent.js. -->
+    <link rel="stylesheet" href="/exocore/editor/styles/ai-agent.css">
+</head>
+<body>
+
+<!-- LOADER (covers everything until the workspace is ready) -->
+<div id="loader" class="loader-screen-shell">
+    <div class="loader-spinner"></div>
+    <div style="font-size:11px; letter-spacing:0.2em; opacity:0.7;">LOADING WORKSPACE</div>
+</div>
+
+<!-- VS-Code-style layout — root class + data-scheme matches client/editor/coding.tsx line 552. -->
+<div class="vscode-layout" data-scheme="dark" id="layout" hidden>
+
+    <!-- HEADER (44 px, mirrors Layout.tsx LayoutHeader).
+         Phase 3.P — ASCII-only glyphs (mono font, no SVGs). The auto-save
+         pill is gone; saves are debounced through the open WS so there's
+         nothing for the user to do. History modal still pops via Ctrl+Shift+H. -->
+    <header class="main-header" id="mainHeader">
+        <button class="hdr-btn icon" id="backBtn" title="Back to dashboard" aria-label="Back">
+            <span class="hdr-glyph">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+            </span>
+            <span class="hdr-btn-label">Dashboard</span>
+        </button>
+
+        <div class="header-title" id="headerTitle">EXOCORE</div>
+
+        <!-- Auto-save indicator (mirrors Layout.tsx ~524-536). Hidden until
+             a file is open; main.js#renderAutoSave + tabs.js#saveActive flip
+             the state class (idle / saving / saved / error) and the label so
+             the user can see at a glance whether their typing has reached
+             disk. Without this element the user has no visual confirmation
+             that the auto-save loop in code.js is running. -->
+        <div class="auto-save" id="autoSave" hidden aria-live="polite">
+            <span class="auto-save-icon" id="autoSaveIcon" aria-hidden="true">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            </span>
+            <span class="auto-save-label" id="autoSaveLabel">Idle</span>
+        </div>
+
+
+        <div class="header-actions">
+            <!-- Project-wide code search (Ctrl/Cmd+Shift+F).
+                 Opens an overlay that lists every match across the project. -->
+            <button class="hdr-btn icon" id="findBtn" title="Search in project (Ctrl/Cmd+Shift+F)" aria-label="Search in project">
+                <span class="hdr-glyph">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </span>
+            </button>
+
+            <!-- Command palette (Ctrl/Cmd+K) -->
+            <button class="hdr-btn icon" id="cmdPaletteBtn" title="Command palette (Ctrl/Cmd+K)" aria-label="Command palette">
+                <span class="hdr-glyph">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+                </span>
+            </button>
+
+            <!-- History (Ctrl/Cmd+Shift+H) -->
+            <button class="hdr-btn icon" id="historyBtn" title="History (Ctrl/Cmd+Shift+H)" aria-label="History">
+                <span class="hdr-glyph">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><polyline points="3 3 3 8 8 8"/><line x1="12" y1="7" x2="12" y2="12"/><line x1="12" y1="12" x2="15" y2="14"/></svg>
+                </span>
+            </button>
+
+            <!-- Settings -->
+        <button class="hdr-btn icon" id="settingsBtn" title="Settings" aria-label="Settings">
+                <span class="hdr-glyph">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </span>
+            </button>
+        <button class="hdr-btn icon" id="themeBtn" title="Change theme" aria-label="Change theme">
+            <span class="hdr-glyph">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/></svg>
+            </span>
+        </button>
+        </div>
+    </header>
+
+    <!-- WORKSPACE: sidebar + editor-area  (matches coding.tsx line 617). -->
+    <div class="workspace-container">
+
+        <!-- SIDEBAR (5 tabs, mirrors SidebarTabBar in Layout.tsx). -->
+        <aside class="sidebar-fixed" id="sidebar" style="width: 260px;">
+            <div class="sidebar-tabs" id="sidebarTabs">
+                <!-- Files / Explorer -->
+                <button class="tab-btn active" data-sidebar-tab="explorer" title="Explorer — Files &amp; Folders">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                        <line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/>
+                    </svg>
+                    <span>Files</span>
+                </button>
+                <!-- npm Packages -->
+                <button class="tab-btn" data-sidebar-tab="npm" title="npm — Install &amp; manage packages" id="sidebarTabNpm">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+                    </svg>
+                    <span>npm</span>
+                </button>
+                <!-- PyLibs -->
+                <button class="tab-btn" data-sidebar-tab="pylib" title="PyLibs — Python package manager" id="sidebarTabPylib">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 2C8.13 2 7 3.5 7 5v2h5v1H5.5C3.6 8 2 9.6 2 11.5S3.6 15 5.5 15H7v-2.5C7 10.9 8.9 9 11.5 9H13c2.2 0 4 1.8 4 4v.5c0 2.5-1.1 3.5-5 3.5h-.5"/>
+                        <path d="M12 22c3.87 0 5-1.5 5-3v-2h-5v-1h6.5c1.9 0 3.5-1.6 3.5-3.5S20.4 9 18.5 9H17v2.5C17 13.1 15.1 15 12.5 15H11c-2.2 0-4-1.8-4-4V10.5C7 8 8.1 7 12 7h.5"/>
+                        <circle cx="8.5" cy="5.5" r=".7" fill="currentColor" stroke="none"/>
+                        <circle cx="15.5" cy="18.5" r=".7" fill="currentColor" stroke="none"/>
+                    </svg>
+                    <span>PyLibs</span>
+                </button>
+                <!-- GitHub -->
+                <button class="tab-btn" data-sidebar-tab="github" title="GitHub — Source control &amp; repos">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                    </svg>
+                    <span>Git</span>
+                </button>
+                <!-- Cloud Drive -->
+                <button class="tab-btn" data-sidebar-tab="cloud" title="Cloud — Google Drive sync">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+                        <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
+                    </svg>
+                    <span>Cloud</span>
+                </button>
+                <!-- Extensions -->
+                <button class="tab-btn" data-sidebar-tab="extensions" title="Extensions — Browse &amp; manage" id="sidebarTabExtensions">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    <span>Ext</span>
+                </button>
+            </div>
+
+            <!-- The body swaps in/out based on the active sidebar tab.
+                 For now only `explorer` is wired up (Phase 4 will add the rest). -->
+            <div class="sidebar-body">
+                <!-- File explorer (matches Sidebar.tsx).
+                     Phase 3.P — title is on its OWN row (with its own border)
+                     so long project names don't crowd the +file/+folder/upload
+                     icons. The title is a button: tap it to rename the project. -->
+                <div class="exocore-sidebar-container" id="explorerPane">
+                    <div class="sidebar-toolbar v2">
+                        <div class="toolbar-title-row">
+                            <button type="button" class="toolbar-title-btn"
+                                    id="explorerProjectTitle"
+                                    title="Click to rename project">
+                                <span class="title-dot"></span>
+                                <span class="title-name" id="explorerProjectName">Project</span>
+                                <span class="title-edit-glyph">
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                                </span>
+                            </button>
+                            <button type="button" class="sidebar-close-mobile" id="sidebarCloseMobile" aria-label="Close sidebar">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </div>
+                        <div class="toolbar-actions">
+                            <span class="toolbar-icon icon" id="newFileBtn" title="New File" role="button" tabindex="0" aria-label="New file">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                            </span>
+                            <span class="toolbar-icon icon" id="newFolderBtn" title="New Folder" role="button" tabindex="0" aria-label="New folder">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+                            </span>
+                            <span class="toolbar-icon icon" id="uploadFileBtn" title="Upload File" role="button" tabindex="0" aria-label="Upload file">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            </span>
+                            <div class="divider"></div>
+                            <span class="toolbar-icon icon" id="downloadProjectBtn" title="Download Project as ZIP" role="button" tabindex="0" aria-label="Download project as ZIP">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+                            </span>
+                            <span class="toolbar-icon icon" id="toggleHiddenBtn" title="Show/Hide dotfiles" role="button" tabindex="0" aria-label="Toggle hidden files">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="sidebar-scroll custom-scrollbar">
+                        <div id="openEditorsList"></div>
+                        <div class="tree-section-hdr" id="filesSectionHdr">
+                            <span class="tree-section-arrow" id="filesSectionArrow">▾</span>
+                            <span class="tree-section-label">FILES</span>
+                        </div>
+                        <div class="tree-root" id="fileTree">
+                            <div class="tree-empty">No project loaded.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other sidebar panes (npm+pylibs/github/cloud) — placeholders for upcoming phases.
+                     AI pane intentionally omitted — user has a better structure planned for AI. -->
+                <!-- Phase 3.J.3a: NPM packages pane. ExoNpmPane.mount() is
+                     called by main.js whenever the user switches to this
+                     sidebar tab; unmount() runs when they switch away. -->
+                <div class="sidebar-pane" id="npmPane" hidden></div>
+                <!-- Python package manager pane (ExoPyLibPane.mount). Tab is
+                     auto-hidden by main.js for non-Python projects. -->
+                <div class="sidebar-pane" id="pylibPane" hidden></div>
+                <!-- Phase 3.J.3b: GitHub pane. ExoGithubPane.mount() runs
+                     when the user switches here; unmount() on tab leave. -->
+                <div class="sidebar-pane" id="githubPane" hidden></div>
+                <!-- Phase 3.J.3c: Google Drive pane. ExoCloudPane.mount()
+                     runs when the user switches here; unmount() on tab leave. -->
+                <div class="sidebar-pane" id="cloudPane" hidden></div>
+                <!-- Extensions pane (ExoExtPane.mount). Lists everything
+                     under exocore-web/extension/{testing,official}/ — see
+                     scripts/extensions.js for the registry / loader. -->
+                <div class="sidebar-pane" id="extensionsPane" hidden></div>
+            </div>
+        </aside>
+
+        <!-- Resizer (drag to resize sidebar) -->
+        <div class="resizer" id="sidebarResizer" aria-hidden="true"></div>
+
+        <!-- EDITOR AREA (matches coding.tsx line 653). -->
+        <main class="editor-area">
+            <div class="content-split" id="contentSplit">
+                <div class="monaco-container" id="monacoContainer1">
+
+                    <!-- ACTIVE FILE: editor wrapper with Tabs (file-header) + Monaco host -->
+                    <div class="editor-wrapper" id="editorWrapper" hidden>
+                        <!-- Tabs.tsx renders a "file-header" pill + breadcrumb.
+                             2026-04-28: added `.split-pane-label` (visible only
+                             when split editor is active) + `#splitToggleBtn`
+                             that toggles the secondary pane. -->
+                        <div class="file-header" id="fileHeader">
+                            <span class="split-pane-label" id="splitLabel1" hidden>Split #1</span>
+                            <div class="tab-pill" id="openFilePill">no file</div>
+                            <div class="breadcrumb-path" id="openFilePath"></div>
+                            <button class="split-toggle-btn" id="splitToggleBtn" type="button"
+                                    title="Split editor" aria-label="Split editor">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="12" y1="3" x2="12" y2="21"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="monaco-host" id="monacoHost"></div>
+                    </div>
+
+                    <!-- EMPTY STATE: shown when no file is open (matches coding.tsx line 695).
+                         Phase 5.2: positioned absolutely inside `.monaco-container`
+                         (which now has `position: relative`) so it always centers
+                         to the editor area regardless of viewport changes
+                         (mobile URL-bar collapse, keyboard, sidebar resize). -->
+                    <div class="empty-state-wrap" id="emptyState">
+                        <div class="empty-state-inner">
+                            <div class="empty-icon-ring">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                            </div>
+                            <div class="empty-title">No file open</div>
+                            <div class="empty-subtitle">Select a file from the explorer to start editing</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2026-04-28: SECONDARY pane for the split-editor view.
+                     Sibling of `#monacoContainer1` so `.content-split` (flex)
+                     can lay them out side-by-side on desktop and stacked on
+                     mobile. Hidden until the user clicks the split-toggle
+                     button. Owns its own editor instance via split.js — does
+                     NOT share the model with the primary, so users can scroll
+                     two different files independently. -->
+                <div class="monaco-container split-pane-2" id="monacoContainer2" hidden>
+                    <div class="editor-wrapper" id="editorWrapper2">
+                        <div class="file-header" id="fileHeader2">
+                            <span class="split-pane-label">Split #2</span>
+                            <div class="tab-pill" id="openFilePill2">no file</div>
+                            <button class="split-close-btn" id="splitCloseBtn" type="button"
+                                    title="Close split" aria-label="Close split pane">✕</button>
+                        </div>
+                        <div class="monaco-host" id="monacoHost2"></div>
+                    </div>
+                </div>
+
+                <!-- Bottom panel (Console / Terminal / Webview / Problems).
+                     Phase 5.1: removed the inline `.panel-tabs` strip — the
+                     status bar at the very bottom of the editor (Console /
+                     Preview / Terminal buttons) is the single source of
+                     truth for switching panels. The old tabs duplicated
+                     that control and clutter the panel header. We keep
+                     only a small title pill (current panel name) + close
+                     button so the user always knows what's open. -->
+                <div class="bottom-panel" id="bottomPanel" hidden>
+                    <div class="panel-header panel-header-slim">
+                        <div class="panel-title-pill">
+                            <span class="panel-title-icon" id="panelTitleIcon" aria-hidden="true"></span>
+                            <span class="panel-title-text" id="panelTitleText">Console</span>
+                        </div>
+                        <button class="close-panel" id="panelCloseBtn" title="Close panel" aria-label="Close panel">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                    </div>
+                    <div class="panel-content custom-scrollbar" id="panelHost"></div>
+                </div>
+            </div>
+
+            <!-- Status bar (matches coding.tsx line 730).
+                 Phase 5: responsive layout — `.status-label` text is hidden
+                 on phones (≤768 px) so only the Lucide icons show; tablets
+                 and desktops still get the `icon + text` look. Lucide
+                 icons are loaded from the CDN bundle near the bottom of
+                 this file (`window.lucide.createIcons()` is called once
+                 the DOM is ready). -->
+            <footer class="status-bar">
+                <div class="desktop-status">
+                    <div class="status-left">
+                        <button class="status-btn" id="sbSidebarToggle" title="Toggle sidebar" aria-label="Toggle sidebar">
+                            <svg class="status-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg>
+                            <span class="status-label">Sidebar</span>
+                        </button>
+                        <button class="status-btn" id="sbProblems" title="Problems" aria-label="Problems">
+                            <svg class="status-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            <span class="status-label"><span id="sbErrorsCount">0</span> Errors</span>
+                            <span class="status-label sep">·</span>
+                            <span class="status-label"><span id="sbWarningsCount">0</span> Warnings</span>
+                            <span class="status-badge" id="sbProblemsBadge" hidden>0</span>
+                        </button>
+                    </div>
+                    <div class="status-right">
+                        <button class="status-btn" data-toggle-panel="console" id="sbConsole" title="Console" aria-label="Console">
+                            <svg class="status-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><polyline points="7 9 10 12 7 15"/><line x1="13" y1="15" x2="17" y2="15"/></svg>
+                            <span class="status-label">Console</span>
+                        </button>
+                        <button class="status-btn" data-toggle-panel="webview" id="sbWebview" title="Preview" aria-label="Preview">
+                            <svg class="status-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                            <span class="status-label">Preview</span>
+                        </button>
+                        <button class="status-btn" data-toggle-panel="terminal" id="sbTerminal" title="Terminal" aria-label="Terminal">
+                            <svg class="status-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                            <span class="status-label">Terminal</span>
+                        </button>
+                        <!-- Item 15 — Virtual Browser (Xvfb + noVNC) panel button -->
+                        <button class="status-btn" data-toggle-panel="vnc" id="sbVnc" title="Virtual Browser (Xvfb)" aria-label="Virtual Browser">
+                            <svg class="status-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="8" y1="22" x2="16" y2="22"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+                            <span class="status-label">Browser</span>
+                        </button>
+                        <span class="status-divider"></span>
+                        <span class="status-btn lsp-chip" id="sbLspChip" hidden title="Language Server connected" aria-label="LSP connected">
+                            <span class="lsp-dot"></span>
+                            <span class="status-label">LSP</span>
+                        </span>
+                        <span class="status-btn user-chip" id="sbUserChip" hidden title="Signed in user" aria-label="Signed in user">
+                            <span class="user-chip-label" id="sbUserNick"></span>
+                        </span>
+                        <span class="status-divider"></span>
+                        <button class="status-btn status-cursor" id="sbCursor" title="Cursor position" aria-label="Cursor position">
+                            <svg class="status-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 22h-1a4 4 0 0 1-4-4V6a4 4 0 0 1 4-4h1"/><path d="M7 22h1a4 4 0 0 0 4-4v-1"/><path d="M7 2h1a4 4 0 0 1 4 4v1"/></svg>
+                            <span class="status-label" id="sbCursorLabel">Ln 1, Col 1</span>
+                        </button>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- Phase 5.2: Go-to-line dialog. Triggered by clicking the cursor
+     button in the status bar (`#sbCursor`). Tiny modal with a number
+     input — Enter jumps, Escape closes. code.js owns the wiring. -->
+<div class="goto-line-overlay" id="gotoLineOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="gotoLineLabel">
+    <div class="goto-line-card">
+        <label class="goto-line-label" id="gotoLineLabel" for="gotoLineInput">Go to line</label>
+        <input class="goto-line-input" id="gotoLineInput" type="number" inputmode="numeric" min="1" placeholder="Line number" />
+        <div class="goto-line-hint" id="gotoLineHint">Enter to jump · Esc to close</div>
+    </div>
+</div>
+
+<!-- Phase 3.P — Find / Find-and-Replace bar.
+     Sits over the editor pane (top-right). Ctrl/Cmd+F opens find,
+     Ctrl/Cmd+H opens with replace. Wired by main.js#wireFindBar(): on
+     Monaco we delegate to the built-in actions (so all of Monaco's
+     match-case / regex / next-prev work for free); on SimpleCode we
+     drive a textarea-side scan + replaceAll. -->
+<div class="find-bar" id="findBar" hidden role="dialog" aria-modal="false" aria-label="Find in file">
+    <div class="find-row">
+        <input type="text" class="find-input" id="findInput" placeholder="Find in file" autocomplete="off" spellcheck="false" />
+        <button class="find-btn ascii" id="findPrev" type="button" title="Previous match (Shift+Enter)">[‹]</button>
+        <button class="find-btn ascii" id="findNext" type="button" title="Next match (Enter)">[›]</button>
+        <span class="find-count" id="findCount">0/0</span>
+        <button class="find-btn ascii" id="findToggleReplace" type="button" title="Toggle replace (Ctrl+H)">[⇄]</button>
+        <button class="find-btn ascii" id="findClose" type="button" title="Close (Esc)">[x]</button>
+    </div>
+    <div class="find-row find-replace-row" id="findReplaceRow" hidden>
+        <input type="text" class="find-input" id="replaceInput" placeholder="Replace with" autocomplete="off" spellcheck="false" />
+        <button class="find-btn ascii" id="replaceOne" type="button" title="Replace next">[1×]</button>
+        <button class="find-btn ascii" id="replaceAll" type="button" title="Replace all">[all]</button>
+    </div>
+</div>
+
+<!-- Project-wide code search overlay. Opens via the header search button or
+     Ctrl/Cmd+Shift+F. Scans every text file in the project and lists each
+     match grouped by file; clicking a hit opens that file at the line. -->
+<div class="search-overlay" id="searchOverlay" hidden role="dialog" aria-modal="false" aria-label="Search in project">
+    <div class="search-card">
+        <div class="search-head">
+            <div class="search-input-wrap">
+                <span class="search-input-icon" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </span>
+                <input type="text" class="search-input" id="searchInput"
+                       placeholder="Search in project (e.g. app.use)"
+                       autocomplete="off" spellcheck="false" />
+            </div>
+            <button class="search-toggle" id="searchCaseBtn" type="button"
+                    title="Match case" aria-pressed="false">Aa</button>
+            <button class="search-toggle" id="searchRegexBtn" type="button"
+                    title="Use regex" aria-pressed="false">.*</button>
+            <button class="search-close" id="searchCloseBtn" type="button"
+                    title="Close (Esc)" aria-label="Close">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="search-status" id="searchStatus">Type to search the whole project.</div>
+        <div class="search-results" id="searchResults"></div>
+    </div>
+</div>
+
+<!-- Phase 3.P — Project rename modal. Opens when the user clicks the
+     project name in the explorer toolbar. Reuses the same /editor/
+     projects/rename endpoint the dashboard uses. -->
+<div class="rename-overlay" id="renameOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="renameLabel">
+    <div class="rename-card">
+        <label class="rename-label" id="renameLabel" for="renameInput">Rename project</label>
+        <input class="rename-input" id="renameInput" type="text" autocomplete="off" maxlength="80" />
+        <div class="rename-row">
+            <button class="rename-btn cancel" id="renameCancel" type="button">Cancel</button>
+            <button class="rename-btn primary" id="renameOk"     type="button">Rename</button>
+        </div>
+        <div class="rename-hint">Letters, numbers, dot, dash, underscore.</div>
+    </div>
+</div>
+
+<!-- Phase 5.1: dropped the Lucide CDN script. The CDN was flaky on
+     mobile networks and left the status bar empty when blocked. We now
+     ship Lucide-style SVGs inline directly in the markup — they paint
+     instantly with no network round-trip and can't be blocked. -->
+
+<!-- Foundation: WSS multiplex carrier + msgpack-encoded RPC client.
+     Mirrors client/access/{wsMux,rpcClient}.ts.
+     Phase 3.M: ExoStorage (IndexedDB-backed sync KV) MUST load
+     before exo-rpc.js so the very first RPC call can read the
+     auth token out of IDB instead of localStorage. -->
+<!-- Vendor mode (offline / online). MUST load before any of the
+     scripts that pull Monaco, xterm, Prism, etc. so they can read
+     window.ExoVendor synchronously when they evaluate. -->
+<script src="/exocore/_shared/exo-vendor.js"></script>
+<script src="/exocore/_shared/vendor/msgpack.min.js"></script>
+<script src="/exocore/_shared/exo-storage.js"></script>
+<script src="/exocore/_shared/exo-rpc.js"></script>
+<script src="/exocore/_shared/exo-kitty.js"></script>
+
+<!-- Editor modules (each owns one job, all share window.ExoStore) -->
+<script src="/exocore/editor/scripts/store.js"></script>
+<script src="/exocore/editor/scripts/api.js"></script>
+<!-- IndexedDB ('Exocore' DB) for npm/GitHub/GDrive/Cloud creds + prefs.
+     Loaded early so any later module can `await ExoIDB.ready`. -->
+<script src="/exocore/_shared/exo-idb.js"></script>
+<!-- Offline action queue. Listens for failed RPC saves/creates
+     and replays them on reconnect. Editor's tabs.js wraps every
+     coding.save through it. -->
+<script src="/exocore/_shared/exo-offline-queue.js"></script>
+<script src="/exocore/editor/scripts/themes.js"></script>
+<!-- Universal theme applicator. Exposes window.ExoTheme.apply(id) which
+     writes editor + dashboard + auth CSS variables in one shot, syncs to
+     both storage backends, and broadcasts so the dashboard / cloud / feed
+     pages stay in sync the moment the user picks a theme from the
+     editor's Settings modal (and vice versa). -->
+<script src="/exocore/_shared/exo-theme-apply.js"></script>
+<script src="/exocore/editor/scripts/settings.js"></script>
+<!-- Phase 2: shared UI primitives — context menu + Ctrl+P / Ctrl+Shift+P palette. -->
+<script src="/exocore/editor/scripts/context-menu.js"></script>
+<script src="/exocore/editor/scripts/dialogs.js"></script>
+<script src="/exocore/editor/scripts/command-palette.js"></script>
+<script src="/exocore/editor/scripts/sidebar.js"></script>
+<script src="/exocore/editor/scripts/tabs.js"></script>
+<script src="/exocore/editor/scripts/history.js"></script>
+<!-- Phase 1: Monaco editor (desktop). simplecode.js is the mobile
+     fallback — a real textarea over a Prism-highlighted <pre> so the OS
+     long-press magnifier and native Cut/Copy/Paste work on phones.
+     lsp-simplecode.js is a thin bridge that wraps ExoSimpleCode.create()
+     to add LSP diagnostic circles (errors/warnings) to the gutter.
+     code.js picks the right engine at first mount via pickEngine(). -->
+<script src="/exocore/editor/scripts/monaco.js"></script>
+<script src="/exocore/editor/scripts/simplecode.js"></script>
+<script src="/exocore/editor/scripts/lsp-simplecode.js"></script>
+<script src="/exocore/editor/scripts/code.js"></script>
+<!-- 2026-04-28: split editor pane (Split #1 / Split #2) — must load AFTER
+     code.js so window.ExoMonaco/ExoSimpleCode + ExoStore are ready. -->
+<script src="/exocore/editor/scripts/split.js"></script>
+<!-- Phase 3: bottom panel + console (xterm.js from CDN) + webview iframe pane. -->
+<script src="/exocore/editor/scripts/panels.js"></script>
+<script src="/exocore/editor/scripts/webview.js"></script>
+<script src="/exocore/editor/scripts/console.js"></script>
+<script src="/exocore/editor/scripts/terminal.js"></script>
+<script src="/exocore/editor/scripts/problems.js"></script>
+<!-- LSP client — connects to /exocore/api/editor/lsp/ws and wires
+     TypeScript Language Server into Monaco: diagnostics (errors/warns
+     including JSDoc types), completions, hover, signature help,
+     go-to-definition, formatting, rename, code actions, inlay hints.
+     Reads tsconfig.json from the project root (server side). -->
+<script src="/exocore/editor/scripts/lsp.js"></script>
+<!-- Phase 3.J.3a: NPM packages pane (sidebar). -->
+<script src="/exocore/editor/scripts/npm-pane.js"></script>
+<script src="/exocore/editor/scripts/pylib-pane.js"></script>
+<script src="/exocore/editor/scripts/github-pane.js"></script>
+<script src="/exocore/editor/scripts/cloud-pane.js"></script>
+<script src="/exocore/editor/scripts/extensions.js"></script>
+<!-- Item 15 — Virtual Browser panel (Xvfb + noVNC) -->
+<script src="/exocore/editor/scripts/vnc-panel.js"></script>
+<script src="/exocore/editor/scripts/exo-shell.js"></script>
+<script src="/exocore/editor/scripts/format-helper.js"></script>
+<script src="/exocore/editor/scripts/main.js"></script>
+<!-- AI agent chathead. Mounts a floating button + right-side panel that
+     mirrors the cli-exocore command set (login/cookies/convo/model/shell/
+     screenshot/etc) and talks to /exocore/api/editor/ai/meta/*. Loaded
+     last so it can read window.ExoStore.currentProjectId. -->
+<script src="/exocore/editor/scripts/ai-agent.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/exocore/sw.js', { scope: '/exocore/' })
+      .catch(() => {});
+  }
+</script>
+</body>
+</html>

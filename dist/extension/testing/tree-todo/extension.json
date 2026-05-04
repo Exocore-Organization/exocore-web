@@ -1,0 +1,11 @@
+{
+    "name": "Tree Todo",
+    "version": "1.0.0",
+    "author": "Exocore Community",
+    "description": "Scans every file in your project and lists all // TODO, FIXME, HACK, NOTE, BUG and OPTIMIZE comments in one panel. Click any item to jump straight to it in the editor.",
+    "date": "2026-05-02",
+    "team": false,
+    "entry": "tree-todo.js",
+    "status": "both",
+    "access": "free"
+}

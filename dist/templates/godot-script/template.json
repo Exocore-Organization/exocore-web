@@ -1,0 +1,11 @@
+{
+  "name": "Godot Script",
+  "description": "GDScript snippet for Godot engine",
+  "language": "gd",
+  "runtime": "godot",
+  "run": "echo \"Open in Godot Editor\"",
+  "port": 0,
+  "install": false,
+  "category": "game",
+  "icon": "godot"
+}

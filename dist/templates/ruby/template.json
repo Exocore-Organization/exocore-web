@@ -1,0 +1,11 @@
+{
+  "name": "Ruby",
+  "description": "Elegant scripting language",
+  "language": "rb",
+  "runtime": "ruby",
+  "run": "ruby main.rb",
+  "port": 0,
+  "install": false,
+  "category": "language",
+  "icon": "ruby"
+}

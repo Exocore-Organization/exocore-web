@@ -1,0 +1,11 @@
+{
+  "name": "NestJS",
+  "description": "Progressive Node.js framework",
+  "language": "ts",
+  "runtime": "node",
+  "run": "npm run start:dev",
+  "port": 3000,
+  "install": true,
+  "category": "backend",
+  "icon": "nestjs"
+}

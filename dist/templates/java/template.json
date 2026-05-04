@@ -1,0 +1,11 @@
+{
+  "name": "Java",
+  "description": "Classic Java project",
+  "language": "java",
+  "runtime": "java",
+  "run": "javac Main.java && java Main",
+  "port": 0,
+  "install": false,
+  "category": "language",
+  "icon": "java"
+}

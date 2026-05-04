@@ -1,0 +1,11 @@
+{
+  "name": "Pygame",
+  "description": "2D games in Python",
+  "language": "py",
+  "runtime": "python",
+  "run": "python main.py",
+  "port": 0,
+  "install": true,
+  "category": "game",
+  "icon": "python"
+}

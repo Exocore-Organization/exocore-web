@@ -1,0 +1,11 @@
+{
+  "name": "Remix",
+  "description": "Full-stack web framework",
+  "language": "tsx",
+  "runtime": "node",
+  "run": "npm run dev",
+  "port": 3000,
+  "install": true,
+  "category": "web",
+  "icon": "remix"
+}

@@ -1,0 +1,1771 @@
+/* =========================================================
+ * extensions.css
+ *
+ * Two parts:
+ *   1. .exo-ext-*  — the Extensions sidebar pane (Installed
+ *      / Browse cards, install button, details panel).
+ *   2. .exo-canvas-*  — the fullscreen modal launched by the
+ *      built-in `canvas` extension. Kept in this file (not
+ *      shipped from the extension itself) so the editor's
+ *      design tokens stay the single source of truth.
+ * ========================================================= */
+
+/* ---------- 1. extensions sidebar pane ---------- */
+
+#extensionsPane {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-panel, #161616);
+    color: var(--text, #e6e6e6);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+}
+
+#extensionsPane .exo-ext-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 8px 6px;
+    border-bottom: 1px solid var(--border, #2a2a2a);
+    flex: 0 0 auto;
+}
+
+#extensionsPane .exo-ext-tab {
+    background: transparent;
+    color: var(--text-muted, #9a9a9a);
+    border: 1px solid transparent;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+}
+#extensionsPane .exo-ext-tab:hover {
+    background: var(--bg-hover, rgba(255,255,255,0.05));
+    color: var(--text, #e6e6e6);
+}
+#extensionsPane .exo-ext-tab.active {
+    background: var(--bg-active, rgba(255, 229, 0, 0.12));
+    color: #FFE500;
+    border-color: rgba(255, 229, 0, 0.3);
+}
+
+#extensionsPane .exo-ext-toolbar-spacer { flex: 1 1 auto; }
+
+#extensionsPane .exo-ext-refresh {
+    background: transparent;
+    border: 1px solid var(--border, #2a2a2a);
+    color: var(--text-muted);
+    width: 22px; height: 22px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+}
+#extensionsPane .exo-ext-refresh:hover { color: #FFE500; border-color: #FFE500; }
+
+#extensionsPane .exo-ext-list-wrap {
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 6px 0;
+}
+#extensionsPane .exo-ext-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 6px;
+}
+
+#extensionsPane .exo-ext-empty {
+    padding: 20px 14px;
+    color: var(--text-muted, #888);
+    font-size: 12px;
+    line-height: 1.55;
+    text-align: center;
+}
+#extensionsPane .exo-ext-empty code {
+    font-family: 'IBM Plex Mono', monospace;
+    background: rgba(255,255,255,0.06);
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+#extensionsPane .exo-ext-card {
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    grid-template-rows: auto;
+    column-gap: 10px;
+    align-items: start;
+    padding: 8px 8px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.02);
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+}
+#extensionsPane .exo-ext-card:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: var(--border, #2a2a2a);
+}
+
+#extensionsPane .exo-ext-icon {
+    width: 36px; height: 36px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: #000;
+    grid-row: span 2;
+}
+#extensionsPane .exo-ext-icon.placeholder {
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #FFE500 0%, #f97316 100%);
+    color: #000;
+    font-weight: 800;
+    font-size: 16px;
+}
+
+#extensionsPane .exo-ext-card-body { min-width: 0; }
+#extensionsPane .exo-ext-card-title {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text, #f3f3f3);
+    line-height: 1.2;
+}
+#extensionsPane .exo-ext-card-title .name {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    max-width: 130px;
+}
+#extensionsPane .exo-ext-card-title .version {
+    font-weight: 500;
+    color: var(--text-muted, #888);
+    font-size: 10.5px;
+}
+#extensionsPane .exo-ext-card-title .team-pill {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    background: #FFE500;
+    color: #000;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+#extensionsPane .exo-ext-card-desc {
+    font-size: 11px;
+    color: var(--text-muted, #aaa);
+    line-height: 1.4;
+    margin: 4px 0 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+#extensionsPane .exo-ext-card-meta {
+    font-size: 10px;
+    color: var(--text-muted, #777);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+}
+#extensionsPane .exo-ext-card-meta .scope {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9.5px;
+    text-transform: uppercase;
+    color: #888;
+}
+
+#extensionsPane .exo-ext-card-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    grid-row: span 2;
+}
+
+#extensionsPane .exo-ext-badge {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    padding: 2px 5px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+#extensionsPane .exo-ext-badge.auto      { background: rgba(255, 229, 0, 0.18); color: #FFE500; border: 1px solid rgba(255, 229, 0, 0.4); }
+#extensionsPane .exo-ext-badge.installed { background: rgba(34, 211, 238, 0.18); color: #22d3ee; border: 1px solid rgba(34, 211, 238, 0.4); }
+
+#extensionsPane .exo-ext-action {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 4px;
+    border: 1px solid var(--border, #2a2a2a);
+    background: transparent;
+    color: var(--text, #e6e6e6);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+#extensionsPane .exo-ext-action.primary {
+    background: #FFE500;
+    color: #000;
+    border-color: #FFE500;
+}
+#extensionsPane .exo-ext-action.primary:hover { filter: brightness(0.95); }
+#extensionsPane .exo-ext-action.danger {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.3);
+}
+#extensionsPane .exo-ext-action.danger:hover {
+    background: rgba(248, 113, 113, 0.1);
+}
+#extensionsPane .exo-ext-action.secondary {
+    color: #22d3ee;
+    border-color: rgba(34, 211, 238, 0.35);
+}
+#extensionsPane .exo-ext-action.secondary:hover {
+    background: rgba(34, 211, 238, 0.1);
+}
+#extensionsPane .exo-ext-action.upload {
+    color: #4ade80;
+    border-color: rgba(74, 222, 128, 0.35);
+    font-size: 10px;
+}
+#extensionsPane .exo-ext-action.upload:hover {
+    background: rgba(74, 222, 128, 0.1);
+}
+
+/* Drive import button in toolbar */
+#extensionsPane .exo-ext-drive-btn {
+    background: transparent;
+    border: 1px solid var(--border, #2a2a2a);
+    color: #22d3ee;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 3px 7px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+#extensionsPane .exo-ext-drive-btn:hover {
+    background: rgba(34, 211, 238, 0.08);
+    border-color: rgba(34, 211, 238, 0.45);
+}
+
+/* Drive import panel */
+#extensionsPane .exo-ext-drive-panel {
+    flex: 0 0 auto;
+    background: var(--bg-elev, #1a1a1a);
+    border-bottom: 1px solid var(--border, #2a2a2a);
+    padding: 10px 10px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+#extensionsPane .exo-ext-drive-panel[hidden] { display: none; }
+#extensionsPane .exo-ext-drive-panel-title {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #22d3ee;
+}
+#extensionsPane .exo-ext-drive-panel-row {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+#extensionsPane .exo-ext-drive-panel-row label {
+    font-size: 10px;
+    color: var(--text-muted, #888);
+    letter-spacing: 0.03em;
+}
+#extensionsPane .exo-ext-drive-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--bg-panel, #161616);
+    border: 1px solid var(--border, #2a2a2a);
+    border-radius: 4px;
+    color: var(--text, #e6e6e6);
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 5px 7px;
+    outline: none;
+}
+#extensionsPane .exo-ext-drive-input:focus {
+    border-color: rgba(34, 211, 238, 0.5);
+}
+#extensionsPane .exo-ext-drive-panel-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+}
+#extensionsPane .exo-ext-drive-browse-btn {
+    background: transparent;
+    border: 1px solid var(--border, #2a2a2a);
+    color: var(--text-muted, #aaa);
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+#extensionsPane .exo-ext-drive-browse-btn:hover {
+    background: rgba(255,255,255,0.05);
+    color: var(--text, #e6e6e6);
+}
+#extensionsPane .exo-ext-drive-import-btn {
+    background: #22d3ee;
+    border: none;
+    color: #000;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+#extensionsPane .exo-ext-drive-import-btn:hover { filter: brightness(0.9); }
+#extensionsPane .exo-ext-drive-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 130px;
+    overflow-y: auto;
+}
+#extensionsPane .exo-ext-drive-file-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 4px 2px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+#extensionsPane .exo-ext-drive-file-name {
+    font-size: 10.5px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text, #e6e6e6);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1 1 auto;
+}
+#extensionsPane .exo-ext-drive-file-empty {
+    font-size: 11px;
+    color: var(--text-muted, #888);
+    padding: 4px 2px;
+    text-align: center;
+}
+
+/* details panel slides over the list */
+#extensionsPane .exo-ext-details {
+    position: absolute;
+    left: 0; right: 0; top: 38px; bottom: 0;
+    background: var(--bg-panel, #161616);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 2;
+}
+/* make the pane positioning context */
+#extensionsPane { position: relative; }
+
+/* Sticky topbar that holds the prominent "← Back to extensions"
+ * button. We pin it above the scroll wrapper so the user can
+ * always reach the list, even after scrolling deep into the
+ * README on a phone. */
+#extensionsPane .exo-ext-details-topbar {
+    flex: 0 0 auto;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border, #2a2a2a);
+    background: var(--bg-elev, var(--bg-panel, #161616));
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+}
+#extensionsPane .exo-ext-details-scroll {
+    flex: 1 1 auto;
+    overflow: auto;
+    min-height: 0;
+}
+#extensionsPane .exo-ext-details-foot {
+    padding: 14px 12px 24px;
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid var(--border, #2a2a2a);
+    margin-top: 12px;
+}
+
+#extensionsPane .exo-ext-details-head {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border, #2a2a2a);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+#extensionsPane .exo-ext-details-back {
+    align-self: flex-start;
+    background: var(--bg-card, rgba(255,255,255,0.06));
+    border: 1px solid var(--border, rgba(255,255,255,0.18));
+    color: var(--text, #f3f3f3);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+#extensionsPane .exo-ext-details-back:hover {
+    background: var(--accent-soft, rgba(255,229,0,0.12));
+    border-color: var(--accent, #FFE500);
+    color: var(--accent, #FFE500);
+}
+
+#extensionsPane .exo-ext-details-title {
+    display: flex; gap: 10px; align-items: center;
+}
+#extensionsPane .exo-ext-details-title img {
+    width: 44px; height: 44px; border-radius: 6px; background: #000;
+}
+#extensionsPane .exo-ext-details-title .title-row {
+    display: flex; align-items: baseline; gap: 6px;
+    font-size: 14px; font-weight: 700;
+}
+#extensionsPane .exo-ext-details-title .version { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+#extensionsPane .exo-ext-details-title .team-pill {
+    font-size: 9px; font-weight: 800; letter-spacing: 0.06em;
+    background: #FFE500; color: #000; padding: 1px 4px; border-radius: 3px;
+}
+#extensionsPane .exo-ext-details-title .meta {
+    font-size: 10.5px; color: var(--text-muted); margin-top: 2px;
+}
+
+#extensionsPane .exo-ext-details-actions { display: flex; gap: 6px; }
+#extensionsPane .exo-ext-details-desc {
+    padding: 12px;
+    color: var(--text-primary, #f0f0f0);
+    -webkit-text-fill-color: var(--text-primary, #f0f0f0);
+    font-size: 12.5px;
+    border-bottom: 1px solid var(--border, #2a2a2a);
+    line-height: 1.55;
+}
+#extensionsPane .exo-ext-details-readme {
+    padding: 12px;
+}
+#extensionsPane .exo-ext-details-readme pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: var(--text, #e8e8e8);
+}
+
+/* status-bar buttons added by extensions */
+.status-bar .exo-ext-status-btn { display: inline-flex; align-items: center; gap: 4px; }
+.status-bar .exo-ext-status-btn.accent {
+    color: #000;
+    background: #FFE500;
+    border-radius: 3px;
+    padding: 1px 8px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+}
+.status-bar .exo-ext-status-btn.accent:hover { filter: brightness(0.92); }
+
+
+/* =========================================================
+ * 1b. extra ext-pane chrome — access pills + lock badge
+ * ========================================================= */
+#extensionsPane .exo-ext-pillrow {
+    display: inline-flex; gap: 4px; margin-left: 4px;
+}
+#extensionsPane .exo-ext-pill {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 1px 5px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    border: 1px solid var(--border, rgba(255,255,255,0.18));
+    background: var(--bg-card, rgba(255,255,255,0.05));
+    color: var(--text-secondary, #aaa);
+}
+#extensionsPane .exo-ext-pill.paid {
+    background: linear-gradient(135deg, var(--accent, #FFE500), color-mix(in srgb, var(--accent, #FFE500) 60%, transparent));
+    color: var(--bg-base, #000);
+    border-color: var(--accent, #FFE500);
+}
+#extensionsPane .exo-ext-pill.roles {
+    background: rgba(168,85,247,0.18);
+    color: #c4a8ff;
+    border-color: rgba(168,85,247,0.5);
+}
+#extensionsPane .exo-ext-pill.online  { color: #34d399; border-color: rgba(52,211,153,0.5); background: rgba(52,211,153,0.12); }
+#extensionsPane .exo-ext-pill.offline { color: #f59e0b; border-color: rgba(245,158,11,0.5);  background: rgba(245,158,11,0.12); }
+#extensionsPane .exo-ext-locked {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted, #888);
+    padding: 4px 8px;
+    border-radius: 3px;
+    border: 1px dashed var(--border, rgba(255,255,255,0.25));
+    background: var(--bg-card, rgba(255,255,255,0.04));
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+ * 2. canvas extension modal
+ *
+ * Every colour comes from the editor theme via the CSS
+ * variables exposed by /exocore/_shared/exo-theme-apply.js
+ * (--bg-base / --bg-elev / --bg-card / --text-primary /
+ * --text-secondary / --text-muted / --accent / --border /
+ * --border-strong) plus the syntax tokens (--exo-syn-*).
+ * Hex fallbacks keep the modal usable if the theme bridge
+ * hasn't loaded yet.
+ * ========================================================= */
+
+/* =========================================================
+ * 2. EXO × CANVAS — fullscreen visual editor
+ *
+ * The layout is mobile-first and IDENTICAL on desktop (just
+ * looser spacing). Inspired by Alight Motion's mobile editor:
+ * a dedicated bottom-tab navigation drives a single bottom
+ * sheet so all controls are within thumb reach, and the
+ * artboard always gets the entire stage area to itself.
+ *
+ *   ┌──────────── topbar (back · file · ↶↷ · APPLY) ──────┐
+ *   │                                                       │
+ *   │                  artboard (centered)                  │
+ *   │                                                       │
+ *   ├──────── action bar (zoom / fit / dup / delete) ──────┤
+ *   ├──────── selection chip (label · vis · lock) ────────┤
+ *   ├─────────────── panel (active tab body) ─────────────┤
+ *   └────── tabbar (Add · Color · Shape · Border · …) ────┘
+ *
+ * Class prefix `.exo-cv-*` is used for every new piece. The
+ * legacy `.exo-canvas-*` classes that the JS still emits
+ * (`.exo-canvas-modal` root, `.exo-canvas-stage`,
+ * `.exo-canvas-shape`, `.exo-canvas-selection`,
+ * `.exo-canvas-preview-code`) are kept below for backwards
+ * compat with the codegen / highlighter.
+ * ========================================================= */
+
+/* ----- shell + root modal ----- */
+.exo-canvas-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-base, #0a0a0a);
+    color: var(--text-primary, #e6e6e6);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    /* Honour iOS safe areas so the bottom tabbar isn't hidden
+     * under the home indicator. */
+    padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.exo-cv-shell { gap: 0; }
+
+/* ----- top bar ----- */
+.exo-cv-topbar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--bg-elev, #000);
+    border-bottom: 1px solid var(--border, #1f1f1f);
+}
+.exo-cv-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent;
+    color: var(--text-primary, #e6e6e6);
+    border: 1px solid var(--border, #2a2a2a);
+    border-radius: 999px;
+    padding: 6px 12px 6px 8px;
+    font: 600 12.5px/1 'IBM Plex Sans', system-ui, sans-serif;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+}
+.exo-cv-back:hover { background: var(--bg-card, rgba(255,255,255,0.05)); border-color: var(--accent, #FFE500); }
+.exo-cv-back .ico { font-size: 16px; line-height: 1; }
+.exo-cv-back .lbl { letter-spacing: 0.02em; }
+
+.exo-cv-title-wrap {
+    flex: 1 1 auto; min-width: 0;
+    display: flex; flex-direction: column; gap: 1px;
+    line-height: 1.1;
+}
+.exo-cv-title-eyebrow {
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted, #777);
+    font-weight: 700;
+}
+.exo-cv-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--text-primary, #f3f3f3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.exo-cv-spacer { flex: 0 0 4px; }
+
+.exo-cv-iconbtn {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border, #2a2a2a);
+    color: var(--text-secondary, #ccc);
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.exo-cv-iconbtn:hover { border-color: var(--accent, #FFE500); color: var(--accent, #FFE500); }
+.exo-cv-iconbtn.small { width: 32px; height: 32px; font-size: 14px; border-radius: 8px; }
+.exo-cv-iconbtn.is-disabled,
+.exo-cv-iconbtn[disabled] { opacity: 0.4; cursor: not-allowed; }
+
+.exo-cv-apply {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent, #FFE500);
+    color: var(--bg-base, #000);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font: 800 12.5px/1 'IBM Plex Sans', system-ui, sans-serif;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(255,229,0,0.18);
+}
+.exo-cv-apply:hover { filter: brightness(0.96); }
+.exo-cv-apply .ico { font-size: 14px; line-height: 1; }
+
+/* ----- stage area ----- */
+.exo-cv-stage-wrap {
+    flex: 1 1 auto;
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    /* Subtle checker so the user can see the canvas bounds even
+     * when the artboard background is white. */
+    background:
+        linear-gradient(45deg,  var(--bg-card, #1a1a1a) 25%, transparent 25%),
+        linear-gradient(-45deg, var(--bg-card, #1a1a1a) 25%, transparent 25%),
+        linear-gradient(45deg,  transparent 75%, var(--bg-card, #1a1a1a) 75%),
+        linear-gradient(-45deg, transparent 75%, var(--bg-card, #1a1a1a) 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+    background-color: var(--bg-base, #0e0e0e);
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px;
+    touch-action: none;  /* prevent phones from pinch-zooming the page while dragging */
+}
+.exo-cv-stage-scaler {
+    position: relative;
+    transform-origin: top left;
+    flex: 0 0 auto;
+}
+.exo-canvas-stage {
+    position: relative;
+    box-shadow: 0 16px 50px rgba(0,0,0,0.55);
+    flex: 0 0 auto;
+}
+.exo-canvas-shape { box-sizing: border-box; }
+
+/* Selection frame + handles */
+.exo-canvas-selection {
+    position: absolute;
+    pointer-events: none;
+    border: 1.5px dashed var(--accent, #FFE500);
+}
+.exo-canvas-selection .handle {
+    position: absolute;
+    width: 12px; height: 12px;
+    background: var(--accent, #FFE500);
+    border: 2px solid var(--bg-base, #000);
+    border-radius: 50%;
+    pointer-events: auto;
+    cursor: nwse-resize;
+}
+.exo-canvas-selection .handle.nw { top: -7px; left: -7px;  cursor: nwse-resize; }
+.exo-canvas-selection .handle.ne { top: -7px; right: -7px; cursor: nesw-resize; }
+.exo-canvas-selection .handle.sw { bottom: -7px; left: -7px;  cursor: nesw-resize; }
+.exo-canvas-selection .handle.se { bottom: -7px; right: -7px; cursor: nwse-resize; }
+
+/* Floating zoom chip in the top-left of the stage */
+.exo-cv-zoomchip {
+    position: absolute;
+    top: 10px; left: 10px;
+    display: inline-flex; align-items: center; gap: 2px;
+    background: var(--bg-elev, rgba(0,0,0,0.7));
+    border: 1px solid var(--border, #2a2a2a);
+    border-radius: 999px;
+    padding: 2px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 2;
+}
+.exo-cv-zoomico {
+    background: transparent; border: none;
+    color: var(--text-primary, #eee);
+    width: 26px; height: 26px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+}
+.exo-cv-zoomico:hover { background: var(--bg-card, rgba(255,255,255,0.08)); color: var(--accent, #FFE500); }
+.exo-cv-zoomchip .z {
+    font: 700 11px/1 'IBM Plex Mono', monospace;
+    color: var(--text-secondary, #ccc);
+    min-width: 38px;
+    text-align: center;
+    padding: 0 2px;
+}
+
+/* ----- action bar (canvas-level commands) ----- */
+.exo-cv-actionbar {
+    flex: 0 0 auto;
+    display: flex; align-items: center; gap: 4px;
+    padding: 6px 10px;
+    background: var(--bg-elev, #0a0a0a);
+    border-top: 1px solid var(--border, #1f1f1f);
+}
+.exo-cv-actbtn {
+    background: transparent;
+    border: 1px solid var(--border, #2a2a2a);
+    color: var(--text-secondary, #ccc);
+    height: 32px;
+    min-width: 36px;
+    padding: 0 10px;
+    border-radius: 8px;
+    font: 600 12px/1 'IBM Plex Sans', system-ui, sans-serif;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+}
+.exo-cv-actbtn:hover { border-color: var(--accent, #FFE500); color: var(--accent, #FFE500); }
+.exo-cv-actbtn.danger { color: #f87171; border-color: rgba(248,113,113,0.3); }
+.exo-cv-actbtn.danger:hover { background: rgba(248,113,113,0.1); border-color: #f87171; color: #f87171; }
+.exo-cv-actbtn[disabled],
+.exo-cv-actbtn.is-disabled { opacity: 0.4; cursor: not-allowed; }
+.exo-cv-actspacer { flex: 1 1 auto; }
+
+/* ----- selection chip bar ----- */
+.exo-cv-selbar {
+    flex: 0 0 auto;
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 10px;
+    background: var(--bg-base, #0a0a0a);
+    border-top: 1px solid var(--border, #1f1f1f);
+}
+.exo-cv-selchip {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--bg-card, rgba(255,255,255,0.04));
+    border: 1px solid var(--border, #2a2a2a);
+    border-radius: 999px;
+    padding: 4px 12px 4px 4px;
+    cursor: pointer;
+    transition: border-color 0.12s, background 0.12s;
+}
+.exo-cv-selchip:hover { border-color: var(--accent, #FFE500); }
+.exo-cv-selchip.is-empty { opacity: 0.7; }
+.exo-cv-selchip .dot {
+    flex: 0 0 auto;
+    width: 26px; height: 26px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.15);
+    display: inline-flex; align-items: center; justify-content: center;
+    font: 700 13px/1 'IBM Plex Sans', system-ui, sans-serif;
+    color: rgba(0,0,0,0.7);
+    text-shadow: 0 0 2px rgba(255,255,255,0.6);
+}
+.exo-cv-selchip .name {
+    font: 600 12.5px/1.2 'IBM Plex Sans', system-ui, sans-serif;
+    color: var(--text-primary, #f3f3f3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.exo-cv-selspacer { flex: 0 0 4px; }
+
+/* ----- bottom panel (sheet) ----- */
+.exo-cv-panel {
+    flex: 0 0 auto;
+    display: flex; flex-direction: column;
+    background: var(--bg-elev, #0d0d0d);
+    border-top: 1px solid var(--border, #1f1f1f);
+    /* Roomy enough on phone to feel native, capped on desktop. */
+    height: clamp(220px, 32vh, 320px);
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    box-shadow: 0 -8px 30px rgba(0,0,0,0.4);
+    overflow: hidden;
+}
+.exo-cv-panel-head {
+    flex: 0 0 auto;
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px 4px;
+    position: relative;
+}
+.exo-cv-panel-head::before {
+    /* Drag-handle hint — purely cosmetic, mirrors a native sheet */
+    content: '';
+    position: absolute;
+    top: 6px; left: 50%;
+    transform: translateX(-50%);
+    width: 36px; height: 3px;
+    border-radius: 999px;
+    background: var(--border, #2a2a2a);
+}
+.exo-cv-panel-title {
+    font: 700 12px/1 'IBM Plex Sans', system-ui, sans-serif;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent, #FFE500);
+    margin-top: 8px;
+}
+.exo-cv-panel-body {
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 10px 14px 14px;
+    display: flex; flex-direction: column; gap: 10px;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ----- bottom tabbar (scrollable — 11 tabs) ----- */
+.exo-cv-tabbar {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    background: var(--bg-elev, #050505);
+    border-top: 1px solid var(--border, #1f1f1f);
+}
+.exo-cv-tabbar::-webkit-scrollbar { display: none; }
+.exo-cv-tab {
+    background: transparent;
+    border: none;
+    color: var(--text-muted, #888);
+    padding: 8px 6px 6px;
+    cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    font: 600 9.5px/1 'IBM Plex Sans', system-ui, sans-serif;
+    letter-spacing: 0.04em;
+    border-top: 2px solid transparent;
+    /* Each tab has a fixed minimum width so all 11 fit without collapsing */
+    flex: 0 0 auto;
+    min-width: 52px;
+    scroll-snap-align: start;
+    transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+.exo-cv-tab .ico {
+    font-size: 16px;
+    line-height: 1;
+    height: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+}
+.exo-cv-tab .lbl {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    text-align: center;
+}
+.exo-cv-tab:hover { color: var(--text-secondary, #ccc); background: var(--bg-card, rgba(255,255,255,0.03)); }
+.exo-cv-tab.active {
+    color: var(--accent, #FFE500);
+    border-top-color: var(--accent, #FFE500);
+    background: var(--accent-soft, rgba(255,229,0,0.08));
+}
+
+/* ----- panel content: shared form atoms ----- */
+.exo-cv-field {
+    display: flex; flex-direction: column; gap: 4px;
+    min-width: 0;
+}
+.exo-cv-field .lbl {
+    font: 600 10px/1 'IBM Plex Sans', system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted, #888);
+}
+.exo-cv-fieldpair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.exo-cv-input {
+    background: var(--bg-base, #0a0a0a);
+    border: 1px solid var(--border, #2a2a2a);
+    color: var(--text-primary, #f3f3f3);
+    padding: 8px 10px;
+    border-radius: 8px;
+    font: 500 13px/1.1 'IBM Plex Mono', monospace;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 36px;
+}
+.exo-cv-input:focus { outline: none; border-color: var(--accent, #FFE500); box-shadow: 0 0 0 3px rgba(255,229,0,0.15); }
+.exo-cv-rangewrap {
+    display: flex; align-items: center; gap: 10px;
+}
+.exo-cv-range {
+    flex: 1 1 auto;
+    accent-color: var(--accent, #FFE500);
+    height: 36px;
+}
+.exo-cv-rangeval {
+    flex: 0 0 auto;
+    min-width: 48px;
+    text-align: right;
+    font: 700 12px/1 'IBM Plex Mono', monospace;
+    color: var(--text-secondary, #ccc);
+}
+.exo-cv-sectionlabel {
+    font: 700 10px/1 'IBM Plex Sans', system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted, #777);
+    margin-top: 4px;
+}
+.exo-cv-hint {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: var(--text-muted, #888);
+    line-height: 1.45;
+}
+.exo-cv-empty {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 18px 8px;
+    text-align: center;
+    color: var(--text-muted, #888);
+}
+.exo-cv-empty .ico {
+    font-size: 26px;
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--bg-card, rgba(255,255,255,0.04));
+    color: var(--text-secondary, #aaa);
+}
+.exo-cv-empty .msg { font-size: 12.5px; line-height: 1.4; max-width: 260px; }
+.exo-cv-ghostbtn {
+    background: transparent;
+    border: 1px solid var(--border, #2a2a2a);
+    color: var(--text-primary, #eee);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font: 600 11.5px/1 'IBM Plex Sans', system-ui, sans-serif;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+}
+.exo-cv-ghostbtn:hover { border-color: var(--accent, #FFE500); color: var(--accent, #FFE500); }
+
+/* Add Shape grid — 4 cols, 12 shape buttons */
+.exo-cv-shapegrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+/* ghost btn active state (used by fonts/animations/text panels) */
+.exo-cv-ghostbtn.active {
+    background: rgba(255,229,0,0.12);
+    border-color: var(--accent, #FFE500);
+    color: var(--accent, #FFE500);
+}
+
+/* actbtn active state */
+.exo-cv-actbtn.active {
+    background: rgba(255,229,0,0.12);
+    border-color: var(--accent, #FFE500);
+    color: var(--accent, #FFE500);
+}
+
+/* Export panel buttons hover (handled inline, but add base for kbd focus) */
+.exo-cv-export-btn:focus {
+    outline: 2px solid var(--accent, #FFE500);
+    outline-offset: 2px;
+}
+
+/* Canvas stage — ensure minimum visible height on very small phones */
+.exo-cv-stage-wrap {
+    min-height: 120px;
+}
+
+/* Fix: On phones the stage-scaler must use transform-origin top-left so
+   fit-zoom doesn't offset the artboard to the right on narrow screens.
+   The wrapper centres it with flex, so origin top-left + translate(-50%)
+   is not needed — origin center keeps parity with wider displays. */
+.exo-cv-stage-scaler {
+    transform-origin: center center;
+    /* Flex child — centred by the parent's justify-content: center */
+    flex: 0 0 auto;
+}
+.exo-cv-shapebtn {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 14px 6px 10px;
+    background: var(--bg-card, rgba(255,255,255,0.03));
+    border: 1px solid var(--border, #2a2a2a);
+    color: var(--text-primary, #eee);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s, transform 0.06s;
+}
+.exo-cv-shapebtn:hover {
+    background: var(--accent-soft, rgba(255,229,0,0.08));
+    border-color: var(--accent, #FFE500);
+    color: var(--accent, #FFE500);
+}
+.exo-cv-shapebtn:active { transform: scale(0.97); }
+.exo-cv-shapebtn .ico { font-size: 22px; line-height: 1; }
+.exo-cv-shapebtn .lbl { font: 600 11px/1 'IBM Plex Sans', system-ui, sans-serif; }
+
+/* Swatch grid */
+.exo-cv-swatchgrid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+}
+.exo-cv-swatch {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    border: 1.5px solid var(--border, #2a2a2a);
+    cursor: pointer;
+    padding: 0;
+    box-sizing: border-box;
+    transition: transform 0.06s, border-color 0.12s;
+}
+.exo-cv-swatch:hover { border-color: var(--text-primary, #fff); transform: translateY(-1px); }
+.exo-cv-swatch.active {
+    border-color: var(--accent, #FFE500);
+    box-shadow: 0 0 0 2px var(--accent, #FFE500) inset, 0 0 0 1px var(--bg-base, #000);
+}
+
+/* Layer list inside the Layers tab */
+.exo-cv-layerlist {
+    display: flex; flex-direction: column; gap: 4px;
+}
+.exo-cv-layer {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border, #2a2a2a);
+    background: var(--bg-card, rgba(255,255,255,0.03));
+    cursor: pointer;
+    font-size: 12.5px;
+    transition: border-color 0.12s, background 0.12s;
+}
+.exo-cv-layer:hover { border-color: var(--text-secondary, #888); }
+.exo-cv-layer.active {
+    background: var(--accent-soft, rgba(255,229,0,0.1));
+    border-color: var(--accent, #FFE500);
+}
+.exo-cv-layer.hidden-layer .name,
+.exo-cv-layer.hidden-layer .ico { opacity: 0.45; }
+.exo-cv-layer.locked-layer { box-shadow: inset 3px 0 0 var(--text-muted, #777); }
+.exo-cv-layer .ico {
+    flex: 0 0 auto;
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font: 700 13px/1 'IBM Plex Sans', system-ui, sans-serif;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(0,0,0,0.7);
+    text-shadow: 0 0 2px rgba(255,255,255,0.6);
+}
+.exo-cv-layer .name {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-primary, #f3f3f3);
+}
+.exo-cv-layer .mini {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary, #aaa);
+    cursor: pointer;
+    font-size: 13px;
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+}
+.exo-cv-layer .mini:hover { background: var(--bg-elev, rgba(255,255,255,0.06)); color: var(--accent, #FFE500); border-color: var(--border, #2a2a2a); }
+
+/* Code tab head */
+.exo-cv-codehead {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 0 6px;
+}
+.exo-cv-codehead .file {
+    flex: 1 1 auto;
+    font: 500 11.5px/1 'IBM Plex Mono', monospace;
+    color: var(--text-secondary, #aaa);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ----- legacy code-preview block (used by Code tab + highlighter) ----- */
+.exo-canvas-preview-code {
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border, #2a2a2a);
+    background: var(--bg-base, #0a0a0a);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--text-primary, #ccc);
+    white-space: pre;
+    overflow: auto;
+    max-height: 100%;
+}
+
+/* Syntax token classes — pull every colour from the editor's
+ * active syntax palette so the preview snippet looks identical
+ * to what the user would see in the main code editor. */
+.exo-canvas-preview-code .syn-keyword { color: var(--exo-syn-keyword,  #ff7b72); font-weight: 600; }
+.exo-canvas-preview-code .syn-string  { color: var(--exo-syn-string,   #a5d6ff); }
+.exo-canvas-preview-code .syn-comment { color: var(--exo-syn-comment,  #8b949e); font-style: italic; }
+.exo-canvas-preview-code .syn-number  { color: var(--exo-syn-number,   #79c0ff); }
+.exo-canvas-preview-code .syn-tag     { color: var(--exo-syn-tag,      #7ee787); }
+
+
+/* =========================================================
+ * 2b. EXO AI LINE AGENT — floating pill + prompt overlay
+ *
+ * The canvas-ai-agent.js creates #exo-ai-line-pill in the
+ * body (fixed-positioned over the Monaco gutter) and a
+ * #exo-ai-prompt-overlay when the user clicks it.
+ * All styles are inlined in the JS for portability, but
+ * we add these here for focus/keyboard-nav overrides.
+ * ========================================================= */
+
+#exo-ai-line-pill:focus-visible {
+    outline: 2px solid var(--accent, #FFE500);
+    outline-offset: 2px;
+}
+#exo-ai-prompt-overlay textarea:focus {
+    border-color: rgba(255,229,0,0.5) !important;
+    box-shadow: 0 0 0 3px rgba(255,229,0,0.12) !important;
+    outline: none !important;
+}
+/* Mobile: push the prompt card higher so the keyboard doesn't
+   cover the submit button on iOS / Android. */
+@media (max-width: 600px) and (hover: none) {
+    #exo-ai-prompt-overlay {
+        padding-bottom: 0 !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        padding: 12px 8px env(safe-area-inset-bottom, 0) !important;
+    }
+}
+
+/* =========================================================
+ * 3. README markdown styling (rendered in details panel)
+ *
+ * The extensions.js manager now ships a small markdown ->
+ * HTML converter so the README isn't dumped into a <pre> as
+ * raw "## What it does" text on phones. The new wrapper
+ * inherits the panel's typography and only overrides what
+ * the converter actually emits (h1-h3, p, ul, ol, li, code,
+ * pre, table, hr, a, strong, em).
+ * ========================================================= */
+#extensionsPane .exo-ext-details-readme.md {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-size: 13.5px;
+    line-height: 1.6;
+    /* Force a high-contrast text colour. The previous build inherited
+     * --text which on some themes resolved to a very dim grey, making
+     * the README look like a "shadowed" paragraph that was hard to
+     * read on a phone (see attached screenshot). We now use the
+     * stronger --text-primary token and fall back to a near-white
+     * value the user explicitly asked for ("dapat si grey naman"). */
+    color: var(--text-primary, #f3f3f3);
+    -webkit-text-fill-color: var(--text-primary, #f3f3f3);
+    text-shadow: none;
+}
+#extensionsPane .exo-ext-details-readme.md * { text-shadow: none; }
+#extensionsPane .exo-ext-details-readme.md h1,
+#extensionsPane .exo-ext-details-readme.md h2,
+#extensionsPane .exo-ext-details-readme.md h3 {
+    margin: 16px 0 6px;
+    color: var(--text-primary, #ffffff);
+    -webkit-text-fill-color: var(--text-primary, #ffffff);
+    line-height: 1.25;
+    font-weight: 700;
+}
+#extensionsPane .exo-ext-details-readme.md h1 { font-size: 18px; border-bottom: 1px solid var(--border, #2a2a2a); padding-bottom: 4px; }
+#extensionsPane .exo-ext-details-readme.md h2 {
+    font-size: 15px;
+    color: var(--accent, #FFE500);
+    -webkit-text-fill-color: var(--accent, #FFE500);
+}
+#extensionsPane .exo-ext-details-readme.md h3 { font-size: 13.5px; }
+#extensionsPane .exo-ext-details-readme.md p  { margin: 8px 0; color: inherit; }
+#extensionsPane .exo-ext-details-readme.md ul,
+#extensionsPane .exo-ext-details-readme.md ol { margin: 4px 0 8px 18px; padding: 0; }
+#extensionsPane .exo-ext-details-readme.md li { margin: 2px 0; }
+#extensionsPane .exo-ext-details-readme.md code {
+    font-family: 'IBM Plex Mono', monospace;
+    background: rgba(255,255,255,0.07);
+    color: var(--accent, #FFE500);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 11.5px;
+}
+#extensionsPane .exo-ext-details-readme.md pre {
+    background: var(--bg-base, #0a0a0a);
+    border: 1px solid var(--border, #2a2a2a);
+    border-radius: 4px;
+    padding: 8px 10px;
+    overflow: auto;
+    margin: 8px 0;
+    white-space: pre;
+}
+#extensionsPane .exo-ext-details-readme.md pre code {
+    background: transparent;
+    padding: 0;
+    color: var(--text, #e8e8e8);
+}
+#extensionsPane .exo-ext-details-readme.md a {
+    color: var(--accent, #FFE500);
+    text-decoration: underline;
+    word-break: break-word;
+}
+#extensionsPane .exo-ext-details-readme.md hr {
+    border: none;
+    border-top: 1px solid var(--border, #2a2a2a);
+    margin: 10px 0;
+}
+#extensionsPane .exo-ext-details-readme.md table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 6px 0;
+    font-size: 12px;
+}
+#extensionsPane .exo-ext-details-readme.md th,
+#extensionsPane .exo-ext-details-readme.md td {
+    border: 1px solid var(--border, #2a2a2a);
+    padding: 4px 8px;
+    text-align: left;
+}
+#extensionsPane .exo-ext-details-readme.md th {
+    background: rgba(255,255,255,0.04);
+    font-weight: 700;
+}
+#extensionsPane .exo-ext-details-readme.md strong { color: var(--text-primary, #fff); }
+
+
+/* =========================================================
+ * 4. Responsive — narrow viewports / phones
+ *
+ * Two surfaces need to adapt:
+ *   a) The Extensions sidebar pane (Installed / Browse list +
+ *      details panel) which gets opened in a narrow drawer on
+ *      mobile. The previous 36px / 1fr / auto card grid pushed
+ *      the AUTO INSTALLED badge into a column that wrapped the
+ *      version row awkwardly (see attached screenshot).
+ *   b) The fullscreen Canvas modal — the topbar items used to
+ *      flex into a single row that overflowed off-screen on
+ *      phones, hiding the EXIT button so the user got stuck.
+ *      The body grid (200 / 1fr / 240) also collapsed the
+ *      stage to nothing.
+ * ========================================================= */
+@media (max-width: 720px) {
+    /* a) Extensions pane: collapse the action column under the
+     * card body so badge + button always have room. */
+    #extensionsPane .exo-ext-card {
+        grid-template-columns: 32px 1fr;
+        grid-template-rows: auto auto;
+        column-gap: 8px;
+        row-gap: 6px;
+    }
+    #extensionsPane .exo-ext-icon { width: 32px; height: 32px; grid-row: span 1; }
+    #extensionsPane .exo-ext-card-actions {
+        grid-row: 2;
+        grid-column: 1 / -1;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    #extensionsPane .exo-ext-card-title { flex-wrap: wrap; }
+    #extensionsPane .exo-ext-card-title .name { max-width: none; }
+    #extensionsPane .exo-ext-card-meta { font-size: 10.5px; }
+    #extensionsPane .exo-ext-pillrow { margin-left: 0; }
+
+    /* Details panel: shrink padding + show two-line head so the
+     * "← Back" + name + Uninstall button never collide. */
+    #extensionsPane .exo-ext-details-topbar {
+        padding: 10px;
+    }
+    #extensionsPane .exo-ext-details-back {
+        flex: 1 1 auto;
+        justify-content: center;
+        font-size: 13px;
+        padding: 10px 14px;
+    }
+    #extensionsPane .exo-ext-details-head { padding: 10px; }
+    #extensionsPane .exo-ext-details-title { gap: 8px; }
+    #extensionsPane .exo-ext-details-title img { width: 36px; height: 36px; }
+    #extensionsPane .exo-ext-details-title .title-row { font-size: 13px; flex-wrap: wrap; }
+    #extensionsPane .exo-ext-details-readme { padding: 12px; }
+    #extensionsPane .exo-ext-details-readme.md { font-size: 13px; }
+    #extensionsPane .exo-ext-details-readme pre {
+        font-size: 11px;
+        line-height: 1.45;
+    }
+    #extensionsPane .exo-ext-details-foot { padding: 16px 12px 28px; }
+
+    /* b) EXO × CANVAS modal — the new layout is already mobile-first,
+     * but on the smallest screens we tighten gaps a touch and shrink
+     * the panel so the artboard keeps a useful slice of the viewport. */
+    .exo-cv-topbar { padding: 8px 10px; gap: 6px; }
+    .exo-cv-back { padding: 5px 10px 5px 6px; font-size: 11.5px; }
+    .exo-cv-back .ico { font-size: 14px; }
+    .exo-cv-title-eyebrow { font-size: 8.5px; }
+    .exo-cv-title { font-size: 12px; }
+    .exo-cv-iconbtn { width: 32px; height: 32px; font-size: 14px; border-radius: 8px; }
+    .exo-cv-apply { padding: 6px 12px; font-size: 11.5px; }
+
+    .exo-cv-stage-wrap { padding: 10px; }
+    .exo-cv-zoomchip { top: 8px; left: 8px; padding: 1px; }
+    .exo-cv-zoomico { width: 24px; height: 24px; font-size: 13px; }
+    .exo-cv-zoomchip .z { font-size: 10.5px; min-width: 34px; }
+
+    .exo-cv-actionbar { padding: 5px 8px; gap: 3px; }
+    .exo-cv-actbtn { height: 30px; min-width: 32px; padding: 0 8px; font-size: 11.5px; }
+
+    .exo-cv-selbar { padding: 5px 8px; }
+    .exo-cv-selchip .name { font-size: 12px; }
+    .exo-cv-selchip .dot { width: 24px; height: 24px; font-size: 12px; }
+
+    .exo-cv-panel { height: clamp(200px, 38vh, 280px); border-top-left-radius: 14px; border-top-right-radius: 14px; }
+    .exo-cv-panel-head { padding: 10px 12px 4px; }
+    .exo-cv-panel-body { padding: 8px 12px 12px; }
+
+    /* 11-tab scrollable bar: keep each tab narrow so the bar doesn't wrap */
+    .exo-cv-tab { padding: 7px 4px 5px; font-size: 8.5px; min-width: 44px; }
+    .exo-cv-tab .ico { font-size: 14px; height: 16px; }
+
+    .exo-cv-shapegrid { gap: 6px; }
+    .exo-cv-shapebtn { padding: 12px 4px 8px; }
+    .exo-cv-shapebtn .ico { font-size: 20px; }
+
+    .exo-cv-swatchgrid { grid-template-columns: repeat(7, 1fr); gap: 5px; }
+
+    .exo-cv-input { padding: 7px 9px; font-size: 12.5px; min-height: 34px; }
+    .exo-cv-layer { padding: 7px 8px; font-size: 12px; }
+    .exo-cv-layer .ico, .exo-cv-layer .mini { width: 26px; height: 26px; }
+
+    .exo-canvas-preview-code { font-size: 10.5px; padding: 8px 10px; }
+
+    /* Resize handles: bigger tap targets on touch screens */
+    .exo-canvas-selection .handle {
+        width: 22px; height: 22px;
+    }
+    .exo-canvas-selection .handle.nw { top: -12px; left: -12px; }
+    .exo-canvas-selection .handle.ne { top: -12px; right: -12px; }
+    .exo-canvas-selection .handle.sw { bottom: -12px; left: -12px; }
+    .exo-canvas-selection .handle.se { bottom: -12px; right: -12px; }
+}
+
+@media (max-width: 420px) {
+    .exo-cv-tab .lbl { font-size: 8.5px; }
+    .exo-cv-back .lbl { display: none; }
+    .exo-cv-back { padding: 6px; width: 32px; height: 32px; justify-content: center; }
+    .exo-cv-apply .lbl { letter-spacing: 0.04em; }
+    .exo-cv-swatchgrid { grid-template-columns: repeat(6, 1fr); }
+}
+
+/* ── Import button in canvas topbar ─────────────────────────────── */
+.exo-cv-import-btn {
+    width: auto !important;
+    padding: 0 10px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em;
+    color: var(--accent, #FFE500) !important;
+    border-color: rgba(255, 229, 0, 0.35) !important;
+    gap: 4px;
+}
+.exo-cv-import-btn:hover {
+    background: rgba(255, 229, 0, 0.08) !important;
+    border-color: var(--accent, #FFE500) !important;
+}
+
+/* Mobile canvas: shrink import button */
+@media (max-width: 600px) {
+    .exo-cv-import-btn .lbl { display: none; }
+    .exo-cv-import-btn { width: 36px !important; padding: 0 !important; font-size: 16px !important; }
+}
+
+/* ================================================================
+   MARKETPLACE
+   ================================================================ */
+
+/* Marketplace config panel reuses Drive panel styles, just tweak padding */
+.exo-ext-mkt-config-panel {
+    border-bottom: 1px solid var(--border, rgba(255,255,255,0.1));
+    padding: 10px 14px 12px;
+    background: var(--surface-alt, rgba(255,255,255,0.03));
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Loading state */
+.exo-ext-mkt-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 32px 20px;
+    color: var(--text-muted, rgba(255,255,255,0.45));
+    font-size: 13px;
+}
+
+.exo-ext-mkt-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border, rgba(255,255,255,0.15));
+    border-top-color: var(--accent, #FFE500);
+    border-radius: 50%;
+    animation: exo-mkt-spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes exo-mkt-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Marketplace card — slightly wider action column */
+.exo-ext-mkt-card {
+    gap: 10px;
+}
+.exo-ext-mkt-card .exo-ext-card-actions {
+    min-width: 96px;
+    justify-content: flex-end;
+}
+
+/* MARKETPLACE badge (teal) */
+.exo-ext-badge.mkt {
+    background: rgba(0, 200, 180, 0.12);
+    color: #00c8b4;
+    border: 1px solid rgba(0, 200, 180, 0.3);
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 2px 5px;
+}
+
+/* The ⚙ Mkt toolbar button */
+.exo-ext-mkt-cfg-btn {
+    flex-shrink: 0;
+    height: 26px;
+    padding: 0 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border, rgba(255,255,255,0.12));
+    background: transparent;
+    color: var(--text-muted, rgba(255,255,255,0.5));
+    font-size: 11px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+.exo-ext-mkt-cfg-btn:hover {
+    background: rgba(0, 200, 180, 0.1);
+    color: #00c8b4;
+    border-color: rgba(0, 200, 180, 0.35);
+}
+
+/* Save config button */
+.exo-ext-mkt-cfg-save-btn {
+    align-self: flex-end;
+    height: 28px;
+    padding: 0 14px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 200, 180, 0.45);
+    background: rgba(0, 200, 180, 0.1);
+    color: #00c8b4;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.exo-ext-mkt-cfg-save-btn:hover {
+    background: rgba(0, 200, 180, 0.22);
+}
+
+/* =========================================================
+ * Light mode + Aero overrides for #extensionsPane
+ * All dark-mode hard-coded colours are overridden here so
+ * the panel is fully readable on a light background.
+ * ========================================================= */
+
+html[data-scheme="light"] #extensionsPane,
+html[data-mode="aero"]    #extensionsPane {
+    background: #f4f4f4;
+    color: #111;
+}
+
+/* --- toolbar + tabs --- */
+html[data-scheme="light"] #extensionsPane .exo-ext-toolbar,
+html[data-mode="aero"]    #extensionsPane .exo-ext-toolbar {
+    border-bottom-color: rgba(0,0,0,0.10);
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-tab,
+html[data-mode="aero"]    #extensionsPane .exo-ext-tab {
+    color: #555;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-tab:hover,
+html[data-mode="aero"]    #extensionsPane .exo-ext-tab:hover {
+    background: rgba(0,0,0,0.06);
+    color: #111;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-tab.active,
+html[data-mode="aero"]    #extensionsPane .exo-ext-tab.active {
+    background: rgba(140,105,0,0.10);
+    color: #7a5f00;
+    border-color: rgba(140,105,0,0.32);
+}
+
+/* --- refresh button --- */
+html[data-scheme="light"] #extensionsPane .exo-ext-refresh,
+html[data-mode="aero"]    #extensionsPane .exo-ext-refresh {
+    border-color: rgba(0,0,0,0.15);
+    color: #555;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-refresh:hover,
+html[data-mode="aero"]    #extensionsPane .exo-ext-refresh:hover {
+    color: #7a5f00;
+    border-color: #7a5f00;
+}
+
+/* --- cards --- */
+html[data-scheme="light"] #extensionsPane .exo-ext-card,
+html[data-mode="aero"]    #extensionsPane .exo-ext-card {
+    background: #fff;
+    border-color: rgba(0,0,0,0.08);
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-card:hover,
+html[data-mode="aero"]    #extensionsPane .exo-ext-card:hover {
+    background: #efefef;
+    border-color: rgba(0,0,0,0.16);
+}
+
+/* --- icon placeholder --- */
+html[data-scheme="light"] #extensionsPane .exo-ext-icon:not(.placeholder),
+html[data-mode="aero"]    #extensionsPane .exo-ext-icon:not(.placeholder) {
+    background: #ddd;
+}
+
+/* --- card text --- */
+html[data-scheme="light"] #extensionsPane .exo-ext-card-title,
+html[data-mode="aero"]    #extensionsPane .exo-ext-card-title { color: #111; }
+html[data-scheme="light"] #extensionsPane .exo-ext-card-title .version,
+html[data-mode="aero"]    #extensionsPane .exo-ext-card-title .version { color: #666; }
+html[data-scheme="light"] #extensionsPane .exo-ext-card-desc,
+html[data-mode="aero"]    #extensionsPane .exo-ext-card-desc { color: #444; }
+html[data-scheme="light"] #extensionsPane .exo-ext-card-meta,
+html[data-mode="aero"]    #extensionsPane .exo-ext-card-meta { color: #666; }
+html[data-scheme="light"] #extensionsPane .exo-ext-card-meta .scope,
+html[data-mode="aero"]    #extensionsPane .exo-ext-card-meta .scope { color: #888; }
+html[data-scheme="light"] #extensionsPane .exo-ext-empty,
+html[data-mode="aero"]    #extensionsPane .exo-ext-empty { color: #666; }
+html[data-scheme="light"] #extensionsPane .exo-ext-empty code,
+html[data-mode="aero"]    #extensionsPane .exo-ext-empty code { background: rgba(0,0,0,0.06); }
+
+/* --- badges --- */
+html[data-scheme="light"] #extensionsPane .exo-ext-badge.auto,
+html[data-mode="aero"]    #extensionsPane .exo-ext-badge.auto {
+    background: rgba(120,90,0,0.10);
+    color: #7a5f00;
+    border-color: rgba(120,90,0,0.28);
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-badge.installed,
+html[data-mode="aero"]    #extensionsPane .exo-ext-badge.installed {
+    background: rgba(6,120,150,0.10);
+    color: #067896;
+    border-color: rgba(6,120,150,0.28);
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-badge.mkt,
+html[data-mode="aero"]    #extensionsPane .exo-ext-badge.mkt {
+    background: rgba(0,140,120,0.10);
+    color: #008878;
+    border-color: rgba(0,140,120,0.25);
+}
+
+/* --- action buttons --- */
+html[data-scheme="light"] #extensionsPane .exo-ext-action,
+html[data-mode="aero"]    #extensionsPane .exo-ext-action {
+    border-color: rgba(0,0,0,0.18);
+    color: #222;
+    background: #fff;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-action.primary,
+html[data-mode="aero"]    #extensionsPane .exo-ext-action.primary {
+    background: #FFE500; color: #000; border-color: #FFE500;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-action.danger,
+html[data-mode="aero"]    #extensionsPane .exo-ext-action.danger {
+    color: #b91c1c; border-color: rgba(185,28,28,0.32); background: transparent;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-action.danger:hover,
+html[data-mode="aero"]    #extensionsPane .exo-ext-action.danger:hover {
+    background: rgba(185,28,28,0.07);
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-action.secondary,
+html[data-mode="aero"]    #extensionsPane .exo-ext-action.secondary {
+    color: #067896; border-color: rgba(6,120,150,0.32); background: transparent;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-action.secondary:hover,
+html[data-mode="aero"]    #extensionsPane .exo-ext-action.secondary:hover {
+    background: rgba(6,120,150,0.07);
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-action.upload,
+html[data-mode="aero"]    #extensionsPane .exo-ext-action.upload {
+    color: #1a7f3a; border-color: rgba(26,127,58,0.32); background: transparent;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-action.upload:hover,
+html[data-mode="aero"]    #extensionsPane .exo-ext-action.upload:hover {
+    background: rgba(26,127,58,0.07);
+}
+
+/* --- drive toolbar button --- */
+html[data-scheme="light"] #extensionsPane .exo-ext-drive-btn,
+html[data-mode="aero"]    #extensionsPane .exo-ext-drive-btn {
+    border-color: rgba(0,0,0,0.15); color: #067896;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-drive-btn:hover,
+html[data-mode="aero"]    #extensionsPane .exo-ext-drive-btn:hover {
+    background: rgba(6,120,150,0.08); border-color: rgba(6,120,150,0.38);
+}
+
+/* --- drive import panel --- */
+html[data-scheme="light"] #extensionsPane .exo-ext-drive-panel,
+html[data-mode="aero"]    #extensionsPane .exo-ext-drive-panel {
+    background: #eaeaea; border-bottom-color: rgba(0,0,0,0.10);
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-drive-panel-title,
+html[data-mode="aero"]    #extensionsPane .exo-ext-drive-panel-title { color: #067896; }
+html[data-scheme="light"] #extensionsPane .exo-ext-drive-panel-row label,
+html[data-mode="aero"]    #extensionsPane .exo-ext-drive-panel-row label { color: #555; }
+html[data-scheme="light"] #extensionsPane .exo-ext-drive-input,
+html[data-mode="aero"]    #extensionsPane .exo-ext-drive-input {
+    background: #fff; border-color: rgba(0,0,0,0.18); color: #111;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-drive-browse-btn,
+html[data-mode="aero"]    #extensionsPane .exo-ext-drive-browse-btn {
+    border-color: rgba(0,0,0,0.15); color: #444;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-drive-browse-btn:hover,
+html[data-mode="aero"]    #extensionsPane .exo-ext-drive-browse-btn:hover {
+    background: rgba(0,0,0,0.05); color: #111;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-drive-file-row,
+html[data-mode="aero"]    #extensionsPane .exo-ext-drive-file-row {
+    border-bottom-color: rgba(0,0,0,0.07);
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-drive-file-name,
+html[data-mode="aero"]    #extensionsPane .exo-ext-drive-file-name { color: #222; }
+html[data-scheme="light"] #extensionsPane .exo-ext-drive-file-empty,
+html[data-mode="aero"]    #extensionsPane .exo-ext-drive-file-empty { color: #666; }
+
+/* --- details panel --- */
+html[data-scheme="light"] #extensionsPane .exo-ext-details,
+html[data-mode="aero"]    #extensionsPane .exo-ext-details { background: #f4f4f4; }
+html[data-scheme="light"] #extensionsPane .exo-ext-details-topbar,
+html[data-mode="aero"]    #extensionsPane .exo-ext-details-topbar {
+    background: #eaeaea; border-bottom-color: rgba(0,0,0,0.10);
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-details-back,
+html[data-mode="aero"]    #extensionsPane .exo-ext-details-back {
+    background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.14); color: #222;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-details-back:hover,
+html[data-mode="aero"]    #extensionsPane .exo-ext-details-back:hover {
+    background: rgba(122,95,0,0.08); border-color: #7a5f00; color: #7a5f00;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-details-head,
+html[data-mode="aero"]    #extensionsPane .exo-ext-details-head {
+    border-bottom-color: rgba(0,0,0,0.10);
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-details-title .version,
+html[data-mode="aero"]    #extensionsPane .exo-ext-details-title .version { color: #666; }
+html[data-scheme="light"] #extensionsPane .exo-ext-details-title .meta,
+html[data-mode="aero"]    #extensionsPane .exo-ext-details-title .meta { color: #666; }
+html[data-scheme="light"] #extensionsPane .exo-ext-details-desc,
+html[data-mode="aero"]    #extensionsPane .exo-ext-details-desc {
+    color: #222;
+    -webkit-text-fill-color: #222;
+    border-bottom-color: rgba(0,0,0,0.10);
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-details-foot,
+html[data-mode="aero"]    #extensionsPane .exo-ext-details-foot {
+    border-top-color: rgba(0,0,0,0.10);
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-details-readme pre,
+html[data-mode="aero"]    #extensionsPane .exo-ext-details-readme pre { color: #222; }
+
+/* --- pills + locked badge --- */
+html[data-scheme="light"] #extensionsPane .exo-ext-pill,
+html[data-mode="aero"]    #extensionsPane .exo-ext-pill {
+    border-color: rgba(0,0,0,0.14); background: rgba(0,0,0,0.05); color: #555;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-pill.roles,
+html[data-mode="aero"]    #extensionsPane .exo-ext-pill.roles {
+    background: rgba(109,40,217,0.10); color: #6d28d9; border-color: rgba(109,40,217,0.32);
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-pill.online,
+html[data-mode="aero"]    #extensionsPane .exo-ext-pill.online {
+    color: #1a7f3a; border-color: rgba(26,127,58,0.42); background: rgba(26,127,58,0.09);
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-pill.offline,
+html[data-mode="aero"]    #extensionsPane .exo-ext-pill.offline {
+    color: #b45309; border-color: rgba(180,83,9,0.42); background: rgba(180,83,9,0.09);
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-locked,
+html[data-mode="aero"]    #extensionsPane .exo-ext-locked {
+    color: #666; border-color: rgba(0,0,0,0.18); background: rgba(0,0,0,0.04);
+}
+
+/* --- marketplace config button --- */
+html[data-scheme="light"] #extensionsPane .exo-ext-mkt-cfg-btn,
+html[data-mode="aero"]    #extensionsPane .exo-ext-mkt-cfg-btn {
+    border-color: rgba(0,0,0,0.15); color: #555;
+}
+html[data-scheme="light"] #extensionsPane .exo-ext-mkt-cfg-btn:hover,
+html[data-mode="aero"]    #extensionsPane .exo-ext-mkt-cfg-btn:hover {
+    background: rgba(0,140,120,0.08); color: #008878; border-color: rgba(0,140,120,0.30);
+}

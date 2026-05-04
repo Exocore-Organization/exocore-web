@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title class="notranslate" translate="no">Exocore Panel</title>
+<link rel="icon" type="image/png" href="/exocore/exo-icon.png">
+<!-- Per-theme structural visual overlays (scoped to html[data-theme="<id>"]). -->
+<link rel="stylesheet" href="/exocore/_shared/exo-theme-skins.css">
+<script>
+/* Pre-paint theme bootstrap — stamps data-theme, restores CSS vars, handles Aero. */
+(function () {
+    try {
+        var html = document.documentElement;
+        var id = localStorage.getItem('exo:theme') || '';
+        if (id) html.dataset.theme = id;
+        try {
+            var vars = JSON.parse(localStorage.getItem('exo:theme-vars') || 'null');
+            if (vars) {
+                var cs = vars['color-scheme'];
+                if (cs) html.style.setProperty('color-scheme', cs);
+                var keys = Object.keys(vars);
+                for (var i = 0; i < keys.length; i++) {
+                    var k = keys[i];
+                    if (k !== 'color-scheme' && vars[k]) html.style.setProperty(k, vars[k]);
+                }
+            }
+        } catch (_) {}
+        if (['frutiger-aero'].indexOf(id) !== -1) {
+            html.dataset.mode = 'aero';
+            html.classList.add('exo-booting');
+            var t = setTimeout(function () { html.classList.remove('exo-booting'); }, 500);
+            var l = document.createElement('link');
+            l.rel = 'stylesheet';
+            l.href = '/exocore/_shared/exo-frutiger-aero.css';
+            l.setAttribute('data-exo-aero', '1');
+            l.onload = function () { clearTimeout(t); html.classList.remove('exo-booting'); };
+            l.onerror = function () { clearTimeout(t); html.classList.remove('exo-booting'); };
+            document.head.appendChild(l);
+        }
+    } catch (e) {
+        try { document.documentElement.classList.remove('exo-booting'); } catch (_) {}
+    }
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+          html.exo-booting body { visibility: hidden !important; }
+:root {
+    --font-ui:   'IBM Plex Sans', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    /* These local tokens are aliases — the theme system
+     * (exo-theme-apply.js) sets the same custom properties as
+     * inline styles on <html>, which override any stylesheet
+     * rule. The hardcoded values here are only the "no theme
+     * loaded yet" fallback used during the first paint. The
+     * `--yellow` accent is wired to the theme `--accent` so
+     * picking GitHub Dark / Replit Dark / etc. actually
+     * recolors the title, buttons, badge and feature tiles —
+     * not just the body background. */
+    --bg-base:   #0a0a0a;
+    --text-pri:  #f0f0f0;
+    --text-sec:  #a0a0a0;
+    --text-mut:  #666;
+    --yellow:    var(--accent, #FFE500);
+    --green:     var(--accent, #00FF94);
+    --pink:      var(--accent, #FF2D78);
+    --cyan:      var(--accent, #00D4FF);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-ui);
+    background: var(--bg-base);
+    color: var(--text-pri);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  .home-scene {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.25rem;
+    overflow: hidden;
+  }
+
+  .home-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(110px);
+    opacity: 0.45;
+    pointer-events: none;
+    z-index: 0;
+    animation: floatGlow 8s ease-in-out infinite;
+  }
+  .home-glow-1 { width: 380px; height: 380px; background: var(--yellow); top: -80px;  left: -80px; }
+  .home-glow-2 { width: 320px; height: 320px; background: var(--pink);   bottom: -60px; right: -60px; animation-delay: -3s; }
+  .home-glow-3 { width: 260px; height: 260px; background: var(--cyan);   top: 40%; left: 55%; animation-delay: -6s; }
+
+  @keyframes floatGlow {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%      { transform: translate(20px, -20px) scale(1.05); }
+  }
+
+  .home-content {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .home-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: rgba(255, 229, 0, 0.08);
+    border: 2px solid var(--yellow);
+    color: var(--yellow);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    box-shadow: 3px 3px 0 0 var(--yellow);
+  }
+  .home-badge-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulseDot 1.6s ease-in-out infinite;
+  }
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .home-title {
+    font-size: clamp(3.5rem, 12vw, 7rem);
+    font-weight: 800;
+    color: var(--yellow);
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    text-shadow: 6px 6px 0 #000;
+    text-transform: uppercase;
+  }
+
+  .home-subtitle {
+    color: var(--text-sec);
+    font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+    max-width: 520px;
+    line-height: 1.6;
+  }
+
+  .home-cta-group {
+    display: flex;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+
+  .btn-home-primary,
+  .btn-home-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0.85rem 1.5rem;
+    border: 2px solid #000;
+    font-size: 0.85rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: var(--font-ui);
+    text-decoration: none;
+  }
+  .btn-home-primary {
+    background: var(--yellow);
+    color: #000;
+    box-shadow: 4px 4px 0 0 #000;
+  }
+  .btn-home-primary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000;
+  }
+  .btn-home-primary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 0 #000;
+  }
+  .btn-home-secondary {
+    background: var(--bg-card, #1a1a1a);
+    color: var(--text-pri);
+    border-color: var(--yellow);
+    box-shadow: 4px 4px 0 0 var(--yellow);
+  }
+  .btn-home-secondary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 var(--yellow);
+  }
+  .btn-home-secondary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 0 var(--yellow);
+  }
+
+  .home-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.7rem;
+    width: 100%;
+    margin-top: 1.5rem;
+  }
+  .home-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.7rem 0.85rem;
+    background: var(--bg-card, #111);
+    border: 2px solid var(--border, #2a2a2a);
+    transition: all 0.1s ease;
+  }
+  .home-feature-item:hover {
+    border-color: var(--yellow);
+    box-shadow: 3px 3px 0 0 var(--yellow);
+    transform: translate(-1px, -1px);
+  }
+  .home-feature-icon { font-size: 1.1rem; }
+  .home-feature-label {
+    font-size: 0.78rem;
+    color: var(--text-sec);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .home-version {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    color: var(--text-mut);
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-elev, #111); }
+  ::-webkit-scrollbar-thumb { background: var(--bg-card, #333); border: 1px solid var(--border, #000); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--yellow); }
+</style>
+</head>
+<body class="theme-modern">
+
+<div class="home-scene">
+  <div class="home-glow home-glow-1"></div>
+  <div class="home-glow home-glow-2"></div>
+  <div class="home-glow home-glow-3"></div>
+
+  <div class="home-content">
+    <div class="home-badge">
+      <span class="home-badge-dot"></span>
+      Cloud Development Platform
+    </div>
+
+    <h1 class="home-title">EXOCORE</h1>
+
+    <p class="home-subtitle">
+      A next-generation browser-based IDE. Write, run, and deploy
+      code in any language — no setup required.
+    </p>
+
+    <div class="home-cta-group">
+      <a class="btn-home-primary" href="/exocore/login">
+        Get Started
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <a class="btn-home-secondary" href="/exocore/register">
+        Create Account
+      </a>
+    </div>
+
+    <div class="home-features">
+      <div class="home-feature-item">
+        <span class="home-feature-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>
+        </span>
+        <span class="home-feature-label">Fast IDE</span>
+      </div>
+      <div class="home-feature-item">
+        <span class="home-feature-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M6 9l3 3-3 3M12 15h6"/><path d="M8 22h8"/><path d="M12 18v4"/></svg>
+        </span>
+        <span class="home-feature-label">Live Terminal</span>
+      </div>
+      <div class="home-feature-item">
+        <span class="home-feature-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v3"/><rect x="4" y="5" width="16" height="14" rx="3"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><path d="M9 16h6"/><path d="M2 12h2M20 12h2"/></svg>
+        </span>
+        <span class="home-feature-label">AI Assistant</span>
+      </div>
+      <div class="home-feature-item">
+        <span class="home-feature-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-5 9 5v10l-9 5-9-5V7z"/><path d="M3 7l9 5 9-5"/><path d="M12 12v10"/></svg>
+        </span>
+        <span class="home-feature-label">NPM Manager</span>
+      </div>
+      <div class="home-feature-item">
+        <span class="home-feature-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="9" r="2.4"/><path d="M6 8.4v7.2"/><path d="M18 11.4c0 4-3 4.6-6 4.6"/></svg>
+        </span>
+        <span class="home-feature-label">Git / GitHub</span>
+      </div>
+      <div class="home-feature-item">
+        <span class="home-feature-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a13 13 0 010 18M12 3a13 13 0 000 18"/></svg>
+        </span>
+        <span class="home-feature-label">Web Preview</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="home-version" id="homeVersion">Exocore v4.0.0 · Modern Engine</div>
+</div>
+
+<!-- Phase 3.M: ExoStorage replaces localStorage. All persisted
+     session state now lives in IndexedDB. Loads BEFORE any code
+     that reads/writes a token, theme, or other exo_* key.
+     MUST also be before exo-theme-apply.js so the theme bootstrap
+     can read the editor's IndexedDB-stored theme choice. -->
+<script>
+  /* Item 17 — fetch version from package.json via server API */
+  (function () {
+    fetch('/exocore/api/version')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.home) {
+          var el = document.getElementById('homeVersion');
+          if (el) el.textContent = d.home;
+        }
+      })
+      .catch(function () { /* keep static fallback */ });
+  })();
+</script>
+<script src="/exocore/_shared/exo-storage.js"></script>
+<!-- Universal theme system — loaded so the home page picks up
+     the user's chosen palette / Frutiger Aero overlay. -->
+<script src="/exocore/editor/scripts/themes.js"></script>
+<script src="/exocore/_shared/exo-theme-apply.js"></script>
+<script>
+  (function () {
+    /* Wait for the IndexedDB hydrate before deciding theme +
+     * "already signed in?" redirect. ExoStorage.ready resolves
+     * after the in-memory cache is populated AND any legacy
+     * localStorage keys have been migrated across. */
+    window.ExoStorage.ready.then(function () {
+      try {
+        var settings = JSON.parse(ExoStorage.getItem('exo_settings') || '{}');
+        if (!settings.theme) {
+          settings.theme = 'modern';
+          ExoStorage.setItem('exo_settings', JSON.stringify(settings));
+        }
+        document.body.className = 'theme-' + (settings.theme || 'modern');
+
+        if (ExoStorage.getItem('exo_token')) {
+          window.location.replace('/exocore/dashboard');
+        }
+      } catch (e) {
+        console.error('init failed:', e);
+      }
+    });
+  })();
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/exocore/sw.js', { scope: '/exocore/' })
+      .catch(() => {});
+  }
+</script>
+</body>
+</html>

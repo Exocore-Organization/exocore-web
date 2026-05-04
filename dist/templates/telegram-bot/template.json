@@ -1,0 +1,11 @@
+{
+  "name": "Telegram Bot",
+  "description": "Telegram bot with node-telegram-bot-api",
+  "language": "js",
+  "runtime": "node",
+  "run": "node index.js",
+  "port": 0,
+  "install": true,
+  "category": "aibot",
+  "icon": "telegram"
+}

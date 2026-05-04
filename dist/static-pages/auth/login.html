@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title class="notranslate" translate="no">Sign In · Exocore</title>
+<link rel="icon" type="image/png" href="/exocore/exo-icon.png">
+<!-- Per-theme structural visual overlays (scoped to html[data-theme="<id>"]). -->
+<link rel="stylesheet" href="/exocore/_shared/exo-theme-skins.css">
+<script>
+(function () {
+    try {
+        var t = localStorage.getItem('exo:theme') || '';
+    } catch (_) {}
+})();
+/* Pre-paint theme bootstrap — stamps data-theme, restores CSS vars, handles Aero. */
+(function () {
+    try {
+        var html = document.documentElement;
+        var id = localStorage.getItem('exo:theme') || '';
+        if (id) html.dataset.theme = id;
+        try {
+            var vars = JSON.parse(localStorage.getItem('exo:theme-vars') || 'null');
+            if (vars) {
+                var cs = vars['color-scheme'];
+                if (cs) html.style.setProperty('color-scheme', cs);
+                var keys = Object.keys(vars);
+                for (var i = 0; i < keys.length; i++) {
+                    var k = keys[i];
+                    if (k !== 'color-scheme' && vars[k]) html.style.setProperty(k, vars[k]);
+                }
+            }
+        } catch (_) {}
+        if (['frutiger-aero'].indexOf(id) !== -1) {
+            html.dataset.mode = 'aero';
+            html.classList.add('exo-booting');
+            var t = setTimeout(function () { html.classList.remove('exo-booting'); }, 500);
+            var l = document.createElement('link');
+            l.rel = 'stylesheet';
+            l.href = '/exocore/_shared/exo-frutiger-aero.css';
+            l.setAttribute('data-exo-aero', '1');
+            l.onload = function () { clearTimeout(t); html.classList.remove('exo-booting'); };
+            l.onerror = function () { clearTimeout(t); html.classList.remove('exo-booting'); };
+            document.head.appendChild(l);
+        }
+    } catch (e) {
+        try { document.documentElement.classList.remove('exo-booting'); } catch (_) {}
+    }
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+          html.exo-booting body { visibility: hidden !important; }
+:root {
+    --font-ui:   'IBM Plex Sans', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    /* See note in home.html — these are first-paint fallbacks
+     * only. exo-theme-apply.js writes inline styles on <html>
+     * which override these. The accent is wired to the theme
+     * `--accent` so the EXOCORE wordmark, focus ring, sign-in
+     * button, link colors etc. follow the active theme. */
+    --bg-base:   #0a0a0a;
+    --bg-surf:   #111;
+    --text-pri:  #f0f0f0;
+    --text-sec:  #a0a0a0;
+    --text-mut:  #666;
+    --yellow:    var(--accent, #FFE500);
+    --green:     var(--accent, #00FF94);
+    --pink:      var(--accent, #FF2D78);
+    --cyan:      var(--accent, #00D4FF);
+    --red:       #ff5555;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-ui);
+    background: var(--bg-base);
+    color: var(--text-pri);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  .auth-page {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    overflow: hidden;
+  }
+
+  .auth-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .auth-glow-1 {
+    width: 420px; height: 420px;
+    background: rgba(255,229,0,0.06);
+    top: -120px; left: -100px;
+  }
+  .auth-glow-2 {
+    width: 360px; height: 360px;
+    background: rgba(255,45,120,0.05);
+    bottom: -100px; right: -80px;
+  }
+
+  .auth-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 440px;
+    background: var(--bg-surf);
+    border: 2px solid var(--border, #333);
+    box-shadow: 6px 6px 0 0 var(--yellow);
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    animation: fadeUp 0.3s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .auth-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .auth-logo-text {
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    color: var(--yellow);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+  }
+
+  .auth-header { display: flex; flex-direction: column; gap: 0.4rem; }
+  .auth-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-pri);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  .auth-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-sec);
+    line-height: 1.5;
+  }
+
+  .form-stack { display: flex; flex-direction: column; gap: 1rem; }
+  .field      { display: flex; flex-direction: column; gap: 0.3rem; }
+  .field-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-mut);
+  }
+  .field-label-row {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .field-label-link {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-mut);
+    text-decoration: none;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+  .field-label-link:hover { color: var(--yellow); }
+
+  .field-input {
+    width: 100%;
+    background: var(--bg-base, #0a0a0a);
+    border: 2px solid var(--border, #333);
+    padding: 0.7rem 0.9rem;
+    font-size: 0.9rem;
+    color: var(--text-pri);
+    outline: none;
+    transition: 0.1s ease;
+    font-family: var(--font-ui);
+  }
+  .field-input::placeholder { color: var(--text-muted, #444); }
+  .field-input:hover  { border-color: var(--border-strong, #555); }
+  .field-input:focus  { border-color: var(--yellow); box-shadow: 3px 3px 0 var(--yellow); }
+  .field-input.error  { border-color: var(--red);    box-shadow: 3px 3px 0 var(--red); }
+
+  .pass-wrap { position: relative; }
+  .pass-wrap .field-input { padding-right: 2.6rem; }
+  .pass-toggle {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text-mut);
+    cursor: pointer;
+    padding: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s ease;
+  }
+  .pass-toggle:hover { color: var(--yellow); }
+
+  .form-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.65rem 0.85rem;
+    background: rgba(255, 60, 60, 0.08);
+    border: 2px solid #d44;
+    color: #ff8a8a;
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .btn {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0.85rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 2px solid #000;
+    transition: 0.1s ease;
+    font-family: var(--font-ui);
+    margin-top: 0.5rem;
+  }
+  .btn-primary {
+    background: var(--yellow);
+    color: #000;
+    box-shadow: 4px 4px 0 0 #000;
+  }
+  .btn-primary:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 #000;
+  }
+  .btn-primary:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 0 #000;
+  }
+  .btn-primary:disabled { opacity: 0.6; cursor: wait; }
+
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid rgba(0,0,0,0.25);
+    border-top-color: #000;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .auth-footer {
+    padding-top: 1rem;
+    margin-top: 0.25rem;
+    border-top: 1px solid #222;
+    text-align: center;
+    color: var(--text-mut);
+    font-size: 0.85rem;
+  }
+  .auth-footer a {
+    color: var(--yellow);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .auth-footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 480px) {
+    .auth-page { padding: 0; align-items: stretch; }
+    .auth-card {
+      max-width: 100%;
+      min-height: 100vh;
+      box-shadow: none;
+      border: none;
+      border-bottom: 4px solid var(--yellow);
+      padding: 1.25rem;
+      justify-content: center;
+    }
+    .btn { padding: 1rem; min-height: 52px; }
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-elev, #111); }
+  ::-webkit-scrollbar-thumb { background: var(--bg-card, #333); border: 1px solid var(--border, #000); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--yellow); }
+</style>
+<script src="/exocore/_shared/vendor/msgpack.min.js"></script>
+<!-- Phase 3.M: ExoStorage (IndexedDB-backed sync KV) MUST load
+     before exo-rpc.js so the RPC client can read the auth token
+     out of IDB instead of localStorage. -->
+<script src="/exocore/_shared/exo-storage.js"></script>
+<script src="/exocore/_shared/exo-rpc.js"></script>
+<!-- Universal theme system. themes.js (data only — 53 palettes)
+     and exo-theme-apply.js (writes CSS variables for every naming
+     convention used across the app). Loaded in <head> so the page
+     paints in the user's chosen theme on the very first frame
+     instead of flashing the default dark, then restyling. -->
+<script src="/exocore/editor/scripts/themes.js"></script>
+<script src="/exocore/_shared/exo-theme-apply.js"></script>
+</head>
+<body class="theme-modern">
+
+<div class="auth-page">
+  <div class="auth-glow auth-glow-1"></div>
+  <div class="auth-glow auth-glow-2"></div>
+
+  <div class="auth-card">
+    <div class="auth-logo">
+      <span class="auth-logo-text">EXOCORE</span>
+    </div>
+
+    <div class="auth-header">
+      <h1 class="auth-title">Welcome back</h1>
+      <p class="auth-subtitle">Sign in to your Exocore workspace.</p>
+    </div>
+
+    <form id="login-form" class="form-stack" novalidate>
+      <div class="field">
+        <label class="field-label" for="user">Username or Email</label>
+        <input
+          id="user"
+          name="user"
+          class="field-input"
+          type="text"
+          placeholder="@username or email@example.com"
+          autocomplete="username"
+          autofocus
+          required
+        />
+      </div>
+
+      <div class="field">
+        <label class="field-label field-label-row" for="pass">
+          <span>Password</span>
+          <a class="field-label-link" href="/exocore/forgot">Forgot password?</a>
+        </label>
+        <div class="pass-wrap">
+          <input
+            id="pass"
+            name="pass"
+            class="field-input"
+            type="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+          />
+          <button type="button" class="pass-toggle" id="pass-toggle" aria-label="Show password" tabindex="-1">
+            <svg id="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg id="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="form-error" class="form-error" style="display:none;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;">
+          <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M7 4v3M7 9.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span id="form-error-text"></span>
+      </div>
+
+      <button id="submit-btn" class="btn btn-primary" type="submit">
+        <span id="submit-label">Sign In</span>
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      New to Exocore?
+      <a href="/exocore/register">Create an account</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    /* Phase 3.M: wait for the IndexedDB hydrate, then run the
+     * usual theme + "already signed in?" boilerplate. The form
+     * wiring further down doesn't read from storage at boot —
+     * only the submit handler does, by which point the cache
+     * is long-since hydrated. */
+    window.ExoStorage.ready.then(function () { boot(); });
+
+    function boot() {
+    // ---- Theme + already-logged-in redirect (mirrors home.html) ----
+    try {
+      var settings = JSON.parse(ExoStorage.getItem('exo_settings') || '{}');
+      if (!settings.theme) {
+        settings.theme = 'modern';
+        ExoStorage.setItem('exo_settings', JSON.stringify(settings));
+      }
+      document.body.className = 'theme-' + (settings.theme || 'modern');
+
+      if (ExoStorage.getItem('exo_token')) {
+        window.location.replace('/exocore/dashboard');
+        return;
+      }
+    } catch (e) { console.error('init failed:', e); }
+
+    // ---- Show/hide password toggle ----
+    var passInput  = document.getElementById('pass');
+    var passToggle = document.getElementById('pass-toggle');
+    var eyeOpen    = document.getElementById('eye-open');
+    var eyeClosed  = document.getElementById('eye-closed');
+    passToggle.addEventListener('click', function () {
+      var hidden = passInput.type === 'password';
+      passInput.type = hidden ? 'text' : 'password';
+      eyeOpen.style.display   = hidden ? 'none'  : '';
+      eyeClosed.style.display = hidden ? ''     : 'none';
+      passToggle.setAttribute('aria-label', hidden ? 'Hide password' : 'Show password');
+    });
+
+    // ---- Form submit ----
+    var form       = document.getElementById('login-form');
+    var userInput  = document.getElementById('user');
+    var errorBox   = document.getElementById('form-error');
+    var errorText  = document.getElementById('form-error-text');
+    var submitBtn  = document.getElementById('submit-btn');
+    var submitLbl  = document.getElementById('submit-label');
+
+    function showError(msg) {
+      errorText.textContent = msg;
+      errorBox.style.display = 'flex';
+    }
+    function hideError() {
+      errorBox.style.display = 'none';
+      errorText.textContent = '';
+    }
+    function setLoading(on) {
+      submitBtn.disabled = on;
+      if (on) {
+        submitLbl.innerHTML = '<span class="spinner"></span> Signing in…';
+      } else {
+        submitLbl.textContent = 'Sign In';
+      }
+    }
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      hideError();
+
+      var user = (userInput.value || '').trim();
+      var pass = passInput.value || '';
+
+      // Same normalisation the React Login.tsx did: prepend '@' for plain usernames.
+      if (user && !user.includes('@') && !/^\d+$/.test(user) && !user.startsWith('@')) {
+        user = '@' + user;
+      }
+      if (!user || !pass) {
+        showError('Please fill in all fields.');
+        return;
+      }
+
+      setLoading(true);
+      try {
+        // Full WSS via the persistent /exocore/ws carrier (msgpack RPC).
+        var data = await window.ExoRPC.call('auth.login', { user: user, pass: pass });
+        if (data && data.token) {
+          await ExoStorage.setItem('exo_token', data.token);
+          window.location.replace('/exocore/dashboard');
+          return;
+        }
+        showError((data && data.message) || 'Authentication failed. Please check your credentials.');
+      } catch (err) {
+        showError((err && err.message) || 'Network error. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    });
+    } /* end boot() */
+  })();
+</script>
+</body>
+</html>

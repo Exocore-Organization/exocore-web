@@ -1,0 +1,11 @@
+{
+    "name": "Minecraft",
+    "version": "1.0.0",
+    "author": "Exocore Team",
+    "description": "Starter Minecraft-style extension with visible CSS and UI hooks.",
+    "date": "2026-05-03",
+    "team": true,
+    "entry": "minecraft.js",
+    "status": "both",
+    "access": "free"
+}

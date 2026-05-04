@@ -1,0 +1,11 @@
+{
+  "name": "Vite + Solid",
+  "description": "SolidJS app scaffolded with Vite",
+  "language": "tsx",
+  "runtime": "node",
+  "run": "npm run dev",
+  "port": 3000,
+  "install": true,
+  "category": "web",
+  "icon": "solid"
+}

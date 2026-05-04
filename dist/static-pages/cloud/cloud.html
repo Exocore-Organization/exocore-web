@@ -1,0 +1,1026 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cloud Manager · Exocore</title>
+    <link rel="icon" href="/exocore/exo-icon.png" type="image/png">
+    <!-- Pre-paint mode bootstrap. Mirrors dashboard.html so Aero
+         users don't see a single frame of dark theme before the
+         palette swaps in. -->
+    <script>
+        (function () {
+            try {
+                var html = document.documentElement;
+                var id = localStorage.getItem('exo:theme') || '';
+                if (id) html.dataset.theme = id;
+                try {
+                    var vars = JSON.parse(localStorage.getItem('exo:theme-vars') || 'null');
+                    if (vars) {
+                        var cs = vars['color-scheme'];
+                        if (cs) html.style.setProperty('color-scheme', cs);
+                        var keys = Object.keys(vars);
+                        for (var i = 0; i < keys.length; i++) {
+                            var k = keys[i];
+                            if (k !== 'color-scheme' && vars[k]) html.style.setProperty(k, vars[k]);
+                        }
+                    }
+                } catch (_) {}
+                var AERO = ['frutiger-aero'];
+                if (AERO.indexOf(id) !== -1) {
+                    html.dataset.mode = 'aero';
+                    html.classList.add('exo-booting');
+                    var t = setTimeout(function () { html.classList.remove('exo-booting'); }, 500);
+                    var l = document.createElement('link');
+                    l.rel = 'stylesheet';
+                    l.href = '/exocore/_shared/exo-frutiger-aero.css';
+                    l.setAttribute('data-exo-aero', '1');
+                    l.onload = function () { clearTimeout(t); html.classList.remove('exo-booting'); };
+                    l.onerror = function () { clearTimeout(t); html.classList.remove('exo-booting'); };
+                    document.head.appendChild(l);
+                }
+            } catch (e) {
+                try { document.documentElement.classList.remove('exo-booting'); } catch (_) {}
+            }
+        })();
+    </script>
+    <style>
+                html.exo-booting body { visibility: hidden !important; }
+:root {
+            /* Same runtime theme tokens as the dashboard — written by
+             * /exocore/_shared/exo-theme-apply.js from the user's
+             * chosen palette. Without this block (and without loading
+             * exo-theme-apply.js below) the page used to be locked to
+             * a dark + yellow look that ignored Aero / github-dark / etc. */
+            --bg-base: #0e1525;
+            --bg-elev: #1c2333;
+            --bg-card: #18213a;
+            --text-primary: #f5f9f9;
+            --text-secondary: #808ca3;
+            --text-muted: rgba(128, 140, 163, 0.7);
+            --accent: #00a1ff;
+            --accent-soft: rgba(0, 161, 255, 0.10);
+            --border: rgba(245, 249, 249, 0.10);
+            --border-strong: rgba(245, 249, 249, 0.18);
+
+            /* Cloud Manager–local aliases. The rest of this stylesheet
+             * uses the legacy short names (--bg, --surface, --text…),
+             * so we alias them to the live theme tokens above instead
+             * of rewriting every rule. Result: the whole page now
+             * shifts with the active palette + Aero mode. */
+            --bg: var(--bg-base);
+            --surface: var(--bg-elev);
+            --surface-2: var(--bg-card);
+            --text: var(--text-primary);
+            --text-dim: var(--text-secondary);
+            --indigo: var(--accent);
+            --indigo-soft: var(--accent-soft);
+            --sky: var(--accent);
+            --sky-soft: var(--accent-soft);
+            /* Functional status colors stay constant across themes
+             * (success should always read as green, danger as red). */
+            --green: #00FF94;
+            --green-soft: rgba(0,255,148,0.14);
+            --red: #FF3B3B;
+            --red-soft: rgba(255,59,59,0.14);
+        }
+        * { box-sizing: border-box; }
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 15px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+        a { color: var(--indigo); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        button { font-family: inherit; cursor: pointer; }
+
+        /* HEADER */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 24px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+            position: sticky; top: 0; z-index: 50;
+        }
+        .topbar-left { display: flex; align-items: center; gap: 14px; }
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--border-strong);
+            color: var(--text);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .back-btn:hover { background: var(--surface-2); }
+        .brand {
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: var(--accent);
+            font-size: 14px;
+        }
+        .topbar-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* LAYOUT */
+        .container {
+            max-width: 760px;
+            margin: 32px auto;
+            padding: 0 16px;
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .card-body { padding: 18px 20px; }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid var(--border-strong);
+            background: var(--surface-2);
+            color: var(--text);
+            transition: background 0.12s ease, transform 0.06s ease;
+        }
+        .btn:hover { background: var(--bg-card); filter: brightness(1.05); }
+        .btn:active { transform: translateY(1px); }
+        .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+        .btn-primary:hover { filter: brightness(1.1); background: var(--accent); }
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .btn-xs {
+            padding: 3px 8px;
+            font-size: 11px;
+            border-radius: 6px;
+        }
+        .btn-ghost {
+            background: transparent;
+            border-color: var(--border);
+        }
+        .btn-icon { padding: 5px 9px; }
+
+        /* AUTH PANEL */
+        .auth-empty {
+            text-align: center;
+            padding: 32px 0 18px;
+        }
+        .auth-empty .emoji {
+            font-size: 56px;
+            margin-bottom: 8px;
+        }
+        .auth-empty h3 {
+            margin: 0 0 6px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .auth-empty p {
+            color: var(--text-muted);
+            margin: 0 auto 22px;
+            font-size: 14px;
+            max-width: 460px;
+            line-height: 1.6;
+        }
+        .auth-code-box {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            text-align: left;
+            max-width: 460px;
+            margin: 0 auto;
+        }
+        .auth-code-box .step-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 0 0 6px;
+        }
+        .auth-code-box .verify-link {
+            color: var(--indigo);
+            font-weight: 600;
+            font-size: 13px;
+            word-break: break-all;
+        }
+        .auth-code-box .device-code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 5px;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            display: inline-block;
+            border: 1px solid var(--border-strong);
+            padding: 10px 18px;
+            border-radius: 7px;
+            margin-top: 4px;
+        }
+        .auth-status {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        /* CONNECTED PANEL */
+        .conn-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 14px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+        .conn-status-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        .dot { color: var(--green); font-weight: 700; }
+        .conn-status-right { display: flex; gap: 8px; }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 18px 0 8px;
+        }
+        .section-title h4 {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .section-title .hint {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            margin-bottom: 6px;
+        }
+        .row-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+        .row-name {
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .pill {
+            font-size: 10px;
+            padding: 1px 8px;
+            border-radius: 10px;
+            background: var(--green-soft);
+            color: var(--green);
+            border: 1px solid rgba(34,197,94,0.3);
+            white-space: nowrap;
+        }
+        .row-meta {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .row-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .auto-import {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: var(--text-muted);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .auto-import input { cursor: pointer; }
+
+        .backups-box {
+            background: rgba(0,0,0,0.25);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            min-height: 120px;
+            overflow: hidden;
+        }
+        .empty-msg {
+            text-align: center;
+            padding: 28px 12px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .auto-import-banner {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: var(--indigo-soft);
+            border: 1px solid rgba(99,102,241,0.3);
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--indigo);
+        }
+
+        .btn-backup { background: var(--indigo-soft); color: var(--indigo); border-color: rgba(99,102,241,0.3); }
+        .btn-restore { background: var(--green-soft); color: var(--green); border-color: rgba(34,197,94,0.3); }
+        .btn-delete { background: var(--red-soft); color: var(--red); border-color: rgba(239,68,68,0.3); }
+
+        /* TOAST */
+        .toast-wrap {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .toast {
+            min-width: 220px;
+            max-width: 320px;
+            padding: 10px 14px;
+            border-radius: 9px;
+            background: var(--surface);
+            border: 1px solid var(--border-strong);
+            color: var(--text);
+            font-size: 13px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+            pointer-events: auto;
+            transform: translateY(-6px);
+            opacity: 0;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { border-color: rgba(34,197,94,0.45); }
+        .toast.error { border-color: rgba(239,68,68,0.45); }
+        .toast.info { border-color: rgba(99,102,241,0.45); }
+        .toast-title { font-weight: 700; margin-bottom: 2px; }
+        .toast-msg { color: var(--text-muted); font-size: 12px; }
+
+        @media (max-width: 540px) {
+            .topbar { padding: 12px 14px; }
+            .container { padding: 0 10px; }
+            .row { flex-wrap: wrap; }
+            .auto-import { order: 3; width: 100%; margin-top: 4px; }
+        }
+
+        /* Frutiger Aero overrides — mirror the feed page so the cloud
+         * manager honours the user's saved palette when they pick the
+         * Aero theme. The aero-* tokens defined in
+         * /exocore/_shared/exo-frutiger-aero.css are RGB triples
+         * (e.g. "225 242 255"), so they have to ride inside rgba().
+         * Each rule has a neutral light fallback for the brief moment
+         * before the Aero stylesheet finishes loading. */
+        [data-mode="aero"] body {
+            color: var(--aero-deep, #03253c);
+        }
+        [data-mode="aero"] .topbar {
+            background: rgba(var(--aero-tint-light, 255 255 255), 0.55);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom-color: rgba(var(--aero-bord, 255 255 255), 0.45);
+        }
+        [data-mode="aero"] .topbar-title,
+        [data-mode="aero"] .card-title,
+        [data-mode="aero"] .section-title h4,
+        [data-mode="aero"] .row-name,
+        [data-mode="aero"] .auth-empty h3,
+        [data-mode="aero"] .toast-title { color: var(--aero-deep, #03253c); }
+        [data-mode="aero"] .topbar-title,
+        [data-mode="aero"] .row-meta,
+        [data-mode="aero"] .auth-empty p,
+        [data-mode="aero"] .auth-status,
+        [data-mode="aero"] .empty-msg,
+        [data-mode="aero"] .auth-code-box .step-label,
+        [data-mode="aero"] .toast-msg,
+        [data-mode="aero"] .section-title .hint { color: rgba(3, 37, 60, 0.7); }
+        [data-mode="aero"] .brand {
+            color: var(--aero-grad-2, #1f7fc4);
+        }
+        [data-mode="aero"] .card,
+        [data-mode="aero"] .auth-code-box,
+        [data-mode="aero"] .backups-box {
+            background: rgba(var(--aero-tint-light, 255 255 255), 0.55);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-color: rgba(var(--aero-bord, 255 255 255), 0.45);
+            box-shadow: 0 6px 18px rgba(var(--aero-shad, 0 30 60), 0.18);
+        }
+        [data-mode="aero"] .card-header {
+            border-bottom-color: rgba(var(--aero-bord, 255 255 255), 0.45);
+        }
+        [data-mode="aero"] .row {
+            background: rgba(var(--aero-tint-light, 255 255 255), 0.45);
+            border-color: rgba(var(--aero-bord, 255 255 255), 0.4);
+        }
+        [data-mode="aero"] .conn-status {
+            border-bottom-color: rgba(var(--aero-bord, 255 255 255), 0.45);
+        }
+        [data-mode="aero"] .btn,
+        [data-mode="aero"] .back-btn {
+            background: rgba(var(--aero-tint-light, 255 255 255), 0.6);
+            color: var(--aero-deep, #03253c);
+            border-color: rgba(var(--aero-bord, 255 255 255), 0.55);
+        }
+        [data-mode="aero"] .btn:hover,
+        [data-mode="aero"] .back-btn:hover {
+            background: rgba(var(--aero-tint-light, 255 255 255), 0.8);
+            filter: none;
+        }
+        [data-mode="aero"] .btn-primary {
+            background: linear-gradient(180deg, var(--aero-grad-1, #6cc8ff), var(--aero-grad-2, #1f7fc4));
+            color: #fff;
+            border-color: rgba(var(--aero-bord, 255 255 255), 0.55);
+        }
+        [data-mode="aero"] .btn-primary:hover {
+            background: linear-gradient(180deg, var(--aero-grad-1, #6cc8ff), var(--aero-grad-2, #1f7fc4));
+            filter: brightness(1.05);
+        }
+        [data-mode="aero"] .device-code {
+            background: rgba(var(--aero-tint-light, 255 255 255), 0.7);
+            color: var(--aero-deep, #03253c);
+            border-color: rgba(var(--aero-bord, 255 255 255), 0.55);
+        }
+        [data-mode="aero"] .toast {
+            background: rgba(var(--aero-tint-light, 255 255 255), 0.85);
+            color: var(--aero-deep, #03253c);
+            border-color: rgba(var(--aero-bord, 255 255 255), 0.55);
+            box-shadow: 0 8px 24px rgba(var(--aero-shad, 0 30 60), 0.22);
+        }
+        [data-mode="aero"] a,
+        [data-mode="aero"] .auth-code-box .verify-link {
+            color: var(--aero-grad-2, #1f7fc4);
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-left">
+        <button class="back-btn" id="backBtn">← Dashboard</button>
+        <span class="brand">EXOCORE</span>
+        <span class="topbar-title">· Cloud Manager</span>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">☁️ Google Drive — Cloud Backups</h2>
+            <span id="connBadge" style="font-size: 11px; color: var(--text-muted);">checking…</span>
+        </div>
+        <div class="card-body" id="cardBody">
+            <div class="empty-msg">Loading…</div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- Foundation: WSS multiplex carrier + msgpack-encoded RPC client.
+     Same client/access/{wsMux,rpcClient}.ts contract the React app uses.
+     Phase 3.M: ExoStorage (IndexedDB-backed sync KV) MUST load before
+     exo-rpc.js so the RPC client can pull the auth token out of IDB
+     instead of localStorage. -->
+<script src="/exocore/_shared/vendor/msgpack.min.js"></script>
+<script src="/exocore/_shared/exo-storage.js"></script>
+<script src="/exocore/_shared/exo-rpc.js"></script>
+<!-- Theme bridge — applies the user's saved palette to all
+     CSS tokens above so this page tracks the dashboard's theme. -->
+<script src="/exocore/editor/scripts/themes.js"></script>
+<script src="/exocore/_shared/exo-theme-apply.js"></script>
+
+<script>
+    /*
+     * Cloud Manager — vanilla port of client/home/GDriveManager.tsx.
+     * All server traffic flows through the persistent WSS RPC carrier
+     * (window.ExoRPC), exactly like the React client. The panel token
+     * is read from ExoStorage by ExoRPC and rides INSIDE the open
+     * frame — never as ?token=… in the URL.
+     *
+     * Token, GDrive tokens, and auto-import list all live in IndexedDB
+     * via ExoStorage (Phase 3.M migration; previously plain localStorage).
+     */
+
+    const TOKEN_KEY = 'exo_token';
+    const GDRIVE_KEY = 'gdrive_tokens';
+    const AUTOIMPORT_KEY = 'exo_auto_imports';
+
+    const $ = (id) => document.getElementById(id);
+    const escapeHtml = (s) => String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+    // ----- ExoStorage (IndexedDB-backed) helpers -----
+    // The cache is hydrated synchronously after `await ExoStorage.ready`
+    // (we await it once at the top of init()), so getItem() here is safe.
+    function readJson(key) {
+        try {
+            const raw = ExoStorage.getItem(key);
+            return raw ? JSON.parse(raw) : null;
+        } catch { return null; }
+    }
+    function writeJson(key, val) {
+        try { ExoStorage.setItem(key, JSON.stringify(val)); } catch {}
+    }
+    function dropKey(key) {
+        try { ExoStorage.removeItem(key); } catch {}
+    }
+    function exoToken() {
+        try { return ExoStorage.getItem(TOKEN_KEY); } catch { return null; }
+    }
+
+    // ----- toast -----
+    function showAlert(title, msg, kind) {
+        const cls = kind || 'info';
+        const wrap = $('toastWrap');
+        const node = document.createElement('div');
+        node.className = 'toast ' + cls;
+        node.innerHTML = '<div class="toast-title">' + escapeHtml(title) + '</div>' +
+                         '<div class="toast-msg">' + escapeHtml(msg) + '</div>';
+        wrap.appendChild(node);
+        requestAnimationFrame(() => node.classList.add('show'));
+        setTimeout(() => {
+            node.classList.remove('show');
+            setTimeout(() => node.remove(), 250);
+        }, 3500);
+    }
+
+    // ----- RPC wrapper -----
+    // ExoRPC.call resolves with the body or rejects with an Error
+    // whose .status is the original HTTP status. 401/403 → bounce
+    // back to /exocore/login (matches the React client's behaviour).
+    async function rpc(method, data) {
+        if (!window.ExoRPC) throw new Error('ExoRPC not loaded');
+        try {
+            return await window.ExoRPC.call(method, data || {});
+        } catch (err) {
+            if (err && (err.status === 401 || err.status === 403)) {
+                dropKey(TOKEN_KEY);
+                location.href = '/exocore/login';
+                throw new Error('auth');
+            }
+            throw err;
+        }
+    }
+
+    // ----- application state -----
+    const state = {
+        token: null,
+        projects: [],
+        gdriveTokens: null,
+        authData: null,           // { device_code, user_code, verification_url }
+        pollTimer: null,
+        backups: [],
+        autoImports: [],
+        loadingBackups: false,
+        backingUp: null,
+        restoring: null,
+        deleting: null,
+    };
+
+    // ----- bootstrap -----
+    async function init() {
+        /* Phase 3.M: hydrate the IndexedDB-backed cache before
+         * touching ANY persisted key (token, gdrive tokens, auto-
+         * imports). Once this resolves, every getItem/setItem is
+         * synchronous, so the rest of init() reads exactly like
+         * the old localStorage code. */
+        try { await window.ExoStorage.ready; } catch (_) {}
+
+        state.token = exoToken();
+        if (!state.token) {
+            location.href = '/exocore/login';
+            return;
+        }
+
+        state.gdriveTokens = readJson(GDRIVE_KEY);
+        state.autoImports = readJson(AUTOIMPORT_KEY) || [];
+
+        // Pull projects + (if connected) backups in parallel — both ride
+        // the same RPC socket, so this is a single TCP flight.
+        const tasks = [loadProjects()];
+        if (state.gdriveTokens) tasks.push(fetchBackups(true));
+        await Promise.all(tasks).catch(() => {});
+
+        render();
+    }
+
+    async function loadProjects() {
+        try {
+            const data = await rpc('projects.list');
+            state.projects = Array.isArray(data && data.projects) ? data.projects
+                : Array.isArray(data) ? data : [];
+        } catch (err) {
+            if (err && err.message === 'auth') return;
+            state.projects = [];   // non-fatal
+        }
+    }
+
+    // ----- Google Drive auth -----
+    async function getValidAccessToken(tokens) {
+        if (!tokens || !tokens.refresh_token) return tokens && tokens.access_token;
+        try {
+            const res = await rpc('gdrive.refreshToken', { refresh_token: tokens.refresh_token });
+            if (res && res.success) {
+                const updated = Object.assign({}, tokens, res.tokens);
+                writeJson(GDRIVE_KEY, updated);
+                state.gdriveTokens = updated;
+                return updated.access_token;
+            }
+        } catch {}
+        return tokens.access_token;
+    }
+
+    async function connectGDrive() {
+        try {
+            const data = await rpc('gdrive.deviceCode');
+            state.authData = data;
+            render();
+            startPolling(data.device_code);
+        } catch {
+            showAlert('Error', 'Failed to initialize Google Drive connection.', 'error');
+        }
+    }
+
+    function startPolling(deviceCode) {
+        if (state.pollTimer) clearInterval(state.pollTimer);
+        state.pollTimer = setInterval(async () => {
+            try {
+                const data = await rpc('gdrive.pollToken', { device_code: deviceCode });
+                // Server returns { success: true, tokens } once authorized;
+                // anything else (including { success: false }) means "still pending"
+                // and we just wait for the next tick.
+                if (data && data.success && data.tokens) {
+                    clearInterval(state.pollTimer);
+                    state.pollTimer = null;
+                    writeJson(GDRIVE_KEY, data.tokens);
+                    state.gdriveTokens = data.tokens;
+                    state.authData = null;
+                    showAlert('Success', 'Google Drive connected!', 'success');
+                    await fetchBackups();
+                    render();
+                }
+            } catch (err) {
+                if (err && err.message === 'auth') return;   // already redirected
+                clearInterval(state.pollTimer);
+                state.pollTimer = null;
+                state.authData = null;
+                showAlert('Error', 'Authentication timed out or failed.', 'error');
+                render();
+            }
+        }, 5000);
+    }
+
+    function disconnectGDrive() {
+        dropKey(GDRIVE_KEY);
+        dropKey(AUTOIMPORT_KEY);
+        state.gdriveTokens = null;
+        state.backups = [];
+        state.autoImports = [];
+        showAlert('Disconnected', 'Google Drive unlinked.', 'info');
+        render();
+    }
+
+    // ----- backups -----
+    async function fetchBackups(silent) {
+        if (!state.gdriveTokens) return;
+        state.loadingBackups = true;
+        if (!silent) render();
+        try {
+            const accessToken = await getValidAccessToken(state.gdriveTokens);
+            const data = await rpc('gdrive.listBackups', { access_token: accessToken });
+            if (data && data.success) state.backups = data.backups || [];
+        } catch (err) {
+            if (!(err && err.message === 'auth')) {
+                showAlert('Error', 'Could not list backups from Google Drive.', 'error');
+            }
+        } finally {
+            state.loadingBackups = false;
+            render();
+        }
+    }
+
+    async function handleBackup(projectName) {
+        if (!state.gdriveTokens) return;
+        state.backingUp = projectName;
+        render();
+        try {
+            const accessToken = await getValidAccessToken(state.gdriveTokens);
+            await rpc('gdrive.backup', {
+                access_token: accessToken,
+                refresh_token: state.gdriveTokens.refresh_token,
+                project_name: projectName,
+            });
+            showAlert('Backup Done', "'" + projectName + "' backed up to Google Drive.", 'success');
+            await fetchBackups(true);
+        } catch (err) {
+            if (!(err && err.message === 'auth')) {
+                showAlert('Error', "Failed to backup '" + projectName + "'.", 'error');
+            }
+        } finally {
+            state.backingUp = null;
+            render();
+        }
+    }
+
+    async function handleRestore(backup) {
+        if (!state.gdriveTokens) return;
+        state.restoring = backup.id;
+        render();
+        try {
+            const accessToken = await getValidAccessToken(state.gdriveTokens);
+            await rpc('gdrive.restore', {
+                access_token: accessToken,
+                file_id: backup.id,
+                project_name: backup.name,
+            });
+            showAlert('Restored', "'" + backup.name + "' has been restored.", 'success');
+        } catch (err) {
+            if (!(err && err.message === 'auth')) {
+                showAlert('Error', "Failed to restore '" + backup.name + "'.", 'error');
+            }
+        } finally {
+            state.restoring = null;
+            render();
+        }
+    }
+
+    async function handleDelete(backup) {
+        if (!state.gdriveTokens) return;
+        if (!confirm("Delete backup for '" + backup.name + "'? This cannot be undone.")) return;
+        state.deleting = backup.id;
+        render();
+        try {
+            const accessToken = await getValidAccessToken(state.gdriveTokens);
+            await rpc('gdrive.deleteBackup', { access_token: accessToken, file_id: backup.id });
+            showAlert('Deleted', "Backup for '" + backup.name + "' deleted.", 'success');
+            state.backups = state.backups.filter((b) => b.id !== backup.id);
+            if (state.autoImports.includes(backup.name)) {
+                toggleAutoImport(backup.name, true);
+            }
+        } catch (err) {
+            if (!(err && err.message === 'auth')) {
+                showAlert('Error', 'Failed to delete backup.', 'error');
+            }
+        } finally {
+            state.deleting = null;
+            render();
+        }
+    }
+
+    async function handleBackupAll() {
+        if (!state.gdriveTokens) return;
+        const active = state.projects.filter((p) => p.status !== 'Archived');
+        if (active.length === 0) {
+            showAlert('Info', 'No projects to backup.', 'info');
+            return;
+        }
+        showAlert('Info', 'Backing up ' + active.length + ' project(s)…', 'info');
+        for (const p of active) {
+            await handleBackup(p.name || p.id);
+        }
+        showAlert('Done', 'All projects backed up!', 'success');
+    }
+
+    function toggleAutoImport(projectName, skipRender) {
+        const has = state.autoImports.includes(projectName);
+        state.autoImports = has
+            ? state.autoImports.filter((p) => p !== projectName)
+            : state.autoImports.concat([projectName]);
+        writeJson(AUTOIMPORT_KEY, state.autoImports);
+        if (!skipRender) render();
+    }
+
+    // ----- formatting -----
+    function formatSize(bytes) {
+        if (!bytes) return '';
+        const n = parseInt(bytes, 10);
+        if (!isFinite(n)) return '';
+        if (n > 1024 * 1024) return (n / 1024 / 1024).toFixed(1) + ' MB';
+        if (n > 1024) return (n / 1024).toFixed(1) + ' KB';
+        return n + ' B';
+    }
+    function formatDate(iso) {
+        if (!iso) return '';
+        try {
+            return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+        } catch { return ''; }
+    }
+
+    // ----- render -----
+    function render() {
+        $('connBadge').textContent = state.gdriveTokens ? '● Connected' : 'Not connected';
+        $('connBadge').style.color = state.gdriveTokens ? 'var(--green)' : 'var(--text-muted)';
+
+        const body = $('cardBody');
+
+        if (!state.gdriveTokens) {
+            body.innerHTML = renderEmpty();
+            wireEmpty();
+            return;
+        }
+
+        body.innerHTML = renderConnected();
+        wireConnected();
+    }
+
+    function renderEmpty() {
+        if (state.authData) {
+            const a = state.authData;
+            return '' +
+                '<div class="auth-empty">' +
+                '  <div class="emoji">🔐</div>' +
+                '  <h3>Authorize Exocore</h3>' +
+                '  <p>Open the link below and enter the verification code to grant access. We poll automatically — no need to refresh.</p>' +
+                '  <div class="auth-code-box">' +
+                '    <p class="step-label">1. Open this link in your browser:</p>' +
+                '    <a class="verify-link" href="' + escapeHtml(a.verification_url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(a.verification_url) + '</a>' +
+                '    <p class="step-label" style="margin-top: 14px;">2. Enter this code:</p>' +
+                '    <div class="device-code">' + escapeHtml(a.user_code) + '</div>' +
+                '    <p class="auth-status">⏳ Waiting for authorization…</p>' +
+                '  </div>' +
+                '</div>';
+        }
+        return '' +
+            '<div class="auth-empty">' +
+            '  <div class="emoji">📁</div>' +
+            '  <h3>Secure your workspace</h3>' +
+            '  <p>Connect your Google Drive to back up and restore your projects — even after server restarts on Render, Railway, or Hugging Face.</p>' +
+            '  <button class="btn btn-primary" id="connectBtn">🔑 Connect Google Drive</button>' +
+            '</div>';
+    }
+
+    function wireEmpty() {
+        const btn = $('connectBtn');
+        if (btn) btn.addEventListener('click', connectGDrive);
+    }
+
+    function renderConnected() {
+        const active = state.projects.filter((p) => p.status !== 'Archived');
+        const backupNames = new Set(state.backups.map((b) => b.name));
+
+        const projectRows = active.length === 0
+            ? '<p style="color: var(--text-muted); font-size: 13px;">No active projects found.</p>'
+            : active.map((p) => {
+                const projName = p.name || p.id;
+                const has = backupNames.has(projName);
+                const isBacking = state.backingUp === projName;
+                return '' +
+                    '<div class="row">' +
+                    '  <div class="row-left">' +
+                    '    <span class="row-name">' + escapeHtml(projName) + '</span>' +
+                    (has ? '<span class="pill">backed up</span>' : '') +
+                    '  </div>' +
+                    '  <button class="btn btn-xs btn-backup" data-act="backup" data-name="' + escapeHtml(projName) + '" ' + (isBacking ? 'disabled' : '') + '>' +
+                    (isBacking ? '⏳' : '⬆ Backup') +
+                    '  </button>' +
+                    '</div>';
+            }).join('');
+
+        const backupsHtml = state.loadingBackups
+            ? '<div class="empty-msg">Loading backups…</div>'
+            : state.backups.length === 0
+                ? '<div class="empty-msg">No backups found in Google Drive.</div>'
+                : state.backups.map((b) => {
+                    const isRestoring = state.restoring === b.id;
+                    const isDeleting = state.deleting === b.id;
+                    const checked = state.autoImports.includes(b.name) ? 'checked' : '';
+                    return '' +
+                        '<div class="row" style="border:none; border-bottom:1px solid var(--border); border-radius:0; margin:0;">' +
+                        '  <div class="row-left" style="flex:1; min-width:0;">' +
+                        '    <div style="min-width:0;">' +
+                        '      <div class="row-name">' + escapeHtml(b.name) + '</div>' +
+                        '      <div class="row-meta">' +
+                        (b.size ? escapeHtml(formatSize(b.size)) : '') +
+                        (b.modifiedTime ? ' · ' + escapeHtml(formatDate(b.modifiedTime)) : '') +
+                        '      </div>' +
+                        '    </div>' +
+                        '  </div>' +
+                        '  <label class="auto-import">' +
+                        '    <input type="checkbox" data-act="autoimport" data-name="' + escapeHtml(b.name) + '" ' + checked + ' />' +
+                        '    Auto-import' +
+                        '  </label>' +
+                        '  <button class="btn btn-xs btn-restore" data-act="restore" data-id="' + escapeHtml(b.id) + '" ' + (isRestoring ? 'disabled' : '') + '>' +
+                        (isRestoring ? '⏳' : '⬇ Restore') +
+                        '  </button>' +
+                        '  <button class="btn btn-xs btn-delete" data-act="delete" data-id="' + escapeHtml(b.id) + '" ' + (isDeleting ? 'disabled' : '') + '>' +
+                        (isDeleting ? '⏳' : '🗑') +
+                        '  </button>' +
+                        '</div>';
+                }).join('');
+
+        const autoImportBanner = state.autoImports.length > 0
+            ? '<div class="auto-import-banner">✅ Auto-import enabled for: ' +
+                escapeHtml(state.autoImports.join(', ')) +
+                '. These will be restored automatically when not found on the server.</div>'
+            : '';
+
+        return '' +
+            '<div class="conn-status">' +
+            '  <div class="conn-status-left"><span class="dot">●</span> <strong>Connected</strong> <span style="color: var(--text-muted); font-size: 12px;">Google Drive</span></div>' +
+            '  <div class="conn-status-right">' +
+            '    <button class="btn btn-primary btn-sm" id="backupAllBtn" ' + (state.backingUp ? 'disabled' : '') + '>' +
+            (state.backingUp ? '⏳ Backing up…' : '⬆ Backup All') +
+            '    </button>' +
+            '    <button class="btn btn-sm" id="unlinkBtn">Unlink</button>' +
+            '  </div>' +
+            '</div>' +
+
+            '<div class="section-title"><h4>Your Projects</h4><span class="hint">Backup individual projects</span></div>' +
+            '<div>' + projectRows + '</div>' +
+
+            '<div class="section-title">' +
+            '  <h4>Saved Backups on Drive</h4>' +
+            '  <button class="btn btn-xs btn-ghost" id="refreshBtn" ' + (state.loadingBackups ? 'disabled' : '') + '>' +
+            (state.loadingBackups ? '⏳' : '↻') + ' Refresh' +
+            '  </button>' +
+            '</div>' +
+            '<div class="backups-box">' + backupsHtml + '</div>' +
+            autoImportBanner;
+    }
+
+    function wireConnected() {
+        const all = $('backupAllBtn'); if (all) all.addEventListener('click', handleBackupAll);
+        const unlink = $('unlinkBtn'); if (unlink) unlink.addEventListener('click', disconnectGDrive);
+        const refresh = $('refreshBtn'); if (refresh) refresh.addEventListener('click', () => fetchBackups());
+
+        document.querySelectorAll('[data-act="backup"]').forEach((b) => {
+            b.addEventListener('click', () => handleBackup(b.dataset.name));
+        });
+        document.querySelectorAll('[data-act="restore"]').forEach((b) => {
+            b.addEventListener('click', () => {
+                const backup = state.backups.find((x) => x.id === b.dataset.id);
+                if (backup) handleRestore(backup);
+            });
+        });
+        document.querySelectorAll('[data-act="delete"]').forEach((b) => {
+            b.addEventListener('click', () => {
+                const backup = state.backups.find((x) => x.id === b.dataset.id);
+                if (backup) handleDelete(backup);
+            });
+        });
+        document.querySelectorAll('[data-act="autoimport"]').forEach((b) => {
+            b.addEventListener('change', () => toggleAutoImport(b.dataset.name));
+        });
+    }
+
+    // Header buttons
+    $('backBtn').addEventListener('click', () => location.href = '/exocore/dashboard');
+
+    init();
+</script>
+
+</body>
+</html>

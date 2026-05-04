@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Community Feed — Exocore</title>
+    <link rel="icon" href="/exocore/exo-icon.png" type="image/png">
+    <!-- Pre-paint mode bootstrap (mirrors dashboard.html). -->
+    <script>
+        (function () {
+            try {
+                var html = document.documentElement;
+                var id = localStorage.getItem('exo:theme') || '';
+                if (id) html.dataset.theme = id;
+                try {
+                    var vars = JSON.parse(localStorage.getItem('exo:theme-vars') || 'null');
+                    if (vars) {
+                        var cs = vars['color-scheme'];
+                        if (cs) html.style.setProperty('color-scheme', cs);
+                        var keys = Object.keys(vars);
+                        for (var i = 0; i < keys.length; i++) {
+                            var k = keys[i];
+                            if (k !== 'color-scheme' && vars[k]) html.style.setProperty(k, vars[k]);
+                        }
+                    }
+                } catch (_) {}
+                var AERO = ['frutiger-aero'];
+                if (AERO.indexOf(id) !== -1) {
+                    html.dataset.mode = 'aero';
+                    html.classList.add('exo-booting');
+                    var t = setTimeout(function () { html.classList.remove('exo-booting'); }, 500);
+                    var l = document.createElement('link');
+                    l.rel = 'stylesheet';
+                    l.href = '/exocore/_shared/exo-frutiger-aero.css';
+                    l.setAttribute('data-exo-aero', '1');
+                    l.onload = function () { clearTimeout(t); html.classList.remove('exo-booting'); };
+                    l.onerror = function () { clearTimeout(t); html.classList.remove('exo-booting'); };
+                    document.head.appendChild(l);
+                }
+            } catch (e) {
+                try { document.documentElement.classList.remove('exo-booting'); } catch (_) {}
+            }
+        })();
+    </script>
+    <style>
+                html.exo-booting body { visibility: hidden !important; }
+:root {
+            color-scheme: dark;
+            --bg-base: #0e1525;
+            --bg-elev: #1c2333;
+            --bg-card: #18213a;
+            --text-primary: #f5f9f9;
+            --text-secondary: #808ca3;
+            --text-muted: rgba(128, 140, 163, 0.7);
+            --accent: #00a1ff;
+            --accent-soft: rgba(0, 161, 255, 0.10);
+            --border: rgba(245, 249, 249, 0.10);
+            --border-strong: rgba(245, 249, 249, 0.18);
+            --green: #00FF94;
+            --red: #FF3B3B;
+            --orange: #f59e0b;
+            --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; background: var(--bg-base); color: var(--text-primary); font-family: var(--font-sans); min-height: 100vh; }
+        [hidden] { display: none !important; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .page {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 18px 16px 80px;
+        }
+        .topbar {
+            display: flex; align-items: center; gap: 10px;
+            padding: 6px 0 16px;
+        }
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: transparent; color: var(--text-primary);
+            border: 1px solid var(--border-strong); border-radius: 8px;
+            padding: 6px 12px; cursor: pointer; font-size: 0.85rem;
+            transition: background 0.15s ease;
+        }
+        .back-btn:hover { background: var(--bg-elev); }
+        .topbar h1 {
+            font-size: 1.15rem; margin: 0; flex: 1;
+            color: var(--text-primary); font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+        .topbar .pill {
+            font-size: 0.7rem; color: var(--accent);
+            background: var(--accent-soft);
+            padding: 4px 9px; border-radius: 999px;
+            border: 1px solid var(--border);
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+        .composer textarea {
+            width: 100%;
+            min-height: 80px;
+            background: var(--bg-elev);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            resize: vertical;
+        }
+        .composer textarea:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
+        .composer-actions {
+            display: flex; align-items: center; gap: 10px;
+            margin-top: 10px; flex-wrap: wrap;
+        }
+        .file-pick {
+            display: inline-flex; align-items: center; gap: 6px;
+            cursor: pointer; padding: 6px 11px;
+            border-radius: 8px; border: 1px solid var(--border-strong);
+            color: var(--text-secondary); font-size: 0.78rem;
+        }
+        .file-pick:hover { background: var(--bg-elev); }
+        .file-pick input { display: none; }
+        .file-name { font-size: 0.75rem; color: var(--text-muted); }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 6px; padding: 8px 16px;
+            border-radius: 9px; border: 0; cursor: pointer;
+            font-family: inherit; font-size: 0.85rem; font-weight: 600;
+            transition: filter 0.15s ease, opacity 0.15s ease;
+        }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { filter: brightness(1.1); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .composer-preview { margin-top: 10px; }
+        .composer-preview img {
+            max-width: 200px; max-height: 130px;
+            border-radius: 8px; border: 1px solid var(--border);
+        }
+        .composer-spacer { flex: 1; }
+
+        .feed-status {
+            text-align: center;
+            padding: 26px 16px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        .feed-status.error { color: var(--red); }
+
+        .post-list { display: flex; flex-direction: column; gap: 18px; }
+        .post-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        }
+        .post-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 18px;
+            border: 1px solid transparent;
+            background: linear-gradient(135deg, rgba(0,161,255,0.12), rgba(120,80,255,0.08)) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .post-card:hover {
+            border-color: rgba(0,161,255,0.22);
+            box-shadow: 0 4px 24px rgba(0,161,255,0.08), 0 2px 12px rgba(0,0,0,0.35);
+        }
+        .post-card-inner {
+            padding: 14px 16px 0;
+            position: relative;
+            z-index: 1;
+        }
+        .post-card-body-wrap {
+            padding: 0 16px;
+            position: relative;
+            z-index: 1;
+        }
+        .post-head {
+            display: flex; align-items: center; gap: 11px; margin-bottom: 10px;
+        }
+        .post-avatar-wrap {
+            position: relative; flex-shrink: 0;
+        }
+        .post-avatar {
+            width: 42px; height: 42px;
+            border-radius: 50%; object-fit: cover;
+            background: var(--accent-soft);
+            border: 2px solid rgba(0,161,255,0.25);
+            box-shadow: 0 0 0 1px rgba(0,161,255,0.1);
+            flex-shrink: 0;
+            display: block;
+        }
+        .post-author {
+            font-weight: 700; font-size: 0.9rem; color: var(--text-primary);
+            display: flex; align-items: center; gap: 5px;
+        }
+        .post-author a { color: inherit; }
+        .post-handle {
+            font-size: 0.72rem; color: var(--text-muted); font-weight: 400;
+            margin-top: 1px;
+        }
+        .post-time {
+            font-size: 0.68rem; color: var(--text-muted);
+            margin-left: auto; white-space: nowrap; padding-top: 2px;
+        }
+        .post-pending-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            font-size: 0.64rem; font-weight: 700; letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--orange, #f59e0b);
+            background: rgba(245,158,11,0.12);
+            border: 1px solid rgba(245,158,11,0.25);
+            border-radius: 999px; padding: 2px 8px;
+        }
+        .post-body {
+            font-size: 0.93rem; line-height: 1.65;
+            color: var(--text-primary);
+            white-space: pre-wrap; word-wrap: break-word;
+            margin: 0 0 12px;
+        }
+        .post-image-wrap { margin: 0 0 12px; }
+        .post-image-wrap img {
+            max-width: 100%; max-height: 380px;
+            border-radius: 10px; border: 1px solid var(--border);
+            display: block;
+        }
+        .post-actions {
+            display: flex; align-items: center; gap: 4px;
+            font-size: 0.78rem; color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            padding: 8px 16px;
+            position: relative; z-index: 1;
+        }
+        .post-action {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: transparent; border: 0; cursor: pointer;
+            color: var(--text-secondary); padding: 6px 10px;
+            border-radius: 8px; font-family: inherit; font-size: 0.78rem;
+            font-weight: 500; transition: all 0.15s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .post-action:hover { background: rgba(0,161,255,0.08); color: var(--accent); }
+        .post-action.active { color: #ff5f82; }
+        .post-action.active:hover { background: rgba(255,95,130,0.1); }
+        .post-action svg { width: 16px; height: 16px; }
+        .post-spacer { flex: 1; }
+        .post-comments {
+            margin-top: 10px; padding-top: 8px;
+            border-top: 1px dashed var(--border);
+        }
+        .post-comment {
+            display: flex; gap: 8px; padding: 5px 0;
+        }
+        .post-comment-avatar {
+            width: 26px; height: 26px; border-radius: 50%;
+            background: var(--accent-soft); border: 1px solid var(--border);
+            object-fit: cover; flex-shrink: 0;
+        }
+        .post-comment-body { flex: 1; min-width: 0; }
+        .post-comment-author { font-weight: 600; font-size: 0.76rem; }
+        .post-comment-time { font-size: 0.66rem; color: var(--text-muted); margin-left: 4px; }
+        .post-comment-text { font-size: 0.82rem; color: var(--text-primary); word-wrap: break-word; }
+        .post-comment-composer {
+            display: flex; gap: 6px; margin-top: 6px;
+        }
+        .post-comment-input {
+            flex: 1; padding: 6px 9px;
+            border-radius: 7px; border: 1px solid var(--border);
+            background: var(--bg-elev); color: var(--text-primary);
+            font-size: 0.78rem; font-family: inherit;
+        }
+
+        @media (max-width: 540px) {
+            .page { padding: 14px 10px 80px; }
+            .topbar h1 { font-size: 1rem; }
+        }
+
+        /* Fenced code blocks (```lang ... ```) and inline `code` rendered
+           inside post bodies + comments. Mirrors dashboard.html so posts
+           look the same in both surfaces. */
+        .code-wrap { position: relative; margin: 8px 0; }
+        .code-block {
+            display: block; padding: 28px 12px 10px; margin: 0;
+            background: #0c0d10; color: #e0e3e8;
+            border-radius: 8px; border: 1px solid #2a2d33;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 0.78rem; overflow-x: auto; white-space: pre;
+            position: relative;
+        }
+        .code-block::before {
+            content: attr(data-lang); position: absolute; top: 6px; left: 10px;
+            font-size: 0.6rem; color: #8b8f96; text-transform: uppercase;
+            letter-spacing: 0.05em; pointer-events: none;
+        }
+        .code-block .tk-kw  { color: #f9d34a; font-weight: 700; }
+        .code-block .tk-str { color: #6ee7b7; }
+        .code-block .tk-cmt { color: #6b7280; font-style: italic; }
+        .code-block .tk-num { color: #f87171; }
+        .code-block .tk-fn  { color: #93c5fd; }
+        .code-inline {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 4px;
+            font-size: 0.85em;
+        }
+        .code-copy-btn {
+            position: absolute; top: 4px; right: 4px; z-index: 2;
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 8px; border-radius: 6px;
+            background: rgba(255, 229, 0, 0.10); color: #e0e3e8;
+            border: 1px solid #2a2d33; cursor: pointer;
+            font: inherit; font-size: 0.66rem; font-weight: 700;
+            letter-spacing: 0.04em; text-transform: uppercase;
+            transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s;
+        }
+        .code-copy-btn:hover {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+        .code-copy-btn:active { transform: scale(0.96); }
+        .code-copy-btn.is-copied {
+            background: #34d399; color: #000; border-color: #34d399;
+        }
+        .code-copy-btn.is-failed {
+            background: #f87171; color: #000; border-color: #f87171;
+        }
+        .code-copy-icon { font-size: 0.85rem; line-height: 1; }
+        @media (max-width: 480px) {
+            .code-copy-label { display: none; }
+            .code-copy-btn { padding: 4px 6px; }
+        }
+
+        /* Code blocks inside post bodies should NOT inherit the dark
+           Aero text color — keep the syntax theme readable on glass. */
+        [data-mode="aero"] .post-body .code-block,
+        [data-mode="aero"] .post-comment-text .code-block { color: #e0e3e8; }
+        [data-mode="aero"] .code-inline {
+            background: rgba(3, 37, 60, 0.10);
+            color: var(--aero-deep, #03253c);
+        }
+
+        /* Aero overrides — tap into the palette tokens written by
+         * exo-frutiger-aero.css. The aero-* tokens are RGB triples
+         * (e.g. "225, 242, 255") so they have to ride inside rgba().
+         * Falling back to neutral light colors keeps the page legible
+         * if the Aero stylesheet hasn't loaded yet. */
+        [data-mode="aero"] .card,
+        [data-mode="aero"] .post-card {
+            background: rgba(var(--aero-tint-light, 255 255 255), 0.55);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-color: rgba(var(--aero-bord, 255 255 255), 0.45);
+            box-shadow: 0 6px 18px rgba(var(--aero-shad, 0 30 60), 0.18);
+        }
+        [data-mode="aero"] .topbar h1,
+        [data-mode="aero"] .post-author,
+        [data-mode="aero"] .post-body,
+        [data-mode="aero"] .post-comment-author,
+        [data-mode="aero"] .post-comment-text { color: var(--aero-deep, #03253c); }
+        [data-mode="aero"] .composer textarea,
+        [data-mode="aero"] .post-comment-input {
+            background: rgba(var(--aero-tint-light, 255 255 255), 0.7);
+            color: var(--aero-deep, #03253c);
+            border-color: rgba(var(--aero-bord, 255 255 255), 0.55);
+        }
+        [data-mode="aero"] .btn-primary {
+            background: linear-gradient(180deg, var(--aero-grad-1, #6cc8ff), var(--aero-grad-2, #1f7fc4));
+            color: #fff;
+        }
+        [data-mode="aero"] .back-btn {
+            background: rgba(var(--aero-tint-light, 255 255 255), 0.6);
+            color: var(--aero-deep, #03253c);
+            border-color: rgba(var(--aero-bord, 255 255 255), 0.55);
+        }
+
+        /* ══════════════════════════════════════════════════════════
+         * Feed — 2026 upgrade: swipe-to-reply, long-press, context menu
+         * ══════════════════════════════════════════════════════════ */
+        .post-card {
+            touch-action: pan-y;
+            will-change: transform;
+        }
+        .post-card.is-swiping { transition: none !important; }
+        .post-card.swipe-ready {
+            box-shadow: -3px 0 0 0 var(--accent, #00a1ff),
+                        0 4px 24px rgba(0,161,255,0.15), 0 2px 12px rgba(0,0,0,0.35) !important;
+        }
+        .post-card.reply-flash {
+            border-color: rgba(0,161,255,0.55) !important;
+            box-shadow: 0 0 0 2px rgba(0,161,255,0.18), 0 4px 24px rgba(0,161,255,0.12) !important;
+            transition: border-color 0.2s, box-shadow 0.2s !important;
+        }
+        .post-card.is-longpress {
+            transform: scale(0.988);
+            box-shadow: 0 0 0 3px rgba(0,161,255,0.22), 0 4px 24px rgba(0,161,255,0.1) !important;
+            transition: transform 0.18s, box-shadow 0.18s !important;
+        }
+
+        /* Context menu */
+        .post-ctx-menu {
+            position: fixed; z-index: 9000;
+            background: var(--bg-card, #18213a);
+            border: 1px solid var(--border-strong, rgba(245,249,249,0.18));
+            border-radius: 12px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.35);
+            padding: 5px;
+            min-width: 160px; max-width: 220px;
+            animation: ctxFadeIn 0.16s cubic-bezier(0.4,0,0.2,1);
+            transform-origin: top right;
+        }
+        @keyframes ctxFadeIn {
+            from { opacity: 0; transform: scale(0.92) translateY(-6px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .post-ctx-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 13px; border-radius: 7px;
+            font-size: 0.85rem; font-weight: 600;
+            cursor: pointer; color: var(--text-primary, #f5f9f9);
+            border: 0; background: transparent; width: 100%;
+            text-align: left; font-family: inherit;
+            transition: background 0.1s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .post-ctx-item:hover { background: rgba(0,161,255,0.10); color: var(--accent, #00a1ff); }
+        .post-ctx-item.danger { color: var(--red, #ff3b3b); }
+        .post-ctx-item.danger:hover { background: rgba(255,59,59,0.12); }
+        .post-ctx-icon { font-size: 1rem; flex-shrink: 0; width: 20px; text-align: center; }
+        .post-ctx-sep { height: 1px; background: var(--border, rgba(245,249,249,0.10)); margin: 4px 0; }
+
+        /* 3-dots more button */
+        .post-3dots-btn {
+            font-size: 1.15rem; letter-spacing: 1px;
+            padding: 5px 9px !important; opacity: 0.5;
+            transition: opacity 0.15s !important;
+        }
+        .post-3dots-btn:hover { opacity: 1; }
+
+        /* Approve button green style */
+        .post-ctx-item.approve { color: #00ff94; }
+        .post-ctx-item.approve:hover { background: rgba(0,255,148,0.1); color: #00ff94; }
+
+        /* Pending post card — amber left border so mods can scan quickly */
+        .post-card-pending {
+            border-left: 3px solid rgba(245,158,11,0.6) !important;
+        }
+
+        /* Aero context menu */
+        [data-mode="aero"] .post-ctx-menu {
+            background: rgba(207,233,255,0.92);
+            backdrop-filter: blur(18px);
+            border-color: rgba(255,255,255,0.6);
+            box-shadow: 0 12px 40px rgba(0,30,60,0.22), 0 2px 8px rgba(0,30,60,0.1);
+        }
+        [data-mode="aero"] .post-ctx-item { color: #03253c; }
+        [data-mode="aero"] .post-ctx-item:hover { background: rgba(0,100,200,0.1); color: #1a5a9a; }
+        [data-mode="aero"] .post-ctx-item.danger { color: #cc0000; }
+        [data-mode="aero"] .post-ctx-sep { background: rgba(3,37,60,0.1); }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="topbar">
+            <button class="back-btn" id="backBtn" type="button" aria-label="Back to dashboard">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+                <span>Back</span>
+            </button>
+            <h1>Community Feed</h1>
+            <span class="pill">Live · Random</span>
+        </div>
+
+        <div class="card composer">
+            <textarea id="composerText" placeholder="Share something with the community…" maxlength="1000"></textarea>
+            <div class="composer-actions">
+                <label class="file-pick">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <path d="M21 15l-5-5-9 9"/>
+                    </svg>
+                    <span>Attach image</span>
+                    <input id="composerFile" type="file" accept="image/*">
+                </label>
+                <span class="file-name" id="composerFileName"></span>
+                <span class="composer-spacer"></span>
+                <button class="btn btn-primary" id="postBtn" type="button">Post</button>
+            </div>
+            <div class="composer-preview" id="composerPreview"></div>
+        </div>
+
+        <div id="feedStatus" class="feed-status">Loading posts…</div>
+        <div id="feedList" class="post-list"></div>
+    </div>
+
+    <!-- Same script chain as dashboard so theme + RPC both come up
+         with the user's saved palette. -->
+    <script src="/exocore/_shared/exo-vendor.js"></script>
+    <script src="/exocore/_shared/vendor/msgpack.min.js"></script>
+    <script src="/exocore/_shared/exo-storage.js"></script>
+    <script src="/exocore/_shared/exo-rpc.js"></script>
+    <script src="/exocore/editor/scripts/themes.js"></script>
+    <script src="/exocore/_shared/exo-theme-apply.js"></script>
+    <script src="/exocore/feed/feed.js"></script>
+</body>
+</html>

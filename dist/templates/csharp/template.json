@@ -1,0 +1,11 @@
+{
+  "name": "C#",
+  "description": "C# / .NET project",
+  "language": "csharp",
+  "runtime": "dotnet",
+  "run": "dotnet run",
+  "port": 3000,
+  "install": true,
+  "category": "language",
+  "icon": "csharp"
+}

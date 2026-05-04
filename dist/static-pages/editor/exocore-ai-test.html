@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Exocore AI · WSS test</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --panel-2: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+    --accent: #58a6ff;
+    --accent-2: #d2a8ff;
+    --ok: #3fb950;
+    --warn: #d29922;
+    --err: #f85149;
+    --pill-brain: #6e40c9;
+    --pill-msg: #1f6feb;
+    --pill-pen: #db6d28;
+    --pill-book: #7d8590;
+    --pill-term: #238636;
+    --mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    font-size: 14px; line-height: 1.5;
+  }
+  header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px;
+    background: var(--panel); border-bottom: 1px solid var(--border);
+  }
+  header h1 { font-size: 14px; font-weight: 600; margin: 0; }
+  header .sub { color: var(--text-dim); font-size: 12px; }
+  .status {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 12px; font-family: var(--mono);
+    background: var(--panel-2); color: var(--text-dim);
+  }
+  .status::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--text-dim);
+  }
+  .status.connected { color: var(--ok); }
+  .status.connected::before { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .status.connecting { color: var(--warn); }
+  .status.connecting::before { background: var(--warn); }
+  .status.error { color: var(--err); }
+  .status.error::before { background: var(--err); }
+  main {
+    display: flex; flex-direction: column;
+    height: calc(100vh - 49px);
+    max-width: 920px; margin: 0 auto;
+  }
+  #log {
+    flex: 1; overflow-y: auto; padding: 16px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  #log:empty::before {
+    content: "Send a message to begin. Server should emit a planning event before any tokens.";
+    color: var(--text-dim); font-style: italic;
+  }
+  .row {
+    display: flex; flex-direction: column; gap: 6px;
+    animation: fade-in 0.18s ease-out;
+  }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .row.user .bubble {
+    background: var(--accent); color: #0d1117;
+    align-self: flex-end; max-width: 75%;
+  }
+  .row.assistant .bubble {
+    background: var(--panel); border: 1px solid var(--border);
+    align-self: flex-start; max-width: 90%;
+  }
+  .bubble {
+    padding: 10px 14px; border-radius: 12px;
+    white-space: pre-wrap; word-wrap: break-word;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px; border-radius: 999px;
+    font-size: 12px; max-width: 100%;
+    background: var(--panel); border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .pill .icon { font-size: 14px; line-height: 1; }
+  .pill .label { color: var(--text-dim); font-family: var(--mono); }
+  .pill .val { color: var(--text); font-family: var(--mono); overflow: hidden; text-overflow: ellipsis; }
+  .pill.brain    { border-color: var(--pill-brain); background: rgba(110, 64, 201, 0.12); }
+  .pill.msg      { border-color: var(--pill-msg);   background: rgba(31, 111, 235, 0.12); }
+  .pill.pen      { border-color: var(--pill-pen);   background: rgba(219, 109, 40, 0.12); }
+  .pill.book     { border-color: var(--pill-book);  background: rgba(125, 133, 144, 0.18); }
+  .pill.term     { border-color: var(--pill-term);  background: rgba(35, 134, 54, 0.12); }
+  .pill.err      { border-color: var(--err);        background: rgba(248, 81, 73, 0.12); }
+  .pill.sys      { border-color: var(--text-dim);   background: var(--panel-2); color: var(--text-dim); }
+  details.steps {
+    margin-top: 4px;
+    background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px 10px;
+    font-size: 12px; max-width: 90%;
+  }
+  details.steps summary { cursor: pointer; color: var(--text-dim); }
+  details.steps ul { margin: 6px 0 4px 18px; padding: 0; }
+  details.steps li { margin: 2px 0; }
+  pre.console {
+    margin: 4px 0; padding: 8px 12px;
+    background: #010409; border: 1px solid var(--border); border-radius: 6px;
+    font-family: var(--mono); font-size: 12px; color: var(--text-dim);
+    white-space: pre-wrap; word-wrap: break-word;
+    max-height: 240px; overflow-y: auto; max-width: 90%;
+  }
+  pre.console.stderr { color: #ffa198; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .badge {
+    font-family: var(--mono); font-size: 11px;
+    padding: 2px 8px; border-radius: 4px;
+    background: var(--panel-2); color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+  footer {
+    padding: 12px 16px; border-top: 1px solid var(--border);
+    background: var(--panel);
+    display: flex; gap: 8px; align-items: flex-end;
+  }
+  textarea {
+    flex: 1; resize: none; min-height: 38px; max-height: 160px;
+    padding: 9px 12px; border-radius: 8px;
+    background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); font: inherit;
+    outline: none;
+  }
+  textarea:focus { border-color: var(--accent); }
+  button {
+    padding: 9px 18px; border-radius: 8px;
+    background: var(--accent); color: #0d1117;
+    border: none; font: inherit; font-weight: 600;
+    cursor: pointer;
+  }
+  button:hover:not(:disabled) { filter: brightness(1.1); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  button.secondary { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); }
+  .toolbar { display: flex; gap: 6px; padding: 8px 16px; background: var(--panel); border-bottom: 1px solid var(--border); }
+  .toolbar input {
+    flex: 1; padding: 4px 8px; border-radius: 4px;
+    background: var(--bg); color: var(--text); border: 1px solid var(--border);
+    font: 12px var(--mono);
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Exocore AI · WSS test</h1>
+  <span class="sub" id="wssPath">/exocore/api/editor/exocore-ai/ws</span>
+  <span style="flex: 1"></span>
+  <span class="status" id="status">disconnected</span>
+</header>
+<div class="toolbar">
+  <input id="profile" placeholder="profile (optional)" value="">
+  <input id="model" placeholder="model (optional, e.g. flash, pro)" value="">
+  <button class="secondary" id="reconnect">reconnect</button>
+  <button class="secondary" id="clear">clear</button>
+</div>
+<main>
+  <div id="log"></div>
+  <footer>
+    <textarea id="input" placeholder="Type a message and press Enter (Shift+Enter for newline)…"></textarea>
+    <button id="send" disabled>send</button>
+  </footer>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  // Single-file vanilla JS client for the native TS Exocore AI WSS.
+  // Demonstrates the full protocol: planning / token / done plus
+  // the action-pill events (feedback / code_edit / file_read /
+  // exec_cmd / console). Renders pills in the conversation log
+  // matching the icons described in the wss/protocol.ts taxonomy.
+
+  const $ = (id) => document.getElementById(id);
+  const log = $('log');
+  const statusEl = $('status');
+  const input = $('input');
+  const sendBtn = $('send');
+
+  let ws = null;
+  let backoff = 1000;
+  let reconnectTimer = null;
+  let convo = { cid: null, rid: null, rcid: null };
+  let currentReply = null;        // <div class="bubble"> currently streaming
+  let currentReplyText = '';
+
+  // ── helpers ────────────────────────────────────────────────────
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+  const truncate = (s, n) => { s = String(s ?? ''); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
+
+  const setStatus = (state, label) => {
+    statusEl.className = 'status ' + state;
+    statusEl.textContent = label || state;
+    sendBtn.disabled = (state !== 'connected');
+  };
+
+  const scroll = () => { log.scrollTop = log.scrollHeight; };
+
+  const addRow = (cls) => {
+    const row = document.createElement('div');
+    row.className = 'row ' + cls;
+    log.appendChild(row);
+    scroll();
+    return row;
+  };
+
+  const addPill = (cls, icon, html) => {
+    const row = addRow('assistant');
+    const pill = document.createElement('div');
+    pill.className = 'pill ' + cls;
+    pill.innerHTML = `<span class="icon">${icon}</span>${html}`;
+    row.appendChild(pill);
+    scroll();
+    return row;
+  };
+
+  // ── pill renderers (one per server event type) ─────────────────
+  const renderPlanning = (ev) => {
+    const summary = truncate(ev.summary || '(no summary)', 200);
+    const row = addPill(
+      'brain', '🧠',
+      `<span class="val">${esc(summary)}</span>`
+    );
+    if (Array.isArray(ev.steps) && ev.steps.length) {
+      const det = document.createElement('details');
+      det.className = 'steps';
+      det.innerHTML = `<summary>${ev.steps.length} step${ev.steps.length === 1 ? '' : 's'}</summary>` +
+        '<ul>' + ev.steps.map(s => `<li>${esc(s)}</li>`).join('') + '</ul>';
+      row.appendChild(det);
+      scroll();
+    }
+  };
+
+  const renderFeedback = (ev) => {
+    addPill('msg', '💬', `<span class="val">${esc(truncate(ev.message, 240))}</span>`);
+  };
+
+  const renderCodeEdit = (ev) => {
+    const op = ev.op ? `<span class="label">${esc(ev.op)}</span>` : '';
+    const html = `${op}<span class="val">${esc(ev.path)}</span>`;
+    const row = addPill('pen', '✏️', html);
+    if (ev.diff) {
+      const pre = document.createElement('pre');
+      pre.className = 'console';
+      pre.textContent = ev.diff;
+      row.appendChild(pre);
+      scroll();
+    }
+  };
+
+  const renderFileRead = (ev) => {
+    const range = (ev.startLine || ev.endLine)
+      ? ` <span class="label">L${ev.startLine ?? '?'}-${ev.endLine ?? '?'}</span>` : '';
+    addPill('book', '📖', `<span class="val">${esc(ev.path)}</span>${range}`);
+  };
+
+  const renderExecCmd = (ev) => {
+    const exit = (ev.exitCode !== undefined && ev.exitCode !== null)
+      ? ` <span class="label">exit ${ev.exitCode}</span>` : '';
+    const cwd = ev.cwd ? ` <span class="label">${esc(ev.cwd)}</span>` : '';
+    addPill('term', '🖥️', `<code class="val">$ ${esc(ev.cmd)}</code>${cwd}${exit}`);
+  };
+
+  const renderConsole = (ev) => {
+    const row = addRow('assistant');
+    const pre = document.createElement('pre');
+    pre.className = 'console' + (ev.stream === 'stderr' ? ' stderr' : '');
+    pre.textContent = ev.chunk;
+    row.appendChild(pre);
+    scroll();
+  };
+
+  const renderSystem = (ev) => {
+    addPill('sys', 'ℹ️', `<span class="val">${esc(ev.message)}</span>`);
+  };
+
+  const renderError = (ev) => {
+    addPill('err', '⚠️', `<span class="val">${esc(ev.message)}</span>`);
+  };
+
+  // ── token streaming ────────────────────────────────────────────
+  const beginReply = () => {
+    if (currentReply) return;
+    const row = addRow('assistant');
+    currentReply = document.createElement('div');
+    currentReply.className = 'bubble';
+    currentReplyText = '';
+    row.appendChild(currentReply);
+    scroll();
+  };
+
+  const appendToken = (ev) => {
+    beginReply();
+    if (ev.text) {
+      currentReplyText += ev.text;
+      currentReply.textContent = currentReplyText;
+      scroll();
+    }
+  };
+
+  const finalizeReply = (ev) => {
+    if (!currentReply && ev.text) {
+      beginReply();
+      currentReply.textContent = ev.text;
+    } else if (currentReply && ev.text && !currentReplyText) {
+      currentReply.textContent = ev.text;
+    }
+    if (currentReply) {
+      const badges = document.createElement('div');
+      badges.className = 'badges';
+      const ids = [];
+      if (ev.cid)  { ids.push(['cid',  ev.cid]);  convo.cid  = ev.cid; }
+      if (ev.rid)  { ids.push(['rid',  ev.rid]);  convo.rid  = ev.rid; }
+      if (ev.rcid) { ids.push(['rcid', ev.rcid]); convo.rcid = ev.rcid; }
+      for (const [k, v] of ids) {
+        const b = document.createElement('span');
+        b.className = 'badge';
+        b.textContent = `${k}: ${truncate(v, 18)}`;
+        b.title = `${k}: ${v}`;
+        badges.appendChild(b);
+      }
+      if (ids.length) currentReply.parentElement.appendChild(badges);
+    }
+    currentReply = null;
+    currentReplyText = '';
+    scroll();
+  };
+
+  // ── dispatcher ─────────────────────────────────────────────────
+  const handle = (ev) => {
+    switch (ev.type) {
+      case 'session':  renderSystem({ message: `session ${ev.sessionId}${ev.project ? ' · ' + ev.project : ''}` }); break;
+      case 'ping':     /* ignore — heartbeat */ break;
+      case 'system':   renderSystem(ev); break;
+      case 'planning': renderPlanning(ev); break;
+      case 'feedback': renderFeedback(ev); break;
+      case 'code_edit':renderCodeEdit(ev); break;
+      case 'file_read':renderFileRead(ev); break;
+      case 'exec_cmd': renderExecCmd(ev); break;
+      case 'console':  renderConsole(ev); break;
+      case 'token':    appendToken(ev); break;
+      case 'done':     finalizeReply(ev); break;
+      case 'error':    finalizeReply({}); renderError(ev); break;
+      default:         renderSystem({ message: `unknown event: ${ev.type}` });
+    }
+  };
+
+  // ── connection ─────────────────────────────────────────────────
+  const connect = () => {
+    if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
+    if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
+      try { ws.close(); } catch (_) {}
+    }
+    setStatus('connecting');
+    const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const url = `${proto}//${location.host}/exocore/api/editor/exocore-ai/ws`;
+    try {
+      ws = new WebSocket(url);
+    } catch (e) {
+      setStatus('error', 'error: ' + e.message);
+      scheduleReconnect();
+      return;
+    }
+    ws.addEventListener('open', () => {
+      setStatus('connected');
+      backoff = 1000;
+    });
+    ws.addEventListener('message', (m) => {
+      let parsed;
+      try { parsed = JSON.parse(m.data); }
+      catch (_) { renderError({ message: 'bad JSON from server' }); return; }
+      handle(parsed);
+    });
+    ws.addEventListener('close', (e) => {
+      setStatus('disconnected', `closed (${e.code})`);
+      if (currentReply) finalizeReply({});
+      scheduleReconnect();
+    });
+    ws.addEventListener('error', () => {
+      setStatus('error');
+    });
+  };
+
+  const scheduleReconnect = () => {
+    if (reconnectTimer) return;
+    reconnectTimer = setTimeout(() => {
+      reconnectTimer = null;
+      connect();
+    }, backoff);
+    backoff = Math.min(backoff * 2, 15000);
+  };
+
+  // ── send ───────────────────────────────────────────────────────
+  const sendChat = () => {
+    const text = input.value.trim();
+    if (!text || !ws || ws.readyState !== WebSocket.OPEN) return;
+
+    // Render user bubble.
+    const row = addRow('user');
+    const bub = document.createElement('div');
+    bub.className = 'bubble';
+    bub.textContent = text;
+    row.appendChild(bub);
+    scroll();
+
+    const profile = $('profile').value.trim();
+    const model = $('model').value.trim();
+    const payload = {
+      type: 'chat',
+      message: text,
+      ...(convo.cid  ? { cid:  convo.cid }  : {}),
+      ...(convo.rid  ? { rid:  convo.rid }  : {}),
+      ...(convo.rcid ? { rcid: convo.rcid } : {}),
+      ...(profile    ? { project: profile } : {}),
+      ...(model      ? { model } : {}),
+    };
+    try {
+      ws.send(JSON.stringify(payload));
+    } catch (e) {
+      renderError({ message: 'send failed: ' + e.message });
+      return;
+    }
+    input.value = '';
+    input.style.height = '38px';
+  };
+
+  // ── wiring ─────────────────────────────────────────────────────
+  sendBtn.addEventListener('click', sendChat);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendChat();
+    }
+  });
+  input.addEventListener('input', () => {
+    input.style.height = '38px';
+    input.style.height = Math.min(160, input.scrollHeight) + 'px';
+  });
+  $('reconnect').addEventListener('click', connect);
+  $('clear').addEventListener('click', () => {
+    log.innerHTML = '';
+    convo = { cid: null, rid: null, rcid: null };
+    currentReply = null;
+    currentReplyText = '';
+  });
+
+  connect();
+})();
+</script>
+</body>
+</html>

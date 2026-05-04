@@ -1,0 +1,1450 @@
+/* =========================================================
+ * exo-frutiger-aero.css — overlay stylesheet for the
+ * "Frutiger Aero" theme (themes.js id `frutiger-aero`).
+ *
+ * Only loaded when exo-theme-apply.js sets
+ * <html data-mode="aero">. Every selector is scoped to that
+ * attribute so this sheet is effectively dead code for any
+ * other theme — no risk of bleeding into github-dark etc.
+ *
+ * Aesthetic notes (the user asked for "FRUTIGER AERO style"):
+ *   • Sky-blue gradient page background with soft bubbles.
+ *   • Glossy "glass" surfaces — translucent white + blur.
+ *   • Pill-shaped buttons with a top highlight + drop shadow.
+ *   • Aqua accent (var(--aero-grad-2)) for focus rings + active states.
+ *   • Inter / Segoe rounded sans for that early-2010s vibe.
+ * ========================================================= */
+
+/* ----- 1. Page-wide chrome ----- */
+html[data-mode="aero"],
+body[data-mode="aero"] {
+    background:
+        radial-gradient(circle at 18% 110%, rgba(255,255,255,0.85) 0%, transparent 32%),
+        radial-gradient(circle at 80% -10%, rgba(255,255,255,0.55) 0%, transparent 38%),
+        radial-gradient(circle at 75% 80%, rgba(var(--aero-tint-deep), 0.45) 0%, transparent 45%),
+        linear-gradient(180deg, var(--aero-page-1) 0%, var(--aero-page-2) 55%, var(--aero-page-3) 100%) !important;
+    background-attachment: fixed !important;
+    color: var(--aero-deep);
+    font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Decorative bubbles layer — sits behind everything via :before
+ * on <body>. Only created when in aero mode so we don't waste
+ * paint budget elsewhere. The bubbles drift slowly to feel alive
+ * but stay below all interactive content (z-index: -1, inside
+ * the body's isolated stacking context — see `isolation` below).
+ *
+ * 2026-04-29 — IMPORTANT: do NOT use `body > * { position: relative }`
+ * here. That used to be how the bubbles got pushed behind real
+ * content, but it inadvertently overrode the `position: fixed`
+ * on every `.modal-backdrop`, `.exo-theme-backdrop`, `.fmBackdrop`,
+ * etc., causing them to flow into the document and stack at the
+ * BOTTOM of the page (the "ilagay niya sa baba" bug the user
+ * reported). Using `isolation: isolate` + `z-index: -1` keeps the
+ * bubbles behind without touching child positioning. */
+body[data-mode="aero"] { isolation: isolate; }
+body[data-mode="aero"]::before {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 12% 22%, rgba(255,255,255,0.55) 0 14px, transparent 15px),
+        radial-gradient(circle at 28% 70%, rgba(255,255,255,0.40) 0 22px, transparent 23px),
+        radial-gradient(circle at 64% 30%, rgba(255,255,255,0.45) 0 18px, transparent 19px),
+        radial-gradient(circle at 84% 82%, rgba(255,255,255,0.38) 0 28px, transparent 29px),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.30) 0 10px, transparent 11px);
+    background-repeat: no-repeat;
+    animation: aeroDrift 22s ease-in-out infinite alternate;
+    z-index: -1;
+}
+@keyframes aeroDrift {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    100% { transform: translate3d(0, -16px, 0) scale(1.03); }
+}
+
+/* Defensive: re-assert fixed positioning on every overlay class
+ * the app uses, in case a future selector accidentally clobbers
+ * it again. These are the only correct places for fixed overlays.
+ *
+ * IMPORTANT: the `:not([hidden])` guard is required so that overlays
+ * which use the HTML `hidden` attribute (dialogBackdrop, fmBackdrop,
+ * wizBackdrop, plansBackdrop, etc.) stay hidden by default. Without
+ * the guard, `display: flex !important` would override `hidden` and
+ * the empty Cancel/Confirm dialog would appear on top of the
+ * dashboard the moment the Frutiger Aero theme is applied. */
+/* IMPORTANT: only true full-screen *backdrops* belong here. Floating
+ * popups like `.exo-context-menu` and `.cmdk-panel` must NOT be in
+ * this list — they have their own positioning (the context menu uses
+ * inline top/left from the click point; the cmdk panel sits inside
+ * `.cmdk-overlay` which is the actual backdrop). Including them here
+ * stretched the popups to `inset: 0` (full viewport) and forced
+ * `display: flex` centering, which produced two visible bugs:
+ *   • the 3-dots menu became a tall 280px strip down the left edge
+ *     with its items scattered horizontally, and
+ *   • Ctrl+P / Ctrl+Shift+K anchored to the top-left at full viewport
+ *     height instead of being centered just below the top.
+ */
+[data-mode="aero"] .modal-backdrop:not([hidden]),
+[data-mode="aero"] .exo-theme-backdrop:not([hidden]),
+[data-mode="aero"] .exo-hist-overlay:not([hidden]),
+[data-mode="aero"] #fmBackdrop:not([hidden]),
+[data-mode="aero"] #wizBackdrop:not([hidden]),
+[data-mode="aero"] #dialogBackdrop:not([hidden]),
+[data-mode="aero"] #plansBackdrop:not([hidden]) {
+    position: fixed !important;
+    inset: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Belt-and-suspenders: any element carrying the HTML `hidden`
+ * attribute must stay hidden under the Aero theme, even if some
+ * other rule tries to force `display`. */
+[data-mode="aero"] [hidden] { display: none !important; }
+
+/* ----- 2. Glass surfaces ----- */
+[data-mode="aero"] .exo-card,
+[data-mode="aero"] .card,
+[data-mode="aero"] .exo-modal-card,
+[data-mode="aero"] .auth-card,
+[data-mode="aero"] .panel,
+[data-mode="aero"] .dashboard-section,
+[data-mode="aero"] .main-header,
+[data-mode="aero"] .status-bar,
+[data-mode="aero"] .exo-hist-modal {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(255,255,255,0.55) 50%, rgba(220,238,255,0.55) 100%) !important;
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.85) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        inset 0 -1px 0 rgba(180,210,235,0.55),
+        0 6px 18px rgba(var(--aero-shad), 0.18),
+        0 1px 3px rgba(var(--aero-shad), 0.10);
+    border-radius: 14px !important;
+    color: var(--aero-deep) !important;
+}
+
+[data-mode="aero"] .main-header {
+    border-radius: 0 0 14px 14px !important;
+}
+
+/* ----- 3. Buttons (glossy pills) ----- */
+[data-mode="aero"] .exo-btn,
+[data-mode="aero"] .btn,
+[data-mode="aero"] .exo-modal-btn,
+[data-mode="aero"] .auth-btn,
+[data-mode="aero"] .hdr-btn,
+[data-mode="aero"] .icon-btn {
+    background:
+        linear-gradient(180deg, #ffffff 0%, #e3f2ff 48%, #b9dcf6 52%, #d6ecfb 100%) !important;
+    color: var(--aero-deep) !important;
+    border: 1px solid rgba(var(--aero-bord), 0.45) !important;
+    border-radius: 999px !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        inset 0 -1px 1px rgba(var(--aero-bord), 0.18),
+        0 1px 2px rgba(var(--aero-shad), 0.18),
+        0 2px 6px rgba(var(--aero-shad), 0.12);
+    transition: filter 0.15s ease, transform 0.08s ease;
+}
+[data-mode="aero"] .exo-btn:hover,
+[data-mode="aero"] .btn:hover,
+[data-mode="aero"] .exo-modal-btn:hover,
+[data-mode="aero"] .auth-btn:hover,
+[data-mode="aero"] .hdr-btn:hover,
+[data-mode="aero"] .icon-btn:hover {
+    filter: brightness(1.05) saturate(1.1);
+    color: var(--aero-accent) !important;
+    border-color: rgba(var(--aero-bord), 0.7) !important;
+}
+[data-mode="aero"] .exo-btn:active,
+[data-mode="aero"] .btn:active,
+[data-mode="aero"] .exo-modal-btn:active,
+[data-mode="aero"] .auth-btn:active,
+[data-mode="aero"] .hdr-btn:active,
+[data-mode="aero"] .icon-btn:active {
+    transform: translateY(1px);
+    box-shadow:
+        inset 0 2px 4px rgba(var(--aero-shad), 0.25),
+        0 1px 1px rgba(var(--aero-shad), 0.10);
+}
+[data-mode="aero"] .exo-btn.primary,
+[data-mode="aero"] .btn.primary,
+[data-mode="aero"] .exo-modal-btn.primary,
+[data-mode="aero"] .auth-btn.primary {
+    background:
+        linear-gradient(180deg, var(--aero-grad-1) 0%, var(--aero-grad-2) 48%, #0d6ab0 52%, #2599e0 100%) !important;
+    color: #ffffff !important;
+    border-color: rgba(10, 60, 110, 0.85) !important;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.18);
+}
+[data-mode="aero"] .exo-modal-btn.danger,
+[data-mode="aero"] .btn.danger {
+    background:
+        linear-gradient(180deg, #ffb3a3 0%, #d24a32 48%, #a32a18 52%, #d6604d 100%) !important;
+    color: #ffffff !important;
+    border-color: rgba(120, 30, 18, 0.85) !important;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.20);
+}
+
+/* ----- 4. Inputs / form fields ----- */
+[data-mode="aero"] input[type="text"],
+[data-mode="aero"] input[type="email"],
+[data-mode="aero"] input[type="password"],
+[data-mode="aero"] input[type="search"],
+[data-mode="aero"] textarea,
+[data-mode="aero"] select {
+    background:
+        linear-gradient(180deg, #f4faff 0%, #ffffff 100%);
+    border: 1px solid rgba(var(--aero-bord), 0.4);
+    border-radius: 8px;
+    box-shadow:
+        inset 0 2px 3px rgba(var(--aero-shad), 0.12),
+        0 1px 0 rgba(255,255,255,0.9);
+    color: var(--aero-deep);
+    padding: 7px 10px;
+}
+[data-mode="aero"] input:focus,
+[data-mode="aero"] textarea:focus,
+[data-mode="aero"] select:focus {
+    outline: none;
+    border-color: var(--aero-grad-2);
+    box-shadow:
+        inset 0 2px 3px rgba(var(--aero-shad), 0.10),
+        0 0 0 3px rgba(26, 143, 214, 0.30);
+}
+
+/* ----- 5. Editor shell tweaks ----- */
+[data-mode="aero"] .editor-shell,
+[data-mode="aero"] .editor-host,
+[data-mode="aero"] .tabs-bar {
+    background: transparent !important;
+}
+[data-mode="aero"] .tab-chip {
+    background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(220,238,255,0.6)) !important;
+    border: 1px solid rgba(var(--aero-bord), 0.35) !important;
+    border-radius: 10px 10px 0 0 !important;
+    color: var(--aero-deep) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.95);
+}
+[data-mode="aero"] .tab-chip.active {
+    background: linear-gradient(180deg, #ffffff, #e3f2ff) !important;
+    border-bottom-color: transparent !important;
+    color: var(--aero-accent) !important;
+}
+[data-mode="aero"] .exocore-sidebar-container,
+[data-mode="aero"] .panel-host {
+    background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(220,238,255,0.45)) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-right: 1px solid rgba(255,255,255,0.65);
+}
+
+/* ----- 6. History modal — match the glass aesthetic ----- */
+[data-mode="aero"] .exo-hist-overlay { background: rgba(var(--aero-shad), 0.30); }
+[data-mode="aero"] .exo-hist-row .exo-hist-gutter,
+[data-mode="aero"] .exo-hist-line { color: var(--aero-deep); }
+[data-mode="aero"] .exo-hist-diff .dr.add,
+[data-mode="aero"] .exo-hist-diff .dc.add { background: rgba(140, 220, 170, 0.35); }
+[data-mode="aero"] .exo-hist-diff .dr.del,
+[data-mode="aero"] .exo-hist-diff .dc.del { background: rgba(255, 170, 170, 0.40); }
+[data-mode="aero"] .exo-hist-diff .dc.faded { background: rgba(255,255,255,0.30); }
+[data-mode="aero"] .exo-hist-gap {
+    background: rgba(255,255,255,0.55);
+    color: #3a6e9a;
+}
+
+/* ----- 7. Auth pages glow ----- */
+[data-mode="aero"] .auth-card,
+[data-mode="aero"] .login-card,
+[data-mode="aero"] .register-card {
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        0 12px 36px rgba(var(--aero-shad), 0.28),
+        0 0 0 1px rgba(255,255,255,0.6);
+}
+
+/* ----- 8. Brand accents (logo / dot) get the aqua sheen ----- */
+[data-mode="aero"] .title-dot,
+[data-mode="aero"] .brand-dot {
+    background: radial-gradient(circle at 35% 30%, #ffffff 0%, var(--aero-grad-1) 50%, var(--aero-grad-2) 100%) !important;
+    box-shadow: 0 0 8px rgba(26, 143, 214, 0.7),
+                inset 0 -2px 4px rgba(0, 60, 120, 0.4),
+                inset 0 2px 3px rgba(255,255,255,0.9);
+}
+
+/* =========================================================
+ * 9. Loading screens — both editor (.loader-screen-shell)
+ *    and dashboard (.exo-loader-screen).
+ *
+ * The loader paints BEFORE the theme variables are set on
+ * <html>, so we also set body[data-mode=aero] in a pre-paint
+ * inline script in dashboard.html / editor.html. That way
+ * the gradient + bubbles are visible on the very first
+ * frame and the user no longer sees a dark flash that
+ * "split-glitches" into Frutiger Aero halfway through boot.
+ * ========================================================= */
+[data-mode="aero"] .loader-screen-shell,
+[data-mode="aero"] .exo-loader-screen {
+    background:
+        radial-gradient(circle at 18% 110%, rgba(255,255,255,0.85) 0%, transparent 32%) ,
+        radial-gradient(circle at 80% -10%, rgba(255,255,255,0.55) 0%, transparent 38%) ,
+        radial-gradient(circle at 75% 80%, rgba(var(--aero-tint-deep), 0.45) 0%, transparent 45%) ,
+        linear-gradient(180deg, var(--aero-page-1) 0%, var(--aero-page-2) 55%, var(--aero-page-3) 100%) !important;
+    color: var(--aero-deep) !important;
+}
+/* Bubbles overlaid on the loader, same drift animation as
+ * the body bubbles — so the loader feels of-a-piece with the
+ * page that's about to fade in behind it. */
+[data-mode="aero"] .loader-screen-shell::after,
+[data-mode="aero"] .exo-loader-screen::after {
+    content: '';
+    position: absolute; inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 22% 28%, rgba(255,255,255,0.55) 0 16px, transparent 17px),
+        radial-gradient(circle at 78% 70%, rgba(255,255,255,0.45) 0 22px, transparent 23px),
+        radial-gradient(circle at 55% 88%, rgba(255,255,255,0.40) 0 14px, transparent 15px),
+        radial-gradient(circle at 12% 78%, rgba(255,255,255,0.35) 0 28px, transparent 29px);
+    background-repeat: no-repeat;
+    animation: aeroDrift 18s ease-in-out infinite alternate;
+    z-index: 0;
+}
+[data-mode="aero"] .loader-screen-shell > *,
+[data-mode="aero"] .exo-loader-screen > * { position: relative; z-index: 1; }
+
+/* Editor's slim spinner — repaint as a glassy aqua ring. */
+[data-mode="aero"] .loader-spinner {
+    border-color: rgba(26, 143, 214, 0.18) !important;
+    border-top-color: var(--aero-grad-2) !important;
+    box-shadow: 0 0 12px rgba(26, 143, 214, 0.35);
+}
+
+/* Dashboard's three-ring + dot loader. */
+[data-mode="aero"] .loader-ring   { border-top-color: rgba(26, 143, 214, 0.85) !important; }
+[data-mode="aero"] .loader-ring-2 { border-top-color: rgba(109, 199, 255, 0.7) !important; }
+[data-mode="aero"] .loader-ring-3 { border-top-color: rgba(255, 255, 255, 0.6) !important; }
+[data-mode="aero"] .loader-dot {
+    background: radial-gradient(circle at 35% 30%, #ffffff 0%, var(--aero-grad-1) 50%, var(--aero-grad-2) 100%) !important;
+    box-shadow: 0 0 16px rgba(26, 143, 214, 0.7),
+                inset 0 -2px 3px rgba(0, 60, 120, 0.35) !important;
+}
+[data-mode="aero"] .loader-label {
+    color: var(--aero-deep) !important;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.7);
+    font-weight: 600;
+}
+
+/* =========================================================
+ * 10. Auth pages — login / register / forgot / verify-pending
+ *     callback / home.
+ *
+ * Those pages were authored before the universal theme system
+ * existed, so they inline a chunky neo-brutalism look with
+ * hardcoded yellow boxshadows + black borders. The selectors
+ * below specifically nuke that look when data-mode="aero" so
+ * the user isn't bounced from a glassy dashboard back to a
+ * GitHub-styled login on logout.
+ * ========================================================= */
+[data-mode="aero"] .auth-page,
+[data-mode="aero"] .home-scene {
+    background: transparent !important;
+}
+
+/* The glow blobs in those pages are yellow / pink / cyan. Tint
+ * them aqua so they read as part of the aero scene instead of
+ * looking like leftover decoration from the previous theme. */
+[data-mode="aero"] .auth-glow-1,
+[data-mode="aero"] .home-glow-1 {
+    background: rgba(var(--aero-tint-deep), 0.28) !important;
+}
+[data-mode="aero"] .auth-glow-2,
+[data-mode="aero"] .home-glow-2 {
+    background: rgba(255, 255, 255, 0.30) !important;
+}
+[data-mode="aero"] .home-glow-3 {
+    background: rgba(109, 199, 255, 0.30) !important;
+}
+
+[data-mode="aero"] .auth-card {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.58) 50%, rgba(220,238,255,0.55) 100%) !important;
+    border: 1px solid rgba(255,255,255,0.85) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        0 14px 38px rgba(var(--aero-shad), 0.28),
+        0 0 0 1px rgba(255,255,255,0.6) !important;
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    color: var(--aero-deep) !important;
+    border-radius: 16px !important;
+}
+[data-mode="aero"] .auth-title,
+[data-mode="aero"] .auth-subtitle,
+[data-mode="aero"] .field-label,
+[data-mode="aero"] .auth-footer {
+    color: var(--aero-deep) !important;
+}
+[data-mode="aero"] .auth-subtitle,
+[data-mode="aero"] .auth-footer {
+    color: #355c80 !important;
+}
+[data-mode="aero"] .auth-logo-text {
+    color: var(--aero-accent) !important;
+}
+[data-mode="aero"] .field-input {
+    background: linear-gradient(180deg, #f4faff 0%, #ffffff 100%) !important;
+    border: 1px solid rgba(var(--aero-bord), 0.45) !important;
+    color: var(--aero-deep) !important;
+    box-shadow:
+        inset 0 2px 3px rgba(var(--aero-shad), 0.10),
+        0 1px 0 rgba(255,255,255,0.85) !important;
+    border-radius: 8px !important;
+}
+[data-mode="aero"] .field-input::placeholder { color: #6b8ba8 !important; }
+[data-mode="aero"] .field-input:focus {
+    border-color: var(--aero-grad-2) !important;
+    box-shadow:
+        inset 0 2px 3px rgba(var(--aero-shad), 0.08),
+        0 0 0 3px rgba(26, 143, 214, 0.30) !important;
+}
+[data-mode="aero"] .pass-toggle { color: #355c80 !important; }
+[data-mode="aero"] .pass-toggle:hover { color: var(--aero-accent) !important; }
+
+[data-mode="aero"] .btn,
+[data-mode="aero"] .btn-primary {
+    background:
+        linear-gradient(180deg, var(--aero-grad-1) 0%, var(--aero-grad-2) 48%, #0d6ab0 52%, #2599e0 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(10, 60, 110, 0.85) !important;
+    border-radius: 999px !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.55),
+        0 4px 12px rgba(var(--aero-shad), 0.25),
+        0 1px 2px rgba(var(--aero-shad), 0.18) !important;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.18) !important;
+    text-transform: none !important;
+    letter-spacing: 0.04em !important;
+}
+[data-mode="aero"] .btn-primary:hover:not(:disabled) {
+    transform: translateY(-1px) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.65),
+        0 6px 16px rgba(var(--aero-shad), 0.30) !important;
+    filter: brightness(1.05) saturate(1.1);
+}
+[data-mode="aero"] .btn-primary:active:not(:disabled) {
+    transform: translateY(1px) !important;
+    box-shadow:
+        inset 0 2px 4px rgba(0,30,60,0.30),
+        0 1px 2px rgba(var(--aero-shad), 0.15) !important;
+}
+[data-mode="aero"] .form-error {
+    background: rgba(255, 220, 220, 0.65) !important;
+    border: 1px solid rgba(180, 50, 50, 0.55) !important;
+    color: #7a1a1a !important;
+}
+[data-mode="aero"] .auth-footer { border-top-color: rgba(var(--aero-bord), 0.25) !important; }
+[data-mode="aero"] .auth-footer a { color: var(--aero-accent) !important; }
+[data-mode="aero"] .field-label-link { color: #355c80 !important; }
+[data-mode="aero"] .field-label-link:hover { color: var(--aero-accent) !important; }
+
+/* Mobile auth (small screens) — the 480px breakpoint switches
+ * the card to full-bleed with a yellow bottom border. Drop the
+ * yellow and let the aero gradient breathe. */
+@media (max-width: 480px) {
+    [data-mode="aero"] .auth-card {
+        border-bottom: 4px solid rgba(26, 143, 214, 0.7) !important;
+        border-radius: 0 !important;
+    }
+}
+
+/* =========================================================
+ * 11. Modal overlays — give the dim layer an aqua tint and
+ *     use real glass for the modal box.
+ * ========================================================= */
+[data-mode="aero"] .modal-backdrop {
+    background: rgba(var(--aero-shad), 0.32) !important;
+    backdrop-filter: blur(8px) saturate(140%);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
+}
+[data-mode="aero"] .modal-box,
+[data-mode="aero"] .fm-window,
+[data-mode="aero"] .wizard-box {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.90) 0%, rgba(245,250,255,0.72) 60%, rgba(220,238,255,0.62) 100%) !important;
+    border: 1px solid rgba(255,255,255,0.85) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        0 22px 60px rgba(var(--aero-shad), 0.35),
+        0 0 0 1px rgba(255,255,255,0.5) !important;
+    color: var(--aero-deep) !important;
+    border-radius: 16px !important;
+}
+[data-mode="aero"] .modal-title,
+[data-mode="aero"] .modal-body p,
+[data-mode="aero"] .modal-body { color: var(--aero-deep) !important; }
+[data-mode="aero"] .modal-header,
+[data-mode="aero"] .modal-footer { border-color: rgba(var(--aero-bord), 0.18) !important; }
+[data-mode="aero"] .dialog-field {
+    background: linear-gradient(180deg, #f4faff 0%, #ffffff 100%) !important;
+    border: 1px solid rgba(var(--aero-bord), 0.4) !important;
+    color: var(--aero-deep) !important;
+    border-radius: 8px !important;
+}
+
+/* File-manager / wizard internals — make tabs and toolbar read
+ * against the lighter glass. */
+[data-mode="aero"] .fm-tabs,
+[data-mode="aero"] .fm-toolbar { border-color: rgba(var(--aero-bord), 0.18) !important; }
+[data-mode="aero"] .fm-tab { color: #355c80 !important; }
+[data-mode="aero"] .fm-tab.active {
+    color: var(--aero-accent) !important;
+    border-bottom-color: var(--aero-grad-2) !important;
+}
+[data-mode="aero"] .fm-row {
+    border-bottom-color: rgba(var(--aero-bord), 0.10) !important;
+}
+[data-mode="aero"] .fm-row-name { color: var(--aero-deep) !important; }
+[data-mode="aero"] .fm-row-sub  { color: #355c80 !important; }
+[data-mode="aero"] .fm-count    { color: #6b8ba8 !important; }
+
+/* =========================================================
+ * 12. Dashboard chrome — header, stat chips, kebab menu.
+ * ========================================================= */
+[data-mode="aero"] .dash-header {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(220,238,255,0.55) 100%) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.7) !important;
+    box-shadow: 0 6px 18px rgba(var(--aero-shad), 0.18);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+}
+[data-mode="aero"] .dash-header-name,
+[data-mode="aero"] .stat-chip,
+[data-mode="aero"] .stat-chip-val,
+[data-mode="aero"] .user-name-label { color: var(--aero-deep) !important; }
+[data-mode="aero"] .stat-chip {
+    background: rgba(255,255,255,0.55) !important;
+    border: 1px solid rgba(var(--aero-bord), 0.25) !important;
+}
+[data-mode="aero"] .dash-header-user {
+    background: rgba(255,255,255,0.55) !important;
+    border: 1px solid rgba(var(--aero-bord), 0.30) !important;
+}
+[data-mode="aero"] .dash-header-kebab span { background: var(--aero-deep) !important; }
+[data-mode="aero"] .dash-header-menu {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(var(--aero-tint-light), 0.78) 100%) !important;
+    border: 1px solid rgba(255,255,255,0.85) !important;
+    box-shadow: 0 18px 40px rgba(var(--aero-shad), 0.30) !important;
+    color: var(--aero-deep) !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(12px) saturate(160%);
+}
+[data-mode="aero"] .dash-header-menu button { color: var(--aero-deep) !important; }
+[data-mode="aero"] .dash-header-menu button:hover {
+    background: rgba(26, 143, 214, 0.12) !important;
+    color: var(--aero-accent) !important;
+}
+[data-mode="aero"] .dash-header-menu-sep {
+    background: rgba(var(--aero-bord), 0.18) !important;
+}
+
+/* =========================================================
+ * 13. Editor shell extras — bottom panel, status bar, command
+ *     palette, context menu — keep them legible on glass.
+ * ========================================================= */
+[data-mode="aero"] .bottom-panel,
+[data-mode="aero"] .bottom-panel-tabs {
+    background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(220,238,255,0.45)) !important;
+    border-color: rgba(var(--aero-bord), 0.18) !important;
+    color: var(--aero-deep) !important;
+}
+[data-mode="aero"] .bp-tab        { color: #355c80 !important; }
+[data-mode="aero"] .bp-tab.active { color: var(--aero-accent) !important; background: rgba(26,143,214,0.14) !important; }
+[data-mode="aero"] .cmdk-overlay  { background: rgba(var(--aero-shad), 0.32) !important; }
+[data-mode="aero"] .cmdk-panel,
+[data-mode="aero"] .exo-context-menu {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(var(--aero-tint-light), 0.78) 100%) !important;
+    border: 1px solid rgba(255,255,255,0.85) !important;
+    color: var(--aero-deep) !important;
+    box-shadow: 0 22px 50px rgba(var(--aero-shad), 0.35) !important;
+}
+
+/* =========================================================
+ * 14. EDITOR SHELL — full Aero coverage.
+ *
+ * The editor's own `.vscode-layout` block (shell.css line 15)
+ * scopes its own --bg / --surface / --text-main / --accent CSS
+ * variables INSIDE .vscode-layout, so the values that
+ * exo-theme-apply.js writes to :root never reach the sidebar /
+ * tabs bar / status bar / monaco container backgrounds. Result
+ * before this block: editor stayed dark navy even with Aero
+ * picked (the "weird di full frutiger aero" the user reported).
+ *
+ * Strategy: re-write those scoped variables to Aero values, then
+ * give the structural pieces (sidebar, tabs bar, status bar,
+ * resizer, monaco-container) their own glassy gradients on top.
+ * Monaco's actual code area follows its own JS-defined theme
+ * (set by editor/scripts/themes.js → defineTheme); we don't
+ * touch the syntax tokens here.
+ * ========================================================= */
+
+[data-mode="aero"] .vscode-layout {
+    --bg:        rgba(255,255,255,0.50) !important;
+    --surface:   rgba(255,255,255,0.65) !important;
+    --text-main: var(--aero-deep) !important;
+    --text-muted: rgba(11,58,102,0.55) !important;
+    --accent:    var(--aero-grad-2) !important;
+    --accent-rgb: 26, 143, 214 !important;
+    --hairline:  rgba(var(--aero-bord), 0.18) !important;
+    background: transparent !important;
+    color: var(--aero-deep) !important;
+}
+
+/* Sidebar (file tree pane) */
+[data-mode="aero"] .sidebar-fixed {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(var(--aero-tint-light), 0.62) 100%) !important;
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border-right: 1px solid rgba(255,255,255,0.7) !important;
+    color: var(--aero-deep) !important;
+}
+[data-mode="aero"] .sidebar-tabs {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.65), rgba(220,238,255,0.45)) !important;
+    border-bottom: 1px solid rgba(var(--aero-bord), 0.18) !important;
+}
+[data-mode="aero"] .sidebar-tabs .tab-btn {
+    color: #355c80 !important;
+    background: transparent !important;
+    border: 0 !important;
+}
+[data-mode="aero"] .sidebar-tabs .tab-btn.active {
+    color: var(--aero-accent) !important;
+    background: rgba(255,255,255,0.55) !important;
+    border-radius: 8px !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.95),
+                inset 0 -1px 1px rgba(var(--aero-bord), 0.18);
+}
+[data-mode="aero"] .sidebar-toolbar {
+    border-bottom-color: rgba(var(--aero-bord), 0.18) !important;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.45), transparent) !important;
+}
+[data-mode="aero"] .toolbar-title { color: var(--aero-deep) !important; opacity: 1 !important; }
+[data-mode="aero"] .title-dot {
+    background: var(--aero-grad-2) !important;
+    box-shadow: 0 0 8px rgba(26,143,214,0.6) !important;
+}
+[data-mode="aero"] .toolbar-icon { color: #355c80 !important; }
+[data-mode="aero"] .toolbar-icon:hover {
+    background: rgba(26,143,214,0.14) !important;
+    color: var(--aero-accent) !important;
+}
+[data-mode="aero"] .sidebar-pane,
+[data-mode="aero"] .sidebar-body,
+[data-mode="aero"] .exocore-sidebar-container {
+    background: transparent !important;
+    color: var(--aero-deep) !important;
+}
+
+/* File-tree rows */
+[data-mode="aero"] .tree-row,
+[data-mode="aero"] .tree-item,
+[data-mode="aero"] .tree-empty { color: var(--aero-deep) !important; }
+[data-mode="aero"] .tree-row:hover,
+[data-mode="aero"] .tree-item:hover {
+    background: rgba(26,143,214,0.10) !important;
+}
+[data-mode="aero"] .tree-row.active,
+[data-mode="aero"] .tree-item.active {
+    background: rgba(26,143,214,0.18) !important;
+    color: var(--aero-accent) !important;
+}
+
+/* Resizer between sidebar and editor */
+[data-mode="aero"] .resizer {
+    background: rgba(var(--aero-bord), 0.15) !important;
+}
+[data-mode="aero"] .resizer:hover {
+    background: rgba(26,143,214,0.45) !important;
+}
+
+/* Workspace container (sidebar + editor area) */
+[data-mode="aero"] .workspace-container {
+    background: transparent !important;
+}
+
+/* Tabs bar (file tabs above the code area) */
+[data-mode="aero"] .tabs-bar {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.68) 0%, rgba(220,238,255,0.45) 100%) !important;
+    border-bottom: 1px solid rgba(var(--aero-bord), 0.18) !important;
+}
+[data-mode="aero"] .tab-chip {
+    color: #355c80 !important;
+    opacity: 0.75 !important;
+}
+[data-mode="aero"] .tab-chip:hover { opacity: 1 !important; }
+[data-mode="aero"] .tab-chip.active {
+    color: var(--aero-accent) !important;
+    opacity: 1 !important;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(var(--aero-tint-light), 0.70) 100%) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        inset 0 -2px 0 var(--aero-grad-2) !important;
+}
+
+/* Monaco container — keep transparent so the page gradient shows
+ * around the actual editor; Monaco itself paints its own
+ * background inside .monaco-host. */
+[data-mode="aero"] .monaco-container,
+[data-mode="aero"] .content-split {
+    background: transparent !important;
+}
+[data-mode="aero"] .monaco-host {
+    background: rgba(255,255,255,0.55) !important;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* Status bar at the bottom of the editor */
+[data-mode="aero"] .status-bar {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.68) 0%, rgba(220,238,255,0.55) 100%) !important;
+    border-top: 1px solid rgba(var(--aero-bord), 0.18) !important;
+    color: var(--aero-deep) !important;
+}
+[data-mode="aero"] .status-btn {
+    color: #355c80 !important;
+}
+[data-mode="aero"] .status-btn:hover {
+    color: var(--aero-accent) !important;
+    background: rgba(26,143,214,0.12) !important;
+    border-radius: 4px !important;
+}
+[data-mode="aero"] .status-btn.panel-pill.active {
+    color: var(--aero-accent) !important;
+    background: rgba(26,143,214,0.18) !important;
+}
+
+/* Editor header (the bar that says "Dashboard | EXOCORE | icons") */
+[data-mode="aero"] .vscode-layout .main-header {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(220,238,255,0.65) 100%) !important;
+    border-bottom: 1px solid rgba(var(--aero-bord), 0.18) !important;
+    color: var(--aero-deep) !important;
+}
+[data-mode="aero"] .header-title { color: var(--aero-deep) !important; }
+[data-mode="aero"] .hdr-glyph svg { color: var(--aero-accent) !important; }
+
+/* =====================================================================
+ * 14. Home page (home.html) — Frutiger Aero override
+ *
+ *     The home page is built with its own scoped neo-brutalist theme
+ *     (yellow-on-black, hard offset shadows). When the user has picked
+ *     the Frutiger Aero theme it must transform into sky-and-glass:
+ *     soft aqua background, glossy translucent surfaces, glassy pills.
+ * ===================================================================== */
+
+/* Page background — replace the dark base with the sky gradient that
+ * lives at the top of this file. The body class is `theme-modern` on
+ * the home page, so we anchor on the Aero data-mode flag instead. */
+[data-mode="aero"] body.theme-modern {
+    background:
+        radial-gradient(ellipse at 30% -10%, rgba(255,255,255,0.55), transparent 60%),
+        radial-gradient(ellipse at 80% 110%, rgba(180,225,255,0.55), transparent 55%),
+        linear-gradient(180deg, #b6e3ff 0%, #7fc2f0 45%, #4ea4dc 100%) !important;
+    color: var(--aero-deep) !important;
+}
+
+/* Soft floating "bokeh" — recolor the neo glow blobs as gentle aqua
+ * highlights instead of saturated yellow / pink / cyan. */
+[data-mode="aero"] .home-glow {
+    filter: blur(80px) !important;
+    opacity: 0.55 !important;
+}
+[data-mode="aero"] .home-glow-1 { background: rgba(255, 255, 255, 0.85) !important; }
+[data-mode="aero"] .home-glow-2 { background: rgba(150, 210, 255, 0.85) !important; }
+[data-mode="aero"] .home-glow-3 { background: rgba(220, 245, 255, 0.85) !important; }
+
+/* "Cloud Development Platform" pill — turn the harsh yellow chip into
+ * a glossy glass capsule with the standard Aero blue accent. */
+[data-mode="aero"] .home-badge {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(220,238,255,0.55) 100%) !important;
+    border: 1px solid rgba(var(--aero-bord), 0.45) !important;
+    color: var(--aero-accent) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        0 2px 6px rgba(var(--aero-shad), 0.18) !important;
+    border-radius: 999px !important;
+    backdrop-filter: blur(8px) saturate(140%);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
+}
+[data-mode="aero"] .home-badge-dot {
+    background: var(--aero-grad-2) !important;
+    box-shadow: 0 0 6px rgba(26,143,214,0.7) !important;
+}
+
+/* "EXOCORE" wordmark — keep it bold, but swap to the Aero deep-blue
+ * with a soft white outer glow instead of the hard black drop shadow. */
+[data-mode="aero"] .home-title {
+    color: #0a4d8f !important;
+    text-shadow:
+        0 1px 0 rgba(255,255,255,0.85),
+        0 2px 0 rgba(255,255,255,0.55),
+        0 6px 18px rgba(var(--aero-shad), 0.30) !important;
+    letter-spacing: -0.03em !important;
+}
+
+[data-mode="aero"] .home-subtitle {
+    color: var(--aero-mid) !important;
+}
+
+/* Primary / secondary CTA buttons — glossy aqua pills, matching the
+ * existing `[data-mode="aero"] .btn` rules earlier in this file. */
+[data-mode="aero"] .btn-home-primary,
+[data-mode="aero"] .btn-home-secondary {
+    border: 1px solid rgba(10, 60, 110, 0.85) !important;
+    border-radius: 999px !important;
+    text-transform: none !important;
+    letter-spacing: 0.02em !important;
+    font-weight: 700 !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        inset 0 -1px 1px rgba(var(--aero-bord), 0.18),
+        0 2px 6px rgba(var(--aero-shad), 0.18) !important;
+    transition: filter 0.15s ease, transform 0.08s ease !important;
+}
+[data-mode="aero"] .btn-home-primary {
+    background:
+        linear-gradient(180deg, var(--aero-grad-1) 0%, var(--aero-grad-2) 48%, #0d6ab0 52%, #2599e0 100%) !important;
+    color: #ffffff !important;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.18) !important;
+}
+[data-mode="aero"] .btn-home-secondary {
+    background:
+        linear-gradient(180deg, #ffffff 0%, #e3f2ff 48%, #b9dcf6 52%, #d6ecfb 100%) !important;
+    color: var(--aero-deep) !important;
+    border-color: rgba(var(--aero-bord), 0.55) !important;
+}
+[data-mode="aero"] .btn-home-primary:hover,
+[data-mode="aero"] .btn-home-secondary:hover {
+    transform: translateY(-1px) !important;
+    filter: brightness(1.05) saturate(1.1) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        0 4px 10px rgba(var(--aero-shad), 0.25) !important;
+}
+[data-mode="aero"] .btn-home-primary:active,
+[data-mode="aero"] .btn-home-secondary:active {
+    transform: translateY(1px) !important;
+    box-shadow:
+        inset 0 2px 4px rgba(var(--aero-shad), 0.25),
+        0 1px 1px rgba(var(--aero-shad), 0.10) !important;
+}
+
+/* Feature tiles ("Fast IDE", "Live Terminal", ...) — translucent glass
+ * cards with the SVG icons tinted Aero blue. */
+[data-mode="aero"] .home-feature-item {
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.78) 0%, rgba(220,238,255,0.55) 100%) !important;
+    border: 1px solid rgba(255,255,255,0.85) !important;
+    border-radius: 14px !important;
+    color: var(--aero-deep) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        0 2px 6px rgba(var(--aero-shad), 0.12) !important;
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+}
+[data-mode="aero"] .home-feature-item:hover {
+    border-color: rgba(var(--aero-bord), 0.55) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        0 4px 12px rgba(var(--aero-shad), 0.25) !important;
+    transform: translateY(-1px) !important;
+}
+[data-mode="aero"] .home-feature-icon { color: var(--aero-accent) !important; }
+[data-mode="aero"] .home-feature-icon svg { stroke: currentColor !important; }
+[data-mode="aero"] .home-feature-label { color: var(--aero-deep) !important; }
+
+/* Bottom version line */
+[data-mode="aero"] .home-version { color: var(--aero-mid) !important; }
+
+/* Aero-themed scrollbar on the home page */
+[data-mode="aero"] body.theme-modern::-webkit-scrollbar-track { background: rgba(255,255,255,0.45) !important; }
+[data-mode="aero"] body.theme-modern::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--aero-grad-1) 0%, var(--aero-grad-2) 100%) !important;
+    border: 1px solid rgba(10,60,110,0.5) !important;
+}
+
+/* ================================================================
+ * Section 15 — Dashboard Aero (Welcome / Donate / Stats /
+ *               Sections / Project cards / Quick Actions / Social)
+ * ================================================================ */
+
+/* ---- Section title + helpers --------------------------------- */
+[data-mode="aero"] .dash-section-title {
+    color: var(--aero-deep) !important;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.7) !important;
+    letter-spacing: 0.01em !important;
+}
+[data-mode="aero"] .dash-section-action {
+    background: linear-gradient(180deg,
+        rgba(255,255,255,0.95) 0%,
+        rgba(var(--aero-tint-light), 0.85) 50%,
+        rgba(var(--aero-tint-deep), 0.9) 100%) !important;
+    border: 1px solid rgba(var(--aero-bord), 0.45) !important;
+    color: var(--aero-accent) !important;
+    border-radius: 999px !important;
+    padding: 6px 14px !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        0 2px 6px rgba(var(--aero-shad), 0.18) !important;
+    font-weight: 700 !important;
+    transition: transform .15s ease, box-shadow .15s ease !important;
+}
+[data-mode="aero"] .dash-section-action:hover {
+    transform: translateY(-1px) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        0 4px 10px rgba(var(--aero-shad), 0.25) !important;
+    border-color: rgba(var(--aero-bord), 0.7) !important;
+}
+[data-mode="aero"] .dash-section-badge {
+    background: linear-gradient(180deg,
+        rgba(255,255,255,0.85) 0%,
+        rgba(var(--aero-tint-light), 0.75) 100%) !important;
+    border: 1px solid rgba(var(--aero-bord), 0.35) !important;
+    color: var(--aero-accent) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.9) !important;
+}
+
+/* ---- Donate / Support banner --------------------------------- */
+[data-mode="aero"] .donate-banner {
+    background:
+        radial-gradient(120% 140% at 0% 0%,
+            rgba(255,255,255,0.85) 0%,
+            rgba(var(--aero-tint-deep), 0.55) 40%,
+            rgba(var(--aero-tint-deep), 0.35) 100%),
+        linear-gradient(135deg,
+            rgba(255,255,255,0.55) 0%,
+            rgba(var(--aero-tint-deep), 0.45) 100%) !important;
+    border: 1px solid rgba(255,255,255,0.85) !important;
+    border-radius: 18px !important;
+    backdrop-filter: blur(14px) saturate(1.2) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(1.2) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        inset 0 -1px 0 rgba(var(--aero-bord), 0.18),
+        0 8px 24px rgba(var(--aero-shad), 0.18) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+[data-mode="aero"] .donate-banner::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 0 50% 0 !important;
+    background: linear-gradient(180deg,
+        rgba(255,255,255,0.55) 0%,
+        rgba(255,255,255,0) 100%) !important;
+    border-radius: 18px 18px 0 0 !important;
+    pointer-events: none !important;
+}
+[data-mode="aero"] .donate-info h3 { color: var(--aero-deep) !important; text-shadow: 0 1px 0 rgba(255,255,255,0.7) !important; }
+[data-mode="aero"] .donate-info p  { color: var(--aero-mid) !important; }
+[data-mode="aero"] .donate-method  { color: var(--aero-mid) !important; }
+[data-mode="aero"] .donate-method span { color: var(--aero-accent) !important; }
+[data-mode="aero"] .donate-heart   { color: #e0457b !important; filter: drop-shadow(0 1px 0 rgba(255,255,255,0.9)) !important; }
+[data-mode="aero"] .donate-qr img {
+    border: 2px solid rgba(255,255,255,0.95) !important;
+    border-radius: 12px !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        0 4px 12px rgba(var(--aero-shad), 0.25) !important;
+    background: #fff !important;
+}
+[data-mode="aero"] .donate-qr span { color: var(--aero-mid) !important; }
+
+/* ---- Stat cards (Projects / Active / CPU / Memory) ----------- */
+[data-mode="aero"] .stat-card {
+    background: linear-gradient(180deg,
+        rgba(255,255,255,0.92) 0%,
+        rgba(var(--aero-tint-light), 0.80) 60%,
+        rgba(var(--aero-tint-deep), 0.85) 100%) !important;
+    border: 1px solid rgba(255,255,255,0.85) !important;
+    border-radius: 14px !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        inset 0 -1px 0 rgba(var(--aero-bord), 0.15),
+        0 4px 12px rgba(var(--aero-shad), 0.15) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: transform .15s ease, box-shadow .15s ease !important;
+}
+[data-mode="aero"] .stat-card::before {
+    content: "" !important;
+    position: absolute !important; inset: 0 0 55% 0 !important;
+    background: linear-gradient(180deg,
+        rgba(255,255,255,0.55) 0%,
+        rgba(255,255,255,0) 100%) !important;
+    border-radius: 14px 14px 0 0 !important; pointer-events: none !important;
+}
+[data-mode="aero"] .stat-card:hover {
+    transform: translateY(-2px) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        0 8px 18px rgba(var(--aero-shad), 0.22) !important;
+}
+[data-mode="aero"] .stat-card-label { color: var(--aero-mid) !important; }
+[data-mode="aero"] .stat-card-value { color: var(--aero-accent) !important; text-shadow: 0 1px 0 rgba(255,255,255,0.7) !important; }
+[data-mode="aero"] .stat-card-sub   { color: var(--aero-mid) !important; }
+
+/* ---- Project cards ------------------------------------------- */
+[data-mode="aero"] .project-node-card {
+    background: linear-gradient(180deg,
+        rgba(255,255,255,0.94) 0%,
+        rgba(var(--aero-tint-light), 0.85) 100%) !important;
+    border: 1px solid rgba(255,255,255,0.85) !important;
+    border-radius: 14px !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        inset 0 -1px 0 rgba(var(--aero-bord), 0.12),
+        0 3px 10px rgba(var(--aero-shad), 0.14) !important;
+    color: var(--aero-deep) !important;
+}
+[data-mode="aero"] .project-node-card:hover {
+    border-color: rgba(var(--aero-bord), 0.55) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        0 8px 20px rgba(var(--aero-shad), 0.22) !important;
+}
+[data-mode="aero"] .pnc-name { color: var(--aero-deep) !important; }
+[data-mode="aero"] .pnc-desc, [data-mode="aero"] .pnc-run { color: var(--aero-mid) !important; }
+[data-mode="aero"] .pnc-icon {
+    background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(var(--aero-tint-light), 0.85)) !important;
+    border: 1px solid rgba(var(--aero-bord), 0.35) !important;
+    color: var(--aero-accent) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.95) !important;
+}
+[data-mode="aero"] .pnc-actions .btn-start {
+    background: linear-gradient(180deg, rgba(220,255,235,0.95), rgba(180,240,210,0.9)) !important;
+    border: 1px solid rgba(20,140,80,0.55) !important;
+    color: #137a47 !important;
+    border-radius: 999px !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        0 2px 5px rgba(20,140,80,0.2) !important;
+}
+[data-mode="aero"] .pnc-actions .btn-stop {
+    background: linear-gradient(180deg, rgba(255,225,225,0.95), rgba(255,200,200,0.9)) !important;
+    border: 1px solid rgba(200,40,40,0.55) !important;
+    color: #b3261e !important;
+    border-radius: 999px !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        0 2px 5px rgba(200,40,40,0.18) !important;
+}
+[data-mode="aero"] .pnc-badge {
+    background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(var(--aero-tint-light), 0.75)) !important;
+    border: 1px solid rgba(var(--aero-bord), 0.35) !important;
+    color: var(--aero-accent) !important;
+}
+
+/* "See more (n more exorepos)" pill — uses .btn class in JS */
+[data-mode="aero"] #projectsList .btn,
+[data-mode="aero"] .pnc-see-more {
+    background: linear-gradient(180deg,
+        var(--aero-grad-1) 0%, var(--aero-grad-2) 50%, var(--aero-grad-3) 100%) !important;
+    border: 1px solid rgba(10,60,110,0.6) !important;
+    color: #fff !important;
+    border-radius: 999px !important;
+    padding: 8px 18px !important;
+    font-weight: 700 !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.6),
+        inset 0 -1px 0 rgba(0,0,0,0.15),
+        0 4px 10px rgba(var(--aero-shad), 0.3) !important;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.18) !important;
+}
+
+/* ---- Quick Action cards -------------------------------------- */
+[data-mode="aero"] .quick-action-card {
+    background: linear-gradient(180deg,
+        rgba(255,255,255,0.94) 0%,
+        rgba(var(--aero-tint-light), 0.85) 100%) !important;
+    border: 1px solid rgba(255,255,255,0.85) !important;
+    border-radius: 14px !important;
+    padding: 14px 16px !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        inset 0 -1px 0 rgba(var(--aero-bord), 0.12),
+        0 3px 10px rgba(var(--aero-shad), 0.14) !important;
+    transition: transform .15s ease, box-shadow .15s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+[data-mode="aero"] .quick-action-card::before {
+    content: "" !important;
+    position: absolute !important; inset: 0 0 55% 0 !important;
+    background: linear-gradient(180deg,
+        rgba(255,255,255,0.5) 0%,
+        rgba(255,255,255,0) 100%) !important;
+    border-radius: 14px 14px 0 0 !important; pointer-events: none !important;
+}
+[data-mode="aero"] .quick-action-card:hover {
+    transform: translateY(-1px) !important;
+    border-color: rgba(var(--aero-bord), 0.55) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        0 8px 18px rgba(var(--aero-shad), 0.22) !important;
+}
+[data-mode="aero"] .quick-action-icon {
+    width: 44px !important; height: 44px !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255,255,255,0.85) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        0 2px 6px rgba(var(--aero-shad), 0.18) !important;
+}
+[data-mode="aero"] .quick-action-icon.indigo {
+    background: linear-gradient(180deg, rgba(220,225,255,0.95), rgba(180,190,250,0.85)) !important;
+    color: #4338ca !important;
+}
+[data-mode="aero"] .quick-action-icon.violet {
+    background: linear-gradient(180deg, rgba(235,220,255,0.95), rgba(210,180,250,0.85)) !important;
+    color: #7c3aed !important;
+}
+[data-mode="aero"] .quick-action-icon.sky {
+    background: linear-gradient(180deg, rgba(var(--aero-tint-light), 0.95), rgba(var(--aero-tint-deep), 0.9)) !important;
+    color: var(--aero-accent) !important;
+}
+[data-mode="aero"] .quick-action-icon.amber {
+    background: linear-gradient(180deg, rgba(255,240,210,0.95), rgba(255,215,150,0.9)) !important;
+    color: #b45309 !important;
+}
+[data-mode="aero"] .quick-action-title { color: var(--aero-deep) !important; }
+[data-mode="aero"] .quick-action-desc  { color: var(--aero-mid) !important; }
+[data-mode="aero"] .quick-action-badge {
+    background: linear-gradient(180deg, var(--aero-grad-2), var(--aero-grad-3)) !important;
+    color: #fff !important;
+    border: 1px solid rgba(10,60,110,0.55) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.5),
+        0 2px 4px rgba(var(--aero-shad), 0.25) !important;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.2) !important;
+}
+
+/* ---- Social grid --------------------------------------------- */
+[data-mode="aero"] .social-card {
+    background: linear-gradient(180deg,
+        rgba(255,255,255,0.92) 0%,
+        rgba(var(--aero-tint-light), 0.82) 100%) !important;
+    border: 1px solid rgba(255,255,255,0.85) !important;
+    border-radius: 14px !important;
+    padding: 12px !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        inset 0 -1px 0 rgba(var(--aero-bord), 0.12),
+        0 3px 10px rgba(var(--aero-shad), 0.14) !important;
+    transition: transform .15s ease, box-shadow .15s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+[data-mode="aero"] .social-card::before {
+    content: "" !important;
+    position: absolute !important; inset: 0 0 55% 0 !important;
+    background: linear-gradient(180deg,
+        rgba(255,255,255,0.5) 0%,
+        rgba(255,255,255,0) 100%) !important;
+    border-radius: 14px 14px 0 0 !important; pointer-events: none !important;
+}
+[data-mode="aero"] .social-card:hover {
+    transform: translateY(-1px) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        0 8px 18px rgba(var(--aero-shad), 0.22) !important;
+}
+[data-mode="aero"] .social-card-icon {
+    width: 40px !important; height: 40px !important;
+    border-radius: 12px !important;
+    background: linear-gradient(180deg,
+        rgba(255,255,255,0.95) 0%,
+        rgba(var(--aero-tint-light), 0.85) 100%) !important;
+    border: 1px solid rgba(255,255,255,0.85) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        0 2px 6px rgba(var(--aero-shad), 0.18) !important;
+}
+[data-mode="aero"] .social-card-icon svg { display: block !important; }
+[data-mode="aero"] .social-card-label  { color: var(--aero-deep) !important; }
+[data-mode="aero"] .social-card-status { color: var(--aero-mid) !important; }
+[data-mode="aero"] .social-card-connect {
+    background: linear-gradient(180deg,
+        rgba(255,255,255,0.95) 0%,
+        rgba(var(--aero-tint-light), 0.85) 100%) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        0 2px 5px rgba(var(--aero-shad), 0.15) !important;
+    border-radius: 999px !important;
+    padding: 6px 12px !important;
+    font-weight: 700 !important;
+    transition: transform .15s ease, box-shadow .15s ease !important;
+}
+[data-mode="aero"] .social-card-connect:hover {
+    transform: translateY(-1px) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        0 4px 10px rgba(var(--aero-shad), 0.25) !important;
+}
+
+/* "Soon" pill (Instagram, etc) */
+[data-mode="aero"] .social-card .social-card-connect[style*="opacity"] {
+    color: var(--aero-mid) !important;
+    border: 1px dashed rgba(var(--aero-bord), 0.45) !important;
+    background: rgba(255,255,255,0.6) !important;
+}
+
+/* Empty state */
+[data-mode="aero"] .dash-empty-state {
+    background: rgba(255,255,255,0.55) !important;
+    border: 1px dashed rgba(var(--aero-bord), 0.45) !important;
+    color: var(--aero-mid) !important;
+    border-radius: 14px !important;
+}
+
+/* ================================================================
+ * Section 16 — Responsive (mobile / tablet / PC)
+ * ================================================================ */
+
+/* PC (default >= 1024px) — give cards a tiny bit more breathing room */
+@media (min-width: 1024px) {
+    [data-mode="aero"] .stats-row { gap: 14px !important; }
+    [data-mode="aero"] .social-grid { gap: 12px !important; }
+}
+
+/* Tablet (640px – 1023px) */
+@media (max-width: 1023px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr) !important; }
+    .social-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important; }
+    .project-cards-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important; }
+    .donate-banner { padding: 16px !important; }
+    .donate-qr img { width: 96px !important; height: 96px !important; }
+}
+
+/* Mobile (<= 639px) */
+@media (max-width: 639px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+    .stat-card { padding: 12px !important; }
+    .stat-card-value { font-size: 1.4rem !important; }
+    .social-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+    .project-cards-grid { grid-template-columns: 1fr !important; }
+    .donate-banner {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 14px !important;
+        gap: 14px !important;
+    }
+    .donate-info { min-width: 0 !important; width: 100% !important; }
+    .donate-qr { align-self: center !important; }
+    .donate-qr img { width: 110px !important; height: 110px !important; }
+    .donate-info h3 { font-size: 0.95rem !important; }
+    .donate-info p { font-size: 0.82rem !important; }
+    .quick-action-card { padding: 12px !important; gap: 10px !important; }
+    .quick-action-icon { width: 40px !important; height: 40px !important; }
+    .quick-action-title { font-size: 0.88rem !important; }
+    .quick-action-desc { font-size: 0.72rem !important; }
+    .social-card { padding: 10px !important; }
+    .social-card-label { font-size: 0.82rem !important; }
+    .dash-section-title { font-size: 0.92rem !important; }
+}
+
+/* Very narrow (<= 380px) — single column stats */
+@media (max-width: 380px) {
+    .stats-row { grid-template-columns: 1fr !important; }
+}
+
+/* ================================================================
+ * Section 17 — Random palette tokens
+ *
+ * The Aero overlay reads everything color-related through these
+ * CSS variables. exo-theme-apply.js picks one of five palettes at
+ * random on every page load and writes it to <html data-aero-palette="...">,
+ * so refreshing the dashboard shuffles between blue / orange /
+ * cyan / light-green / pink. Defaults below are the original blue
+ * (also used when no palette attribute is set).
+ * ================================================================ */
+
+[data-mode="aero"],
+[data-mode="aero"][data-aero-palette="blue"] {
+    /* Page sky gradient stops */
+    --aero-page-1: #b9e3ff;
+    --aero-page-2: #6cc1f6;
+    --aero-page-3: #2f8fd6;
+    /* Text hierarchy */
+    --aero-deep:   #0a3d6b;
+    --aero-mid:    #1a4a78;
+    --aero-accent: #0a66c2;
+    /* Glossy button gradient */
+    --aero-grad-1: #6dc7ff;
+    --aero-grad-2: #2f9cdc;
+    --aero-grad-3: #1a7cba;
+    /* RGB triplets used inside rgba() */
+    --aero-bord:        40, 110, 170;
+    --aero-shad:        20, 80, 140;
+    --aero-tint-light:  225, 242, 255;
+    --aero-tint-deep:   180, 220, 250;
+}
+
+[data-mode="aero"][data-aero-palette="orange"] {
+    --aero-page-1: #ffe4c2;
+    --aero-page-2: #ffb878;
+    --aero-page-3: #f08c2e;
+    --aero-deep:   #6b3d0a;
+    --aero-mid:    #8a5418;
+    --aero-accent: #cc6a14;
+    --aero-grad-1: #ffc97a;
+    --aero-grad-2: #ff9a3d;
+    --aero-grad-3: #e07a14;
+    --aero-bord:        200, 130, 50;
+    --aero-shad:        140, 80, 20;
+    --aero-tint-light:  255, 235, 210;
+    --aero-tint-deep:   250, 200, 150;
+}
+
+[data-mode="aero"][data-aero-palette="cyan"] {
+    --aero-page-1: #b3eef2;
+    --aero-page-2: #6cd4dc;
+    --aero-page-3: #2fa8b6;
+    --aero-deep:   #0a4d52;
+    --aero-mid:    #187079;
+    --aero-accent: #0a9caa;
+    --aero-grad-1: #6ee0e8;
+    --aero-grad-2: #1cc4d4;
+    --aero-grad-3: #0a8e9e;
+    --aero-bord:        30, 150, 165;
+    --aero-shad:        20, 100, 110;
+    --aero-tint-light:  215, 245, 248;
+    --aero-tint-deep:   165, 225, 232;
+}
+
+[data-mode="aero"][data-aero-palette="green"] {
+    --aero-page-1: #d4f5cc;
+    --aero-page-2: #9ce0a0;
+    --aero-page-3: #5cba5c;
+    --aero-deep:   #1a5d24;
+    --aero-mid:    #2c7a3a;
+    --aero-accent: #1a9a3c;
+    --aero-grad-1: #a8eba8;
+    --aero-grad-2: #5dd16d;
+    --aero-grad-3: #2ea84c;
+    --aero-bord:        50, 150, 70;
+    --aero-shad:        30, 100, 40;
+    --aero-tint-light:  225, 248, 225;
+    --aero-tint-deep:   180, 235, 185;
+}
+
+[data-mode="aero"][data-aero-palette="pink"] {
+    --aero-page-1: #ffd4ea;
+    --aero-page-2: #ff9cce;
+    --aero-page-3: #e85aa8;
+    --aero-deep:   #6b1a4a;
+    --aero-mid:    #8a2d6a;
+    --aero-accent: #c2348e;
+    --aero-grad-1: #ffaad4;
+    --aero-grad-2: #ff6cb0;
+    --aero-grad-3: #d8408c;
+    --aero-bord:        200, 80, 140;
+    --aero-shad:        130, 30, 90;
+    --aero-tint-light:  255, 230, 245;
+    --aero-tint-deep:   250, 195, 225;
+}
+
+/* =====================================================================
+ * 99. Editor syntax tokens — Frutiger Aero (light background) override
+ *
+ *     The default `--exo-syn-*` palette in themes.js is tuned for a
+ *     dark editor background (light cyan keywords, mint strings, sky
+ *     blue functions). On the Aero theme the editor background is
+ *     near-white / light blue, so those pastel tokens fade into the
+ *     paper and the code looks blank — most visible on mobile, where
+ *     the editor uses SimpleCode (Prism over a textarea) instead of
+ *     Monaco's own theme palette.
+ *
+ *     Force every syntax variable to a high-contrast dark hue while
+ *     in Aero mode so JS / TS / CSS / etc. stay readable on every
+ *     palette (sky / orange / green / pink). Scoped to [data-mode]
+ *     so non-Aero themes are untouched.
+ * ===================================================================== */
+html[data-mode="aero"],
+:root[data-mode="aero"] {
+    --exo-syn-comment:  #5b6b7a !important;
+    --exo-syn-keyword:  #6b21a8 !important;
+    --exo-syn-string:   #065f46 !important;
+    --exo-syn-number:   #9a3412 !important;
+    --exo-syn-fn:       #075985 !important;
+    --exo-syn-tag:      #0c4a6e !important;
+    --exo-syn-property: #0c4a6e !important;
+    --exo-syn-attr:     #9d174d !important;
+    --exo-syn-builtin:  #92400e !important;
+    --exo-syn-operator: #7c2d12 !important;
+    --exo-syn-variable: #1e3a8a !important;
+    --exo-syn-invalid:  #b91c1c !important;
+}
+
+/* Belt-and-braces: pin the SimpleCode token colors directly in case a
+ * theme-specific stylesheet later re-overrides the var. Mobile-first. */
+html[data-mode="aero"] .scv-pre,
+html[data-mode="aero"] .scv-pre code {
+    color: #0a1628 !important;
+}
+html[data-mode="aero"] .scv-pre .token.comment,
+html[data-mode="aero"] .scv-pre .token.prolog,
+html[data-mode="aero"] .scv-pre .token.doctype,
+html[data-mode="aero"] .scv-pre .token.cdata        { color: #5b6b7a !important; }
+html[data-mode="aero"] .scv-pre .token.punctuation  { color: #334155 !important; }
+html[data-mode="aero"] .scv-pre .token.tag,
+html[data-mode="aero"] .scv-pre .token.property     { color: #0c4a6e !important; }
+html[data-mode="aero"] .scv-pre .token.boolean,
+html[data-mode="aero"] .scv-pre .token.number       { color: #9a3412 !important; }
+html[data-mode="aero"] .scv-pre .token.constant,
+html[data-mode="aero"] .scv-pre .token.symbol,
+html[data-mode="aero"] .scv-pre .token.builtin,
+html[data-mode="aero"] .scv-pre .token.inserted     { color: #92400e !important; }
+html[data-mode="aero"] .scv-pre .token.selector,
+html[data-mode="aero"] .scv-pre .token.attr-name    { color: #9d174d !important; }
+html[data-mode="aero"] .scv-pre .token.string,
+html[data-mode="aero"] .scv-pre .token.char,
+html[data-mode="aero"] .scv-pre .token.template-string { color: #065f46 !important; }
+html[data-mode="aero"] .scv-pre .token.operator,
+html[data-mode="aero"] .scv-pre .token.entity,
+html[data-mode="aero"] .scv-pre .token.url          { color: #7c2d12 !important; }
+html[data-mode="aero"] .scv-pre .token.atrule,
+html[data-mode="aero"] .scv-pre .token.attr-value,
+html[data-mode="aero"] .scv-pre .token.keyword      { color: #6b21a8 !important; }
+html[data-mode="aero"] .scv-pre .token.function,
+html[data-mode="aero"] .scv-pre .token.class-name,
+html[data-mode="aero"] .scv-pre .token.type-name    { color: #075985 !important; }
+html[data-mode="aero"] .scv-pre .token.regex,
+html[data-mode="aero"] .scv-pre .token.important    { color: #b91c1c !important; }
+html[data-mode="aero"] .scv-pre .token.variable,
+html[data-mode="aero"] .scv-pre .token.parameter    { color: #1e3a8a !important; }
+
+/* Give the SimpleCode wrapper a solid pale surface in Aero so the
+ * dark tokens have proper contrast (instead of the page gradient
+ * showing through and bleaching the text). */
+html[data-mode="aero"] .scv-wrap {
+    background: rgba(255, 255, 255, 0.82) !important;
+    color: #0a1628 !important;
+}
+

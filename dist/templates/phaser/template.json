@@ -1,0 +1,11 @@
+{
+  "name": "Phaser",
+  "description": "HTML5 game framework",
+  "language": "js",
+  "runtime": "node",
+  "run": "npx serve .",
+  "port": 3000,
+  "install": true,
+  "category": "game",
+  "icon": "js"
+}

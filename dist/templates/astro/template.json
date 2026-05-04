@@ -1,0 +1,11 @@
+{
+  "name": "Astro",
+  "description": "The web framework for content-driven websites",
+  "language": "astro",
+  "runtime": "node",
+  "run": "npm run dev",
+  "port": 3000,
+  "install": true,
+  "category": "web",
+  "icon": "astro"
+}

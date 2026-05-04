@@ -1,0 +1,72 @@
+{
+  "name": "exocore-web",
+  "version": "4.0.0",
+  "description": "Exocore 2026 — Autonomous multi-project runtime manager and dev panel.",
+  "main": "dist/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "tsx exocore-web/index.ts",
+    "start:prod": "tsx exocore-web/index.ts",
+    "start": "node dist/index.js",
+    "build:client": "node_modules/.bin/vite build --config exocore-web/vite.config.mts",
+    "build:server": "tsc -p exocore-web/tsconfig.server.json",
+    "build:obfuscate": "node build-dist.mjs",
+    "build": "npm run build:client && npm run build:obfuscate",
+    "build:server-only": "npm run build:obfuscate",
+    "typecheck": "tsc -p exocore-web/tsconfig.json --noEmit"
+  },
+  "keywords": [
+    "Exocore",
+    "Web",
+    "Panel",
+    "Dashboard",
+    "TypeScript",
+    "2026"
+  ],
+  "author": "Exocore Organization",
+  "contributors": [
+    "Johnsteve Costaños",
+    "Jonell Magallanes",
+    "Jr Busaco",
+    "Kiff Hyacinth Pon",
+    "Cyril Encenso"
+  ],
+  "home": "Exocore v5.0.0 · Modern Engine",
+  "license": "MIT",
+  "dependencies": {
+    "@google/genai": "^1.51.0",
+    "@msgpack/msgpack": "^3.1.3",
+    "@types/node": "^25.6.0",
+    "adm-zip": "^0.5.17",
+    "archiver": "^7.0.1",
+    "axios": "^1.14.0",
+    "cloudflared": "^0.7.1",
+    "compression": "^1.8.1",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "form-data": "^4.0.5",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.1",
+    "multer": "^2.1.1",
+    "node-pty": "^1.1.0",
+    "p-limit": "^7.3.0",
+    "p-retry": "^7.1.1",
+    "typescript": "^5.9.3",
+    "typescript-language-server": "^5.1.3",
+    "ws": "^8.20.0",
+    "zod": "^4.4.1",
+    "zod-validation-error": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.8",
+    "@types/archiver": "^7.0.0",
+    "@types/compression": "^1.8.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/morgan": "^1.9.10",
+    "@types/multer": "^2.1.0",
+    "@types/ws": "^8.18.1",
+    "javascript-obfuscator": "^5.4.2",
+    "tsx": "^4.21.0"
+  }
+}

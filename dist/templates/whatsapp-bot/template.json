@@ -1,0 +1,11 @@
+{
+  "name": "WhatsApp Bot",
+  "description": "WhatsApp bot using whatsapp-web.js",
+  "language": "js",
+  "runtime": "node",
+  "run": "node index.js",
+  "port": 0,
+  "install": true,
+  "category": "aibot",
+  "icon": "whatsapp"
+}

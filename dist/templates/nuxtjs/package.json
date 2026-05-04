@@ -1,0 +1,6 @@
+{
+  "name": "exocore-nuxt",
+  "version": "1.0.0",
+  "scripts": { "dev": "nuxt dev --port 3000", "build": "nuxt build" },
+  "devDependencies": { "nuxt": "^3.8.0" }
+}

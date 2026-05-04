@@ -1,0 +1,11 @@
+{
+  "name": "R",
+  "description": "Statistical computing language",
+  "language": "r",
+  "runtime": "r",
+  "run": "Rscript main.R",
+  "port": 0,
+  "install": false,
+  "category": "language",
+  "icon": "r"
+}

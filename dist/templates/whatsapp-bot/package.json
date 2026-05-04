@@ -1,0 +1,8 @@
+{
+  "name": "whatsapp-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "whatsapp-web.js": "^1.23.0"
+  }
+}

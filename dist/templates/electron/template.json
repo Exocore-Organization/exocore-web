@@ -1,0 +1,11 @@
+{
+  "name": "Electron",
+  "description": "Cross-platform desktop app with web tech",
+  "language": "js",
+  "runtime": "node",
+  "run": "npx electron .",
+  "port": 0,
+  "install": true,
+  "category": "app",
+  "icon": "electron"
+}

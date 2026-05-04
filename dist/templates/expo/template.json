@@ -1,0 +1,11 @@
+{
+  "name": "Expo",
+  "description": "React Native mobile app starter",
+  "language": "tsx",
+  "runtime": "node",
+  "run": "npx expo start",
+  "port": 8081,
+  "install": true,
+  "category": "app",
+  "icon": "react"
+}

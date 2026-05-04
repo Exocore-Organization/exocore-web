@@ -1,0 +1,11 @@
+{
+  "name": "Angular",
+  "description": "Component-based web app framework",
+  "language": "ts",
+  "runtime": "node",
+  "run": "npm start",
+  "port": 4200,
+  "install": true,
+  "category": "web",
+  "icon": "angular"
+}

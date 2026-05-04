@@ -1,0 +1,11 @@
+{
+  "name": "Go",
+  "description": "Go language project",
+  "language": "go",
+  "runtime": "go",
+  "run": "go run main.go",
+  "port": 0,
+  "install": false,
+  "category": "language",
+  "icon": "go"
+}

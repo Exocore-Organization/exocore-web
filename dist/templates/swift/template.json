@@ -1,0 +1,11 @@
+{
+  "name": "Swift",
+  "description": "Apple Swift language project",
+  "language": "swift",
+  "runtime": "swift",
+  "run": "swift main.swift",
+  "port": 0,
+  "install": false,
+  "category": "language",
+  "icon": "swift"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "TypeScript",
+  "description": "Modern TypeScript project (ESNext, strict mode, tsx runner)",
+  "language": "ts",
+  "runtime": "node",
+  "run": "npx tsx index.ts",
+  "port": 3000,
+  "install": true,
+  "category": "language",
+  "icon": "typescript"
+}

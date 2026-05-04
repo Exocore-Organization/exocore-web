@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Signing in… · Exocore</title>
+    <link rel="icon" href="/exocore/exo-icon.png" type="image/png">
+    <!-- Per-theme structural visual overlays (scoped to html[data-theme="<id>"]). -->
+    <link rel="stylesheet" href="/exocore/_shared/exo-theme-skins.css">
+    <script>
+    /* Pre-paint theme bootstrap — stamps data-theme, restores CSS vars, handles Aero. */
+    (function () {
+        try {
+            var html = document.documentElement;
+            var id = localStorage.getItem('exo:theme') || '';
+            if (id) html.dataset.theme = id;
+            try {
+                var vars = JSON.parse(localStorage.getItem('exo:theme-vars') || 'null');
+                if (vars) {
+                    var cs = vars['color-scheme'];
+                    if (cs) html.style.setProperty('color-scheme', cs);
+                    var keys = Object.keys(vars);
+                    for (var i = 0; i < keys.length; i++) {
+                        var k = keys[i];
+                        if (k !== 'color-scheme' && vars[k]) html.style.setProperty(k, vars[k]);
+                    }
+                }
+            } catch (_) {}
+            if (['frutiger-aero'].indexOf(id) !== -1) {
+                html.dataset.mode = 'aero';
+                html.classList.add('exo-booting');
+                var t = setTimeout(function () { html.classList.remove('exo-booting'); }, 500);
+                var l = document.createElement('link');
+                l.rel = 'stylesheet';
+                l.href = '/exocore/_shared/exo-frutiger-aero.css';
+                l.setAttribute('data-exo-aero', '1');
+                l.onload = function () { clearTimeout(t); html.classList.remove('exo-booting'); };
+                l.onerror = function () { clearTimeout(t); html.classList.remove('exo-booting'); };
+                document.head.appendChild(l);
+            }
+        } catch (e) {
+            try { document.documentElement.classList.remove('exo-booting'); }  catch (_) {}
+        }
+    })();
+    </script>
+    <style>
+        html.exo-booting body { visibility: hidden !important; }
+        html, body {
+            margin: 0; padding: 0; height: 100%;
+            background: #0a0a0a; color: #eaeaea;
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .box { text-align: center; padding: 24px; }
+        .spin {
+            display: inline-block; width: 28px; height: 28px;
+            border: 3px solid #2a2a2a; border-top-color: #ffd400;
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        p { margin: 14px 0 0; color: #888; font-size: 0.9rem; letter-spacing: 0.02em; }
+        .err { color: #ff5b5b; }
+        a { color: #ffd400; text-decoration: none; font-weight: 700; }
+        a:hover { text-decoration: underline; }
+    </style>
+<!-- ExoStorage MUST load before exo-theme-apply.js so the theme
+     bootstrap can read the editor's IndexedDB-stored choice. -->
+<script src="/exocore/_shared/exo-storage.js"></script>
+<script src="/exocore/editor/scripts/themes.js"></script>
+<script src="/exocore/_shared/exo-theme-apply.js"></script>
+</head>
+<body>
+    <main class="box">
+        <div class="spin" id="spin"></div>
+        <p id="msg">Signing you in…</p>
+        <p id="link" hidden><a href="/exocore/login">Back to sign-in</a></p>
+    </main>
+    <script>
+        (function () {
+            function fail(message) {
+                var spin = document.getElementById('spin');
+                var msg = document.getElementById('msg');
+                var link = document.getElementById('link');
+                if (spin) spin.style.display = 'none';
+                if (msg) { msg.className = 'err'; msg.textContent = message; }
+                if (link) link.hidden = false;
+            }
+            /* Wait for the IDB cache hydrate; then persist the token
+             * inside IndexedDB before we redirect to /dashboard. We
+             * await the setItem so the dashboard page is guaranteed
+             * to read the freshly-written token on its first tick. */
+            window.ExoStorage.ready.then(async function () {
+                try {
+                    var qs = new URLSearchParams(location.search);
+                    var token = qs.get('token');
+                    if (!token) { fail('No sign-in token returned.'); return; }
+                    try { await ExoStorage.setItem('exo_token', token); } catch (e) {}
+                    try { sessionStorage.removeItem('exo_pending_verify'); } catch (e) {}
+                    location.replace('/exocore/dashboard');
+                } catch (e) {
+                    fail('Sign-in failed. Please try again.');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
