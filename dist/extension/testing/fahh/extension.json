@@ -1,0 +1,12 @@
+{
+    "name": "FAHH",
+    "version": "2.0.0",
+    "author": "Rohan Singh",
+    "description": "Never miss a failed command again! Plays a sound whenever a terminal command exits with an error. Click the status bar button to open settings.",
+    "date": "2026-05-03",
+    "team": false,
+    "entry": "fahh.js",
+    "icon": "icon.png",
+    "status": "both",
+    "access": "free"
+}

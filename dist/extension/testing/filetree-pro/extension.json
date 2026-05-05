@@ -1,0 +1,11 @@
+{
+    "name": "FileTree Pro",
+    "version": "1.0.0",
+    "author": "Exocore Community",
+    "description": "Enhances the file explorer with right-click context menus (New File, New Folder, Rename, Delete, Copy Path), a live filter/search box, file-info tooltips, and context-aware quick actions based on file type.",
+    "date": "2026-05-02",
+    "team": false,
+    "entry": "filetree-pro.js",
+    "status": "both",
+    "access": "free"
+}

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#0a1008"/>
+  <rect width="64" height="64" rx="14" fill="#ffd400" fill-opacity="0.08"/>
+  <!-- Clipboard body -->
+  <rect x="12" y="16" width="40" height="44" rx="5" fill="none" stroke="#ffd400" stroke-width="2" fill-opacity="0"/>
+  <rect x="12" y="16" width="40" height="44" rx="5" fill="#ffd400" fill-opacity="0.06"/>
+  <!-- Clipboard top clip -->
+  <rect x="24" y="11" width="16" height="10" rx="3" fill="#0a1008" stroke="#ffd400" stroke-width="1.8"/>
+  <!-- Check lines -->
+  <polyline points="20,32 24,36 32,28" fill="none" stroke="#50fa7b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="36" y1="32" x2="48" y2="32" stroke="#ffd400" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.7"/>
+  <!-- Second item (TODO) -->
+  <circle cx="22" cy="42" r="3" fill="none" stroke="#ffd400" stroke-width="1.8"/>
+  <line x1="28" y1="42" x2="48" y2="42" stroke="#ffd400" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.7"/>
+  <!-- Third item (FIXME) -->
+  <circle cx="22" cy="52" r="3" fill="none" stroke="#ff5555" stroke-width="1.8"/>
+  <line x1="28" y1="52" x2="48" y2="52" stroke="#ff5555" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.6"/>
+</svg>
