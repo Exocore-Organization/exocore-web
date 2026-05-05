@@ -13,7 +13,7 @@ set -euo pipefail
 EXOCORE_DIR="${EXOCORE_DIR:-$HOME/.exocore}"
 EXOCORE_PORT="${PORT:-5000}"
 NODE_MIN=18
-REPO_URL="${REPO_URL:-https://github.com/Exocore-Organization/exocore-web}"
+REPO_URL="${REPO_URL:-https://github.com/your-org/exocore}"
 BRANCH="${BRANCH:-main}"
 
 # ── color helpers ────────────────────────────────────────────────────────────
@@ -97,10 +97,33 @@ install_deps() {
     info "Installing npm dependencies (this may take a minute)..."
     cd "$EXOCORE_DIR"
     PUPPETEER_SKIP_DOWNLOAD=1 npm install \
-        --omit=dev --legacy-peer-deps --no-audit --no-fund \
+        --legacy-peer-deps --no-audit --no-fund \
         2>/dev/null \
-        || npm install --omit=dev --legacy-peer-deps --no-audit --no-fund
+        || npm install --legacy-peer-deps --no-audit --no-fund
     ok "Dependencies installed"
+}
+
+# ── build client + server ─────────────────────────────────────────────────────
+build_app() {
+    cd "$EXOCORE_DIR"
+
+    info "Building client (Vite)..."
+    if npm run build:client 2>/dev/null; then
+        ok "Client built → exocore-web/dist/"
+    else
+        warn "Client build skipped or failed (vite may not be configured — continuing)"
+    fi
+
+    info "Building server (TypeScript + obfuscation)..."
+    if npm run build:server-only; then
+        ok "Server built → dist/"
+    else
+        die "Server build failed. Check TypeScript errors above."
+    fi
+
+    info "Pruning dev dependencies..."
+    npm prune --omit=dev --legacy-peer-deps --no-audit --no-fund 2>/dev/null || true
+    ok "Dev dependencies removed"
 }
 
 # ── create systemd service (optional) ───────────────────────────────────────
@@ -136,7 +159,6 @@ EOF
 
 # ── create launcher script ───────────────────────────────────────────────────
 create_launcher() {
-    # Pinalitan ang 'exocore' ng 'exocore-ide'
     local bin="$HOME/.local/bin/exocore-ide"
     mkdir -p "$HOME/.local/bin"
     cat > "$bin" <<EOF
@@ -161,7 +183,6 @@ finish() {
     echo -e "${GRN}${BOLD}║      Exocore installed successfully!         ║${RST}"
     echo -e "${GRN}${BOLD}╚══════════════════════════════════════════════╝${RST}"
     echo ""
-    # In-update ang command na ipapakita pagkatapos ma-install
     echo -e "  Start:     ${BOLD}exocore-ide${RST}"
     echo -e "  Open:      ${CYN}http://localhost:${EXOCORE_PORT}/exocore${RST}"
     echo ""
@@ -174,6 +195,7 @@ main() {
     check_node
     fetch_repo
     install_deps
+    build_app
     create_launcher
     create_service
     finish
