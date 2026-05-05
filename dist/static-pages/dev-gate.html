@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Exocore — Developer Gate</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:      #0e1525;
+    --surface: #1c2333;
+    --accent:  #00a1ff;
+    --text:    #f5f9f9;
+    --muted:   #808ca3;
+    --border:  rgba(255,255,255,0.07);
+    --accent-glow: rgba(0,161,255,0.18);
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 20px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+
+  /* ── Card ── */
+  .card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.45), 0 0 0 1px var(--border);
+  }
+
+  /* ── Header strip ── */
+  .card-header {
+    padding: 20px 24px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 13px;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 0 16px var(--accent-glow);
+    letter-spacing: -0.5px;
+  }
+  .logo-text { flex: 1; }
+  .logo-name {
+    font-size: 13px; font-weight: 800;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text);
+    line-height: 1;
+  }
+  .logo-sub {
+    font-size: 10px; color: var(--muted);
+    margin-top: 3px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: rgba(255, 68, 68, 0.12);
+    color: #ff6060;
+    border: 1px solid rgba(255,68,68,0.25);
+    white-space: nowrap;
+  }
+  .status-pill.ready {
+    background: rgba(0, 220, 120, 0.1);
+    color: #00dc78;
+    border-color: rgba(0,220,120,0.25);
+  }
+  .status-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  /* ── Body ── */
+  .card-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-heading {
+    font-size: 17px; font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.2px;
+  }
+  .form-sub {
+    font-size: 12px; color: var(--muted);
+    line-height: 1.6;
+    margin-top: 4px;
+  }
+
+  /* ── Fields ── */
+  .fields { display: flex; flex-direction: column; gap: 10px; }
+
+  .field-wrap { position: relative; }
+
+  .field-icon {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+    display: flex;
+  }
+
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 13px 14px 13px 42px;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    -webkit-appearance: none;
+  }
+  input::placeholder { color: var(--muted); opacity: 0.7; }
+  input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  /* ── Error ── */
+  .error-box {
+    padding: 11px 14px;
+    background: rgba(255,68,68,0.08);
+    border: 1px solid rgba(255,68,68,0.3);
+    border-radius: 8px;
+    color: #ff7070;
+    font-size: 12px;
+    font-weight: 600;
+    display: none;
+    line-height: 1.5;
+  }
+
+  /* ── Submit button ── */
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.15s, transform 0.1s, box-shadow 0.15s;
+    box-shadow: 0 4px 20px var(--accent-glow);
+    -webkit-appearance: none;
+  }
+  .submit-btn:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 6px 24px var(--accent-glow); }
+  .submit-btn:active { opacity: 1; transform: translateY(0); }
+  .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+  /* ── Footer hint ── */
+  .card-footer {
+    padding: 14px 24px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+    text-align: center;
+  }
+  .card-footer code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    background: var(--bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--accent);
+    word-break: break-all;
+  }
+
+  /* ── Skeleton loader ── */
+  .skeleton-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .skel {
+    background: rgba(255,255,255,0.06);
+    border-radius: 8px;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0%,100% { opacity: 0.6; }
+    50%      { opacity: 1; }
+  }
+
+  @media (max-width: 440px) {
+    body { padding: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+    .card { border-radius: 14px; }
+    .card-header { padding: 16px 18px 14px; }
+    .card-body { padding: 18px; gap: 16px; }
+    .card-footer { padding: 12px 18px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Skeleton while loading -->
+<div class="skeleton-card" id="skeleton">
+  <div class="skel" style="height:44px;border-radius:12px;"></div>
+  <div class="skel" style="height:20px;width:60%;"></div>
+  <div class="skel" style="height:48px;border-radius:10px;"></div>
+  <div class="skel" style="height:48px;border-radius:10px;"></div>
+  <div class="skel" style="height:48px;border-radius:10px;display:none;" id="skelConfirm"></div>
+  <div class="skel" style="height:48px;border-radius:10px;"></div>
+</div>
+
+<!-- Main card (hidden until loaded) -->
+<div class="card" id="card" style="display:none;">
+  <div class="card-header">
+    <div class="logo" id="logoEl">EX</div>
+    <div class="logo-text">
+      <div class="logo-name">Exocore</div>
+      <div class="logo-sub">Developer Gate</div>
+    </div>
+    <div class="status-pill" id="statusPill">
+      <span class="status-dot"></span>
+      <span id="statusText">Locked</span>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div>
+      <div class="form-heading" id="formHeading">Developer Login</div>
+      <div class="form-sub" id="formSub">Enter your credentials to access this Exocore instance.</div>
+    </div>
+
+    <div class="error-box" id="errorBox"></div>
+
+    <form id="gateForm">
+      <div class="fields">
+        <div class="field-wrap">
+          <span class="field-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
+          <input type="text" id="userInput" placeholder="Username" autocomplete="username" />
+        </div>
+        <div class="field-wrap">
+          <span class="field-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </span>
+          <input type="password" id="passInput" placeholder="Password" autocomplete="current-password" />
+        </div>
+        <div class="field-wrap" id="confirmWrap" style="display:none;">
+          <span class="field-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+          </span>
+          <input type="password" id="confirmInput" placeholder="Confirm Password" autocomplete="new-password" />
+        </div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <button type="submit" class="submit-btn" id="submitBtn">Unlock Panel</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card-footer" id="cardFooter">
+    Session lasts 30 days on this device.
+  </div>
+</div>
+
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  let mode = 'login';
+
+  function applyTheme(t) {
+    if (!t) return;
+    const r = document.documentElement.style;
+    if (t.bg)      r.setProperty('--bg',      t.bg);
+    if (t.surface) r.setProperty('--surface', t.surface);
+    if (t.accent)  r.setProperty('--accent',  t.accent);
+    if (t.text)    r.setProperty('--text',    t.text);
+    if (t.muted)   r.setProperty('--muted',   t.muted);
+    // Derive accent-glow from accent hex
+    if (t.accent && t.accent.startsWith('#')) {
+      try {
+        const hex = t.accent.slice(1);
+        const r2 = parseInt(hex.slice(0,2),16);
+        const g2 = parseInt(hex.slice(2,4),16);
+        const b2 = parseInt(hex.slice(4,6),16);
+        r.setProperty('--accent-glow', `rgba(${r2},${g2},${b2},0.2)`);
+        // Logo bg
+        $('logoEl').style.background = t.accent;
+      } catch {}
+    }
+    // Border subtlety for light themes
+    if (t.dark === false) {
+      r.setProperty('--border', 'rgba(0,0,0,0.1)');
+    }
+  }
+
+  function setMode(m, theme) {
+    mode = m;
+    if (m === 'setup') {
+      $('statusPill').classList.remove('ready');
+      $('statusText').textContent = 'Setup Required';
+      $('formHeading').textContent = 'Create Your Account';
+      $('formSub').textContent = 'No credentials found. Set a username and password to protect your IDE.';
+      $('submitBtn').textContent = 'Create Account';
+      $('confirmWrap').style.display = 'block';
+      $('passInput').placeholder = 'Password (min 4 chars)';
+      $('userInput').placeholder = 'Username (min 3 chars)';
+      $('cardFooter').innerHTML = 'Forgot later? Delete <code>exocore-web/devs.json</code> from the server and reload.';
+    } else {
+      $('statusPill').classList.add('ready');
+      $('statusText').textContent = 'Ready';
+      $('formHeading').textContent = 'Developer Login';
+      $('formSub').textContent = 'Enter your credentials to access this Exocore instance.';
+      $('submitBtn').textContent = 'Unlock Panel';
+      $('confirmWrap').style.display = 'none';
+      $('cardFooter').innerHTML = 'Session lasts 30 days on this device. Forgot? Delete <code>exocore-web/devs.json</code> and reload.';
+    }
+  }
+
+  function showError(msg) {
+    const el = $('errorBox');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+  function hideError() { $('errorBox').style.display = 'none'; }
+
+  async function init() {
+    try {
+      const res = await fetch('/exocore/api/dev-gate/status?t=' + Date.now());
+      const data = await res.json();
+      applyTheme(data.theme);
+      setMode(data.hasConfig ? 'login' : 'setup', data.theme);
+    } catch {
+      $('formSub').textContent = 'Cannot reach server. Make sure Exocore is running.';
+      $('submitBtn').disabled = true;
+    }
+    $('skeleton').style.display = 'none';
+    $('card').style.display = 'block';
+    // Auto-focus first input
+    setTimeout(() => $('userInput').focus(), 80);
+  }
+
+  $('gateForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    hideError();
+
+    const user = $('userInput').value.trim();
+    const pass = $('passInput').value;
+    if (!user || !pass) { showError('Please fill in all fields.'); return; }
+
+    const btn = $('submitBtn');
+
+    if (mode === 'setup') {
+      if (user.length < 3) { showError('Username must be at least 3 characters.'); return; }
+      if (pass.length < 4) { showError('Password must be at least 4 characters.'); return; }
+      const confirm = $('confirmInput').value;
+      if (pass !== confirm) { showError('Passwords do not match.'); return; }
+
+      btn.textContent = 'Creating…';
+      btn.disabled = true;
+      try {
+        const res = await fetch('/exocore/api/dev-gate/setup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user, pass }),
+        });
+        const data = await res.json();
+        if (data.ok) {
+          const next = new URLSearchParams(location.search).get('next') || '/exocore/dashboard';
+          location.href = next;
+        } else {
+          showError(data.message || data.error || 'Setup failed.');
+          btn.textContent = 'Create Account';
+          btn.disabled = false;
+        }
+      } catch {
+        showError('Network error. Please try again.');
+        btn.textContent = 'Create Account';
+        btn.disabled = false;
+      }
+
+    } else {
+      btn.textContent = 'Unlocking…';
+      btn.disabled = true;
+      try {
+        const res = await fetch('/exocore/api/dev-gate/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user, pass }),
+        });
+        const data = await res.json();
+        if (data.ok) {
+          const next = new URLSearchParams(location.search).get('next') || '/exocore/dashboard';
+          location.href = next;
+        } else {
+          showError('Incorrect username or password.');
+          btn.textContent = 'Unlock Panel';
+          btn.disabled = false;
+          $('passInput').value = '';
+          $('passInput').focus();
+        }
+      } catch {
+        showError('Network error. Please try again.');
+        btn.textContent = 'Unlock Panel';
+        btn.disabled = false;
+      }
+    }
+  });
+
+  init();
+})();
+</script>
+</body>
+</html>
