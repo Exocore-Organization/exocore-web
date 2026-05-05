@@ -136,7 +136,8 @@ EOF
 
 # ── create launcher script ───────────────────────────────────────────────────
 create_launcher() {
-    local bin="$HOME/.local/bin/exocore"
+    # Pinalitan ang 'exocore' ng 'exocore-ide'
+    local bin="$HOME/.local/bin/exocore-ide"
     mkdir -p "$HOME/.local/bin"
     cat > "$bin" <<EOF
 #!/usr/bin/env bash
@@ -160,7 +161,8 @@ finish() {
     echo -e "${GRN}${BOLD}║      Exocore installed successfully!         ║${RST}"
     echo -e "${GRN}${BOLD}╚══════════════════════════════════════════════╝${RST}"
     echo ""
-    echo -e "  Start:     ${BOLD}exocore${RST}"
+    # In-update ang command na ipapakita pagkatapos ma-install
+    echo -e "  Start:     ${BOLD}exocore-ide${RST}"
     echo -e "  Open:      ${CYN}http://localhost:${EXOCORE_PORT}/exocore${RST}"
     echo ""
 }
