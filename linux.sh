@@ -97,33 +97,18 @@ install_deps() {
     info "Installing npm dependencies (this may take a minute)..."
     cd "$EXOCORE_DIR"
     PUPPETEER_SKIP_DOWNLOAD=1 npm install \
-        --legacy-peer-deps --no-audit --no-fund \
+        --omit=dev --legacy-peer-deps --no-audit --no-fund \
         2>/dev/null \
-        || npm install --legacy-peer-deps --no-audit --no-fund
+        || npm install --omit=dev --legacy-peer-deps --no-audit --no-fund
     ok "Dependencies installed"
 }
 
-# ── build client + server ─────────────────────────────────────────────────────
-build_app() {
-    cd "$EXOCORE_DIR"
-
-    info "Building client (Vite)..."
-    if npm run build:client 2>/dev/null; then
-        ok "Client built → exocore-web/dist/"
-    else
-        warn "Client build skipped or failed (vite may not be configured — continuing)"
+# ── verify pre-built dist ─────────────────────────────────────────────────────
+verify_dist() {
+    if [[ ! -f "$EXOCORE_DIR/dist/index.js" ]]; then
+        die "dist/index.js not found in $EXOCORE_DIR. The repository may be incomplete."
     fi
-
-    info "Building server (TypeScript + obfuscation)..."
-    if npm run build:server-only; then
-        ok "Server built → dist/"
-    else
-        die "Server build failed. Check TypeScript errors above."
-    fi
-
-    info "Pruning dev dependencies..."
-    npm prune --omit=dev --legacy-peer-deps --no-audit --no-fund 2>/dev/null || true
-    ok "Dev dependencies removed"
+    ok "Pre-built dist/ verified"
 }
 
 # ── create systemd service (optional) ───────────────────────────────────────
@@ -195,7 +180,7 @@ main() {
     check_node
     fetch_repo
     install_deps
-    build_app
+    verify_dist
     create_launcher
     create_service
     finish
