@@ -108,10 +108,29 @@ install_deps() {
 
 # ── verify pre-built dist ─────────────────────────────────────────────────────
 verify_dist() {
+    local ok_flag=1
+
     if [[ ! -f "$EXOCORE_DIR/dist/index.js" ]]; then
-        die "dist/index.js not found in $EXOCORE_DIR. The repository may be incomplete."
+        die "dist/index.js not found. Make sure 'dist/' is committed and pushed to GitHub."
     fi
-    ok "Pre-built dist/ verified"
+
+    if [[ ! -d "$EXOCORE_DIR/dist/static-pages" ]]; then
+        warn "dist/static-pages/ is missing — pages will not load (blank/500 errors)."
+        warn "Fix: commit and push dist/static-pages/ to your GitHub repo."
+        warn "  git add dist/static-pages/ && git commit -m 'include static-pages' && git push"
+        ok_flag=0
+    fi
+
+    if [[ ! -f "$EXOCORE_DIR/dist/static-pages/dev-gate.html" ]]; then
+        warn "dist/static-pages/dev-gate.html is missing — login page will 500."
+        ok_flag=0
+    fi
+
+    if [[ $ok_flag -eq 1 ]]; then
+        ok "Pre-built dist/ verified (index.js + static-pages OK)"
+    else
+        warn "Installation completed with warnings. Fix the missing files above before starting."
+    fi
 }
 
 # ── create systemd service (optional) ───────────────────────────────────────
