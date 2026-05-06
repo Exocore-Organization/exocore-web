@@ -142,6 +142,13 @@ EOF
 create_launcher() {
     local bin="$HOME/.local/bin/exocore-ide"
     mkdir -p "$HOME/.local/bin"
+    
+    # Siguraduhing burahin ang lumang launcher para fresh create
+    if [[ -f "$bin" ]]; then
+        info "Deleting outdated launcher at $bin..."
+        rm -f "$bin"
+    fi
+
     cat > "$bin" <<EOF
 #!/usr/bin/env bash
 cd "$EXOCORE_DIR"
@@ -153,7 +160,11 @@ touch "$EXOCORE_DIR/.exocore-local"
 exec node dist/index.js "\$@"
 EOF
     chmod +x "$bin"
-    ok "Launcher: $bin"
+    ok "Launcher recreated: $bin"
+    
+    # Reload bash hash table in case the shell remembers the old binary execution path
+    hash -r 2>/dev/null || true
+
     if ! echo "$PATH" | grep -q "$HOME/.local/bin"; then
         warn "Add to your shell rc: export PATH=\"\$HOME/.local/bin:\$PATH\""
     fi
