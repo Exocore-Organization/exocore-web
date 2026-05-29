@@ -27,7 +27,9 @@ RUN groupadd --system --gid 1001 exocore \
  && echo "exocore ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/exocore \
  && chmod 440 /etc/sudoers.d/exocore
 
-COPY --chown=exocore:exocore exocore-ide ./
+RUN curl -fsSL https://github.com/Exocore-Organization/exocore-web/raw/main/exocore-ide -o /app/exocore-ide \
+ && chmod +x /app/exocore-ide \
+ && chown exocore:exocore /app/exocore-ide
 
 RUN mkdir -p \
         /app/projects \
@@ -42,7 +44,7 @@ RUN mkdir -p /tmp/exo-cache && chown exocore:exocore /tmp/exo-cache
 
 USER exocore
 
-EXPOSE 5000
+EXPOSE 7860
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=25s --retries=3 \
     CMD curl -f http://localhost:${PORT}/exocore/api/health || exit 1
