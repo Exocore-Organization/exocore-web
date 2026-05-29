@@ -1,0 +1,2 @@
+exocore-ide filter=lfs diff=lfs merge=lfs -text
+exocore-ide.exe filter=lfs diff=lfs merge=lfs -text

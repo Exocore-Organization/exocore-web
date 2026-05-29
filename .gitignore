@@ -1,10 +1,8 @@
-# Compiled binaries
-/exocore-ide
-/exocore-ide.exe
-/exocore-web
-/exocore-web.exe
-/exocore-web-mac
-/exocore-web-mac-arm
+# Compiled binaries (tracked via Git LFS — see .gitattributes)
+# /exocore-web
+# /exocore-web.exe
+# /exocore-web-mac
+# /exocore-web-mac-arm
 
 # Rust build artifacts
 tools/pty-helper/target/
