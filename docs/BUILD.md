@@ -1,25 +1,41 @@
 # Building from Source
 
-## Prerequisites
+The `exocore-ide` binary is pre-compiled and tracked in the repo via Git LFS.
+You can run it directly without any compilation steps.
 
-- **Deno** v2.x — [install](https://docs.deno.com/runtime/manual/getting_started/installation)
-- **Rust** (optional, for PTY helper) — [rustup](https://rustup.rs/)
-
-## Steps
+## Quick Start
 
 ```bash
 git clone https://github.com/Exocore-Organization/exocore-web.git
 cd exocore-web
 
+# Run directly — no build needed
+./exocore-ide
+```
+
+Open **http://localhost:5000/exocore** and set up your master account.
+
+## Re-compiling (for contributors)
+
+If you want to compile from source:
+
+### Prerequisites
+
+- **Deno** v2.x — [install](https://docs.deno.com/runtime/manual/getting_started/installation)
+- **Rust** (optional, for PTY helper) — [rustup](https://rustup.rs/)
+
+### Steps
+
+```bash
 # Build PTY helper (optional, enables full terminal)
 cd tools/pty-helper && cargo build --release && cd ../..
 cp tools/pty-helper/target/release/pty-helper tools/pty-helper/bin/pty-helper-linux-x64
 
-# Compile Exocore Web
+# Compile Exocore IDE
 deno task compile
 
 # Run
-./exocore-web
+./exocore-ide
 ```
 
 ## Platform Builds
@@ -34,12 +50,12 @@ deno task compile-win       # x86_64 Windows
 ## Docker
 
 ```bash
-docker build -t exocore-web .
-docker run -p 8080:8080 -v $(pwd)/data:/data exocore-web
+docker build -t exocore-ide .
+docker run -p 5000:5000 -v $(pwd)/data:/data exocore-ide
 ```
 
 ## Notes
 
-- Compiled binary is ~150MB (includes all npm packages + static assets)
+- Compiled binary is ~310MB (includes all npm packages + static assets)
 - Cross-compilation with Deno targets — PTY helper must be compiled separately per target
 - `deno.json` already includes all required `--allow-*` flags

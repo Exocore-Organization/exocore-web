@@ -61,10 +61,10 @@
     "typescript": "npm:typescript@5"
   },
   "tasks": {
-    "compile": "deno compile -c deno.json --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --unstable-sloppy-imports --unstable-node-globals --output exocore-web backup/exocore-ide/packages/index.tsx",
-    "compile-linux": "deno compile -c deno.json --target x86_64-unknown-linux-gnu --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --unstable-sloppy-imports --unstable-node-globals --output exocore-web backup/exocore-ide/packages/index.tsx",
-    "compile-win": "deno compile -c deno.json --target x86_64-pc-windows-msvc --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --unstable-sloppy-imports --unstable-node-globals --output exocore-web.exe backup/exocore-ide/packages/index.tsx",
-    "compile-mac": "deno compile -c deno.json --target x86_64-apple-darwin --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --unstable-sloppy-imports --unstable-node-globals --output exocore-web-mac backup/exocore-ide/packages/index.tsx",
-    "compile-mac-arm": "deno compile -c deno.json --target aarch64-apple-darwin --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --unstable-sloppy-imports --unstable-node-globals --output exocore-web-mac-arm backup/exocore-ide/packages/index.tsx"
+    "compile": "deno compile -c deno.json --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --unstable-sloppy-imports --unstable-node-globals --output exocore-ide backup/exocore-ide/packages/index.tsx",
+    "compile-linux": "deno compile -c deno.json --target x86_64-unknown-linux-gnu --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --unstable-sloppy-imports --unstable-node-globals --output exocore-ide backup/exocore-ide/packages/index.tsx",
+    "compile-win": "deno compile -c deno.json --target x86_64-pc-windows-msvc --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --unstable-sloppy-imports --unstable-node-globals --output exocore-ide.exe backup/exocore-ide/packages/index.tsx",
+    "compile-mac": "deno compile -c deno.json --target x86_64-apple-darwin --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --unstable-sloppy-imports --unstable-node-globals --output exocore-ide-mac backup/exocore-ide/packages/index.tsx",
+    "compile-mac-arm": "deno compile -c deno.json --target aarch64-apple-darwin --no-check --allow-net --allow-read --allow-write --allow-run --allow-env --allow-sys --unstable-sloppy-imports --unstable-node-globals --output exocore-ide-mac-arm backup/exocore-ide/packages/index.tsx"
   }
 }
