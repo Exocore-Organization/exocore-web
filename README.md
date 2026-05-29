@@ -69,7 +69,7 @@ Open **http://localhost:8080/exocore** and set up your master account.
 | Termux (Android) | `curl -fsSL https://raw.githubusercontent.com/Exocore-Organization/exocore-web/main/termux.sh \| bash` |
 | Windows (PowerShell) | `curl -o install.ps1 https://raw.githubusercontent.com/.../install.ps1 && powershell -ExecutionPolicy Bypass -File install.ps1` |
 | Windows (CMD) | `curl -o window.bat https://raw.githubusercontent.com/.../window.bat && window.bat` |
-| Docker | `docker build -t exocore-web . && docker run -p 8080:8080 exocore-web` |
+| Docker | `docker build -t exocore-web --target run . && docker run -p 8080:8080 exocore-web` |
 
 ## Build for Other Platforms
 

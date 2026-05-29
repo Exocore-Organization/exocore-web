@@ -1,4 +1,4 @@
-FROM debian:stable-slim
+FROM debian:stable-slim AS run
 
 LABEL org.opencontainers.image.title="Exocore IDE"
 LABEL org.opencontainers.image.description="Browser-based IDE — full stack, any language"
