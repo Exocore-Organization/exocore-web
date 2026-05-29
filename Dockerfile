@@ -27,6 +27,7 @@ RUN groupadd --system --gid 1001 exocore \
  && echo "exocore ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/exocore \
  && chmod 440 /etc/sudoers.d/exocore
 
+# fetch-binary-174749
 RUN curl -fsSL https://github.com/Exocore-Organization/exocore-web/raw/main/exocore-ide -o /app/exocore-ide \
  && chmod +x /app/exocore-ide \
  && chown exocore:exocore /app/exocore-ide
