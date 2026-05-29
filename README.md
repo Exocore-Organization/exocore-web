@@ -1,3 +1,12 @@
+---
+title: Exocore IDE
+emoji: 🚀
+colorFrom: indigo
+colorTo: purple
+sdk: docker
+pinned: false
+---
+
 # Exocore Web
 
 A browser-based IDE and developer panel — code editor, terminal, project management, multiplayer collaboration, social features, and cloud integrations. Built with **Deno** + **Express 5**, compiled to a single standalone binary.
