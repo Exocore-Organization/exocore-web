@@ -70,7 +70,6 @@ Rust (Cargo.toml), Go (go.mod), Ruby (Gemfile), PHP (composer.json), Java (pom.x
 | GitHub | `github-pane.js` | OAuth, clone, push, pull, commit |
 | Cloud | `cloud-pane.js` | Google Drive backup/restore |
 | Extensions | `extensions.js` | Load/manage extensions |
-| ExocoreAI | `ai-panel.html` iframe | AI agent chat |
 
 ## 3. Bottom Panels
 
@@ -82,7 +81,16 @@ Rust (Cargo.toml), Go (go.mod), Ruby (Gemfile), PHP (composer.json), Java (pom.x
 | Problems | LSP diagnostics |
 | VNC | Virtual browser (Xvfb + noVNC) |
 
-## 4. Multiplayer
+## 4. Social
+
+- **Global chat**: real-time, reply-to, TokenBucket rate limit, avatar-enriched
+- **Direct messages**: E2EE (ciphertext+nonce) or plaintext
+- **Friends**: requests, suggestions, presence tracking
+- **Posts/feed**: create with attachments, edit, delete, comment, emoji react, admin approve
+- **XP system**: level-ups, achievements, global leaderboard
+- **User profiles**: avatars, covers, bio, XP level
+
+## 5. Multiplayer
 
 Real-time collaboration system:
 - Create rooms (public/private/PIN-protected, invite-only)
@@ -93,24 +101,7 @@ Real-time collaboration system:
 - Ban/kick, max player limits, ping tracking
 - Rooms register with backend registry
 
-## 5. AI
-
-ExocoreAI sidebar panel (iframe-based):
-- Multi-provider: Gemini API, Anthropic, HuggingFace Spaces
-- Chat interaction, task planning, tool-use
-- File operations, shell commands, conversation management
-- SSE streaming responses
-
-## 6. Social
-
-- **Global chat**: real-time, reply-to, TokenBucket rate limit, avatar-enriched
-- **Direct messages**: E2EE (ciphertext+nonce) or plaintext
-- **Friends**: requests, suggestions, presence tracking
-- **Posts/feed**: create with attachments, edit, delete, comment, emoji react, admin approve
-- **XP system**: level-ups, achievements, global leaderboard
-- **User profiles**: avatars, covers, bio, XP level
-
-## 7. Cloud & Integrations
+## 6. Cloud & Integrations
 
 ### Google Drive
 - OAuth device flow authentication
@@ -122,33 +113,33 @@ ExocoreAI sidebar panel (iframe-based):
 - Clone repos, create repos from projects, connect to remotes
 - Push/pull/commit, force push support
 
-## 8. Extensions
+## 7. Extensions
 
 - Manifest format (`extension.json`): name, version, entry, icon
 - Scopes: `official/` and `testing/`
 - Extension API: toast, storage, editor access, commands, status bar, keybindings
 - Marketplace via Google Drive (JSON file or folder)
 
-## 9. VNC Remote Desktop
+## 8. VNC Remote Desktop
 
 - Xvfb virtual framebuffer (1280x800)
 - x11vnc server via WebSocket proxy at `/exocore/api/vnc/ws`
 - noVNC client in editor panel
 
-## 10. Project Management
+## 9. Project Management
 
 - **Templates**: Node.js, TypeScript, Python, Static HTML — SSE-streamed creation
 - **Runtime**: start/stop/restart/kill, config read/write (`system.exo`), auto-start
 - **Onboarding**: first-run wizard (theme, extensions, templates)
 
-## 11. Admin
+## 10. Admin
 
 - Roles: user, admin, owner
 - Ban/unban users, mute, role assignment
 - Audit log, user enumeration
 - Payment/subscription management (receipt upload, approve/deny)
 
-## 12. Static Pages
+## 11. Static Pages
 
 | Route | Page |
 |-------|------|

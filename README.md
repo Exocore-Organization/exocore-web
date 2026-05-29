@@ -1,6 +1,6 @@
 # Exocore Web
 
-A browser-based IDE and developer panel — code editor, terminal, project management, AI agent, multiplayer collaboration, social features, and cloud integrations. Built with **Deno** + **Express 5**, compiled to a single standalone binary.
+A browser-based IDE and developer panel — code editor, terminal, project management, multiplayer collaboration, social features, and cloud integrations. Built with **Deno** + **Express 5**, compiled to a single standalone binary.
 
 ## Quick Start
 
@@ -31,7 +31,7 @@ Open **http://localhost:8080/exocore** and set up your master account.
 - **7 themes**: GitHub Dark, GitHub Light, Dracula, Neo-Brutalism, Cyberpunk, Frutiger Aero, Geometry Dash
 
 ### Sidebar Panels
-- NPM packages, PyLibs (Python), GitHub source control, Google Drive cloud, Extensions registry, ExocoreAI
+- NPM packages, PyLibs (Python), GitHub source control, Google Drive cloud, Extensions registry
 
 ### Bottom Panels
 - Console, Terminal, Webview/Preview, Problems/Diagnostics, Virtual Browser (VNC)
@@ -39,9 +39,6 @@ Open **http://localhost:8080/exocore** and set up your master account.
 ### Multiplayer
 - Real-time collaborative editing (cursor sharing, file-open notifications, in-room chat)
 - Rooms: public/private/PIN-protected, invite-only, ban/kick, max player limits
-
-### AI
-- ExocoreAI sidebar panel (iframe) — multi-provider (Gemini, Anthropic, HuggingFace)
 
 ### Social
 - Global chat (reply-to, rate-limited), direct messages (E2EE or plaintext)

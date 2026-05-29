@@ -136,30 +136,6 @@ All API routes under `/exocore/api/`. Full path prefix: `/exocore/api`.
 |--------|------|-------------|
 | POST | `/editor/lsp-mobile/diagnostics` | TS diagnostics (HTTP) |
 
-## Editor — Exocore AI
-
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/editor/exocore-ai/project` | Locate folder |
-| POST | `/editor/exocore-ai/project/create` | Create folder |
-| POST | `/editor/exocore-ai/shell` | Run command |
-| POST | `/editor/exocore-ai/memory/append` | Append to memory |
-| GET | `/editor/exocore-ai/fs/ls` | List directory |
-| GET | `/editor/exocore-ai/fs/cat` | Read file |
-| POST | `/editor/exocore-ai/fs/write` | Write file |
-| GET | `/editor/exocore-ai/health` | Health check |
-| GET | `/editor/exocore-ai/conversations` | List conversations |
-| POST | `/editor/exocore-ai/conversations/:cid/activate` | Activate conversation |
-| DELETE | `/editor/exocore-ai/conversations/:cid` | Delete conversation |
-| DELETE | `/editor/exocore-ai/conversations` | Delete all |
-| GET | `/editor/exocore-ai/convo` | Read convo |
-| POST | `/editor/exocore-ai/convo` | Write convo |
-| DELETE | `/editor/exocore-ai/convo` | Delete convo |
-| POST | `/editor/exocore-ai/seed` | Check active convo |
-| POST | `/editor/exocore-ai/reset` | Reset conversations |
-| GET | `/editor/exocore-ai/models` | List models |
-| GET | `/editor/exocore-ai/models/:name` | Get model |
-
 ## Multiplayer
 
 | Method | Path | Description |
@@ -234,5 +210,4 @@ All API routes under `/exocore/api/`. Full path prefix: `/exocore/api`.
 |------|-------------|
 | `/exocore/ws` | Multiplexed (social, rpc, presence, terminal, lsp) |
 | `/exocore/api/vnc/ws` | VNC proxy |
-| `/exocore/api/editor/exocore-ai/ws` | AI agent events |
 | `/exocore/` | Status sync |

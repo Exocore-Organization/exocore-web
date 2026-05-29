@@ -2,7 +2,7 @@
 
 ## Overview
 
-Exocore Web is a compiled Deno binary that serves a browser-based IDE workspace — code editor, terminal, project runtime, social features, AI agent, and multiplayer — over a single HTTP server.
+Exocore Web is a compiled Deno binary that serves a browser-based IDE workspace — code editor, terminal, project runtime, social features, and multiplayer — over a single HTTP server.
 
 ```
 ┌──────────────────────────────────────────────────────┐
@@ -57,7 +57,7 @@ Single WebSocket at `/exocore/ws` carries 5 channels:
 ### 3. Routing
 - **`routes/index.ts`** aggregates all API route modules
 - **`packages/app.ts`** defines static page routes + VNC + install script endpoints
-- **`packages/index.ts`** ties everything together + WebSocket upgrades + Exocore AI routes
+- **`packages/index.ts`** ties everything together + WebSocket upgrades
 
 ### 4. PTY Management
 1. Rust `pty-helper` binary (NDJSON protocol)
