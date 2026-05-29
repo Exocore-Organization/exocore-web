@@ -51,6 +51,7 @@ const denoCmd = new Deno.Command("deno", {
     "--include", "templates",
     "--include", "extension",
     "--include", "scripts",
+    "--include", "routes",
     "--output", `../../${OUT_BINARY}`,
     "index.tsx",
   ],
