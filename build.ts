@@ -3,10 +3,10 @@ const OUT_BINARY = "exocore-ide";
 const PTY_DIR = "tools/pty-helper";
 const PTY_OUT = "tools/pty-helper/bin/pty-helper-linux-x64";
 
-const srcExists = await Deno.stat(`${SOURCE_DIR}/packages/index.tsx`).then(() => true).catch(() => false);
+const srcExists = await Deno.stat(`${SOURCE_DIR}/index.tsx`).then(() => true).catch(() => false);
 if (!srcExists) {
   console.error(`[build] Source not found at ${SOURCE_DIR}/`);
-  console.error("Expected: backup/exocore-ide/packages/index.tsx");
+  console.error("Expected: backup/exocore-ide/index.tsx");
   Deno.exit(1);
 }
 
@@ -48,7 +48,7 @@ const denoCmd = new Deno.Command("deno", {
     "--unstable-sloppy-imports",
     "--unstable-node-globals",
     "--output", OUT_BINARY,
-    `${SOURCE_DIR}/packages/index.tsx`,
+    `${SOURCE_DIR}/index.tsx`,
   ],
   stdout: "piped",
   stderr: "piped",
