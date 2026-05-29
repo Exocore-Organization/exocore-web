@@ -31,14 +31,14 @@ try {
   console.warn(`[build] PTY helper unavailable (${err.message}). Continuing without it.`);
 }
 
-// Step 2: Compile Deno binary
-console.log(`[build] Compiling ${SOURCE_DIR}/packages/index.ts \u2192 ${OUT_BINARY} ...`);
+// Step 2: Compile Deno binary (from within SOURCE_DIR so --include uses bare dir names)
+console.log(`[build] Compiling ${SOURCE_DIR}/index.tsx \u2192 ${OUT_BINARY} ...`);
 
 const denoCmd = new Deno.Command("deno", {
   args: [
     "compile",
     "--no-check",
-    "--config", "deno.json",
+    "--config", "../../deno.json",
     "--allow-net",
     "--allow-read",
     "--allow-write",
@@ -47,9 +47,14 @@ const denoCmd = new Deno.Command("deno", {
     "--allow-sys",
     "--unstable-sloppy-imports",
     "--unstable-node-globals",
-    "--output", OUT_BINARY,
-    `${SOURCE_DIR}/index.tsx`,
+    "--include", "static-pages",
+    "--include", "templates",
+    "--include", "extension",
+    "--include", "scripts",
+    "--output", `../../${OUT_BINARY}`,
+    "index.tsx",
   ],
+  cwd: SOURCE_DIR,
   stdout: "piped",
   stderr: "piped",
 });
