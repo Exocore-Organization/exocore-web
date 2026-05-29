@@ -17,15 +17,8 @@ RUN apt-get update \
         build-essential gcc g++ make \
         openssh-client \
         wget net-tools \
-        strace ltrace \
-        gdb valgrind \
-        tree jq \
-        rsync \
-        locales \
  && rm -rf /var/lib/apt/lists/* \
- && rm -rf /var/cache/apt/archives/* \
- && sed -i 's/^# en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/' /etc/locale.gen \
- && locale-gen
+ && rm -rf /var/cache/apt/archives/*
 
 WORKDIR /app
 
