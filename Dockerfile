@@ -35,6 +35,10 @@ RUN groupadd --system --gid 1001 exocore \
  && chmod 440 /etc/sudoers.d/exocore
 
 COPY --chown=exocore:exocore exocore-ide ./
+COPY --chown=exocore:exocore backup/exocore-ide/static-pages ./static-pages/
+COPY --chown=exocore:exocore backup/exocore-ide/templates ./templates/
+COPY --chown=exocore:exocore backup/exocore-ide/extension ./extension/
+COPY --chown=exocore:exocore backup/exocore-ide/scripts ./scripts/
 
 RUN mkdir -p \
         /app/projects \
