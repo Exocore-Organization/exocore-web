@@ -1,0 +1,56 @@
+# Compiled binaries
+/exocore-ide
+/exocore-ide.exe
+/exocore-web
+/exocore-web.exe
+/exocore-web-mac
+/exocore-web-mac-arm
+
+# Rust build artifacts
+tools/pty-helper/target/
+tools/pty-helper/bin/
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Source code backup (not part of repo)
+backup/
+
+# Separate projects
+Exocore-Backend/
+projects/
+projects_archive/
+
+# Credentials and config
+devs.json
+settings.json
+.env
+.env.*
+
+# Replit config
+replit.md
+replit.nix
+
+# Unused root files
+build-dist.mjs
+package.json
+package-lock.json
+scripts/
+tiny
+tiny.ts
+uploads/
+screenshot-*.png
+LICENSE
+README.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
