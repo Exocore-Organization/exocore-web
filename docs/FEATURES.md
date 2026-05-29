@@ -1,204 +1,170 @@
-# Feature Overview
+# Feature Details
 
-## 1. Code Editor
+## 1. Editor
 
 ### Dual Engine
-Exocore Web ships two editors:
-- **Monaco Editor** — VS Code's editor (primary, loaded from CDN or local build)
-- **ACE Editor** — lightweight fallback, toggleable
+- **Monaco Editor** (desktop) — full VS Code editor experience
+- **Ace Editor** (mobile) — lightweight fallback
+- **Split Editor** — dual pane side-by-side editing
 
 ### File Operations
-- Recursive file tree browser with symlink handling
-- Read, write, create, delete, rename, move, copy (file/folder)
-- Drag-and-drop file upload
-- ZIP archive extract (upload or from project)
-- File download (single file or entire project as ZIP)
+- Recursive file tree browser (symlink-safe, shallow node_modules/pylibs)
+- Create, read, save, delete, rename, move, copy (file/folder)
+- Drag-and-drop upload, ZIP extract (upload or from project)
+- Download single file, folder as ZIP, or entire project
 - Project-wide code search (regex, case-sensitive, hidden file toggle)
+- File history: per-file snapshot diffs in `.history/`
 
-### Code Intelligence
-- **LSP Diagnostics** — TypeScript diagnostics via WebSocket or HTTP
-- **Code folding**, formatting helpers
-- **Command palette** (Ctrl+Shift+P)
-- **Context menus** (right-click)
-- **Code history** — per-file snapshot diffs in IndexedDB
+### LSP (TypeScript)
+Full Language Server Protocol support via WebSocket:
+- Diagnostics, completions, hover info, go-to-definition
+- Code actions, rename refactoring, formatting, inlay hints
+- Mobile HTTP fallback endpoint for TypeScript diagnostics
 
-### 60+ Editor Themes
-Including light and dark variants, accessible via the settings modal.
-
-## 2. Terminal
-
-### Full PTY
-- xterm.js with xterm-addon-fit and xterm-addon-unicode11
-- 256-color support (`TERM=xterm-256color`, `COLORTERM=truecolor`)
+### Terminal
+- xterm.js with fit + unicode11 addons
+- 256-color support (TERM=xterm-256color, COLORTERM=truecolor)
 - Runtime resize handling
-- Custom prompt (`user@exocore`)
+- Backend: Rust PTY helper (NDJSON over stdio) or line-shell fallback
 
-### Backend
-- `node-pty` native addon (primary)
-- Rust PTY helper binary (fallback, NDJSON over stdio)
-- Line-shell fallback (when neither is available)
-
-## 3. Project Runtime
-
-### Process Management
-- Start/stop/restart/kill project processes
-- Port collision detection and auto-recovery
-- Console I/O streaming via WebSocket
+### Console
+- Project process I/O streaming via WebSocket
+- Start/stop/restart/kill with port collision detection
 - Auto-restart guard (3 rapid restarts = 30s pause)
+- Cloudflare Tunnel public URLs via trycloudflare
+- Console history persisted to `.exocore-logs`
 
-### Cloudflare Tunnel
-- Automatic public URL via `cloudflared tunnel --url`
-- Tunnel URL broadcast to console
+### Package Managers
 
-### Console History
-- Persistent `.exocore-logs` per project
-- ANSI-stripped log access for AI agent
+**NPM:**
+- Search npm registry, view package details
+- List installed with import-usage detection
+- Install/uninstall (`--save-dev` support), install-all
+- Publish packages, check npm auth
 
-## 4. Package Managers
+**PyLib (Python):**
+- Search PyPI with ranked results
+- List installed from requirements.txt
+- Install to `pylibs/`, uninstall
 
-### NPM (Node.js)
-- Search npm registry
-- List installed packages with import-usage detection
-- Install/uninstall packages (`--save-dev` support)
-- Install all dependencies
-- Check npm authentication
-- Publish packages to npm
+**Dependency Scanner:**
+Rust (Cargo.toml), Go (go.mod), Ruby (Gemfile), PHP (composer.json), Java (pom.xml)
 
-### PyLib (Python)
-- Search PyPI with ranked results (exact/prefix/substring)
-- List installed packages from `requirements.txt`
-- Install to project `pylibs/` directory
-- Uninstall (removes from `pylibs/` and `requirements.txt`)
+### Themes (7)
+| Theme | Type | Notes |
+|-------|------|-------|
+| GitHub Dark | dark | |
+| GitHub Light | light | |
+| Dracula | dark | |
+| Neo-Brutalism | dark | |
+| Cyberpunk | dark | |
+| Frutiger Aero | light | paid gate |
+| Geometry Dash | dark | exocore category |
 
-### Dependency Scanner
-Detect dependencies for: Rust (Cargo.toml), Go (go.mod), Ruby (Gemfile), PHP (composer.json), Java (pom.xml)
+## 2. Sidebar Panels
 
-## 5. Project Templates
+| Panel | File | Purpose |
+|-------|------|---------|
+| NPM | `npm-pane.js` | Browse/install/uninstall npm packages |
+| PyLibs | `pylib-pane.js` | Search/install Python packages |
+| GitHub | `github-pane.js` | OAuth, clone, push, pull, commit |
+| Cloud | `cloud-pane.js` | Google Drive backup/restore |
+| Extensions | `extensions.js` | Load/manage extensions |
+| ExocoreAI | `ai-panel.html` iframe | AI agent chat |
 
-Create projects from pre-defined templates:
-- **Node.js** — Express-ready with package.json
-- **TypeScript** — tsconfig + build config
-- **Python** — requirements.txt + app.py
-- **Static HTML** — index.html + install.sh
+## 3. Bottom Panels
 
-Template creation is streamed via SSE for real-time progress feedback.
+| Panel | Purpose |
+|-------|---------|
+| Console | Project process output |
+| Terminal | PTY shell |
+| Webview | Live preview iframe |
+| Problems | LSP diagnostics |
+| VNC | Virtual browser (Xvfb + noVNC) |
 
-## 6. AI Agent
+## 4. Multiplayer
 
-### Multi-Provider Support
-- Gemini API
-- Anthropic (Claude)
-- HuggingFace Spaces
+Real-time collaboration system:
+- Create rooms (public/private/PIN-protected, invite-only)
+- Cursor sharing (file, line, column)
+- Collaborative editing frames
+- File-open notifications
+- In-room chat (200 msg history)
+- Ban/kick, max player limits, ping tracking
+- Rooms register with backend registry
 
-### Features
-- Chat-based interaction in a sidebar panel
-- Task planning and execution
-- Tool-use (file operations, code reading, console access)
-- Thinking token visualization
+## 5. AI
+
+ExocoreAI sidebar panel (iframe-based):
+- Multi-provider: Gemini API, Anthropic, HuggingFace Spaces
+- Chat interaction, task planning, tool-use
+- File operations, shell commands, conversation management
 - SSE streaming responses
 
-## 7. Social Network
+## 6. Social
 
-### Real-Time Chat
-- Global chat room with message history (last 80 messages)
-- Reply-to messages
-- Rate-limited (TokenBucket algorithm)
-- Avatar-enriched messages
+- **Global chat**: real-time, reply-to, TokenBucket rate limit, avatar-enriched
+- **Direct messages**: E2EE (ciphertext+nonce) or plaintext
+- **Friends**: requests, suggestions, presence tracking
+- **Posts/feed**: create with attachments, edit, delete, comment, emoji react, admin approve
+- **XP system**: level-ups, achievements, global leaderboard
+- **User profiles**: avatars, covers, bio, XP level
 
-### Direct Messages
-- Peer-to-peer chat
-- End-to-end encryption (ciphertext + nonce) or plaintext
-- DM history (last 100 messages per peer)
-
-### Friends System
-- Send/accept/decline/remove friend requests
-- Friend suggestions
-- Presence tracking (online/offline)
-
-### Posts & Feed
-- Create posts with text + file attachments
-- Edit and delete posts
-- Comment on posts
-- Emoji reactions (like, love, haha, etc.)
-- Admin moderation (approve/reject)
-- User profile posts
-
-### XP & Leaderboard
-- Gamified experience points
-- Level-up system with achievements
-- Global leaderboard ranked by XP
-
-## 8. Multiplayer Collaboration
-
-### Room System
-- Create rooms (public/private/PIN-protected)
-- Max player limits, invite-only allowlists
-- Ban/unban and kick users (host only)
-
-### Real-Time Features
-- Cursor position sharing (file, line, column)
-- Collaborative editing (`edit` frames)
-- File-open notifications
-- In-room chat (last 200 messages)
-- Latency/ping tracking
-
-## 9. Cloud Integrations
+## 7. Cloud & Integrations
 
 ### Google Drive
 - OAuth device flow authentication
-- Token refresh and encrypted local cache
-- Single project backup/restore
-- Full backup (projects + templates + extensions)
-- List and delete backups
+- Token refresh + encrypted local cache
+- Backup/restore single project or full (projects + templates + extensions)
 
 ### GitHub
 - OAuth device flow authentication
-- Clone repos into projects
-- Create repos from projects (init + commit + push)
-- Connect existing projects to remotes
-- Push/pull changes
-- Force push support
+- Clone repos, create repos from projects, connect to remotes
+- Push/pull/commit, force push support
 
-## 10. Extensions
+## 8. Extensions
 
-### Format
-Extensions are defined by `extension.json` manifest files:
-```json
-{
-  "name": "My Extension",
-  "version": "1.0.0",
-  "author": "You",
-  "description": "Does something cool",
-  "entry": "main.js",
-  "icon": "icon.svg"
-}
-```
+- Manifest format (`extension.json`): name, version, entry, icon
+- Scopes: `official/` and `testing/`
+- Extension API: toast, storage, editor access, commands, status bar, keybindings
+- Marketplace via Google Drive (JSON file or folder)
 
-### Scopes
-- `official/` — curated extensions
-- `testing/` — experimental extensions
+## 9. VNC Remote Desktop
 
-### Marketplace
-- Google Drive-hosted marketplace
-- Configurable via JSON file or folder ID
-- One-click install
+- Xvfb virtual framebuffer (1280x800)
+- x11vnc server via WebSocket proxy at `/exocore/api/vnc/ws`
+- noVNC client in editor panel
 
-## 11. VNC Remote Desktop
+## 10. Project Management
 
-- Xvfb virtual framebuffer
-- x11vnc server via WebSocket proxy
-- Works in Replit/reverse-proxy environments
+- **Templates**: Node.js, TypeScript, Python, Static HTML — SSE-streamed creation
+- **Runtime**: start/stop/restart/kill, config read/write (`system.exo`), auto-start
+- **Onboarding**: first-run wizard (theme, extensions, templates)
 
-## 12. Admin & Moderation
+## 11. Admin
 
-- Role-based access (user/admin/owner)
-- User ban/unban and mute
-- Role assignment
-- User audit log
-- Payment/subscription management (receipt upload, approval)
+- Roles: user, admin, owner
+- Ban/unban users, mute, role assignment
+- Audit log, user enumeration
+- Payment/subscription management (receipt upload, approve/deny)
 
-## 13. Offline Mode
+## 12. Static Pages
 
-Toggle CDN vs. local vendor build:
-- **Online**: loads Monaco, xterm, etc. from CDN
-- **Offline**: bundles everything into `dist/vendor/`
+| Route | Page |
+|-------|------|
+| `/exocore` | Home |
+| `/exocore/dev-gate` | Master account setup |
+| `/exocore/login` | User login |
+| `/exocore/register` | Registration |
+| `/exocore/forgot` | Password reset |
+| `/exocore/verify-pending` | Email verification |
+| `/exocore/auth/callback` | OAuth callback |
+| `/exocore/dashboard` | Workspace dashboard |
+| `/exocore/editor` | Code editor |
+| `/exocore/leaderboard` | XP leaderboard |
+| `/exocore/cloud` | Google Drive cloud |
+| `/exocore/feed` | Community feed |
+| `/exocore/server` | Multiplayer server browser |
+| `/exocore/u/:username` | User profile |
+| `/exocore/offline` | Offline fallback |
+| `/` | Landing page |

@@ -2,79 +2,73 @@
 
 ## Overview
 
-Exocore Web is a browser-based IDE that runs as a standalone compiled binary. It serves a full developer workspace including a code editor, terminal, file manager, runtime management, social features, and AI assistant — all from a single HTTP server.
+Exocore Web is a compiled Deno binary that serves a browser-based IDE workspace — code editor, terminal, project runtime, social features, AI agent, and multiplayer — over a single HTTP server.
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                   exocore-web                        │
-│  ┌──────────────────────────────────────────────┐   │
-│  │           Express 5 HTTP Server               │   │
-│  │  ┌────────┐ ┌────────┐ ┌──────────────────┐  │   │
-│  │  │ Routes │ │  Pages │ │  WebSocket Mux    │  │   │
-│  │  │  (API) │ │ (HTML) │ │  ┌── social ──┐  │  │   │
-│  │  │        │ │        │ │  ├── rpc ─────┤  │  │   │
-│  │  │        │ │        │ │  ├── presence ─┤  │  │   │
-│  │  │        │ │        │ │  ├── terminal ─┤  │  │   │
-│  │  │        │ │        │ │  └── lsp ──────┘  │  │   │
-│  │  └────────┘ └────────┘ └──────────────────┘  │   │
-│  ┌──────────────────────────────────────────────┐   │
-│  │              Services Layer                   │   │
-│  │  ProjectManager  TemplateService  FsWatcher  │   │
-│  │  DevGate         ExoConfig       Store       │   │
-│  └──────────────────────────────────────────────┘   │
-│  ┌──────────────────────────────────────────────┐   │
-│  │         Backend WebSocket Bridge              │   │
-│  └──────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────┐
+│                  exocore-web binary                    │
+│  ┌──────────────────────────────────────────────┐    │
+│  │           Express 5 HTTP Server               │    │
+│  │  ┌──────────┐ ┌──────────┐ ┌──────────────┐ │    │
+│  │  │ API      │ │ Static   │ │ WebSocket Mux │ │    │
+│  │  │ Routes   │ │ Pages    │ │  ┌social───┐ │ │    │
+│  │  │          │ │ (HTML)   │ │  ├rpc──────┤ │ │    │
+│  │  │          │ │          │ │  ├presence─┤ │ │    │
+│  │  │          │ │          │ │  ├terminal─┤ │ │    │
+│  │  │          │ │          │ │  └lsp──────┘ │ │    │
+│  │  └──────────┘ └──────────┘ └──────────────┘ │    │
+│  ┌──────────────────────────────────────────────┐    │
+│  │        Services Layer                         │    │
+│  │  ProjectManager  TemplateService  FsWatcher  │    │
+│  │  DevGate         ExoConfig       Social      │    │
+│  └──────────────────────────────────────────────┘    │
+│  ┌──────────────────────────────────────────────┐    │
+│  │         Backend WebSocket Bridge              │    │
+│  └──────────────────────────────────────────────┘    │
+└──────────────────────────────────────────────────────┘
          │
          ▼
-┌─────────────────────┐
-│  Rust PTY Helper    │
-│  (pty-helper)       │
-│  stdio NDJSON       │
-└─────────────────────┘
+┌──────────────────────┐
+│  Rust PTY Helper     │
+│  (pty-helper)        │
+│  NDJSON over stdio   │
+└──────────────────────┘
 ```
 
 ## Key Components
 
 ### 1. HTTP Server (Express 5)
-- Mounts all routes under `/exocore/`
-- Serves static HTML/CSS/JS pages
-- Reverse-proxies `/exocore/port/:port/` to user projects
-- Handles file uploads (multipart), SSE streams
+- Mounted at `/exocore/`
+- Serves static HTML/CSS/JS from `static-pages/`
+- API routes under `/exocore/api/`
+- VNC WebSocket proxy at `/exocore/api/vnc/ws`
+- Port proxy at `/exocore/port/:port/`
 
-### 2. WebSocket Multiplexer (`server/wsMux.ts`)
-- Single WebSocket at `/exocore/ws` multiplexes 5 channels:
-  - **social** — chat, DMs, presence, friends
-  - **rpc** — RPC request/response for all features
-  - **presence** — multiplayer collaboration
-  - **terminal** — PTY/console I/O streams
-  - **lsp** — LSP diagnostics bridge
-- Compact binary frame format (type + name-length + name + payload)
-- 30s keepalive pings
+### 2. WebSocket Multiplexer
+Single WebSocket at `/exocore/ws` carries 5 channels:
+- **social** — chat, DMs, presence, friends
+- **rpc** — RPC request/response
+- **presence** — multiplayer collaboration
+- **terminal** — PTY/console I/O
+- **lsp** — LSP diagnostics
 
-### 3. File System
-- All file operations go through the `projects/` directory
-- Each project is a subdirectory with a `system.exo` config file
-- History snapshots stored in `.history/` subdirectory
+30s keepalive pings. Binary frame format (type + name + payload).
+
+### 3. Routing
+- **`routes/index.ts`** aggregates all API route modules
+- **`packages/app.ts`** defines static page routes + VNC + install script endpoints
+- **`packages/index.ts`** ties everything together + WebSocket upgrades + Exocore AI routes
 
 ### 4. PTY Management
-- Primary: `node-pty` native addon (when available)
-- Fallback: Rust `pty-helper` binary (NDJSON protocol over stdio)
-- Last resort: line-shell fallback (simulated shell)
+1. Rust `pty-helper` binary (NDJSON protocol)
+2. Line-shell fallback (simulated shell with history)
 
 ### 5. Backend Bridge
-- Connects to `Exocore Backend` via WebSocket for:
-  - Authentication/registration
-  - Social data persistence
-  - XP/leaderboard storage
+WebSocket connection to `Exocore Backend` for: auth, social data, XP/leaderboard.
 
 ## Data Flow
 
 ```
-Browser ──HTTP──▶ Express Router ──▶ Route Handler ──▶ Response
-Browser ──WS────▶ WS Multiplexer ──▶ Channel Handler ──▶ Response
-Route Handler ──▶ Backend Bridge ──▶ Exocore Backend
-Route Handler ──▶ File System ──▶ projects/ directory
-Shell Handler ──▶ PTY Helper ──▶ Child Shell Process
+Browser ──HTTP──▶ Express ──▶ Route Handler ──▶ Backend Bridge / FS / PTY
+Browser ──WS────▶ Mux ──▶ social/rpc/presence/terminal/lsp channels
 ```

@@ -1,188 +1,173 @@
 # API Reference
 
-All routes are mounted under `/exocore/api/`.
+All API routes under `/exocore/api/`. Full path prefix: `/exocore/api`.
 
-## Authentication
+## Dev Gate
 
-### Dev Gate (Master Account)
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/dev-gate/status` | Check if dev gate is configured |
+| GET | `/dev-gate/status` | Check if configured |
 | POST | `/dev-gate/setup` | Create master account |
-| POST | `/dev-gate/login` | Authenticate as master |
+| POST | `/dev-gate/login` | Authenticate |
 | POST | `/dev-gate/logout` | Clear session |
 
-### User Auth
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/auth/login` | User login (username/email + password) |
-| POST | `/auth/register` | Register (multipart: user, pass, email, avatar, etc.) |
-| POST | `/auth/forgot/request` | Request password reset OTP |
-| POST | `/auth/forgot/reset` | Reset password (email + OTP + new pass) |
-| GET | `/auth/verify` | Email verification |
-| GET | `/auth/userinfo` | Get profile |
-| POST | `/auth/userinfo` | Update profile (multipart) |
-| GET | `/auth/token-verify` | Validate session token |
-| POST | `/auth/delete` | Delete account |
-| GET | `/auth/audit` | Owner audit log |
-
-## Editor
-
-### File System (`/editor/coding/`)
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `files` | Recursive file tree |
-| GET | `read` | Read file content |
-| POST | `save` | Save file (auto-snapshots to `.history/`) |
-| POST | `create` | Create file/directory (multipart) |
-| POST | `delete` | Delete file/directory |
-| POST | `rename` | Rename/move file |
-| POST | `move` | Move file |
-| POST | `copy` | Recursive copy |
-| GET | `download` | Download project as ZIP |
-| GET | `download-file` | Download single file |
-| GET | `download-folder` | Download folder as ZIP |
-| POST | `extract` | Upload + extract ZIP |
-| POST | `upload` | Drag-drop multi-file upload |
-| POST | `extract-existing` | Extract archive in project |
-| GET | `media` | Serve media files |
-| GET | `history` | List file edit history |
-| POST | `history/push` | Push snapshot to history |
-| POST | `history/clear` | Clear file history |
-| POST | `search` | Project-wide code search |
-
-### Projects (`/editor/projects/`)
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `list` | List all projects |
-| POST | `create` | Create project |
-| POST | `archive` | Archive project |
-| POST | `unarchive` | Restore from archive |
-| POST | `delete` | Delete project |
-| POST | `rename` | Rename project |
-
-### Runtime (`/editor/runtime/`)
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `start` | Start project |
-| POST | `stop` | Stop project |
-| POST | `kill` | Force kill |
-| POST | `restart` | Restart project |
-| GET | `status/:projectId` | Get runtime status |
-| GET | `list` | List running projects |
-| GET | `logs/:projectId` | Get console logs |
-| GET | `config/:projectId` | Read system.exo |
-| POST | `config/:projectId` | Write system.exo |
-| POST | `autostart/:projectId` | Toggle autoStart |
-
-### Templates (`/editor/templates/`)
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `list` | List available templates |
-| GET | `icon` | Serve template icon |
-| POST | `create-from-template` | SSE-streamed project creation |
-| POST | `upload` | Upload new template (admin) |
-| DELETE | `delete` | Delete template (admin) |
-
-### NPM (`/editor/npm/`)
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `list` | List installed packages |
-| GET | `search` | Search npm registry |
-| GET | `info/:packageName` | Package details |
-| POST | `install` | Install package |
-| POST | `install-all` | Install all deps |
-| POST | `uninstall` | Uninstall package |
-| GET | `files` | List project files |
-| GET | `whoami` | Check npm auth |
-| POST | `publish` | Publish to npm |
-| POST | `logout` | Local npm logout |
-
-### PyLib (`/editor/pylib/`)
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `search` | Search PyPI |
-| GET | `list` | List installed packages |
-| POST | `install` | Install pip package |
-| POST | `uninstall` | Uninstall package |
-
-### GitHub (`/editor/github/`)
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `status` | Git status |
-| GET | `files` | Changed files |
-| POST | `repos` | List user repos |
-| POST | `clone` | Clone repo |
-| POST | `create` | Create repo from project |
-| POST | `connect` | Connect to remote |
-| POST | `push` | Push changes |
-| POST | `pull` | Pull from remote |
-| POST | `auth/device` | Start OAuth device flow |
-| POST | `auth/poll` | Poll OAuth token |
-
-### Google Drive (`/editor/gdrive/`)
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `device-code` | Start OAuth device flow |
-| POST | `poll-token` | Poll OAuth token |
-| POST | `refresh-token` | Refresh token |
-| POST | `backup` | Backup project |
-| POST | `full-backup` | Full backup |
-| GET | `list-backups` | List backups |
-| POST | `restore` | Restore project |
-| POST | `restore-full` | Restore full backup |
-| DELETE | `delete-backup` | Delete backup |
-
-### Dependencies (`/editor/deps/`)
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `list` | Scan multi-language deps |
-
-### LSP Mobile (`/editor/lsp-mobile/`)
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `diagnostics` | TypeScript diagnostics (HTTP) |
-
-## Social
+## Editor — File System
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/social/avatar` | Serve avatar image |
-| GET | `/social/friends` | List friends |
-| POST | `/social/friend` | Send/accept/decline friend request |
-| GET | `/social/peer` | Lookup user profile |
-| GET | `/social/pubkey` | Manage E2EE public keys |
+| GET | `/editor/coding/files` | File tree listing |
+| GET | `/editor/coding/read` | Read file |
+| POST | `/editor/coding/save` | Save file |
+| POST | `/editor/coding/create` | Create file/dir |
+| POST | `/editor/coding/delete` | Delete file/dir |
+| POST | `/editor/coding/rename` | Rename/move |
+| POST | `/editor/coding/move` | Move file |
+| POST | `/editor/coding/copy` | Recursive copy |
+| GET | `/editor/coding/download` | Download project ZIP |
+| GET | `/editor/coding/download-file` | Download single file |
+| GET | `/editor/coding/download-folder` | Download folder ZIP |
+| POST | `/editor/coding/extract` | Upload + extract ZIP |
+| POST | `/editor/coding/upload` | Drag-drop upload |
+| POST | `/editor/coding/extract-existing` | Extract archive in project |
+| GET | `/editor/coding/media` | Serve media |
+| GET | `/editor/coding/history` | File history list |
+| POST | `/editor/coding/history/push` | Push snapshot |
+| POST | `/editor/coding/history/clear` | Clear history |
+| POST | `/editor/coding/search` | Project-wide search |
 
-## Posts
+## Editor — Projects
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/posts` | List feed |
-| GET | `/posts/profile` | User's posts |
-| POST | `/posts/create` | Create post |
-| POST | `/posts/edit` | Edit post |
-| POST | `/posts/delete` | Delete post |
-| POST | `/posts/comment` | Add comment |
-| POST | `/posts/react` | Toggle reaction |
-| POST | `/posts/approve` | Approve/reject (admin) |
+| GET | `/editor/projects/list` | List projects |
+| POST | `/editor/projects/create` | Create project |
+| POST | `/editor/projects/archive` | Archive project |
+| POST | `/editor/projects/unarchive` | Restore from archive |
+| POST | `/editor/projects/delete` | Delete project |
+| POST | `/editor/projects/rename` | Rename project |
 
-## XP & Leaderboard
+## Editor — Runtime
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/xp/me` | My XP/level/achievements |
-| POST | `/xp/grant` | Award XP |
-| GET | `/xp/catalog` | List achievements |
-| GET | `/leaderboard` | Ranked leaderboard |
+| POST | `/editor/runtime/start` | Start project |
+| POST | `/editor/runtime/stop` | Stop project |
+| POST | `/editor/runtime/kill` | Force kill |
+| POST | `/editor/runtime/restart` | Restart |
+| GET | `/editor/runtime/status/:projectId` | Status |
+| GET | `/editor/runtime/list` | Running projects |
+| GET | `/editor/runtime/logs/:projectId` | Console logs |
+| GET | `/editor/runtime/config/:projectId` | Read config |
+| POST | `/editor/runtime/config/:projectId` | Write config |
+| POST | `/editor/runtime/autostart/:projectId` | Toggle auto-start |
+
+## Editor — Templates
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/editor/templates/list` | List templates |
+| GET | `/editor/templates/icon` | Template icon |
+| POST | `/editor/templates/create-from-template` | SSE-streamed create |
+| POST | `/editor/templates/upload` | Upload template |
+| DELETE | `/editor/templates/delete` | Delete template |
+
+## Editor — NPM
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/editor/npm/list` | Installed packages |
+| GET | `/editor/npm/search` | Search registry |
+| GET | `/editor/npm/info/:packageName` | Package details |
+| POST | `/editor/npm/install` | Install package |
+| POST | `/editor/npm/install-all` | Install all deps |
+| POST | `/editor/npm/uninstall` | Uninstall |
+| GET | `/editor/npm/files` | Project files |
+| GET | `/editor/npm/whoami` | npm auth status |
+| POST | `/editor/npm/publish` | Publish to npm |
+| POST | `/editor/npm/logout` | npm logout |
+
+## Editor — PyLib
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/editor/pylib/search` | Search PyPI |
+| GET | `/editor/pylib/list` | Installed packages |
+| POST | `/editor/pylib/install` | Install |
+| POST | `/editor/pylib/uninstall` | Uninstall |
+
+## Editor — GitHub
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/editor/github/status` | Git status |
+| GET | `/editor/github/files` | Changed files |
+| POST | `/editor/github/repos` | List user repos |
+| POST | `/editor/github/clone` | Clone repo |
+| POST | `/editor/github/create` | Create repo from project |
+| POST | `/editor/github/connect` | Connect to remote |
+| POST | `/editor/github/push` | Push changes |
+| POST | `/editor/github/pull` | Pull |
+| POST | `/editor/github/auth/device` | Start OAuth |
+| POST | `/editor/github/auth/poll` | Poll OAuth token |
+
+## Editor — Google Drive
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/editor/gdrive/device-code` | Start OAuth |
+| POST | `/editor/gdrive/poll-token` | Poll token |
+| POST | `/editor/gdrive/refresh-token` | Refresh token |
+| POST | `/editor/gdrive/backup` | Backup project |
+| POST | `/editor/gdrive/full-backup` | Full backup |
+| GET | `/editor/gdrive/list-backups` | List backups |
+| POST | `/editor/gdrive/restore` | Restore project |
+| POST | `/editor/gdrive/restore-full` | Restore full |
+| DELETE | `/editor/gdrive/delete-backup` | Delete backup |
+
+## Editor — Dependencies
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/editor/deps/list` | Multi-lang dep scan |
+
+## Editor — LSP Mobile
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/editor/lsp-mobile/diagnostics` | TS diagnostics (HTTP) |
+
+## Editor — Exocore AI
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/editor/exocore-ai/project` | Locate folder |
+| POST | `/editor/exocore-ai/project/create` | Create folder |
+| POST | `/editor/exocore-ai/shell` | Run command |
+| POST | `/editor/exocore-ai/memory/append` | Append to memory |
+| GET | `/editor/exocore-ai/fs/ls` | List directory |
+| GET | `/editor/exocore-ai/fs/cat` | Read file |
+| POST | `/editor/exocore-ai/fs/write` | Write file |
+| GET | `/editor/exocore-ai/health` | Health check |
+| GET | `/editor/exocore-ai/conversations` | List conversations |
+| POST | `/editor/exocore-ai/conversations/:cid/activate` | Activate conversation |
+| DELETE | `/editor/exocore-ai/conversations/:cid` | Delete conversation |
+| DELETE | `/editor/exocore-ai/conversations` | Delete all |
+| GET | `/editor/exocore-ai/convo` | Read convo |
+| POST | `/editor/exocore-ai/convo` | Write convo |
+| DELETE | `/editor/exocore-ai/convo` | Delete convo |
+| POST | `/editor/exocore-ai/seed` | Check active convo |
+| POST | `/editor/exocore-ai/reset` | Reset conversations |
+| GET | `/editor/exocore-ai/models` | List models |
+| GET | `/editor/exocore-ai/models/:name` | Get model |
 
 ## Multiplayer
 
 | Method | Path | Description |
 |--------|------|-------------|
 | POST | `/multiplayer/create` | Create room |
-| GET | `/multiplayer/rooms` | List local rooms |
-| GET | `/multiplayer/servers` | List public servers |
-| GET | `/multiplayer/by-host/:username` | Find rooms by host |
+| GET | `/multiplayer/rooms` | Local rooms |
+| GET | `/multiplayer/servers` | Public servers |
+| GET | `/multiplayer/by-host/:username` | Find by host |
 | GET | `/multiplayer/room/:roomId` | Room info |
 | POST | `/multiplayer/close/:roomId` | Close room |
 
@@ -191,54 +176,63 @@ All routes are mounted under `/exocore/api/`.
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/extensions/list` | List extensions |
-| GET | `/extensions/files/:scope/:name/*` | Serve extension files |
-| POST | `/extensions/upload` | Upload extension |
-| DELETE | `/extensions/delete` | Delete extension |
 | POST | `/extensions/import-from-drive` | Import from Drive |
-| GET | `/extensions/drive-files` | List Drive files |
+| GET | `/extensions/drive-files` | Drive files |
 | POST | `/extensions/export-to-drive` | Export to Drive |
-| GET | `/extensions/marketplace-config` | Marketplace config |
+| POST | `/extensions/upload` | Upload extension |
+| DELETE | `/extensions/delete` | Delete |
+| GET | `/extensions/marketplace-config` | Get config |
 | POST | `/extensions/marketplace-config` | Set config |
-| GET | `/extensions/marketplace` | List marketplace |
-| POST | `/extensions/marketplace-install` | Install from marketplace |
-
-## Admin
-
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/admin/ban` | Ban/unban user |
-| POST | `/admin/mute` | Mute user |
-| POST | `/admin/role` | Assign role |
-| POST | `/admin/dedupe` | Deduplicate users |
-| GET | `/admin/users` | List all users |
-
-## VNC
-
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/vnc/start` | Start VNC server |
-| POST | `/vnc/stop` | Stop VNC server |
-| GET | `/vnc/status` | VNC status |
+| GET | `/extensions/marketplace` | Marketplace list |
+| POST | `/extensions/marketplace-install` | Install |
+| GET | `/extensions/files/:scope/:name/*` | Serve files |
 
 ## System
 
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/health` | Health check |
-| GET | `/version` | App version |
-| GET | `/users` | User enumeration |
-| POST | `/settings` | Save settings |
-| POST | `/recent-project` | Track recent project |
+| GET | `/version` | Version info |
+| GET | `/leaderboard` | XP leaderboard |
+| GET | `/users` | User listing |
 | GET | `/vendor` | Get vendor mode |
 | POST | `/vendor` | Toggle vendor mode |
+| POST | `/settings` | Save settings |
+| POST | `/recent-project` | Track recent project |
+
+## VNC
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/vnc/start` | Start VNC |
+| POST | `/api/vnc/stop` | Stop VNC |
+| GET | `/api/vnc/status` | VNC status |
+
+## Onboarding
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/onboard/status` | Check status |
+| GET | `/onboard/catalog` | Templates + extensions |
+| POST | `/onboard/complete` | Save preferences |
+| GET | `/onboard/drive-test` | Test Drive token |
+
+## Plans
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/plans/catalog` | Plan listing |
+| GET | `/plans/me` | My payments |
+| GET | `/plans/pending` | Pending queue (owner) |
+| POST | `/plans/submit` | Submit receipt |
+| POST | `/plans/decide` | Approve/deny (owner) |
+| POST | `/plans/grant` | Grant plan |
 
 ## WebSocket Endpoints
 
 | Path | Description |
 |------|-------------|
-| `/exocore/ws` | Multiplexed carrier (social, rpc, presence, terminal, lsp) |
-| `/exocore/ws/social` | Social hub (legacy) |
-| `/exocore/ws/rpc` | RPC hub (legacy) |
-| `/exocore/api/editor/exocore-ai/ws` | AI agent stream |
+| `/exocore/ws` | Multiplexed (social, rpc, presence, terminal, lsp) |
 | `/exocore/api/vnc/ws` | VNC proxy |
+| `/exocore/api/editor/exocore-ai/ws` | AI agent events |
 | `/exocore/` | Status sync |
