@@ -2,7 +2,7 @@ FROM debian:stable-slim AS run
 
 LABEL org.opencontainers.image.title="Exocore IDE"
 LABEL org.opencontainers.image.description="Browser-based IDE — full stack, any language"
-LABEL org.opencontainers.image.version="6.0.0"
+LABEL org.opencontainers.image.version="6.1.1"
 
 ENV PORT=7860 \
     DENO_DIR=/tmp/deno
