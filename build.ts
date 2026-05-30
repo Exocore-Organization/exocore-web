@@ -31,11 +31,13 @@ try {
   console.warn(`[build] PTY helper unavailable (${err.message}). Continuing without it.`);
 }
 
-// Copy PTY helper into source dir so it's included in the binary
+// Copy PTY helper into source dir (for --include) and repo root (for git tracking / Dockerfile)
 const PTY_HELPER_BIN = "pty-helper-linux-x64";
 if (await Deno.stat(PTY_OUT).then(() => true).catch(() => false)) {
   await Deno.copyFile(PTY_OUT, `${SOURCE_DIR}/${PTY_HELPER_BIN}`);
   console.log(`[build] PTY helper bundled: ${SOURCE_DIR}/${PTY_HELPER_BIN}`);
+  await Deno.copyFile(PTY_OUT, PTY_HELPER_BIN);
+  console.log(`[build] PTY helper copied to repo root: ${PTY_HELPER_BIN}`);
 }
 
 // Step 2: Compile Deno binary (from within SOURCE_DIR so --include uses bare dir names)

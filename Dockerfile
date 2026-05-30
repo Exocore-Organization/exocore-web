@@ -29,7 +29,8 @@ RUN groupadd --system --gid 1001 exocore \
  && chmod 440 /etc/sudoers.d/exocore
 
 ADD --chown=exocore:exocore https://github.com/Exocore-Organization/exocore-web/raw/main/exocore-ide /app/exocore-ide
-RUN chmod +x /app/exocore-ide \
+ADD --chown=exocore:exocore https://github.com/Exocore-Organization/exocore-web/raw/main/pty-helper-linux-x64 /app/pty-helper-linux-x64
+RUN chmod +x /app/exocore-ide /app/pty-helper-linux-x64 \
  && npm init -y && npm install node-pty@1.1.0 2>&1 | tail -5
 
 RUN mkdir -p \
