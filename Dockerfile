@@ -17,6 +17,7 @@ RUN apt-get update \
         build-essential gcc g++ make \
         openssh-client \
         wget net-tools \
+        nodejs npm \
  && rm -rf /var/lib/apt/lists/* \
  && rm -rf /var/cache/apt/archives/*
 
