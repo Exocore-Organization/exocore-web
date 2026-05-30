@@ -40,6 +40,16 @@ ensure_python() {
     fi
 }
 
+install_node_pty() {
+    if [ ! -f "$EXOCORE_DIR/node_modules/node-pty" ]; then
+        warn "Installing node-pty for full terminal support..."
+        cd "$EXOCORE_DIR"
+        npm init -y 2>/dev/null
+        npm install node-pty@1.1.0 2>&1 | tail -3
+        ok "node-pty installed"
+    fi
+}
+
 start_binary() {
     cd "$EXOCORE_DIR" || { err "Exocore directory not found: $EXOCORE_DIR"; exit 1; }
     if [ ! -f "exocore-ide" ]; then
@@ -71,6 +81,7 @@ case "$SUBCMD" in
         banner
         ensure_deno
         ensure_python
+        install_node_pty
         doctor
         start_binary
         ;;

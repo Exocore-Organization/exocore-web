@@ -53,6 +53,16 @@ where python3 >nul 2>&1 || where python >nul 2>&1 || (
 )
 exit /b 0
 
+:install_node_pty
+if not exist "%EXOCORE_DIR%\node_modules\node-pty" (
+    call :warn "Installing node-pty for terminal support..."
+    cd /d "%EXOCORE_DIR%"
+    npm init -y >nul 2>&1
+    npm install node-pty@1.1.0 2>&1 | findstr /V "^$"
+    if errorlevel 1 ( call :warn "node-pty install failed (no native build tools). Terminal will use basic mode." )
+)
+exit /b 0
+
 :start_server
 cd /d "%EXOCORE_DIR%" 2>nul || (call :err "Directory %EXOCORE_DIR% not found." & pause & exit /b 1)
 if not exist "exocore-ide.exe" (
@@ -60,6 +70,7 @@ if not exist "exocore-ide.exe" (
     call :log "Place exocore-ide.exe in %EXOCORE_DIR% and re-run."
     pause & exit /b 1
 )
+call :install_node_pty
 set "PORT=%EXOCORE_PORT%"
 set "NODE_ENV=production"
 call :log "Starting Exocore on port %EXOCORE_PORT%..."

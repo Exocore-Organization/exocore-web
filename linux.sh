@@ -61,6 +61,16 @@ ensure_python() {
     fi
 }
 
+install_node_pty() {
+    if [ ! -f "$EXOCORE_DIR/node_modules/node-pty" ]; then
+        warn "Installing node-pty for full terminal support..."
+        cd "$EXOCORE_DIR"
+        npm init -y 2>/dev/null
+        npm install node-pty@1.1.0 2>&1 | tail -3
+        ok "node-pty installed"
+    fi
+}
+
 create_launcher() {
     local bin="$HOME/.local/bin/exocore-ide"
     mkdir -p "$HOME/.local/bin"
@@ -118,6 +128,7 @@ main() {
     banner
     ensure_deno
     ensure_python
+    install_node_pty
     create_launcher
     install_service
     finish

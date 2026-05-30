@@ -49,12 +49,26 @@ function Check-Python {
     return $true
 }
 
+function Install-NodePty {
+    $nm = Join-Path $TargetDir "node_modules\node-pty"
+    if (-not (Test-Path $nm)) {
+        Warn "Installing node-pty for terminal support..."
+        Push-Location $TargetDir
+        npm init -y 2>$null | Out-Null
+        $result = npm install node-pty@1.1.0 2>&1 | Select-Object -Last 3
+        if ($LASTEXITCODE -eq 0) { Ok "node-pty installed" }
+        else { Warn "node-pty install failed ($result). Terminal will use basic mode." }
+        Pop-Location
+    }
+}
+
 function Start-Server {
     $binary = Join-Path $TargetDir "exocore-ide.exe"
     if (-not (Test-Path $binary)) {
         Warn "Binary not found at $binary. Place exocore-ide.exe in $TargetDir and re-run."
         return
     }
+    Install-NodePty
     Log "Starting Exocore..."
     $env:PORT = "5000"
     $env:NODE_ENV = "production"
