@@ -1,8 +1,9 @@
-#!/data/data/com.termux/files/usr/bin/env bash
+#!/usr/bin/env bash
 set -u
 
-PREFIX="${PREFIX:-/data/data/com.termux/files/usr}"
-HOME_DIR="${HOME:-/data/data/com.termux/files/home}"
+# FIX: Binago ang mga default paths para sa standard Linux distro
+PREFIX="${PREFIX:-/usr/local}"
+HOME_DIR="${HOME:-~}"
 EXOCORE_DIR="${EXOCORE_DIR:-$HOME_DIR/exocore}"
 EXOCORE_PORT="${PORT:-5000}"
 REPO_URL="https://github.com/Exocore-Organization/exocore-web"
@@ -18,16 +19,33 @@ err()  { printf "%s[error]%s %s\n"   "$C_RED"     "$C_RESET" "$*" >&2; }
 
 banner() {
     log "==========================================="
-    log "  EXOCORE — Termux Installer"
+    log "  EXOCORE — Linux Installer"
     log "  Browser IDE • Standalone binary"
     log "==========================================="
     echo ""
 }
 
+# Helper function para awtomatikong mag-install ng packages base sa distro mo
+linux_install_pkg() {
+    local PKG_NAME="$1"
+    if command -v apt-get &>/dev/null; then
+        sudo apt-get update && sudo apt-get install -y "$PKG_NAME"
+    elif command -v dnf &>/dev/null; then
+        sudo dnf install -y "$PKG_NAME"
+    elif command -v pacman &>/dev/null; then
+        sudo pacman -Sy --noconfirm "$PKG_NAME"
+    elif command -v brew &>/dev/null; then
+        brew install "$PKG_NAME"
+    else
+        err "Hindi matukoy ang package manager mo. Paki-install nang manu-mano si: $PKG_NAME"
+        exit 1
+    fi
+}
+
 ensure_git() {
     if ! command -v git &>/dev/null; then
         warn "Git not found. Installing..."
-        pkg install -y git
+        linux_install_pkg "git"
     fi
 }
 
@@ -35,15 +53,19 @@ ensure_lfs() {
     ensure_git
     if ! git lfs version &>/dev/null; then
         warn "Git LFS not found. Installing git-lfs..."
-        pkg install -y git-lfs
+        # Sa ibang distro, kailangan minsan i-setup muna (tulad ng debian/ubuntu)
+        linux_install_pkg "git-lfs"
         git lfs install
     fi
 }
 
 ensure_deno() {
     if ! command -v deno &>/dev/null; then
-        warn "Deno not found. Installing..."
-        pkg install -y deno
+        warn "Deno not found. Installing via official shell script..."
+        curl -fsSL https://deno.land/x/install/install.sh | sh
+        # I-export ang Deno path pansamantala para magamit agad ng script
+        export DENO_INSTALL="$HOME/.deno"
+        export PATH="$DENO_INSTALL/bin:$PATH"
     fi
     ok "Deno $(deno --version | head -1)"
 }
@@ -52,8 +74,12 @@ ensure_python() {
     if command -v python3 &>/dev/null; then
         ok "Python $(python3 --version 2>&1 | awk '{print $2}')"
     else
-        warn "Installing Python..."
-        pkg install -y python clang make pkg-config libandroid-spawn binutils
+        warn "Installing Python & Build Essential..."
+        if command -v apt-get &>/dev/null; then
+            sudo apt-get update && sudo apt-get install -y python3 build-essential python3-pip
+        else
+            linux_install_pkg "python3"
+        fi
     fi
 }
 
@@ -62,13 +88,13 @@ clone_repo() {
     if [ ! -d "$EXOCORE_DIR" ]; then
         log "Cloning Exocore repository framework..."
         
-        # I-clone muna ang repo nang HINDI idinada-download ang LFS binary para umiwas sa stuck/hang
+        # Laktawan muna ang mabigat na binary para mabilis ang unang hatak
         GIT_LFS_SKIP_SMUDGE=1 git clone --progress "$REPO_URL" "$EXOCORE_DIR"
         
         log "Downloading heavy standalone binaries (300MB+)..."
         cd "$EXOCORE_DIR"
         
-        # Dito natin piliting ipakita ang real-time LFS download progress bar
+        # Live progress bar para sa LFS binary download
         git lfs pull
         
         if [ $? -eq 0 ]; then
@@ -90,6 +116,13 @@ install_node_pty() {
     if [ ! -f "$EXOCORE_DIR/node_modules/node-pty" ]; then
         warn "Installing node-pty for full terminal support..."
         cd "$EXOCORE_DIR"
+        
+        # Siguraduhing may npm na naka-install bago magpatuloy
+        if ! command -v npm &>/dev/null; then
+            warn "NodeJS/NPM not found. Installing..."
+            linux_install_pkg "nodejs"
+        fi
+        
         npm init -y 2>/dev/null
         npm install node-pty@1.1.0 2>&1 | tail -3
         ok "node-pty installed"
@@ -135,7 +168,7 @@ case "$SUBCMD" in
         start_binary
         ;;
     *)
-        err "Usage: termux.sh [all|install|start|doctor]"
+        err "Usage: linux.sh [all|install|start|doctor]"
         exit 2
         ;;
 esac
