@@ -58,23 +58,29 @@ ensure_python() {
 }
 
 clone_repo() {
+    ensure_lfs
     if [ ! -d "$EXOCORE_DIR" ]; then
-        log "Preparing Git LFS and cloning Exocore repository..."
-        ensure_lfs
+        log "Cloning Exocore repository framework..."
         
-        # Ang --progress ay magpapakita rin ng LFS download progress (0-300MB+)
-        git clone --progress "$REPO_URL" "$EXOCORE_DIR"
+        # I-clone muna ang repo nang HINDI idinada-download ang LFS binary para umiwas sa stuck/hang
+        GIT_LFS_SKIP_SMUDGE=1 git clone --progress "$REPO_URL" "$EXOCORE_DIR"
+        
+        log "Downloading heavy standalone binaries (300MB+)..."
+        cd "$EXOCORE_DIR"
+        
+        # Dito natin piliting ipakita ang real-time LFS download progress bar
+        git lfs pull
         
         if [ $? -eq 0 ]; then
-            ok "Repository and Large Files (LFS) cloned successfully!"
+            ok "Repository and binaries downloaded successfully!"
         else
-            err "Failed to clone repository."
+            err "Failed to download Git LFS files."
             exit 1
         fi
     else
-        log "Exocore directory already exists. Skipping clone."
-        # Siguraduhin pa rin na downloaded ang LFS files kung sakaling naputol dati
-        cd "$EXOCORE_DIR" && git lfs pull
+        log "Exocore directory already exists. Checking for missing binaries..."
+        cd "$EXOCORE_DIR"
+        git lfs pull
     fi
 }
 
@@ -95,7 +101,6 @@ start_binary() {
     
     if [ ! -f "exocore-ide" ]; then
         err "Binary not found: $EXOCORE_DIR/exocore-ide"
-        err "Maaaring hindi nakumpleto ang Git LFS download."
         exit 1
     fi
     
