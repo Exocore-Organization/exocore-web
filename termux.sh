@@ -13,7 +13,7 @@ C_YELLOW=$'\033[33m'; C_BLUE=$'\033[34m'; C_CYAN=$'\033[36m'
 log()  { printf "%s[exocore]%s %s\n" "$C_CYAN"   "$C_RESET" "$*"; }
 ok()   { printf "%s[ ok  ]%s %s\n"   "$C_GREEN"  "$C_RESET" "$*"; }
 warn() { printf "%s[warn ]%s %s\n"   "$C_YELLOW" "$C_RESET" "$*"; }
-err()  { printf "%s[error]%s %s\n"   "$C_RED"    "$C_RESET" "$*" >&2; }
+err()  { printf "%s[error]%s %s\n"   "$C_RED"     "$C_RESET" "$*" >&2; }
 
 banner() {
     log "==========================================="
@@ -41,6 +41,9 @@ ensure_python() {
 }
 
 install_node_pty() {
+    # FIX: Tiyaking gawa muna ang directory bago mag-cd
+    mkdir -p "$EXOCORE_DIR"
+    
     if [ ! -f "$EXOCORE_DIR/node_modules/node-pty" ]; then
         warn "Installing node-pty for full terminal support..."
         cd "$EXOCORE_DIR"
@@ -51,7 +54,10 @@ install_node_pty() {
 }
 
 start_binary() {
+    # FIX: Tiyaking gawa ang directory bago mag-cd
+    mkdir -p "$EXOCORE_DIR"
     cd "$EXOCORE_DIR" || { err "Exocore directory not found: $EXOCORE_DIR"; exit 1; }
+    
     if [ ! -f "exocore-ide" ]; then
         err "Binary not found: $EXOCORE_DIR/exocore-ide"
         err "Place the exocore-ide binary in $EXOCORE_DIR and re-run."
