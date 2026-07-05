@@ -31,6 +31,15 @@ ensure_git() {
     fi
 }
 
+ensure_lfs() {
+    ensure_git
+    if ! git lfs version &>/dev/null; then
+        warn "Git LFS not found. Installing git-lfs..."
+        pkg install -y git-lfs
+        git lfs install
+    fi
+}
+
 ensure_deno() {
     if ! command -v deno &>/dev/null; then
         warn "Deno not found. Installing..."
@@ -50,20 +59,22 @@ ensure_python() {
 
 clone_repo() {
     if [ ! -d "$EXOCORE_DIR" ]; then
-        log "Cloning Exocore repository..."
-        ensure_git
+        log "Preparing Git LFS and cloning Exocore repository..."
+        ensure_lfs
         
-        # Piliting ipakita ang download percentage at progress kahit naka-pipe ang script
+        # Ang --progress ay magpapakita rin ng LFS download progress (0-300MB+)
         git clone --progress "$REPO_URL" "$EXOCORE_DIR"
         
         if [ $? -eq 0 ]; then
-            ok "Repository cloned successfully!"
+            ok "Repository and Large Files (LFS) cloned successfully!"
         else
             err "Failed to clone repository."
             exit 1
         fi
     else
         log "Exocore directory already exists. Skipping clone."
+        # Siguraduhin pa rin na downloaded ang LFS files kung sakaling naputol dati
+        cd "$EXOCORE_DIR" && git lfs pull
     fi
 }
 
@@ -84,10 +95,10 @@ start_binary() {
     
     if [ ! -f "exocore-ide" ]; then
         err "Binary not found: $EXOCORE_DIR/exocore-ide"
+        err "Maaaring hindi nakumpleto ang Git LFS download."
         exit 1
     fi
     
-    # Siguraduhing may executable permission ang nadownload na binary
     chmod +x exocore-ide
     
     export PORT="$EXOCORE_PORT" NODE_ENV=production
