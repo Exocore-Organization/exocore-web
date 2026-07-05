@@ -4,6 +4,7 @@ title Exocore Web
 
 set "EXOCORE_DIR=%USERPROFILE%\.exocore"
 set "EXOCORE_PORT=5000"
+set "REPO_URL=https://github.com/Exocore-Organization/exocore-web"
 set "SUBCMD=%~1"
 if "%SUBCMD%"=="" set "SUBCMD=all"
 
@@ -53,9 +54,50 @@ where python3 >nul 2>&1 || where python >nul 2>&1 || (
 )
 exit /b 0
 
+:ensure_git
+where git >nul 2>&1
+if errorlevel 1 (
+    call :warn "Git not found. Installing via winget..."
+    winget install --id Git.Git --silent --accept-source-agreements --accept-package-agreements >nul 2>&1
+    if errorlevel 1 (
+        call :err "Failed to install Git. Install manually from git-scm.com"
+        pause & exit /b 1
+    )
+)
+exit /b 0
+
+:ensure_lfs
+call :ensure_git
+git lfs version >nul 2>&1
+if errorlevel 1 (
+    call :warn "Git LFS not found. Installing..."
+    winget install --id Git.Git --silent --accept-source-agreements --accept-package-agreements >nul 2>&1
+    git lfs install
+)
+exit /b 0
+
+:clone_repo
+call :ensure_lfs
+if not exist "%EXOCORE_DIR%" (
+    call :log "Cloning Exocore repository framework..."
+    set "GIT_LFS_SKIP_SMUDGE=1"
+    git clone --progress "%REPO_URL%" "%EXOCORE_DIR%"
+    
+    call :log "Downloading standalone binaries (300MB+) with progress..."
+    cd /d "%EXOCORE_DIR%"
+    git lfs pull
+    call :ok "Repository and files downloaded successfully!"
+) else (
+    call :log "Exocore directory already exists. Checking for missing files..."
+    cd /d "%EXOCORE_DIR%"
+    git lfs pull
+)
+exit /b 0
+
 :install_node_pty
+call :clone_repo
 if not exist "%EXOCORE_DIR%\node_modules\node-pty" (
-    call :warn "Installing node-pty for terminal support..."
+    call :warn "Installing node-pty for full terminal support..."
     cd /d "%EXOCORE_DIR%"
     npm init -y >nul 2>&1
     npm install node-pty@1.1.0 2>&1 | findstr /V "^$"
@@ -67,7 +109,7 @@ exit /b 0
 cd /d "%EXOCORE_DIR%" 2>nul || (call :err "Directory %EXOCORE_DIR% not found." & pause & exit /b 1)
 if not exist "exocore-ide.exe" (
     call :err "Binary not found: %EXOCORE_DIR%\exocore-ide.exe"
-    call :log "Place exocore-ide.exe in %EXOCORE_DIR% and re-run."
+    call :log "Install it via: window.bat install"
     pause & exit /b 1
 )
 call :install_node_pty
@@ -84,6 +126,7 @@ exit /b 0
 echo.
 call :log "EXOCORE_DIR : %EXOCORE_DIR%"
 where deno >nul 2>&1 && (for /f "delims=" %%v in ('deno --version') do call :log "deno        : %%v") || call :warn "deno not found"
+where git >nul 2>&1 && (for /f "delims=" %%v in ('git --version') do call :log "git         : %%v") || call :warn "git not found"
 if exist "%EXOCORE_DIR%\exocore-ide.exe" (call :ok "Binary found") else call :warn "Binary NOT found at %EXOCORE_DIR%\exocore-ide.exe"
 echo.
 exit /b 0
@@ -91,13 +134,22 @@ exit /b 0
 :dispatch
 if /i "%SUBCMD%"=="doctor" ( call :doctor & goto :eof )
 if /i "%SUBCMD%"=="start" ( call :check_deno && call :start_server & goto :eof )
+if /i "%SUBCMD%"=="install" (
+    call :banner
+    call :check_deno
+    call :check_python
+    call :install_node_pty
+    call :doctor
+    goto :eof
+)
 if /i "%SUBCMD%"=="all" (
     call :banner
     call :check_deno
     call :check_python
+    call :install_node_pty
     call :doctor
     call :start_server
     goto :eof
 )
-call :err "Usage: window.bat [all^|start^|doctor]"
+call :err "Usage: window.bat [all^|install^|start^|doctor]"
 pause
