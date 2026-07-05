@@ -5,6 +5,7 @@ PREFIX="${PREFIX:-/data/data/com.termux/files/usr}"
 HOME_DIR="${HOME:-/data/data/com.termux/files/home}"
 EXOCORE_DIR="${EXOCORE_DIR:-$HOME_DIR/exocore}"
 EXOCORE_PORT="${PORT:-5000}"
+REPO_URL="https://github.com/Exocore-Organization/exocore-web"
 
 C_RESET=$'\033[0m'; C_BOLD=$'\033[1m'
 C_RED=$'\033[31m'; C_GREEN=$'\033[32m'
@@ -21,6 +22,13 @@ banner() {
     log "  Browser IDE • Standalone binary"
     log "==========================================="
     echo ""
+}
+
+ensure_git() {
+    if ! command -v git &>/dev/null; then
+        warn "Git not found. Installing..."
+        pkg install -y git
+    fi
 }
 
 ensure_deno() {
@@ -40,9 +48,18 @@ ensure_python() {
     fi
 }
 
+clone_repo() {
+    if [ ! -d "$EXOCORE_DIR" ]; then
+        log "Cloning Exocore repository..."
+        ensure_git
+        git clone "$REPO_URL" "$EXOCORE_DIR"
+    else
+        log "Exocore directory already exists. Skipping clone."
+    fi
+}
+
 install_node_pty() {
-    # FIX: Tiyaking gawa muna ang directory bago mag-cd
-    mkdir -p "$EXOCORE_DIR"
+    clone_repo
     
     if [ ! -f "$EXOCORE_DIR/node_modules/node-pty" ]; then
         warn "Installing node-pty for full terminal support..."
@@ -54,15 +71,17 @@ install_node_pty() {
 }
 
 start_binary() {
-    # FIX: Tiyaking gawa ang directory bago mag-cd
-    mkdir -p "$EXOCORE_DIR"
     cd "$EXOCORE_DIR" || { err "Exocore directory not found: $EXOCORE_DIR"; exit 1; }
     
+    # Check kung umiiral ang exocore-ide, kung wala baka nasa root ng repo o kailangan i-permission
     if [ ! -f "exocore-ide" ]; then
         err "Binary not found: $EXOCORE_DIR/exocore-ide"
-        err "Place the exocore-ide binary in $EXOCORE_DIR and re-run."
         exit 1
     fi
+    
+    # Siguraduhing executable ang binary
+    chmod +x exocore-ide
+    
     export PORT="$EXOCORE_PORT" NODE_ENV=production
     log "Starting on port $EXOCORE_PORT..."
     log "Open: http://localhost:$EXOCORE_PORT/exocore"
