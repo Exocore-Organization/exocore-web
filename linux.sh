@@ -3,11 +3,12 @@ set -euo pipefail
 
 EXOCORE_DIR="${EXOCORE_DIR:-$HOME/exocore}"
 EXOCORE_PORT="${PORT:-5000}"
+REPO_URL="https://github.com/Exocore-Organization/exocore-web"
 
 RED='\033[0;31m'; GRN='\033[0;32m'; YEL='\033[1;33m'
 CYN='\033[0;36m'; BOLD='\033[1m'; RST='\033[0m'
 info()  { echo -e "${CYN}[exocore]${RST} $*"; }
-ok()    { echo -e "${GRN}[  ok  ]${RST} $*"; }
+ok()    { echo -e "${GRN}[  ok   ]${RST} $*"; }
 warn()  { echo -e "${YEL}[ warn ]${RST} $*"; }
 die()   { echo -e "${RED}[ fail ]${RST} $*" >&2; exit 1; }
 
@@ -18,7 +19,7 @@ banner() {
     echo "  █████╗   ╚███╔╝ ██║   ██║██║     ██║   ██║██████╔╝█████╗  "
     echo "  ██╔══╝   ██╔██╗ ██║   ██║██║     ██║   ██║██╔══██╗██╔══╝  "
     echo "  ███████╗██╔╝ ██╗╚██████╔╝╚██████╗╚██████╔╝██║  ██║███████╗"
-    echo "  ╚══════╝╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝"
+    echo "  ╚══════╝╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝"
     echo -e "${RST}${BOLD}  Browser-based IDE  •  Linux Installer${RST}"
     echo ""
 }
@@ -42,6 +43,21 @@ install_pkg() {
     esac
 }
 
+ensure_git_and_lfs() {
+    if ! command -v git &>/dev/null; then
+        warn "Git not found. Installing..."
+        install_pkg git
+    fi
+
+    if ! git lfs version &>/dev/null; then
+        warn "Git LFS not found. Installing..."
+        local pm; pm=$(detect_pkg)
+        # Karaniwang git-lfs ang pangalan ng package sa mga distros
+        install_pkg git-lfs
+        git lfs install
+    fi
+}
+
 ensure_deno() {
     if ! command -v deno &>/dev/null; then
         warn "Deno not found. Installing..."
@@ -61,10 +77,37 @@ ensure_python() {
     fi
 }
 
+clone_repo() {
+    ensure_git_and_lfs
+    if [ ! -d "$EXOCORE_DIR" ]; then
+        info "Cloning Exocore repository framework..."
+        # Laktawan muna ang LFS sa clone para hindi mag-stuck ang pipe command
+        GIT_LFS_SKIP_SMUDGE=1 git clone --progress "$REPO_URL" "$EXOCORE_DIR"
+        
+        info "Downloading standalone binaries (300MB+) with progress..."
+        cd "$EXOCORE_DIR"
+        # Dito lalabas ang live percentage progress ng pagdownload ng binary file
+        git lfs pull
+        ok "Repository and files downloaded successfully!"
+    else
+        info "Exocore directory already exists. Checking for missing files..."
+        cd "$EXOCORE_DIR"
+        git lfs pull
+    fi
+}
+
 install_node_pty() {
+    clone_repo
     if [ ! -f "$EXOCORE_DIR/node_modules/node-pty" ]; then
         warn "Installing node-pty for full terminal support..."
         cd "$EXOCORE_DIR"
+        
+        # Siguraduhing may node/npm na naka-install para sa npm install
+        if ! command -v npm &>/dev/null; then
+            warn "NPM not found. Installing nodejs..."
+            install_pkg nodejs npm
+        fi
+
         npm init -y 2>/dev/null
         npm install node-pty@1.1.0 2>&1 | tail -3
         ok "node-pty installed"
@@ -86,7 +129,12 @@ EOF
 
 install_service() {
     if ! command -v systemctl &>/dev/null; then return; fi
+    
+    # pansamantalang patayin ang 'set -e' para sa interactive prompt
+    set +e
     read -r -p "$(echo -e "${YEL}Install as systemd service? [y/N]${RST} ")" ans
+    set -e
+    
     [[ "$ans" =~ ^[Yy]$ ]] || return
     local svc_file="/etc/systemd/system/exocore.service"
     sudo tee "$svc_file" >/dev/null <<EOF
