@@ -52,7 +52,16 @@ clone_repo() {
     if [ ! -d "$EXOCORE_DIR" ]; then
         log "Cloning Exocore repository..."
         ensure_git
-        git clone "$REPO_URL" "$EXOCORE_DIR"
+        
+        # Piliting ipakita ang download percentage at progress kahit naka-pipe ang script
+        git clone --progress "$REPO_URL" "$EXOCORE_DIR"
+        
+        if [ $? -eq 0 ]; then
+            ok "Repository cloned successfully!"
+        else
+            err "Failed to clone repository."
+            exit 1
+        fi
     else
         log "Exocore directory already exists. Skipping clone."
     fi
@@ -73,13 +82,12 @@ install_node_pty() {
 start_binary() {
     cd "$EXOCORE_DIR" || { err "Exocore directory not found: $EXOCORE_DIR"; exit 1; }
     
-    # Check kung umiiral ang exocore-ide, kung wala baka nasa root ng repo o kailangan i-permission
     if [ ! -f "exocore-ide" ]; then
         err "Binary not found: $EXOCORE_DIR/exocore-ide"
         exit 1
     fi
     
-    # Siguraduhing executable ang binary
+    # Siguraduhing may executable permission ang nadownload na binary
     chmod +x exocore-ide
     
     export PORT="$EXOCORE_PORT" NODE_ENV=production
